@@ -1,10 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Cryptocalc</title>
-    <!-- ----------------- prerequisite libraries ----------------- -->	
-	<!-- ----------------- prerequisite libraries -->
-	<p>Cryptocalc</p>
-	<span style="color:white; background-color: green; font-family: Arial, Helvetica, sans-serif;">[ <> Code v ]</span> 
+	<head>
+		<title>Cryptocalc</title>
+		<!-- ----------------- prerequisite libraries ----------------- -->	
+		<!-- ----------------- prerequisite libraries -->
+		
+		<!-- ----------------- Renderer prerequisite modules ----------------- -->
+		<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
+		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
+		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
+		<script type="text/javascript" src="./js/_renderer/const_events.js"></script>
+		<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
+		<script type="text/javascript" src="./js/_renderer/gui_controller.js"></script>
+		<!-- ----------------- Renderer prerequisite modules -->
+		
+		<link rel="stylesheet" type="text/css" href="css/cryptocalc_style.css">
+	<head>
+	
+	<body>
+	    <!--<div class="CalculatorContainer">-->
+			<!--<table class="CalculatorLayout" border="1"> -->
+			<table class="inner CalculatorLayout"> 
+				<tr>
+					<td class="LabelColumn">Private Key</td>
+					<td colspan="2" class="FieldColumn">
+						<input class="DataField" readonly
+							   id="pk_hex_id" type="text" value="XX">&nbsp;Hex
+						<input class="DataField" readonly
+							   id="pk_b64_id" type="text" value="XX">&nbsp;B64
+					</td>
+				</tr>
+				<tr>
+					<td class="LabelColumn">Mnemonics</td>
+					<td class="FieldColumn" colspan="2">
+						<textarea class="DataField" rows="3"
+							      id="mnemonics_id">XX								  
+						</textarea>&nbsp;<span id="word_count_id">Words: 24</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="Filler" colspan="3">
+						<center>&nbsp;</center>
+					</td>
+				</tr>
+				<tr>
+					<td class="ButtonsBar">
+						<center>
+							<input class="Button" type="button"
+							       id="convert_btn_id" value="  Convert  ">
+						</center>
+					</td>
+					<td>
+						<center>
+							<input class="Button" type="button"
+							       id="generate_btn_id" value=" Generate ">
+						</center>
+					</td>
+					<td>
+						<center>
+							<input class="Button" type="button"
+							       id="clear_btn_id" value=" Clear ">
+						</center>
+					</td>
+				</tr>
+			</table>
+		<!--</div>-->
   </body>
 </html>

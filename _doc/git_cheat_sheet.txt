@@ -1,0 +1,71 @@
+// =====================================================================================
+// ================================   GIT Cheat Sheet   ================================
+// =====================================================================================
+
+----------------------------------------------------------------------------------------
+* push to GitHub repository
+----------------------------------------------------------------------------------------
+npm version patch
+git add *
+git commit -m "Commit message"
+git push origin master
+npm publish --access=public
+
+----------------------------------------------------------------------------------------
+* Git
+----------------------------------------------------------------------------------------
+**Important**
+Add a '.gitignore' file containing this line: "node_modules"
+
+// to add or modify a file
+git add README.md 
+
+// check what will be committed
+git status
+
+// Commit changes
+git commit
+
+// add comment in vi the :wq
+
+----------------------------------------------------------------------------------------
+* Restart from fresh github local repository
+----------------------------------------------------------------------------------------
+example with 'mixin-interface' github repository
+> git clone git://github.com/Echopraxium/mixin-interface
+> cd mixin-interface
+> git init
+> git remote remove origin
+> git remote add origin https://github.com/Echopraxium/mixin-interface
+> npm update
+
+----------------------------------------------------------------------------------------
+* Git Error: "Git working directory not clean"
+----------------------------------------------------------------------------------------
+> del *.log
+> git gc
+
+----------------------------------------------------------------------------------------
+* Git Error: "fatal: remote error"
+----------------------------------------------------------------------------------------
+ex: fatal: remote error:
+    You can't push to git://github.com/Echopraxium/mixin-interface.git
+    Use https://github.com/Echopraxium/mixin-interface.git
+
+> git remote remove origin
+> git remote add origin https://github.com/Echopraxium/mixin-interface
+puis reprendre
+> git add .
+> git commit 
+> git push origin master
+> npm version x.y.z | npm version patch
+> npm publish --access=public
+
+----------------------------------------------------------------------------------------
+* Push to remote repository on github
+----------------------------------------------------------------------------------------
+git push origin master
+!! if "fatal error" see previous paragraph '* Git Error: "fatal: remote error"'
+
+https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes
+https://coderwall.com/p/7begkw/fatal-remote-error-you-can-t-push-to-git

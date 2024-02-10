@@ -1,0 +1,63 @@
+// =====================================================================================
+// ================================   NPM Cheat Sheet   ================================
+// =====================================================================================
+
+----------------------------------------------------------------------------------------
+* npm
+----------------------------------------------------------------------------------------
+update npm
+> npm install -g npm
+
+----------------------------------------------------------------------------------------
+* Publish npm
+----------------------------------------------------------------------------------------
+npm version x.y.z | npm version patch
+npm publish --access=public
+
+----------------------------------------------------------------------------------------
+// https://stackoverflow.com/questions/38764714/globally-configure-npm-with-a-token-registry-to-a-specific-scope-organisation
+// https://docs.npmjs.com/creating-and-publishing-scoped-public-packages
+* npm publish public scoped (aladas-org) package
+----------------------------------------------------------------------------------------
+1. Create an Authentication Classic Token at https://www.npmjs.com/  
+   NB: default "registry" is: https://registry.npmjs.org
+2. Use the following commands:
+   npm whoami
+   --> echopraxium
+   npm login   --registry=https://registry.npmjs.org --scope=@aladas-org
+   npm config set https://registry/npmjs.org/:_authToken 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
+   npm publish --access=public
+
+----------------------------------------------------------------------------------------
+* New npm package
+----------------------------------------------------------------------------------------
+1. Create a new remote repository (e.g. 'design-patterns-api') in github (e.g. https://github.com/Echopraxium)
+2. Create a new local directory:
+  > md design-patterns-api
+  > npm init
+  > git init
+  > npm login
+3. Create the 'origin' remote:
+  > git remote add origin https://github.com/Echopraxium/design-patterns-api
+4. Publish:
+  > git add .
+  > git commit 
+  > git push origin master
+  If first version
+    > npm publish --access=public
+  Else
+    > npm version x.y.z | npm version patch
+    > npm publish --access=public
+
+https://git-scm.com/book/en/v2/Git-Basics-Working-with-Remotes
+https://coderwall.com/p/7begkw/fatal-remote-error-you-can-t-push-to-git
+
+----------------------------------------------------------------------------------------
+* npm check updates
+----------------------------------------------------------------------------------------
+npm install -g npm-check-updates
+ncu
+ncu -u
+ncu -g
+
+

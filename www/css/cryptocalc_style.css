@@ -1,0 +1,64 @@
+html, body , .outer, .inner {
+	height:  100%;
+	width:   100%;
+	margin:  0;
+	font-family: Arial, Helvetica, sans-serif;
+} 
+
+.CalculatorLayout {
+	background-color:	#fafaf0;
+	width:      100%; 
+	height:     100%;
+	min-height: 100%;
+}
+
+.Button {
+	font-size:     25x;
+	font-weight:   500;
+	height:        30px;
+}
+
+#convert_btn_id{
+	background-color: lightgreen;
+}
+
+#word_count_id {
+	display:          inline-block;
+	/*background-color: lightgreen;*/
+	/*top: 0px;*/
+}
+
+.ButtonsBar {
+	height:        50px;
+}
+
+.LabelColumn {
+	/*margin-left:   20px;*/
+	padding-left:  10px;
+	width:         100px;
+	min-width:     100px;
+	max-width:     100px;
+	height:        25px;
+}
+
+.FieldColumn {
+	/*margin-left:   20px;*/
+	padding-left:  5px;
+	width:         100%;
+	min-width:     100%;
+	height:        25px;
+}
+
+.Selector {
+	margin-left:   10px;
+}
+
+.Filler {
+	width:         100%;
+	height:        100%;
+}
+
+.DataField {
+	font-family: Arial, Helvetica, sans-serif;
+	width:  85%;
+}

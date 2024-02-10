@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Crypto Calculator",
   "main": "./www/js/_main/electron_main.js",
   "note_debug": "electron . --enable-logging",
@@ -12,10 +12,17 @@
     "url": "git+https://github.com/ALADAS-org/Cryptocalc.git"
   },
   "keywords": [
-    "Cryptocalc", 
-    "wallet", "cryptocurrency", "cryptography",	
-    "seedphrase", "mnemonic",
-	"bip39", "Conversion", "Base64", "Base58", "Hexadecimal"
+    "Cryptocalc",
+    "wallet",
+    "cryptocurrency",
+    "cryptography",
+    "seedphrase",
+    "mnemonic",
+    "bip39",
+    "Conversion",
+    "Base64",
+    "Base58",
+    "Hexadecimal"
   ],
   "author": "Daniel Rodet & Michel Kern",
   "license": "MIT",
@@ -23,9 +30,12 @@
     "url": "https://github.com/ALADAS-org/Cryptocalc/issues"
   },
   "homepage": "https://github.com/ALADAS-org/Cryptocalc#readme",
-  "dependencies": {
-  },
   "devDependencies": {
     "electron": "^25.3.2"
+  },
+  "dependencies": {
+    "bip39": "^3.1.0",
+    "bitcore-mnemonic": "^10.0.23",
+    "js-sha256": "^0.11.0"
   }
 }
