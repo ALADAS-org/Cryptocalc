@@ -60,5 +60,13 @@ html, body , .outer, .inner {
 
 .DataField {
 	font-family: Arial, Helvetica, sans-serif;
-	width:  85%;
+	width:       85%;
+}
+
+.WithFocus {
+	background-color: #ECFFDC; /* very light green */
+}
+
+.WithoutFocus {
+	background-color: white;
 }

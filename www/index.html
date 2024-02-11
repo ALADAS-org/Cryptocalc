@@ -11,7 +11,6 @@
 		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
 		<script type="text/javascript" src="./js/_renderer/const_events.js"></script>
 		<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
-		<script type="text/javascript" src="./js/_renderer/gui_controller.js"></script>
 		<!-- ----------------- Renderer prerequisite modules -->
 		
 		<link rel="stylesheet" type="text/css" href="css/cryptocalc_style.css">
@@ -21,22 +20,31 @@
 	    <!--<div class="CalculatorContainer">-->
 			<!--<table class="CalculatorLayout" border="1"> -->
 			<table class="inner CalculatorLayout"> 
+				<tr><td colspan="4"><hr></td>
+				</tr>
 				<tr>
 					<td class="LabelColumn">Private Key</td>
 					<td colspan="2" class="FieldColumn">
-						<input class="DataField" readonly
+						<input class="DataField WithoutFocus" readonly
 							   id="pk_hex_id" type="text" value="XX">&nbsp;Hex
-						<input class="DataField" readonly
+						<input class="DataField WithoutFocus" readonly
 							   id="pk_b64_id" type="text" value="XX">&nbsp;B64
 					</td>
 				</tr>
+				<tr><td colspan="4"><hr></td>
+				</tr>
 				<tr>
-					<td class="LabelColumn">Mnemonics</td>
+					<td class="LabelColumn">Seedphrase</td>
 					<td class="FieldColumn" colspan="2">
-						<textarea class="DataField" rows="3"
+						<textarea class="DataField WithoutFocus" rows="2" spellcheck="false"
 							      id="mnemonics_id">XX								  
 						</textarea>&nbsp;<span id="word_count_id">Words: 24</span>
+						<textarea class="DataField WithoutFocus" rows="2"
+							      id="mnemonics_4letter_id">XX								  
+						</textarea>
 					</td>
+				</tr>
+				<tr><td colspan="4"><hr></td>
 				</tr>
 				<tr>
 					<td class="Filler" colspan="3">
@@ -44,23 +52,26 @@
 					</td>
 				</tr>
 				<tr>
-					<td class="ButtonsBar">
-						<center>
-							<input class="Button" type="button"
-							       id="convert_btn_id" value="  Convert  ">
-						</center>
-					</td>
-					<td>
-						<center>
-							<input class="Button" type="button"
-							       id="generate_btn_id" value=" Generate ">
-						</center>
-					</td>
-					<td>
-						<center>
-							<input class="Button" type="button"
-							       id="clear_btn_id" value=" Clear ">
-						</center>
+					<td colspan="4"><hr>
+						<table width="100%">
+						    <tr class="ButtonsBar">
+								<td width="33%">
+									<center><input class="Button" type="button"
+											       id="convert_btn_id" value="  Convert  ">
+									</center>
+								</td>
+								<td width="33%">
+									<center><input class="Button" type="button"
+											       id="generate_btn_id" value=" Generate ">
+									</center>
+								</td>
+								<td width="33%">
+									<center><input class="Button" type="button"
+											       id="clear_btn_id" value=" Clear ">
+									</center>
+								</td>
+							</tr>
+						</table>
 					</td>
 				</tr>
 			</table>

@@ -13,12 +13,13 @@ const path = require('path');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, 
         _END_ 
-	  }                             = require('../util/color/color_console_codes.js');
-const { ElectronWindow }            = require('./electron_window.js');	  
+	  }                                 = require('../util/color/color_console_codes.js');
+const { ElectronWindow }                = require('./electron_window.js');	  
 const { DID_FINISH_LOAD, HELP_ABOUT,
         VIEW_TOGGLE_DEVTOOLS,
-        REQUEST_HEX_TO_SEEDPHRASE } = require('../_renderer/const_events.js');
-const { Seedphrase_API }            = require('../crypto/seedphrase_api.js');
+        REQUEST_HEX_TO_SEEDPHRASE,
+        REQUEST_SEEDPHRASE_AS_4LETTER } = require('../_renderer/const_events.js');
+const { Seedphrase_API }                = require('../crypto/seedphrase_api.js');
 		
 const MAIN_WINDOW_WIDTH  = 800;
 const MAIN_WINDOW_HEIGHT = 400; 
@@ -89,12 +90,13 @@ const createWindow = () => {
 	// Note: index.html loaded twice (first index.html redirect)
 	ElectronWindow.GetWindow().webContents.on('did-finish-load', 
 		() => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load --" + _END_);
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load --" + _END_);
 			
 			// Note: must load twice (I suspect because of first index.html redirect)
 			g_DidFinishLoad_FiredCount++;
 			
-			if (g_DidFinishLoad_FiredCount == 2) {	
+			if (g_DidFinishLoad_FiredCount == 2) {
+                console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load " + _END_ + "FiredCount==2");				
 				//---------- Set 'Silverquote_version' in Renderer GUI ----------
 				//let Silverquote_version = process.env.npm_package_version;
 				//console.log('>> Silverquote_version: ' + Silverquote_version);				
@@ -129,13 +131,22 @@ ipcMain.on("request:log2main", (event, data) => {
 }); // "request:log2main" event handler
 
 // ================== REQUEST_HEX_TO_SEEDPHRASE ==================
-ipcMain.handle("request:hex_to_seedphrase", (event, data) => {
+ipcMain.handle(REQUEST_HEX_TO_SEEDPHRASE, (event, data) => {
 	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_HEX_TO_SEEDPHRASE + _END_);
 	//console.log(">> data: " + data); 
 	let seedphrase = Seedphrase_API.FromSHASeed(data);
 	//console.log(">> seedphrase: " + seedphrase); 
 	return seedphrase;
 }); // "request:hex_to_seedphrase" event handler
+
+// ================== REQUEST_SEEDPHRASE_AS_4LETTER ==================
+ipcMain.handle(REQUEST_SEEDPHRASE_AS_4LETTER, (event, data) => {
+	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SEEDPHRASE_AS_4LETTER + _END_);
+	//console.log(">> data: " + data); 
+	let seedphrase_as_4letter = Seedphrase_API.As4letter(data);
+	//console.log(">> seedphrase: " + seedphrase); 
+	return seedphrase_as_4letter;
+}); // "request:seedphrase_as_4letter" event handler
 
 
 // ========== Prevent Multiple instances of Electron main process ==========
