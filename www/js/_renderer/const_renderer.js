@@ -9,12 +9,15 @@ const PK_B64_ID               = "pk_b64_id";
 const MNEMONICS_ID            = "mnemonics_id";
 const MNEMONICS_4LETTER_ID    = "mnemonics_4letter_id";
 
-const CONVERT_BTN_ID          = "convert_btn_id";
+const UPDATE_BTN_ID           = "update_btn_id";
 const GENERATE_BTN_ID         = "generate_btn_id";
 const CLEAR_BTN_ID            = "clear_btn_id";
 
 const WITH_FOCUS_CSS_CLASS    = "WithFocus";
 const WITHOUT_FOCUS_CSS_CLASS = "WithoutFocus";
+
+const VALID_VALUE_CSS_CLASS   = "ValidValue";
+const INVALID_VALUE_CSS_CLASS = "InvalidValue";
 
 if (typeof exports === 'object') {
 	exports.PK_HEX_ID               = PK_HEX_ID
@@ -23,7 +26,7 @@ if (typeof exports === 'object') {
 	exports.MNEMONICS_ID            = MNEMONICS_ID
 	exports.MNEMONICS_4LETTER_ID    = MNEMONICS_4LETTER_ID
 	
-	exports.CONVERT_BTN_ID          = CONVERT_BTN_ID
+	exports.UPDATE_BTN_ID           = UPDATE_BTN_ID
 	exports.GENERATE_BTN_ID         = GENERATE_BTN_ID
 	exports.CLEAR_BTN_ID            = CLEAR_BTN_ID
 	

@@ -18,7 +18,7 @@ html, body , .outer, .inner {
 	height:        30px;
 }
 
-#convert_btn_id{
+#update_btn_id{
 	background-color: lightgreen;
 }
 
@@ -69,4 +69,12 @@ html, body , .outer, .inner {
 
 .WithoutFocus {
 	background-color: white;
+}
+
+.ValidValue {
+	color: black;
+}
+
+.InvalidValue {
+	color: red;
 }

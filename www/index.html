@@ -25,9 +25,9 @@
 				<tr>
 					<td class="LabelColumn">Private Key</td>
 					<td colspan="2" class="FieldColumn">
-						<input class="DataField WithoutFocus" readonly
+						<input class="DataField WithoutFocus ValidValue"
 							   id="pk_hex_id" type="text" value="XX">&nbsp;Hex
-						<input class="DataField WithoutFocus" readonly
+						<input class="DataField WithoutFocus ValidValue" readonly
 							   id="pk_b64_id" type="text" value="XX">&nbsp;B64
 					</td>
 				</tr>
@@ -36,10 +36,10 @@
 				<tr>
 					<td class="LabelColumn">Seedphrase</td>
 					<td class="FieldColumn" colspan="2">
-						<textarea class="DataField WithoutFocus" rows="2" spellcheck="false"
+						<textarea class="DataField WithoutFocus" rows="2" readonly spellcheck="false"
 							      id="mnemonics_id">XX								  
 						</textarea>&nbsp;<span id="word_count_id">Words: 24</span>
-						<textarea class="DataField WithoutFocus" rows="2"
+						<textarea class="DataField WithoutFocus" rows="2" readonly
 							      id="mnemonics_4letter_id">XX								  
 						</textarea>
 					</td>
@@ -57,7 +57,7 @@
 						    <tr class="ButtonsBar">
 								<td width="33%">
 									<center><input class="Button" type="button"
-											       id="convert_btn_id" value="  Convert  ">
+											       id="update_btn_id" value="  Update  ">
 									</center>
 								</td>
 								<td width="33%">
