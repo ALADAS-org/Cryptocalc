@@ -92,17 +92,19 @@ const createWindow = () => {
 		() => {
 			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load --" + _END_);
 			
-			// Note: must load twice (I suspect because of first index.html redirect)
+			// Note: must load twice (I suspect because of first 'index.html' redirect)
 			g_DidFinishLoad_FiredCount++;
 			
 			if (g_DidFinishLoad_FiredCount == 2) {
-                console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load " + _END_ + "FiredCount==2");				
+                console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load " + _END_ + "FiredCount==2");	
+				
 				//---------- Set 'Silverquote_version' in Renderer GUI ----------
-				//let Silverquote_version = process.env.npm_package_version;
-				//console.log('>> Silverquote_version: ' + Silverquote_version);				
-				//ElectronWindow.GetWindow().setTitle('Silverquote ' + Silverquote_version); 
+				let Silverquote_version = process.env.npm_package_version;
+				console.log("   Silverquote_version: " + Silverquote_version);				
+				ElectronWindow.GetWindow().setTitle('Silverquote ' + Silverquote_version); 
 				//ipcMain_sendToBrowser_SilverquoteVersion(Silverquote_version);
-				//---------- Set 'Silverquote_version' in Renderer GUI		
+				//---------- Set 'Silverquote_version' in Renderer GUI
+				
 				ElectronWindow.GetWindow().webContents.send("fromMain", [ DID_FINISH_LOAD ]);
 			}
 		} // 'did-finish-load' callback
