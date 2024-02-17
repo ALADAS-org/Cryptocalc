@@ -5,15 +5,13 @@
 
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
 
-const FIELD_IDS          = [ PK_HEX_ID, PK_B64_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
-const EDITABLE_FIELD_IDS = [ PK_HEX_ID ];
+const HEXA_ALPHABET      = "0123456789abcdefABCDEF";
+const ALLOWED_ALPHABETS  = { [PK_HEX_ID]: HEXA_ALPHABET };
+const FIELD_IDS          = [ RAW_DATA_ID, PK_HEX_ID, PK_B64_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
+const EDITABLE_FIELD_IDS = [ RAW_DATA_ID, PK_HEX_ID ];
 
 const trigger_event = (elt, eventType) => elt.dispatchEvent(new CustomEvent(eventType, {}));
 
-const log2Main = (msg) => {
-	window.ipcMain.log2Main(msg);
-};
-							  
 class Renderer_GUI {
 	static Required_Hex_digits = 64;
 	static Required_B64_digits = 44;
@@ -22,7 +20,7 @@ class Renderer_GUI {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.Init()" + _END_);
 
 		window.ipcMain.receive("fromMain", 
-			async (data) => { await Renderer_GUI.OnEvent(data); }
+			async (data) => { await Renderer_GUI.OnGUIEvent(data); }
 		); // window.ipcMain.receive() call
 	} // Renderer_GUI.Init()
 	
@@ -47,28 +45,47 @@ class Renderer_GUI {
 	static RegisterCallbacks() {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.RegisterCallbacks()" + _END_);
 		
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'input', (evt) => { Renderer_GUI.OnInput(evt); });
-		Renderer_GUI.SetEventHandler(PK_B64_ID,            'input', (evt) => { Renderer_GUI.OnInput(evt); });
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'input',    (evt) => { Renderer_GUI.OnInput(evt); });
+		Renderer_GUI.SetEventHandler(PK_B64_ID,            'input',    (evt) => { Renderer_GUI.OnInput(evt); });
 		
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'focus', (evt) => { Renderer_GUI.OnFocus(evt); });
-		Renderer_GUI.SetEventHandler(PK_B64_ID,            'focus', (evt) => { Renderer_GUI.OnFocus(evt); });
-		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'focus', (evt) => { Renderer_GUI.OnFocus(evt); });
-		Renderer_GUI.SetEventHandler(MNEMONICS_4LETTER_ID, 'focus', (evt) => { Renderer_GUI.OnFocus(evt); });
+		Renderer_GUI.SetEventHandler(RAW_DATA_ID,          'focus',    (evt) => { Renderer_GUI.OnFocus(evt); });	
+		
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'focus',    (evt) => { Renderer_GUI.OnFocus(evt); });
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'keydown',  (evt) => { Renderer_GUI.OnKeyDown(evt); });
+			
+		Renderer_GUI.SetEventHandler(PK_B64_ID,            'focus',    (evt) => { Renderer_GUI.OnFocus(evt); });
+		
+		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'focus',    (evt) => { Renderer_GUI.OnFocus(evt); });
+		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'keydown',  (evt) => { Renderer_GUI.OnKeyDown(evt); });
+		
+		Renderer_GUI.SetEventHandler(MNEMONICS_4LETTER_ID, 'focus',    (evt) => { Renderer_GUI.OnFocus(evt); });
 		
 		
-        Renderer_GUI.SetEventHandler(UPDATE_BTN_ID, 'click', Renderer_GUI.UpdateFields);
+        Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,        'click', 
+		                             async (evt) => { Renderer_GUI.UpdateFields(); }   );
 		
-		Renderer_GUI.SetEventHandler(GENERATE_BTN_ID, 'click', 
-		                             async (evt) => { Renderer_GUI.GenerateFields(); });
+		Renderer_GUI.SetEventHandler(GENERATE_BTN_ID,      'click', 
+		                             async (evt) => { Renderer_GUI.GenerateFields(); } );
 									 
-		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID, 'click', Renderer_GUI.ClearFields);
+		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,         'click', Renderer_GUI.ClearFields);
 									 
         trigger_event(Renderer_GUI.GetElement(GENERATE_BTN_ID), 'click');
 	} // Renderer_GUI.RegisterCallbacks()
 	
-	static UpdateFields() {
+	static async UpdateFields() {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdateFields()" + _END_);
+		
 		let pk_hex_elt = Renderer_GUI.GetElement(PK_HEX_ID); 
+		
+		let raw_data_elt = Renderer_GUI.GetElement(RAW_DATA_ID); 
+		//log2Main("   raw_data_elt: " + raw_data_elt);
+		//log2Main("   raw_data_elt value:\n   " + raw_data_elt.value);
+		if (raw_data_elt.value.length > 0) {
+			let sha_256_value_hex = await window.ipcMain.GetSHA256(raw_data_elt.value);
+			//log2Main("   sha_256_value_hex:\n   " + sha_256_value_hex);
+			pk_hex_elt.value = sha_256_value_hex;
+		}
+		
 		if (pk_hex_elt.value.length == Renderer_GUI.Required_Hex_digits) {
 			Renderer_GUI.GenerateFields(pk_hex_elt.value);
 		}	
@@ -105,11 +122,35 @@ class Renderer_GUI {
 		}
 	} // Renderer_GUI.ClearFields()
 	
-	static OnInput(event) {
-		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnInput()" + _END_);		
-		let elt = event.target || event.srcElement;
+	static OnKeyDown(evt) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnKeyDown() " + _END_ + "'" + evt.key+ "' keycode: " + evt.keyCode);		
 		//log2Main(">> elt: " + elt.id + " length: " + elt.value.length);
+		
+		let elt = evt.target || evt.srcElement;
 	
+		//log2Main("   elt: " + elt.id);
+		//log2Main("   " + ALLOWED_ALPHABETS[elt.id]);
+		let allowed_alphabet = ALLOWED_ALPHABETS[elt.id];
+		
+		if (evt.key == 'Delete') return true;
+		
+		//log2Main("   evt.key: '" + evt.key + "'");
+		if (allowed_alphabet.indexOf(evt.key) == -1) { 
+		    //log2Main("   " + evt.key + " INVALID INPUT");
+			evt.preventDefault();
+			return false;
+	    }
+		
+		Renderer_GUI.SetField(RAW_DATA_ID, "");
+		return true;
+	} // Renderer_GUI.OnKeyDown()
+	
+	static OnInput(evt) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnInput() " + _END_ +  "'" + evt.data + "'");		
+		let elt = evt.target || evt.srcElement;
+		//log2Main(">> elt: " + elt.id + " length: " + elt.value.length);
+		//log2Main("   evt.data: " + evt.data);
+		
 		if (elt.id == PK_HEX_ID) {
 			if (elt.value.length != Renderer_GUI.Required_Hex_digits) {
 				//log2Main(  ">> elt: " + elt.id + " length: " + elt.value.length 
@@ -122,13 +163,15 @@ class Renderer_GUI {
 				//         + " has " + _GREEN_ + "VALID LENGTH (" + Renderer_GUI.Required_Hex_digits + ")" + _END_);
 				elt.classList.remove(INVALID_VALUE_CSS_CLASS); 
 				elt.classList.add(VALID_VALUE_CSS_CLASS); 
+				
+				Renderer_GUI.SetField(RAW_DATA_ID, "");
 			}
 		} 
 	} // Renderer_GUI.OnInput()
 	
-	static OnFocus(event) {
+	static OnFocus(evt) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnFocus()" + _END_);
-		let source_elt = event.target || event.srcElement;
+		let source_elt = evt.target || evt.srcElement;
 		
 		if (! EDITABLE_FIELD_IDS.includes(source_elt.id)) {
 			return;
@@ -149,42 +192,51 @@ class Renderer_GUI {
 		} 
 	} // Renderer_GUI.OnFocus()
 	
-	static OnEvent(data) {
-		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnEvent()" + _END_);
+	static OnGUIEvent(data) {
+		//log2Main(">> " + _CYAN_ + "Renderer_GUI.OnGUIEvent()" + _END_);
 
 		let event_name = data[0];
 				
 		switch ( event_name ) {
 			case DID_FINISH_LOAD:
-				log2Main(">> " + _CYAN_ + "Renderer_GUI OnEvent: " + _YELLOW_ + DID_FINISH_LOAD + _END_);
+				log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + DID_FINISH_LOAD + _END_);
 				Renderer_GUI.RegisterCallbacks();	
-				break;				
+				break;	
+
+            case SET_RENDERER_VALUE:
+                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + SET_RENDERER_VALUE + _END_);	
+				let cryptocalc_version = data[1];
+				//log2Main("   cryptocalc_version: " + cryptocalc_version);
+                RendererSession.SetValue(CRYPTO_CALC_VERSION, cryptocalc_version);				
+				break;
 				
 			case HELP_ABOUT:
-			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnEvent: " + _YELLOW_ + HELP_ABOUT + _END_);
-				//let app_version = RendererSession.GetValue(SILVERQUOTE_VERSION);
-				//let description_data =   
-				//		  "<center><b>Silverquote " + app_version + "</b></center><br>" 
-				//		+ "&nbsp;A collectible wallet generator";
+			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + HELP_ABOUT + _END_);
+				let crypto_calc_version = RendererSession.GetValue(CRYPTO_CALC_VERSION);
+				let description_data =   
+						  "<center><b>Cryptocalc " + crypto_calc_version + "</b></center><br>" 
+						+ "&nbsp;A crypto assets calculator";
+			    //log2Main("   " + HELP_ABOUT + " " + description_data);
+
 				// https://izitoast.marcelodolza.com/
-				//DialogManager.Clean();
-				//iziToast.info({
+				DialogManager.Clean();
+				iziToast.info({
 				//	iconUrl:         './icons/ZCash_rev_icn.png',
-				//	position:        'center',
-				//	backgroundColor: '#FEF9E7',
-				//	message:     description_data,
-				//	maxWidth:    450, layout: 2,
-				//	timeout:     false, progressBar: false
-				//});
+					position:        'center',
+					backgroundColor: 'lightblue',
+					message:         description_data,
+					maxWidth:        450, layout: 2,
+					timeout:         false, progressBar: false
+				});
 				break;	
 				
 			default:
-				log2Main( ">> " + _CYAN_ + "Renderer_GUI OnEvent: "
+				log2Main( ">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: "
 						  + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + "from main");
 				//DialogManager.Clean();
 				break;
 		} // switch ( event_name )
-	} // Renderer_GUI.OnEvent()
+	} // Renderer_GUI.OnGUIEvent()
 } // Renderer_GUI class
 
 Renderer_GUI.Init();

@@ -3,6 +3,8 @@
 	<head>
 		<title>Cryptocalc</title>
 		<!-- ----------------- prerequisite libraries ----------------- -->	
+		<script type="text/javascript" src="./js/lib/iziToast.min.js"></script>
+		<link   rel="stylesheet" type="text/css" href="css/iziToast.css">
 		<!-- ----------------- prerequisite libraries -->
 		
 		<!-- ----------------- Renderer prerequisite modules ----------------- -->
@@ -10,6 +12,8 @@
 		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
 		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
 		<script type="text/javascript" src="./js/_renderer/const_events.js"></script>
+		<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
+		<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
 		<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
 		<!-- ----------------- Renderer prerequisite modules -->
 		
@@ -20,8 +24,17 @@
 	    <!--<div class="CalculatorContainer">-->
 			<!--<table class="CalculatorLayout" border="1"> -->
 			<table class="inner CalculatorLayout"> 
-				<tr><td colspan="4"><hr></td>
+			    <!-- ============================================== -->
+				<tr><td colspan="4"><hr></td></tr>
+				<tr>
+					<td class="LabelColumn">Input</td>
+					<td colspan="2" class="FieldColumn">
+						<textarea class="DataField WithoutFocus" rows="4" spellcheck="false"
+							      id="raw_data_id"></textarea>
+					</td>
 				</tr>
+				<!-- ============================================== -->
+				<tr><td colspan="4"><hr></td></tr>
 				<tr>
 					<td class="LabelColumn">Private Key</td>
 					<td colspan="2" class="FieldColumn">
@@ -31,8 +44,8 @@
 							   id="pk_b64_id" type="text" value="XX">&nbsp;B64
 					</td>
 				</tr>
-				<tr><td colspan="4"><hr></td>
-				</tr>
+				<!-- ============================================== -->
+				<tr><td colspan="4"><hr></td></tr>
 				<tr>
 					<td class="LabelColumn">Seedphrase</td>
 					<td class="FieldColumn" colspan="2">
@@ -44,30 +57,25 @@
 						</textarea>
 					</td>
 				</tr>
-				<tr><td colspan="4"><hr></td>
-				</tr>
+				<!-- ============================================== -->
+				<tr><td colspan="4"><hr></td></tr>
 				<tr>
-					<td class="Filler" colspan="3">
-						<!-- <center>&nbsp;</center> -->
-					</td>
-				</tr>
-				<tr>
-					<td colspan="4"><hr>
+					<td colspan="4">
 						<table width="100%">
 						    <tr class="ButtonsBar">
 								<td width="33%">
 									<center><input class="Button" type="button"
-											       id="update_btn_id" value="  Update  ">
+											       id="update_btn_id" value="Update">
 									</center>
 								</td>
 								<td width="33%">
 									<center><input class="Button" type="button"
-											       id="generate_btn_id" value=" Generate ">
+											       id="generate_btn_id" value="Generate">
 									</center>
 								</td>
 								<td width="33%">
 									<center><input class="Button" type="button"
-											       id="clear_btn_id" value=" Clear ">
+											       id="clear_btn_id" value="Clear">
 									</center>
 								</td>
 							</tr>

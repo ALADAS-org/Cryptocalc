@@ -9,20 +9,22 @@ const { app, Menu, BrowserWindow, ipcMain,
         shell, remote, dialog } = require('electron');	
 		// https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron
 
-const path = require('path');
+const path     = require('path');
+const sha256   = require('js-sha256');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, 
         _END_ 
 	  }                                 = require('../util/color/color_console_codes.js');
 const { ElectronWindow }                = require('./electron_window.js');	  
-const { DID_FINISH_LOAD, HELP_ABOUT,
+const { DID_FINISH_LOAD, HELP_ABOUT, SET_RENDERER_VALUE,
         VIEW_TOGGLE_DEVTOOLS,
-        REQUEST_HEX_TO_SEEDPHRASE,
-        REQUEST_SEEDPHRASE_AS_4LETTER } = require('../_renderer/const_events.js');
+        REQUEST_HEX_TO_SEEDPHRASE, REQUEST_SEEDPHRASE_AS_4LETTER,
+        REQUEST_GET_SHA256 
+	  }                                 = require('../_renderer/const_events.js');
 const { Seedphrase_API }                = require('../crypto/seedphrase_api.js');
 		
 const MAIN_WINDOW_WIDTH  = 800;
-const MAIN_WINDOW_HEIGHT = 400; 
+const MAIN_WINDOW_HEIGHT = 500; 
 
 let g_DidFinishLoad_FiredCount = 0;
 		
@@ -98,14 +100,16 @@ const createWindow = () => {
 			if (g_DidFinishLoad_FiredCount == 2) {
                 console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load " + _END_ + "FiredCount==2");	
 				
-				//---------- Set 'Silverquote_version' in Renderer GUI ----------
-				let Silverquote_version = process.env.npm_package_version;
-				console.log("   Silverquote_version: " + Silverquote_version);				
-				ElectronWindow.GetWindow().setTitle('Silverquote ' + Silverquote_version); 
-				//ipcMain_sendToBrowser_SilverquoteVersion(Silverquote_version);
-				//---------- Set 'Silverquote_version' in Renderer GUI
+				//---------- Set 'Cryptocalc_version' in Renderer GUI ----------
+				let Cryptocalc_version = process.env.npm_package_version;
+				console.log("   Cryptocalc: " + Cryptocalc_version);				
+				ElectronWindow.GetWindow().setTitle('Cryptocalc ' + Cryptocalc_version); 
+				//---------- Set 'Cryptocalc_version' in Renderer GUI
 				
 				ElectronWindow.GetWindow().webContents.send("fromMain", [ DID_FINISH_LOAD ]);
+				
+				console.log("   Send : " + SET_RENDERER_VALUE + " = " + Cryptocalc_version);
+				ElectronWindow.GetWindow().webContents.send("fromMain", [ SET_RENDERER_VALUE, Cryptocalc_version ]);
 			}
 		} // 'did-finish-load' callback
 	); // on 'did-finish-load' event handler
@@ -128,11 +132,14 @@ const ipcMain_toggleDebugPanel = () => {
 	//	("fromMain", [ "View/ToggleDebugPanel", gShow_DebugPanel ]);
 }; // ipcMain_toggleDebugPanel()
 
+// ====================== REQUEST_LOG_2_MAIN ======================
+// called like this by Renderer: window.ipcMain.log2Main(data)
 ipcMain.on("request:log2main", (event, data) => {
 	console.log(data);
 }); // "request:log2main" event handler
 
-// ================== REQUEST_HEX_TO_SEEDPHRASE ==================
+// ================== REQUEST_HEX_TO_SEEDPHRASE ===================
+// called like this by Renderer: await window.ipcMain.HexToSeedPhrase(data)
 ipcMain.handle(REQUEST_HEX_TO_SEEDPHRASE, (event, data) => {
 	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_HEX_TO_SEEDPHRASE + _END_);
 	//console.log(">> data: " + data); 
@@ -142,6 +149,8 @@ ipcMain.handle(REQUEST_HEX_TO_SEEDPHRASE, (event, data) => {
 }); // "request:hex_to_seedphrase" event handler
 
 // ================== REQUEST_SEEDPHRASE_AS_4LETTER ==================
+// called like this by Renderer: await window.ipcMain.SeedphraseAs4letter(data)
+		log2Main:              (data) => ipcRenderer.send("request:log2main", data),
 ipcMain.handle(REQUEST_SEEDPHRASE_AS_4LETTER, (event, data) => {
 	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SEEDPHRASE_AS_4LETTER + _END_);
 	//console.log(">> data: " + data); 
@@ -149,6 +158,17 @@ ipcMain.handle(REQUEST_SEEDPHRASE_AS_4LETTER, (event, data) => {
 	//console.log(">> seedphrase: " + seedphrase); 
 	return seedphrase_as_4letter;
 }); // "request:seedphrase_as_4letter" event handler
+
+// ================== REQUEST_GET_SHA256 ==================
+// called like this by Renderer: await window.ipcMain.GetSHA256(data)
+ipcMain.handle(REQUEST_GET_SHA256, (event, data) => {
+	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_SHA256 + _END_);
+	let hash = sha256.create();
+    hash.update(data);
+    return hash.hex();
+	//let sha_256_hex = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+	//return sha_256_hex;
+}); // "request:get_SHA256" event handler
 
 
 // ========== Prevent Multiple instances of Electron main process ==========

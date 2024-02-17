@@ -3,9 +3,12 @@
 // =====================================================================================
 "use strict";
 
+const CRYPTO_CALC_VERSION     = "Cryptocalc_version";
+
 const PK_HEX_ID               = "pk_hex_id";
 const PK_B64_ID               = "pk_b64_id";
 
+const RAW_DATA_ID             = "raw_data_id";
 const MNEMONICS_ID            = "mnemonics_id";
 const MNEMONICS_4LETTER_ID    = "mnemonics_4letter_id";
 
@@ -19,10 +22,16 @@ const WITHOUT_FOCUS_CSS_CLASS = "WithoutFocus";
 const VALID_VALUE_CSS_CLASS   = "ValidValue";
 const INVALID_VALUE_CSS_CLASS = "InvalidValue";
 
+const log2Main = (msg) => {
+	window.ipcMain.log2Main(msg);
+}; // log2Main()
+
 if (typeof exports === 'object') {
+	exports.CRYPTO_CALC_VERSION     = CRYPTO_CALC_VERSION
 	exports.PK_HEX_ID               = PK_HEX_ID
 	exports.PK_B64_ID               = PK_B64_ID
 	
+	exports.RAW_DATA_ID             = RAW_DATA_ID
 	exports.MNEMONICS_ID            = MNEMONICS_ID
 	exports.MNEMONICS_4LETTER_ID    = MNEMONICS_4LETTER_ID
 	
