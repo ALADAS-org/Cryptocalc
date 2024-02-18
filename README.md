@@ -1,5 +1,5 @@
-## Cryptocalc 0.0.16
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_15.png)
+## Cryptocalc 0.0.18
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_18.png)
 1. Purpose\
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
    conversion between a `Private Key` formats (eg. `Hex` vs `Base64`) and the matching _Seedphrase_.\
