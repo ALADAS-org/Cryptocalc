@@ -102,13 +102,13 @@ const createWindow = () => {
 				
 				//---------- Set 'Cryptocalc_version' in Renderer GUI ----------
 				let Cryptocalc_version = process.env.npm_package_version;
-				console.log("   Cryptocalc: " + Cryptocalc_version);				
+				//console.log("   Cryptocalc: " + Cryptocalc_version);				
 				ElectronWindow.GetWindow().setTitle('Cryptocalc ' + Cryptocalc_version); 
 				//---------- Set 'Cryptocalc_version' in Renderer GUI
 				
 				ElectronWindow.GetWindow().webContents.send("fromMain", [ DID_FINISH_LOAD ]);
 				
-				console.log("   Send : " + SET_RENDERER_VALUE + " = " + Cryptocalc_version);
+				//console.log("   Send : " + SET_RENDERER_VALUE + " = " + Cryptocalc_version);
 				ElectronWindow.GetWindow().webContents.send("fromMain", [ SET_RENDERER_VALUE, Cryptocalc_version ]);
 			}
 		} // 'did-finish-load' callback
@@ -142,15 +142,16 @@ ipcMain.on("request:log2main", (event, data) => {
 // called like this by Renderer: await window.ipcMain.HexToSeedPhrase(data)
 ipcMain.handle(REQUEST_HEX_TO_SEEDPHRASE, (event, data) => {
 	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_HEX_TO_SEEDPHRASE + _END_);
-	//console.log(">> data: " + data); 
-	let seedphrase = Seedphrase_API.FromSHASeed(data);
+	const { data_hex, lang } = data;
+	//console.log("   data_hex: " + data_hex);
+	//console.log("   lang: " + lang);
+	let seedphrase = Seedphrase_API.FromSHASeed(data_hex, lang);
 	//console.log(">> seedphrase: " + seedphrase); 
 	return seedphrase;
 }); // "request:hex_to_seedphrase" event handler
 
 // ================== REQUEST_SEEDPHRASE_AS_4LETTER ==================
 // called like this by Renderer: await window.ipcMain.SeedphraseAs4letter(data)
-		log2Main:              (data) => ipcRenderer.send("request:log2main", data),
 ipcMain.handle(REQUEST_SEEDPHRASE_AS_4LETTER, (event, data) => {
 	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SEEDPHRASE_AS_4LETTER + _END_);
 	//console.log(">> data: " + data); 

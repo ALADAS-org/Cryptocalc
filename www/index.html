@@ -47,7 +47,19 @@
 				<!-- ============================================== -->
 				<tr><td colspan="4"><hr></td></tr>
 				<tr>
-					<td class="LabelColumn">Seedphrase</td>
+					<td class="LabelColumn">
+						<span>Seedphrase</span>
+						<!-- https://www.andiamo.co.uk/resources/iso-language-codes/ -->
+						<select id="lang_select_id" class="InputField">
+							<option value="EN" selected>English</option>							
+							<option value="DE">Deutsch</option>
+							<option value="FR">French</option>
+							<option value="ES">Spanish</option>
+							<option value="PT">Portuguese</option>
+							<option value="IT">Italian</option>
+							<option value="CS">Czech</option>				
+						</select>
+					</td>
 					<td class="FieldColumn" colspan="2">
 						<textarea class="DataField WithoutFocus" rows="2" readonly spellcheck="false"
 							      id="mnemonics_id">XX								  

@@ -58,6 +58,8 @@ class Renderer_GUI {
 		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'focus',    (evt) => { Renderer_GUI.OnFocus(evt); });
 		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'keydown',  (evt) => { Renderer_GUI.OnKeyDown(evt); });
 		
+		Renderer_GUI.SetEventHandler(LANG_SELECT_ID,       'change',   (evt) => { Renderer_GUI.OnChange(evt); });
+		
 		Renderer_GUI.SetEventHandler(MNEMONICS_4LETTER_ID, 'focus',    (evt) => { Renderer_GUI.OnFocus(evt); });
 		
 		
@@ -101,8 +103,11 @@ class Renderer_GUI {
 		
 		let pk_b64_value = hexToB64(pk_hex_value);
 		Renderer_GUI.SetField(PK_B64_ID, pk_b64_value);
-
-        let mnemonics = await window.ipcMain.HexToSeedPhrase(pk_hex_value);
+		
+		let data_hex = pk_hex_value;
+		let lang = Renderer_GUI.GetElement(LANG_SELECT_ID).value;  
+		let data = { data_hex, lang };
+        let mnemonics = await window.ipcMain.HexToSeedPhrase(data);
 		Renderer_GUI.SetField(MNEMONICS_ID, mnemonics);		
 		
 		let mnemonics_as_4letter = await window.ipcMain.SeedphraseAs4letter(mnemonics);
@@ -121,6 +126,19 @@ class Renderer_GUI {
 			elt.classList.add(WITHOUT_FOCUS_CSS_CLASS); 
 		}
 	} // Renderer_GUI.ClearFields()
+	
+	static OnChange(evt) {
+		let elt = evt.target || evt.srcElement;
+		
+		if (elt.id == LANG_SELECT_ID) {
+			let lang_value = elt.value;
+			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChange() " + _END_ + lang_value);
+			Renderer_GUI.UpdateFields();
+	    }
+		else {
+			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChange() " + _END_);	
+		}
+	} // Renderer_GUI.OnChange()
 	
 	static OnKeyDown(evt) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnKeyDown() " + _END_ + "'" + evt.key+ "' keycode: " + evt.keyCode);		

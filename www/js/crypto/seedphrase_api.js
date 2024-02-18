@@ -7,6 +7,19 @@ const sha256        = require('js-sha256');
 const Bip39Mnemonic = require('bitcore-mnemonic');
 const bip39         = require('bip39');
 
+const CS_WORDLIST_JSON = require('@scure/bip39/wordlists/czech');
+const CS_WORDLIST      = CS_WORDLIST_JSON['wordlist'];
+
+const PT_WORDLIST_JSON = require('@scure/bip39/wordlists/portuguese');
+const PT_WORDLIST      = PT_WORDLIST_JSON['wordlist'];
+
+//const { wordlist as japanese }           = require('@scure/bip39/wordlists/japanese';
+//const { wordlist as korean }             = require('@scure/bip39/wordlists/korean';
+//const { wordlist as simplifiedChinese }  = require('@scure/bip39/wordlists/simplified-chinese';
+//const { wordlist as traditionalChinese } = require('@scure/bip39/wordlists/traditional-chinese';
+
+const { GERMAN_MNEMONICS } = require('../lib/mnemonics/DE_mnemonics.js');
+
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_,        
 		_END_ }              = require('../util/color/color_console_codes.js');
 		
@@ -35,7 +48,7 @@ class Seedphrase_API {
     //           SHA256 of initial hash as binary string           => "8 1st bits" added to end of initial hash => 264 bits
     // * Case 2: 12 words / 132 bits / 4 bits checksum:
     //           SHA-1 (128 bits) of initial hash as binary string => "4 1st bits" added to end of initial hash => 132 bits
-	static FromSHASeed(initial_seed_hex) {		
+	static FromSHASeed(initial_seed_hex, lang) {		
 		console.log(">> " + _CYAN_ + "Seedphrase_API.FromSHASeed" + _END_);	
         // console.log(">> FromSHASeed: init seed: '" + initial_seed_hex + "'");
         //console.log(">> FromSHASeed: initial_seed bytes:           " + initial_seed_hex.length/2);		
@@ -66,27 +79,36 @@ class Seedphrase_API {
 		for (let i=0; i < final_entropy_binary.length; i+=11) {
 			let binary_11bits = final_entropy_binary.substring(i, i+11);
 			word_index = parseInt(binary_11bits, 2); // convert binary string in decimal
-			word  = Bip39Mnemonic.Words.ENGLISH[word_index];
+			
+			let LANG_WORDLIST = Seedphrase_API.GetMnemonics(lang);
+			//console.log("   LANG_WORDLIST: " + LANG_WORDLIST);
+			//console.log("   LANG_WORDLIST.length: " + LANG_WORDLIST.length);
+			word = LANG_WORDLIST[word_index];
+			//console.log("   word: " + word + "  word_index:" + word_index);
+
 			let separator = ((i + 11) >= final_entropy_binary.length) ? "" : " ";
 			mnemonics += word + separator;
 		}
 		
 		return mnemonics;
-	} // static FromSHASeed()
+	} // Seedphrase_API.FromSHASeed()
 	
-	static ToPrivateKey(mnemonics) {
+	static ToPrivateKey(mnemonics, lang) {
 		console.log(">> " + _CYAN_ + "Seedphrase_API.ToPrivateKey" + _END_);
 		
 		//console.log("\nmnemonics\n'" + mnemonics + "'");
 		let words      = mnemonics.split(' ');
 		let word_count = words.length;
+		
 		// console.log(">> sha264_value words length: " + words.length);
 		
 		// * Case 1: 24 words (24*11 = 264) => 256 bits (SHA256) + last 11 bits = "checksum word index"
 		// * Case 2: 12 words (12*11 = 132) => 128 bits (SHA-1)  + last 11 bits = "checksum word index"
 		let final_entropy_binary = "";
 		for (let i=0; i < word_count; i++) {
-			let word_index = Bip39Mnemonic.Words.ENGLISH.indexOf(words[i]);
+			let LANG_WORDLIST = Seedphrase_API.GetMnemonics(lang);
+			let word_index = LANG_WORDLIST.indexOf(words[i]);
+			
 			//console.log(">> " + "ToPrivateKey index(" + i + "): " + word_index);
 			let word_index_binary = parseInt(word_index, 10).toString(2).padStart(11, "0");
 			//console.log(">> " + "ToPrivateKey index_binary(" + i + "): " + index_binary);
@@ -121,10 +143,10 @@ class Seedphrase_API {
 	    //console.log(">> ToPrivateKey: private_key bits   = " + (private_key_hex.length/2)*8);
 
 		return private_key_hex;
-    } // static ToPrivateKey()
+    } // Seedphrase_API.ToPrivateKey()
 	
 	//                                   default: 24 words (12 words supported also)
-	static FromRawdata(initial_seed_str, mnemonics_word_count) {	
+	static FromRawdata(initial_seed_str, mnemonics_word_count, lang) {	
 		console.log(">> " + _CYAN_ + "Seedphrase_API.FromRawdata" + _END_);
 		
 		if (mnemonics_word_count == undefined || mnemonics_word_count != 12) {
@@ -140,12 +162,12 @@ class Seedphrase_API {
 		
 		console.log(">> FromRawdata: initial_entropy_hex = " + initial_entropy_hex);
 
-		let initial_entropy_binary = hexToBinary(initial_entropy_hex);
+		//let initial_entropy_binary = hexToBinary(initial_entropy_hex);
 		
-		let seedphrase = Seedphrase_API.FromSHASeed(initial_entropy_hex);
+		let seedphrase = Seedphrase_API.FromSHASeed(initial_entropy_hex, lang);
 
 		return seedphrase;
-	} // static FromRawdata()
+	} // Seedphrase_API.FromRawdata()
 	
 	static As4letter( seedphrase ) {
 		let word_4letter_prefixes = "";
@@ -169,7 +191,7 @@ class Seedphrase_API {
 		//console.log(">> getNewFriezeTextvalues length: " + new_frieze_text.length);
 		
 		return mnemonics_as_4letter;
-	} // static As4letter()
+	} // Seedphrase_API.As4letter()
 	
 	static AsTwoParts(seedphrase) {
 		console.log(">> " + _CYAN_ + "Seedphrase_API.AsTwoParts" + _END_);
@@ -209,9 +231,52 @@ class Seedphrase_API {
 		
 		
 		return seedphrase_2parts;
-	} // static AsTwoParts()
+	} // Seedphrase_API.AsTwoParts()
+	
+	static GetMnemonics(lang) {
+		if (lang == undefined) {
+			lang = "EN";
+		}
+		//console.log(">> " + _CYAN_ + "Seedphrase_API.GetMnemonics " + _END_ + "lang: " + lang);
+		let mnemonics = Bip39Mnemonic.Words.ENGLISH;
+		switch (lang) {
+			case "EN":
+				mnemonics = Bip39Mnemonic.Words.ENGLISH;
+				break;
+				
+			case "DE":
+			    mnemonics = GERMAN_MNEMONICS;
+				break;
+				
+			case "FR":
+			    mnemonics = Bip39Mnemonic.Words.FRENCH;
+				break;
+				
+			case "ES":
+			    mnemonics = Bip39Mnemonic.Words.SPANISH;
+				break;		
+				
+			case "IT":
+			    mnemonics = Bip39Mnemonic.Words.ITALIAN;
+				break;
+				
+			case "CS":
+			    mnemonics = CS_WORDLIST;
+				break;
+				
+			case "PT":
+			    mnemonics = PT_WORDLIST;
+				break;
+				
+			default:
+				mnemonics = Bip39Mnemonic.Words.ENGLISH;
+				break;
+		}
+		
+		return mnemonics;
+	} // Seedphrase_API.GetMnemonics()
 } // Seedphrase_API class
 
 if (typeof exports === 'object') {
 	exports.Seedphrase_API = Seedphrase_API	
-}
+} // exports of 'seedphrase_api.js'
