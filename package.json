@@ -1,9 +1,9 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Crypto Calculator",
   "main": "./www/js/_main/electron_main.js",
-  "note_debug": "electron . --enable-logging",
+  "note_debug": "electron .",
   "scripts": {
     "start": "electron . --enable-logging"
   },
