@@ -1,4 +1,4 @@
-## Cryptocalc 0.0.19
+## Cryptocalc 0.0.21
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_20.png)
 1. Purpose\
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
@@ -37,10 +37,10 @@
 		Thus in the _Shortened Seedphrase_ each _mnemonic_ is represented by its 4 first letters
 		with the first letter in Uppercase as a mean to separate _mnemonics_. \
 		Here is an example below: \
-        _Seedphrase_ \
+        _Seedphrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;goddess also genre east slam borrow amateur pupil merit clinic check zone \
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;habit jewel biology rebel october power adult wide blush similar omit pyramid
-        _Shortened Seedphrase_ \s\s
+        _Shortened Seedphrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GoddAlsoGenrEastSlamBorrAmatPupiMeriClinChecZoneHabiJeweBiolRebeOctoPoweAdulWideBlusSimiOmitPyra 			
         * 4.1.2. You can provide an arbitrary value in the `Input` field, then with the [ Update ] button 
 		all other values will be recomputed (like in a waterfall). 
@@ -59,11 +59,11 @@
           Indeed it's meant to add a scramble step in order to make it harder to steal your _Master Key_ because
           it must be translated to English to be used with with a _Wallet Manager_. 		  
    + 4.2. Use cases	
-       * 4.2.1. Store _Shortened Seedphrase_ in a _NFC SmartRing_ \s\s
+       * 4.2.1. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
        The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 144 bytes useable capacity.
 	   This is enough to store the _Shortened Seedphrase_, with a 24 words _Shortened Seedphrase_ 
 	   the maximum required capacity is 96 bytes/characters (24*4, cf. 4.1.) or even less (as some mnemonics have only three characters).   
-       * 4.2.2. Store _Master password_ \s\s 
+       * 4.2.2. Store _Master password_   
        This is similar to the previous case, but the _Shortened Seedphrase_ (or `Private Key (B64)` value) can be used as a _Master password_  
        for a _Password Manager_ or for tools like [_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption
 	   of your documents. 
