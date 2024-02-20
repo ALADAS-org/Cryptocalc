@@ -9,11 +9,15 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld(
 	"ipcMain", {
-		log2Main:              (data) => ipcRenderer.send("request:log2main", data),
+		log2Main:                 (data) => ipcRenderer.send("request:log2main", data),
+		SavePrivateKeyInfo:       (data) => ipcRenderer.send("request:save_pk_info", data),
 		
-		HexToSeedPhrase:       (data) => ipcRenderer.invoke("request:hex_to_seedphrase", data),
-		SeedphraseAs4letter:   (data) => ipcRenderer.invoke("request:seedphrase_as_4letter", data),
-		GetSHA256:             (data) => ipcRenderer.invoke("request:get_SHA256", data),
+		SeedPhraseToPrivateKey:   (data) => ipcRenderer.invoke("request:seedphrase_to_pk", data),
+		HexToSeedPhrase:          (data) => ipcRenderer.invoke("request:hex_to_seedphrase", data),
+		SeedphraseAs4letter:      (data) => ipcRenderer.invoke("request:seedphrase_as_4letter", data),
+		GetSHA256:                (data) => ipcRenderer.invoke("request:get_SHA256", data),
+		CheckSeedphrase:          (data) => ipcRenderer.invoke("request:check_seedphrase", data),
+		SeedPhraseToWordIndices:  (data) => ipcRenderer.invoke("request:seedphrase_to_word_indices", data),
 		
 	    //send: (channel, data) => {
         //     // whitelist channels

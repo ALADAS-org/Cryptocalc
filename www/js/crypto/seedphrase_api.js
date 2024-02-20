@@ -20,6 +20,8 @@ const PT_WORDLIST      = PT_WORDLIST_JSON['wordlist'];
 
 const { GERMAN_MNEMONICS } = require('../lib/mnemonics/DE_mnemonics.js');
 
+const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT" ];
+
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_,        
 		_END_ }              = require('../util/color/color_console_codes.js');
 		
@@ -135,7 +137,7 @@ class Seedphrase_API {
 		
 		private_key_hex = private_key_hex.substring(0, hex_digits_count);
 		
-		console.log(">> ToPrivateKey: private_key = " + private_key_hex);
+		//console.log(">> ToPrivateKey: private_key = " + private_key_hex);
 		
 		// https://medium.com/@sundar.sat84/bip39-mnemonic-generation-with-detailed-explanation-84abde9da4c1
 		//console.log(">> ToPrivateKey: private_key length =  " + private_key_hex.length);
@@ -168,6 +170,78 @@ class Seedphrase_API {
 
 		return seedphrase;
 	} // Seedphrase_API.FromRawdata()
+	
+	static GetWordIndices( seedphrase, lang ) {
+		let words = seedphrase.split(' ');
+		let LANG_WORDLIST = Seedphrase_API.GetMnemonics(lang);
+		let word_indices = [];
+		for (let i=0; i < words.length; i++) {
+			let word_index = LANG_WORDLIST.indexOf(words[i]);
+			word_indices.push(word_index);
+		}
+		return word_indices;
+	} // Seedphrase_API.GetWordIndices()
+	
+	static WordIndicesToSeedPhrase( word_indices, lang ) {
+		let seedphrase = "";
+		let LANG_WORDLIST = Seedphrase_API.GetMnemonics(lang);
+		for (let i=0; i < word_indices.length; i++) {
+			let word_index = word_indices[i];
+			let word = LANG_WORDLIST[word_index];
+			let prefix = (i==0) ? " ":"";
+			seedphrase = prefix + seedphrase;
+		}
+		return seedphrase;
+	} // Seedphrase_API.WordIndicesToSeedPhrase()
+	
+	static GuessLang( seedphrase ) {
+		console.log(">> " + _CYAN_ + "Seedphrase_API.GuessLang" + _END_);
+		let lang = "EN";
+		let words = seedphrase.split(' ');
+		for (let i=0; i < SUPPORTED_LANGS.length; i++) {
+			let current_lang = SUPPORTED_LANGS[i];
+			console.log("   check is seedphrase is: " + current_lang);
+			let LANG_WORDLIST = Seedphrase_API.GetMnemonics(current_lang);
+			let found_word_count = 0;
+			for (let j=0; j < words.length; j++) {
+				let current_word = words[i];
+				let word_index = LANG_WORDLIST.indexOf(current_word);
+				if (word_index != -1) found_word_count++;
+			}
+			if (found_word_count == words.length) {
+				return current_lang;
+			}
+		} 	
+		return lang;
+	} // Seedphrase_API.GuessLang()
+	
+	static CheckSeedphrase( seedphrase, lang, expected_word_count ) {
+		console.log(">> " + _CYAN_ + "Seedphrase_API.CheckSeedphrase" + _END_);
+		if (lang == undefined) {
+			lang = "EN";
+		}
+		if (expected_word_count == undefined) {
+			expected_word_count = 24;
+		}
+		
+		let words = seedphrase.split(' ');
+		// console.log("   words.length: " + words.length);
+		if (words.length != expected_word_count) { 
+			return false;
+		}
+		
+		let LANG_WORDLIST = Seedphrase_API.GetMnemonics(lang);
+		
+		for (let i=0; i < words.length; i++) {
+			let current_word = words[i];
+			//console.log("   word[" + i + "] : " + current_word);
+			let word_index = LANG_WORDLIST.indexOf(current_word);
+			if (word_index == -1) {
+				return false;
+			}
+		}
+		return true;
+	} // Seedphrase_API.CheckSeedphrase()
 	
 	static As4letter( seedphrase ) {
 		let word_4letter_prefixes = "";
