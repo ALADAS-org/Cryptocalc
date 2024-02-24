@@ -17,11 +17,12 @@ const { _CYAN_, _RED_, _PURPLE_, _YELLOW_,
         _END_ 
 	  }                                 = require('../util/color/color_console_codes.js');
 const { ElectronWindow }                = require('./electron_window.js');	  
-const { DID_FINISH_LOAD, HELP_ABOUT, SET_RENDERER_VALUE, VIEW_TOGGLE_DEVTOOLS,
+const { DID_FINISH_LOAD, HELP_ABOUT, VIEW_TOGGLE_DEVTOOLS,
+       SET_RENDERER_VALUE, SET_INPUT_FIELD_VALUE, 
         REQUEST_HEX_TO_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_PK, REQUEST_SEEDPHRASE_AS_4LETTER,
         REQUEST_GET_SHA256, 
 		REQUEST_CHECK_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_WORD_INDICES,
-        REQUEST_FILE_SAVE, REQUEST_SAVE_PK_INFO		
+        REQUEST_FILE_SAVE, REQUEST_SAVE_PK_INFO, REQUEST_IMPORT_RAW_DATA		
 	  }                                 = require('../_renderer/const_events.js');
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
 const { Seedphrase_API }                = require('../crypto/seedphrase_api.js');
@@ -41,6 +42,9 @@ const ELECTRON_MAIN_MENU_TEMPLATE = [
 	{ 	label: 'File',
 		submenu: [ {  label: 'Save', 
 					  click() { ElectronMain.DoFileSave(); }
+			       },
+				   {  label: 'Import', 
+					  click() { ElectronMain.SelectFile(); }
 			       },
 				   {  label: 'Quit', 
 					  click() { app.quit(); }
@@ -150,6 +154,30 @@ class ElectronMain {
 		//	("fromMain", [ "View/ToggleDebugPanel", gShow_DebugPanel ]);
 	} // ElectronMain.ToggleDebugPanel()
 	
+	static SelectFile() {
+		console.log(">> " + _CYAN_ + "ElectronMain.SelectFile" + _END_);
+		const browserWindow = BrowserWindow.getFocusedWindow();
+		let input_path = app.getAppPath() + "\\_assets\\texts";
+		console.log("   input_path: " + input_path);
+		//                     Modal window
+		dialog.showOpenDialog( browserWindow, {
+			defaultPath: input_path,
+			filters:     [ { name: 'text file', extensions: ['txt'] } ],
+			properties:  ['openFile']
+		}).then(result => {
+			if (result.filePaths != '') {
+				let in_file_name = path.basename(result.filePaths[0]);
+				console.log("   " + in_file_name);
+				const raw_data_str = fs.readFileSync(input_path + '//' + in_file_name, { encoding: 'utf8', flag: 'r' });
+				//console.log("   " + raw_data_str);
+				ElectronWindow.GetWindow().webContents.send
+					("fromMain", [ SET_INPUT_FIELD_VALUE, raw_data_str ]);
+			}
+		}).catch(err => {
+			console.log(err)
+		});
+	} // ElectronMain.SelectFile()
+	
 	static SetCallbacks() {
 		console.log(">> " + _CYAN_ + "ElectronMain.SetCallbacks" + _END_);
 
@@ -183,6 +211,14 @@ class ElectronMain {
 			}
 			fs.writeFileSync( output_path + "/private_key_info.txt", pk_info_str, error_handler );
 		}); // "request:save_pk_info" event handler
+		
+		
+		// ====================== REQUEST_IMPORT_RAW_DATA ======================
+		// called like this by Renderer: window.ipcMain.ImportRawData(data)
+		ipcMain.on(REQUEST_IMPORT_RAW_DATA, (event, crypto_info) => {
+			ElectronMain.SelectFile();
+        }); // "request:import_raw_data" event handler
+
 
 		// ================== REQUEST_SEEDPHRASE_TO_PK ===================
 		// called like this by Renderer: await window.ipcMain.SeedPhraseToPrivateKey(data)

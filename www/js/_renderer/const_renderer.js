@@ -9,11 +9,11 @@ const PK_HEX_ID               = "pk_hex_id";
 const PK_B64_ID               = "pk_b64_id";
 
 const RAW_DATA_ID             = "raw_data_id";
+const FILE_IMPORT_BTN_ID      = "file_import_btn_id";
 
-const MNEMONICS_ID            = "mnemonics_id";
+const SEEDPHRASE_ID           = "seedphrase_id";
+const SEEDPHRASE_4LETTER_ID   = "seedphrase_4letter_id";
 const LANG_SELECT_ID          = "lang_select_id";
-
-const MNEMONICS_4LETTER_ID    = "mnemonics_4letter_id";
 
 const UPDATE_BTN_ID           = "update_btn_id";
 const GENERATE_BTN_ID         = "generate_btn_id";
@@ -35,9 +35,11 @@ if (typeof exports === 'object') {
 	exports.PK_B64_ID               = PK_B64_ID
 	
 	exports.RAW_DATA_ID             = RAW_DATA_ID
-	exports.MNEMONICS_ID            = MNEMONICS_ID
+	exports.SEEDPHRASE_ID           = SEEDPHRASE_ID
 	exports.LANG_SELECT_ID          = LANG_SELECT_ID
-	exports.MNEMONICS_4LETTER_ID    = MNEMONICS_4LETTER_ID
+	exports.SEEDPHRASE_4LETTER_ID   = SEEDPHRASE_4LETTER_ID
+	
+	exports.FILE_IMPORT_BTN_ID      = FILE_IMPORT_BTN_ID
 	
 	exports.UPDATE_BTN_ID           = UPDATE_BTN_ID
 	exports.GENERATE_BTN_ID         = GENERATE_BTN_ID

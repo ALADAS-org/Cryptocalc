@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld(
 	"ipcMain", {
 		log2Main:                 (data) => ipcRenderer.send("request:log2main", data),
 		SavePrivateKeyInfo:       (data) => ipcRenderer.send("request:save_pk_info", data),
+		ImportRawData:            (data) => ipcRenderer.send("request:import_raw_data", data),
 		
 		SeedPhraseToPrivateKey:   (data) => ipcRenderer.invoke("request:seedphrase_to_pk", data),
 		HexToSeedPhrase:          (data) => ipcRenderer.invoke("request:hex_to_seedphrase", data),

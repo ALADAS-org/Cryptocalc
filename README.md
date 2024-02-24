@@ -1,15 +1,14 @@
-## Cryptocalc 0.0.21
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_20.png)
+## Cryptocalc 0.0.22
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_22.png)
 1. Purpose\
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
-   conversion between a `Private Key` formats (eg. `Hex` vs `Base64`) and the matching _Seedphrase_.\
+   conversions between a `Private Key` formats (eg. `Hex` vs `Base64`) and the matching _Seedphrase_.  
    NB: _Cryptocalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron)
    
 2. Environment
-    + 2.1. PC under Windows 10
-    + 2.2. [NodeJS](https://nodejs.org/en/)
-	+ 2.3. [Git](https://git-scm.com/)
+    + 2.1. [NodeJS](https://nodejs.org/en/)
+	+ 2.2. [Git](https://git-scm.com/)
 	
 3. Installation \
    You must import locally the [Cryptocalc repository](https://github.com/ALADAS-org/Cryptocalc):
@@ -43,27 +42,30 @@
         _Shortened Seedphrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GoddAlsoGenrEastSlamBorrAmatPupiMeriClinChecZoneHabiJeweBiolRebeOctoPoweAdulWideBlusSimiOmitPyra 			
         * 4.1.2. You can provide an arbitrary value in the `Input` field, then with the [ Update ] button 
-		all other values will be recomputed (like in a waterfall). 
+		all other values will be recomputed (like in a waterfall). Please notice that the text for the `Input` field may also be provided 
+		with the `File/Import` menu or with the ellipsis button [...] at the right of the `Input` field. 
 		* 4.1.3. Input a hex value for the _Private Key_ \
 		Modify or replace the hex value (NB: requires 64 hex digits) then use the [ Update ]
         button to propagate to `Private Key (B64)` value, _Seedphrase_ and _Shortened Seedphrase_.		
 		* 4.1.4. If you modify the `Private Key (Hex)` value with a valid value 
 		(NB: 64 hexadecimal digits, non hexadecimal digits are filtered) then it clears the `Input` field.
 		* 4.1.5. With `File/Save` you can save the private key informations in a timestamped subfolder under `_output` folder.
-		  This subfolder contains `private_key_info.txt` and a `pk_info.json` with the displayed informations but there is also
-		  the word indices of the _mnemonics_ in the _Seedphrase_. 
-		* 4.1.6. You can now modify the _Seedphrase_ but you must provide valid _mnemonics_ (matching the selected _language_)  
-		  and provide the expected number of _mnemonics_ (which is currently a constant equal to 24). 
+		This subfolder contains `private_key_info.txt` and a `pk_info.json` with the displayed informations but there is also
+		the word indices of the _mnemonics_ in the _Seedphrase_. 
+		* 4.1.6. You can now modify the _Seedphrase_ but you must provide valid _mnemonics_ (matching the selected _language_) and 
+		provide the expected number of _mnemonics_ (which is currently a constant equal to 24). 
 		* 4.1.7. You can select the _Language Wordlist_ (eg. _English_, _French_, _Deutsh_, etc...). Please notice
-          that is not meant to be used with _Wallet Manager_ applications because most will only accept English mnemonics.  
-          Indeed it's meant to add a scramble step in order to make it harder to steal your _Master Key_ because
-          it must be translated to English to be used with with a _Wallet Manager_. 		  
-   + 4.2. Use cases	
-       * 4.2.1. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
+        that is not meant to be used with _Wallet Manager_ applications because most will only accept English mnemonics.  
+        Indeed it's meant to add a scramble step in order to make it harder to steal your _Master Key_ because
+        it must be translated to English to be used with with a _Wallet Manager_. 		  
+   + 4.2. Use cases
+       * 4.2.1. Create a new _Crypto Wallet_: with a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) a _Seedphrase_
+       is enough to import a new wallet, you just need to choose the coin (e.g. `BTC`, `ETH`, `DOGE`, `XRP`, `ADA`, `SOL`, etc...)   
+       * 4.2.2. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
        The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 144 bytes useable capacity.
 	   This is enough to store the _Shortened Seedphrase_, with a 24 words _Shortened Seedphrase_ 
-	   the maximum required capacity is 96 bytes/characters (24*4, cf. 4.1.) or even less (as some mnemonics have only three characters).   
-       * 4.2.2. Store _Master password_   
+	   the maximum required capacity is 96 bytes/characters (24*4, cf. 4.1.1) or even less (as some mnemonics have only three characters).   
+       * 4.2.3. Store _Master password_   
        This is similar to the previous case, but the _Shortened Seedphrase_ (or `Private Key (B64)` value) can be used as a _Master password_  
        for a _Password Manager_ or for tools like [_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption
 	   of your documents. 

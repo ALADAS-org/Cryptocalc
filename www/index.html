@@ -29,8 +29,17 @@
 				<tr>
 					<td class="LabelColumn">Input</td>
 					<td colspan="2" class="FieldColumn">
-						<textarea class="DataField WithoutFocus" rows="4" spellcheck="false"
-							      id="raw_data_id"></textarea>
+					        <table width="100%">
+							<tr>
+							<td class="TextArea">
+								<textarea class="RawDataField WithoutFocus" rows="4" spellcheck="false"
+								   	      id="raw_data_id"></textarea>
+							</td>
+							<td width="10%">
+								<input class="EllipsisButton" type="button" id="file_import_btn_id" value="...">
+							</td>
+							</tr>
+							</table>
 					</td>
 				</tr>
 				<!-- ============================================== -->
@@ -62,10 +71,10 @@
 					</td>
 					<td class="FieldColumn" colspan="2">
 						<textarea class="DataField WithoutFocus" rows="2" spellcheck="false"
-							      id="mnemonics_id">XX								  
+							      id="seedphrase_id">XX								  
 						</textarea>&nbsp;<span id="word_count_id">Words: 24</span>
 						<textarea class="DataField WithoutFocus" rows="2" readonly
-							      id="mnemonics_4letter_id">XX								  
+							      id="seedphrase_4letter_id">XX								  
 						</textarea>
 					</td>
 				</tr>

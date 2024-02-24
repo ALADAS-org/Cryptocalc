@@ -7,8 +7,8 @@
 
 const HEXA_ALPHABET      = "0123456789abcdefABCDEF";
 const ALLOWED_ALPHABETS  = { [PK_HEX_ID]: HEXA_ALPHABET };
-const FIELD_IDS          = [ RAW_DATA_ID, PK_HEX_ID, PK_B64_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
-const EDITABLE_FIELD_IDS = [ RAW_DATA_ID, PK_HEX_ID, MNEMONICS_ID ];
+const FIELD_IDS          = [ RAW_DATA_ID, PK_HEX_ID, PK_B64_ID, SEEDPHRASE_ID, SEEDPHRASE_4LETTER_ID ];
+const EDITABLE_FIELD_IDS = [ RAW_DATA_ID, PK_HEX_ID, SEEDPHRASE_ID ];
 
 const trigger_event = (elt, eventType) => elt.dispatchEvent(new CustomEvent(eventType, {}));
 
@@ -33,6 +33,7 @@ class Renderer_GUI {
 	} // Renderer_GUI.GetElement()
 	
 	static SetField(elt_id, value_str) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.SetField() " + _END_ + elt_id);
 		let elt = document.getElementById(elt_id);
 		if (elt != undefined) { elt.value = value_str; }
 	} // Renderer_GUI.SetField()
@@ -47,28 +48,30 @@ class Renderer_GUI {
 	static RegisterCallbacks() {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.RegisterCallbacks()" + _END_);
 		
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
 															
-		Renderer_GUI.SetEventHandler(PK_B64_ID,            'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
+		Renderer_GUI.SetEventHandler(PK_B64_ID,             'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
 		
-		Renderer_GUI.SetEventHandler(RAW_DATA_ID,          'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );	
+		Renderer_GUI.SetEventHandler(RAW_DATA_ID,           'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );	
 		
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,            'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
 					
-		Renderer_GUI.SetEventHandler(PK_B64_ID,            'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
+		Renderer_GUI.SetEventHandler(PK_B64_ID,             'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
 		
-		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );											   
-		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
-		Renderer_GUI.SetEventHandler(MNEMONICS_ID,         'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,         'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );											   
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,         'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,         'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
 		
-		Renderer_GUI.SetEventHandler(LANG_SELECT_ID,       'change',  (evt) => { Renderer_GUI.OnChangeLanguage(evt); }        );
+		Renderer_GUI.SetEventHandler(LANG_SELECT_ID,        'change',  (evt) => { Renderer_GUI.OnChangeLanguage(evt); }        );
 		
-		Renderer_GUI.SetEventHandler(MNEMONICS_4LETTER_ID, 'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }           );
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_4LETTER_ID, 'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }           );
 		
-        Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,        'click',   async (evt) => { await Renderer_GUI.UpdateFields(); }   );		
-		Renderer_GUI.SetEventHandler(GENERATE_BTN_ID,      'click',   async (evt) => { await Renderer_GUI.GenerateFields(); } );									 
-		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,         'click',   Renderer_GUI.ClearFields);
+		Renderer_GUI.SetEventHandler(FILE_IMPORT_BTN_ID,    'click',   (evt) => { Renderer_GUI.ImportRawData(); }        );		
+		
+        Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,         'click',   async (evt) => { await Renderer_GUI.UpdateFields(); }   );		
+		Renderer_GUI.SetEventHandler(GENERATE_BTN_ID,       'click',   async (evt) => { await Renderer_GUI.GenerateFields(); } );									 
+		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,          'click',   Renderer_GUI.ClearFields);
 									 
         trigger_event(Renderer_GUI.GetElement(GENERATE_BTN_ID), 'click');
 	} // Renderer_GUI.RegisterCallbacks()
@@ -82,20 +85,19 @@ class Renderer_GUI {
 		//log2Main("   raw_data_elt: " + raw_data_elt);
 		//log2Main("   raw_data_elt value:\n   " + raw_data_elt.value);
 		if (raw_data_elt.value.length > 0) {
+			//log2Main("   raw_data_elt NOT EMPTY");
 			let sha_256_value_hex = await window.ipcMain.GetSHA256(raw_data_elt.value);
 			//log2Main("   sha_256_value_hex:\n   " + sha_256_value_hex);
 			pk_hex_elt.value = sha_256_value_hex;
+			await Renderer_GUI.PropagateFields(pk_hex_elt.value);
 		}
-		
-		if (pk_hex_elt.value.length == Renderer_GUI.Required_Hex_digits) {
-			Renderer_GUI.GenerateFields(pk_hex_elt.value);
+		else if (pk_hex_elt.value.length == Renderer_GUI.Required_Hex_digits) {
+			await Renderer_GUI.GenerateFields(pk_hex_elt.value);
 		}	
 	} // Renderer_GUI.UpdateFields()
-	
-	static async GenerateFields(pk_hex_value) {
-		log2Main(">> " + _CYAN_ + "Renderer_GUI.GenerateFields()" + _END_);
-		
-		Renderer_GUI.SetField(RAW_DATA_ID, "");
+
+	static async PropagateFields(pk_hex_value) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.PropagateFields()" + _END_);
 				
 		if (pk_hex_value == undefined) {
 			pk_hex_value = getRandomHexValue(32);
@@ -108,11 +110,19 @@ class Renderer_GUI {
 		let data_hex = pk_hex_value;
 		let lang = Renderer_GUI.GetElement(LANG_SELECT_ID).value;  
 		let data = { data_hex, lang };
-        let mnemonics = await window.ipcMain.HexToSeedPhrase(data);
-		Renderer_GUI.SetField(MNEMONICS_ID, mnemonics);		
+        let seedphrase = await window.ipcMain.HexToSeedPhrase(data);
+		Renderer_GUI.SetField(SEEDPHRASE_ID, seedphrase);		
 		
-		let mnemonics_as_4letter = await window.ipcMain.SeedphraseAs4letter(mnemonics);
-		Renderer_GUI.SetField(MNEMONICS_4LETTER_ID, mnemonics_as_4letter);		
+		let seedphrase_as_4letter = await window.ipcMain.SeedphraseAs4letter(seedphrase);
+		Renderer_GUI.SetField(SEEDPHRASE_4LETTER_ID, seedphrase_as_4letter);		
+	} // Renderer_GUI.PropagateFields()
+	
+	static async GenerateFields(pk_hex_value) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.GenerateFields()" + _END_);
+		
+		Renderer_GUI.SetField(RAW_DATA_ID, "");
+				
+		await Renderer_GUI.PropagateFields(pk_hex_value);
 		
 		Renderer_GUI.SetFocus(PK_HEX_ID);
 	} // Renderer_GUI.GenerateFields()
@@ -168,7 +178,9 @@ class Renderer_GUI {
 	} // Renderer_GUI.OnKeyDown()
 	
 	static async OnInput(evt) {		
-        let elt = evt.target || evt.srcElement;
+	    let elt = evt.target || evt.srcElement;
+	    log2Main(">> " + _CYAN_ + "Renderer_GUI.OnInput() " + _END_ + elt.id );
+        
 		//log2Main(">> elt: " + elt.id + " length: " + elt.value.length);
 		//log2Main("   evt.data: " + evt.data);
 		
@@ -188,7 +200,7 @@ class Renderer_GUI {
 				Renderer_GUI.SetField(RAW_DATA_ID, "");
 			}
 		} 
-		else if (elt.id == MNEMONICS_ID) {
+		else if (elt.id == SEEDPHRASE_ID) {
 			//log2Main("   will check: " + elt.id);
 			let seedphrase = elt.value.replace(/  +/g, ' ');
 			//log2Main("   seedphrase:\n" + seedphrase);
@@ -266,11 +278,11 @@ class Renderer_GUI {
 		let pk_b64_value = pk_b64_elt.value;
 		crypto_info['Private Key (B64)'] = pk_b64_value;
 		
-		let seedphrase_elt = Renderer_GUI.GetElement(MNEMONICS_ID); 
+		let seedphrase_elt = Renderer_GUI.GetElement(SEEDPHRASE_ID); 
 		let seedphrase = seedphrase_elt.value;
 		crypto_info['Seedphrase'] = seedphrase;
 		
-		let shortened_seedphrase_elt = Renderer_GUI.GetElement(MNEMONICS_4LETTER_ID); 
+		let shortened_seedphrase_elt = Renderer_GUI.GetElement(SEEDPHRASE_4LETTER_ID); 
 		let shortened_seedphrase = shortened_seedphrase_elt.value;
 		crypto_info['Shortened Seedphrase'] = shortened_seedphrase;
 		
@@ -283,6 +295,11 @@ class Renderer_GUI {
 		
 		return crypto_info;
 	} // Renderer_GUI.GetCryptoInfo()
+		
+	static async ImportRawData() {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.ImportRawData()" + _END_);
+		window.ipcMain.ImportRawData();
+	} // Renderer_GUI.ImportRawData()
 	
 	static async OnGUIEvent(data) {
 		//log2Main(">> " + _CYAN_ + "Renderer_GUI.OnGUIEvent()" + _END_);
@@ -300,6 +317,14 @@ class Renderer_GUI {
 				let cryptocalc_version = data[1];
 				//log2Main("   cryptocalc_version: " + cryptocalc_version);
                 RendererSession.SetValue(CRYPTO_CALC_VERSION, cryptocalc_version);				
+				break;
+				
+			case SET_INPUT_FIELD_VALUE:
+                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + SET_INPUT_FIELD_VALUE + _END_);	
+				let raw_data_str = data[1];
+				//log2Main("   SET_INPUT_FIELD_VALUE:\n" + raw_data_str);
+                Renderer_GUI.SetField(RAW_DATA_ID, raw_data_str);	
+				Renderer_GUI.UpdateFields();				
 				break;
 				
 			case REQUEST_FILE_SAVE:
