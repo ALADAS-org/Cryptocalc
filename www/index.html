@@ -14,6 +14,7 @@
 		<script type="text/javascript" src="./js/_renderer/const_events.js"></script>
 		<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
 		<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
+		
 		<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
 		<!-- ----------------- Renderer prerequisite modules -->
 		
@@ -27,19 +28,30 @@
 			    <!-- ============================================== -->
 				<tr><td colspan="4"><hr></td></tr>
 				<tr>
-					<td class="LabelColumn">Input</td>
+					<td class="LabelColumn">Seed</td>
 					<td colspan="2" class="FieldColumn">
 					        <table width="100%">
 							<tr>
 							<td class="TextArea">
 								<textarea class="RawDataField WithoutFocus" rows="4" spellcheck="false"
-								   	      id="raw_data_id"></textarea>
+								   	      id="seed_id"></textarea>
 							</td>
 							<td width="10%">
 								<input class="EllipsisButton" type="button" id="file_import_btn_id" value="...">
 							</td>
 							</tr>
 							</table>
+					</td>
+				</tr>
+				<!-- ============================================== -->
+				<tr><td colspan="4"><hr></td></tr>
+				<tr>
+					<td class="LabelColumn">Salt</td>
+					<td colspan="2" class="FieldColumn">
+					    <input type="checkbox" id="use_salt_id" name="use" checked />
+						<!--  <input class="SaltField WithoutFocus ValidValue" readonly -->
+						<!--	   id="salt_id" type="text" value="XX"> -->
+						<span class="ReadOnlyValue" id="salt_id">XX</span>
 					</td>
 				</tr>
 				<!-- ============================================== -->

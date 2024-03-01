@@ -7,8 +7,8 @@
 
 const HEXA_ALPHABET      = "0123456789abcdefABCDEF";
 const ALLOWED_ALPHABETS  = { [PK_HEX_ID]: HEXA_ALPHABET };
-const FIELD_IDS          = [ RAW_DATA_ID, PK_HEX_ID, PK_B64_ID, SEEDPHRASE_ID, SEEDPHRASE_4LETTER_ID ];
-const EDITABLE_FIELD_IDS = [ RAW_DATA_ID, PK_HEX_ID, SEEDPHRASE_ID ];
+const FIELD_IDS          = [ SEED_ID, PK_HEX_ID, PK_B64_ID, SEEDPHRASE_ID, SEEDPHRASE_4LETTER_ID ];
+const EDITABLE_FIELD_IDS = [ SEED_ID, PK_HEX_ID, SEEDPHRASE_ID ];
 
 const trigger_event = (elt, eventType) => elt.dispatchEvent(new CustomEvent(eventType, {}));
 
@@ -32,6 +32,13 @@ class Renderer_GUI {
 		return undefined;
 	} // Renderer_GUI.GetElement()
 	
+	static GetField(elt_id) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.GetField() " + _END_ + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { return elt.value; }
+		return undefined;
+	} // Renderer_GUI.GetField()
+	
 	static SetField(elt_id, value_str) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.SetField() " + _END_ + elt_id);
 		let elt = document.getElementById(elt_id);
@@ -52,7 +59,7 @@ class Renderer_GUI {
 															
 		Renderer_GUI.SetEventHandler(PK_B64_ID,             'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
 		
-		Renderer_GUI.SetEventHandler(RAW_DATA_ID,           'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );	
+		Renderer_GUI.SetEventHandler(SEED_ID,               'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );	
 		
 		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
 		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
@@ -81,12 +88,37 @@ class Renderer_GUI {
 		
 		let pk_hex_elt = Renderer_GUI.GetElement(PK_HEX_ID); 
 		
-		let raw_data_elt = Renderer_GUI.GetElement(RAW_DATA_ID); 
+		let seed_elt = Renderer_GUI.GetElement(SEED_ID); 
 		//log2Main("   raw_data_elt: " + raw_data_elt);
 		//log2Main("   raw_data_elt value:\n   " + raw_data_elt.value);
-		if (raw_data_elt.value.length > 0) {
+		if (seed_elt.value.length > 0) {
 			//log2Main("   raw_data_elt NOT EMPTY");
-			let sha_256_value_hex = await window.ipcMain.GetSHA256(raw_data_elt.value);
+			let new_uuid = await window.ipcMain.GetUUID();
+		    //Renderer_GUI.SetField(SALT_ID, new_uuid);
+			let salt_elt = Renderer_GUI.GetElement(SALT_ID);
+		    salt_elt.textContent = new_uuid;
+			
+			let seed_value = seed_elt.value;
+			
+			let use_salt_elt = Renderer_GUI.GetElement(USE_SALT_ID);
+			let use_salt = use_salt_elt.checked;
+			//log2Main("   use_salt: " + use_salt);
+			
+		    if (use_salt) {
+				//log2Main("   salt_uuid: " + salt_uuid);
+                let salt   = salt_elt.textContent;				
+				seed_value = seed_value + salt;
+				//log2Main("   seed is SALTED " + salt);
+			}
+			else {
+				//log2Main("   seed is NOT SALTED");
+			}
+			
+			//log2Main("   seed: " + seed_value);
+			
+			let sha_256_value_hex = await window.ipcMain.GetSHA256(seed_value);
+			//log2Main("   sha_256_value_hex: " + sha_256_value_hex);
+			
 			//log2Main("   sha_256_value_hex:\n   " + sha_256_value_hex);
 			pk_hex_elt.value = sha_256_value_hex;
 			await Renderer_GUI.PropagateFields(pk_hex_elt.value);
@@ -100,6 +132,7 @@ class Renderer_GUI {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.PropagateFields()" + _END_);
 				
 		if (pk_hex_value == undefined) {
+			log2Main("   pk_hex_value UNDEFINED >> Generate Random PK");
 			pk_hex_value = getRandomHexValue(32);
 		}	
 		Renderer_GUI.SetField(PK_HEX_ID, pk_hex_value);
@@ -107,6 +140,11 @@ class Renderer_GUI {
 		let pk_b64_value = hexToB64(pk_hex_value);
 		Renderer_GUI.SetField(PK_B64_ID, pk_b64_value);
 		
+		let new_uuid = await window.ipcMain.GetUUID();
+		//Renderer_GUI.SetField(SALT_ID, new_uuid);
+		let salt_elt = Renderer_GUI.GetElement(SALT_ID);
+		salt_elt.textContent = new_uuid;
+
 		let data_hex = pk_hex_value;
 		let lang = Renderer_GUI.GetElement(LANG_SELECT_ID).value;  
 		let data = { data_hex, lang };
@@ -120,7 +158,7 @@ class Renderer_GUI {
 	static async GenerateFields(pk_hex_value) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.GenerateFields()" + _END_);
 		
-		Renderer_GUI.SetField(RAW_DATA_ID, "");
+		Renderer_GUI.SetField(SEED_ID, "");
 				
 		await Renderer_GUI.PropagateFields(pk_hex_value);
 		
@@ -157,6 +195,9 @@ class Renderer_GUI {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnKeyDown() " + _END_ + "'" + evt.key+ "' keycode: " + evt.keyCode);		
 		//log2Main(">> elt: " + elt.id + " length: " + elt.value.length);
 		let elt = evt.target || evt.srcElement;
+		
+		let clipboard_text = await navigator.clipboard.readText();
+		//log2Main("   clipboard_text: " + clipboard_text);
 	
 		//log2Main("   elt: " + elt.id);
 		//log2Main("   " + ALLOWED_ALPHABETS[elt.id]);
@@ -171,7 +212,7 @@ class Renderer_GUI {
 	    }
 		
 		if (elt.id == PK_HEX_ID) {
-			Renderer_GUI.SetField(RAW_DATA_ID, "");
+			Renderer_GUI.SetField(SEED_ID, "");
 		}
 		
 		return true;
@@ -197,7 +238,7 @@ class Renderer_GUI {
 				//         + " has " + _GREEN_ + "VALID LENGTH (" + Renderer_GUI.Required_Hex_digits + ")" + _END_);
 				elt.classList.remove(INVALID_VALUE_CSS_CLASS); 
 				elt.classList.add(VALID_VALUE_CSS_CLASS); 
-				Renderer_GUI.SetField(RAW_DATA_ID, "");
+				Renderer_GUI.SetField(SEED_ID, "");
 			}
 		} 
 		else if (elt.id == SEEDPHRASE_ID) {
@@ -220,7 +261,7 @@ class Renderer_GUI {
 				let pk_hex = await window.ipcMain.SeedPhraseToPrivateKey(data);
 				log2Main("   pk_hex: " + pk_hex );
 				Renderer_GUI.SetField(PK_HEX_ID, pk_hex);
-				Renderer_GUI.SetField(RAW_DATA_ID, "");
+				Renderer_GUI.SetField(SEED_ID, "");
 				Renderer_GUI.UpdateFields();
 			}
 			else {
@@ -323,7 +364,7 @@ class Renderer_GUI {
                 log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + SET_INPUT_FIELD_VALUE + _END_);	
 				let raw_data_str = data[1];
 				//log2Main("   SET_INPUT_FIELD_VALUE:\n" + raw_data_str);
-                Renderer_GUI.SetField(RAW_DATA_ID, raw_data_str);	
+                Renderer_GUI.SetField(SEED_ID, raw_data_str);	
 				Renderer_GUI.UpdateFields();				
 				break;
 				

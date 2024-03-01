@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld(
 		GetSHA256:                (data) => ipcRenderer.invoke("request:get_SHA256", data),
 		CheckSeedphrase:          (data) => ipcRenderer.invoke("request:check_seedphrase", data),
 		SeedPhraseToWordIndices:  (data) => ipcRenderer.invoke("request:seedphrase_to_word_indices", data),
+		GetUUID:                  (data) => ipcRenderer.invoke("request:get_UUID", data),
 		
 	    //send: (channel, data) => {
         //     // whitelist channels

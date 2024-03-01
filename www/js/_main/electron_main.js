@@ -9,9 +9,10 @@ const { app, Menu, BrowserWindow, ipcMain,
         shell, remote, dialog } = require('electron');	
 		// https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron
 
-const fs       = require('fs');
-const path     = require('path');
-const sha256   = require('js-sha256');
+const fs             = require('fs');
+const path           = require('path');
+const sha256         = require('js-sha256');
+const { v4: uuidv4 } = require('uuid');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, 
         _END_ 
@@ -20,7 +21,7 @@ const { ElectronWindow }                = require('./electron_window.js');
 const { DID_FINISH_LOAD, HELP_ABOUT, VIEW_TOGGLE_DEVTOOLS,
        SET_RENDERER_VALUE, SET_INPUT_FIELD_VALUE, 
         REQUEST_HEX_TO_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_PK, REQUEST_SEEDPHRASE_AS_4LETTER,
-        REQUEST_GET_SHA256, 
+        REQUEST_GET_SHA256, REQUEST_GET_UUID,
 		REQUEST_CHECK_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_WORD_INDICES,
         REQUEST_FILE_SAVE, REQUEST_SAVE_PK_INFO, REQUEST_IMPORT_RAW_DATA		
 	  }                                 = require('../_renderer/const_events.js');
@@ -258,9 +259,16 @@ class ElectronMain {
 			let hash = sha256.create();
 			hash.update(data);
 			return hash.hex();
-			//let sha_256_hex = "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
-			//return sha_256_hex;
 		}); // "request:get_SHA256" event handler
+		
+		
+		// ================== REQUEST_GET_UUID ==================
+		// called like this by Renderer: await window.ipcMain.GetUUID(data)
+		ipcMain.handle(REQUEST_GET_UUID, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_UUID + _END_);
+			let new_uuidv4 = uuidv4();
+			return new_uuidv4;
+		}); // "request:get_UUID" event handler
 
 		// ================== REQUEST_SEEDPHRASE_TO_WORD_INDICES ==================
 		// called like this by Renderer: await window.ipcMain.SeedPhraseToWordIndices(data)

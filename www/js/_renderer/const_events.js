@@ -12,6 +12,7 @@ const SET_INPUT_FIELD_VALUE              = "Set/InputFieldValue";
 
 const REQUEST_LOG_2_MAIN                 = "request:log2main";
 const REQUEST_GET_SHA256                 = "request:get_SHA256";
+const REQUEST_GET_UUID                   = "request:get_UUID";
 const REQUEST_HEX_TO_SEEDPHRASE          = "request:hex_to_seedphrase";
 const REQUEST_SEEDPHRASE_TO_PK           = "request:seedphrase_to_pk";
 const REQUEST_SEEDPHRASE_AS_4LETTER      = "request:seedphrase_as_4letter";
@@ -31,6 +32,7 @@ if (typeof exports === 'object') {
 
     exports.REQUEST_LOG_2_MAIN                 = REQUEST_LOG_2_MAIN
 	exports.REQUEST_GET_SHA256                 = REQUEST_GET_SHA256
+	exports.REQUEST_GET_UUID                   = REQUEST_GET_UUID
 	exports.REQUEST_HEX_TO_SEEDPHRASE          = REQUEST_HEX_TO_SEEDPHRASE
 	exports.REQUEST_SEEDPHRASE_TO_PK           = REQUEST_SEEDPHRASE_TO_PK
 	exports.REQUEST_SEEDPHRASE_AS_4LETTER      = REQUEST_SEEDPHRASE_AS_4LETTER
