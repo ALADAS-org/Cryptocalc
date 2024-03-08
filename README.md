@@ -1,5 +1,5 @@
-## Cryptocalc 0.0.24
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_24.png)
+## Cryptocalc 0.0.25
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_25.png)
 1. Purpose\
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
    conversions between a `Private Key` formats (eg. `Hex` vs `Base64`) and the matching _Seedphrase_. 
@@ -31,7 +31,7 @@
    Double click on `_run.bat`: this will open the _Cryptocalc_ desktop standalone application
     + 4.1. Features
 		* 4.1.1. Generate a new _Private Key_ from a random _Fortune Cookie_
-		Use [ Random ] button to generate a random _Fortune Cookie_ which then will be used as the _Seed_ 
+		Use [ Random ] button to generate a random _Fortune Cookie_ (among a compilation of 12803 fortune cookies) which then will be used as the _Seed_ 
 		(with or without the _Salt_, depending on the checkbox) to generate a new _Private Key_ (64 hexadecimal digits).
 		This value is converted into its `Base64` value and then translated in its equivalent (isomorphic) _Seedphrase_ 
         as well as the _Shortened Seedphrase_. This is the _Seed to Seedphrase waterfall_.   
@@ -43,14 +43,17 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;goddess also genre east slam borrow amateur pupil merit clinic check zone \
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;habit jewel biology rebel october power adult wide blush similar omit pyramid
         _Shortened Seedphrase_  
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GoddAlsoGenrEastSlamBorrAmatPupiMeriClinChecZoneHabiJeweBiolRebeOctoPoweAdulWideBlusSimiOmitPyra 			
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GoddAlsoGenrEastSlamBorrAmatPupiMeriClinChecZoneHabiJeweBiolRebeOctoPoweAdulWideBlusSimiOmitPyra  
+        NB: the _Private Key_ is verified to check if it is a valid _ECDSA Private Key_. This feature will allow in future releases
+		to compute the _WIF_ (Wallet Input Format) from the _Private Key_.  		
         * 4.1.2. Provide a _Seed_  
-		You can input an arbitrary value in the `Seed` field. Notice that it will clear the other fields, so you must use 
-		the [ Update ] button (cf. 4.1.1. _Seed to Seedphrase waterfall_) to refresh them.		
+		You can key in an arbitrary value in the `Seed` field. Notice that it will clear the other fields, so you must use 
+		the [ Update ] button (cf. 4.1.1. _Seed to Seedphrase waterfall_) to refresh them (this is indicated by 
+		a message in the status bar, at the bottom of the window).		
 		* 4.1.3. Import _Seed_ from a text file
 		The text for the `Seed` field may also be provided with the `File/Import` menu or with the ellipsis button [...] at the right of the `Seed` field. 
 		* 4.1.4. Set `Seed` field with a random _Fortune Cookie_
-		The text for the _Seed_ can be a random _Fortune Cookie_ among a compilation of 12803 fortune cookies. 
+		The text for the _Seed_ can be a random _Fortune Cookie_ (among 12803 cf. 4.1.1). 
 		* 4.1.5. Salt with _UIID_  
 		This allows to generate a different _Private Key_ at each [ Update ] even if the `Seed` value is the same, this is achieved by _Salting_
 		the _Seed_ with a _UUID_. This behavior can be disabled with the checkbox located just before the _UUID_ value.
