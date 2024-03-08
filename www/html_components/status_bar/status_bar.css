@@ -1,0 +1,21 @@
+.StatusBar {
+  width:      100%;
+  height:     23px;
+  position:   absolute;
+  bottom:     0;
+  left:       0; 
+  background: #f0f0f0; 
+  font-size:  15px;
+}
+
+#status_item_pattern_id {
+  width:       200px;
+  margin-left: 6px;
+  font-size:   12px;
+}
+
+#SB_item_message_id {
+  width: 200px;
+  margin-left: 12px;
+  font-size: 13px;
+}

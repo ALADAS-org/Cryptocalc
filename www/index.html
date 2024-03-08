@@ -8,6 +8,7 @@
 		<!-- ----------------- prerequisite libraries -->
 		
 		<!-- ----------------- Renderer prerequisite modules ----------------- -->
+		<script type="text/javascript" src="./js/util/html/w3.js"></script>
 		<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
 		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
 		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
@@ -26,27 +27,23 @@
 			<!--<table class="CalculatorLayout" border="1"> -->
 			<table class="inner CalculatorLayout"> 
 			    <!-- ============================================== -->
-				<tr><td colspan="4"><hr></td></tr>
-				<tr>
-					<td class="LabelColumn">Seed</td>
+				<tr><td class="LabelColumn">Seed</td>
 					<td colspan="2" class="FieldColumn">
+					        <br/>
 					        <table width="100%">
-							<tr>
-							<td class="TextArea">
-								<textarea class="RawDataField WithoutFocus" rows="4" spellcheck="false"
-								   	      id="seed_id"></textarea>
-							</td>
-							<td width="10%">
-								<input class="EllipsisButton" type="button" id="file_import_btn_id" value="...">
-							</td>
+							<tr><td class="TextArea">
+									<textarea class="RawDataField WithoutFocus" rows="4" spellcheck="false"
+								   	          id="seed_id"></textarea>
+							    </td>
+								<td width="10%">
+									<input class="EllipsisButton" type="button" id="file_import_btn_id" value="...">
+								</td>
 							</tr>
 							</table>
 					</td>
 				</tr>
-				<!-- ============================================== -->
-				<tr><td colspan="4"><hr></td></tr>
-				<tr>
-					<td class="LabelColumn">Salt</td>
+				<!-- ======================= Salt (UUID) ======================= -->
+				<tr><td class="LabelColumn">Salt</td>
 					<td colspan="2" class="FieldColumn">
 					    <input type="checkbox" id="use_salt_id" name="use" checked />
 						<!--  <input class="SaltField WithoutFocus ValidValue" readonly -->
@@ -54,10 +51,9 @@
 						<span class="ReadOnlyValue" id="salt_id">XX</span>
 					</td>
 				</tr>
-				<!-- ============================================== -->
-				<tr><td colspan="4"><hr></td></tr>
-				<tr>
-					<td class="LabelColumn">Private Key</td>
+				<!-- ======================= Private Key ======================= -->
+				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
+				<tr><td class="LabelColumn" id="PK_label_id">Private Key</td>
 					<td colspan="2" class="FieldColumn">
 						<input class="DataField WithoutFocus ValidValue"
 							   id="pk_hex_id" type="text" value="XX">&nbsp;Hex
@@ -65,10 +61,9 @@
 							   id="pk_b64_id" type="text" value="XX">&nbsp;B64
 					</td>
 				</tr>
-				<!-- ============================================== -->
-				<tr><td colspan="4"><hr></td></tr>
-				<tr>
-					<td class="LabelColumn">
+				<!-- ======================= Seedphrase ======================= -->
+				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
+				<tr><td class="LabelColumn">
 						<span>Seedphrase</span>
 						<!-- https://www.andiamo.co.uk/resources/iso-language-codes/ -->
 						<select id="lang_select_id" class="InputField">
@@ -90,10 +85,9 @@
 						</textarea>
 					</td>
 				</tr>
-				<!-- ============================================== -->
-				<tr><td colspan="4"><hr></td></tr>
-				<tr>
-					<td colspan="4">
+				<!-- ======================= Buttons Bar ======================= -->
+				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
+				<tr><td colspan="4" class="LabelColumn">
 						<table width="100%">
 						    <tr class="ButtonsBar">
 								<td width="33%">
@@ -103,7 +97,7 @@
 								</td>
 								<td width="33%">
 									<center><input class="Button" type="button"
-											       id="generate_btn_id" value="Generate">
+											       id="random_btn_id" value="Random">
 									</center>
 								</td>
 								<td width="33%">
@@ -117,5 +111,14 @@
 				</tr>
 			</table>
 		<!--</div>-->
+		
+		<!-- ========================= Status bar ========================= -->
+		<div w3-include-html="./html_components/status_bar/status_bar.html"></div>
+		<link rel="stylesheet" type="text/css" href="./html_components/status_bar/status_bar.css">
+		<!-- ========================= Status bar -->
+		
+		<script>
+			includeHTML(); // includes html <div> entities with 'w3-include-html' attribute
+		</script>
   </body>
 </html>

@@ -12,21 +12,32 @@ const { app, Menu, BrowserWindow, ipcMain,
 const fs             = require('fs');
 const path           = require('path');
 const sha256         = require('js-sha256');
+const wif            = require('wif');
 const { v4: uuidv4 } = require('uuid');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, 
         _END_ 
 	  }                                 = require('../util/color/color_console_codes.js');
 const { ElectronWindow }                = require('./electron_window.js');	  
-const { DID_FINISH_LOAD, HELP_ABOUT, VIEW_TOGGLE_DEVTOOLS,
-       SET_RENDERER_VALUE, SET_INPUT_FIELD_VALUE, 
+const { VIEW_TOGGLE_DEVTOOLS, 
+       
         REQUEST_HEX_TO_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_PK, REQUEST_SEEDPHRASE_AS_4LETTER,
-        REQUEST_GET_SHA256, REQUEST_GET_UUID,
+        REQUEST_GET_SHA256, REQUEST_GET_UUID, 
+		REQUEST_GET_SECP256K1, REQUEST_GET_WIF,
 		REQUEST_CHECK_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_WORD_INDICES,
-        REQUEST_FILE_SAVE, REQUEST_SAVE_PK_INFO, REQUEST_IMPORT_RAW_DATA		
+		REQUEST_SAVE_PK_INFO, REQUEST_IMPORT_RAW_DATA,
+		REQUEST_GET_FORTUNE_COOKIE,
+		
+		FromMain_DID_FINISH_LOAD,
+        FromMain_FILE_SAVE, FromMain_HELP_ABOUT,
+		FromMain_SET_FORTUNE_COOKIE, 
+        FromMain_SET_RENDERER_VALUE, FromMain_SET_SEED_FIELD_VALUE 		
 	  }                                 = require('../_renderer/const_events.js');
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
 const { Seedphrase_API }                = require('../crypto/seedphrase_api.js');
+const { hexToBytes, hexWithoutPrefix }  = require('../crypto/hex_utils.js');
+const { getSecp256k1PK }                = require('../crypto/crypto_utils.js');
+const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 		
 const MAIN_WINDOW_WIDTH  = 800;
 const MAIN_WINDOW_HEIGHT = 500; 
@@ -45,8 +56,14 @@ const ELECTRON_MAIN_MENU_TEMPLATE = [
 					  click() { ElectronMain.DoFileSave(); }
 			       },
 				   {  label: 'Import', 
-					  click() { ElectronMain.SelectFile(); }
-			       },
+					  submenu: [ {  label: 'From file...', 
+									click() { ElectronMain.SelectFile(); }
+							     },
+								 {  label: 'Random Fortune Cookie', 
+									click() { ElectronMain.GetFortuneCookie(); }
+							     },
+				               ]
+				   },
 				   {  label: 'Quit', 
 					  click() { app.quit(); }
 			       }
@@ -64,7 +81,7 @@ const ELECTRON_MAIN_MENU_TEMPLATE = [
 	{   role: 'help',
         submenu: [ {  label: 'About...',
 				      click() { 
-					      ElectronWindow.GetWindow().webContents.send('fromMain', [ HELP_ABOUT ]);
+					      ElectronWindow.GetWindow().webContents.send('fromMain', [ FromMain_HELP_ABOUT ]);
 			          }
                    }
                  ]
@@ -123,10 +140,10 @@ class ElectronMain {
 					ElectronWindow.GetWindow().setTitle('Cryptocalc ' + Cryptocalc_version); 
 					//---------- Set 'Cryptocalc_version' in Renderer GUI
 					
-					ElectronWindow.GetWindow().webContents.send("fromMain", [ DID_FINISH_LOAD ]);
+					ElectronWindow.GetWindow().webContents.send("fromMain", [ FromMain_DID_FINISH_LOAD ]);
 					
-					//console.log("   Send : " + SET_RENDERER_VALUE + " = " + Cryptocalc_version);
-					ElectronWindow.GetWindow().webContents.send("fromMain", [ SET_RENDERER_VALUE, Cryptocalc_version ]);
+					//console.log("   Send : " + FromMain_SET_RENDERER_VALUE + " = " + Cryptocalc_version);
+					ElectronWindow.GetWindow().webContents.send("fromMain", [ FromMain_SET_RENDERER_VALUE, Cryptocalc_version ]);
 					
 					ElectronMain.SetCallbacks();
 				}
@@ -137,9 +154,16 @@ class ElectronMain {
 	} // ElectronMain.CreateWindow()
 	
 	static DoFileSave() {
-		console.log(">> " + _CYAN_ + "ElectronMain.DoFileSave" + _END_);
-		ElectronWindow.GetWindow().webContents.send("fromMain", [ REQUEST_FILE_SAVE ]);
+		console.log(">> " + _CYAN_ + "ElectronMain.DoFileSave" + _END_);		
+		ElectronWindow.GetWindow().webContents.send("fromMain", [ FromMain_FILE_SAVE ]);
 	} // ElectronMain.DoFileSave()
+	
+	// File/Import/Random Fortune CookieI
+	static GetFortuneCookie() {
+		console.log(">> " + _CYAN_ + "ElectronMain.GetFortuneCookie" + _END_);
+		let fortune_cookie = getFortuneCookie();
+		ElectronWindow.GetWindow().webContents.send("fromMain", [ FromMain_SET_FORTUNE_COOKIE, fortune_cookie ]);
+	} // ElectronMain.GetFortuneCookie()
 	
 	static ToggleDebugPanel() {
 		console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + "ToggleDebugPanel" + _END_);
@@ -172,7 +196,7 @@ class ElectronMain {
 				const raw_data_str = fs.readFileSync(input_path + '//' + in_file_name, { encoding: 'utf8', flag: 'r' });
 				//console.log("   " + raw_data_str);
 				ElectronWindow.GetWindow().webContents.send
-					("fromMain", [ SET_INPUT_FIELD_VALUE, raw_data_str ]);
+					("fromMain", [ FromMain_SET_SEED_FIELD_VALUE, raw_data_str ]);
 			}
 		}).catch(err => {
 			console.log(err)
@@ -259,8 +283,24 @@ class ElectronMain {
 			let hash = sha256.create();
 			hash.update(data);
 			return hash.hex();
-		}); // "request:get_SHA256" event handler
+		}); // "request:get_SHA256" event handler		
 		
+		// ================== REQUEST_GET_SECP256K1 ==================
+		// called like this by Renderer: await window.ipcMain.GetSecp256k1(sha256_hex)
+		ipcMain.handle(REQUEST_GET_SECP256K1, (event, sha256_hex) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_SECP256K1 + _END_);
+			let result = getSecp256k1PK(sha256_hex);
+			return result;
+		}); // "request:get_Secp256k1" event handler		
+		
+		// ================== REQUEST_GET_WIF ==================
+		// called like this by Renderer: await window.ipcMain.GetWIF(sha256_hex)
+		ipcMain.handle(REQUEST_GET_WIF, (event, sha256_hex) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_WIF + _END_);
+			var private_key = Buffer.from(hexWithoutPrefix(sha256_hex), 'hex');
+            var key = wif.encode(128, private_key, true); // for the testnet use: wif.encode(239, ...
+			return key;
+		}); // "request:get_WIF" event handler
 		
 		// ================== REQUEST_GET_UUID ==================
 		// called like this by Renderer: await window.ipcMain.GetUUID(data)
@@ -269,6 +309,15 @@ class ElectronMain {
 			let new_uuidv4 = uuidv4();
 			return new_uuidv4;
 		}); // "request:get_UUID" event handler
+		
+		
+		// ================== REQUEST_GET_FORTUNE_COOKIE ==================
+		// called like this by Renderer: await window.ipcMain.GetFortuneCookie()
+		ipcMain.handle(REQUEST_GET_FORTUNE_COOKIE, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_FORTUNE_COOKIE + _END_);
+			let fortune_cookie = getFortuneCookie();
+			return fortune_cookie;
+		}); // "request:get_FortuneCookie"
 
 		// ================== REQUEST_SEEDPHRASE_TO_WORD_INDICES ==================
 		// called like this by Renderer: await window.ipcMain.SeedPhraseToWordIndices(data)
@@ -289,7 +338,6 @@ class ElectronMain {
 		}); // "request:check_seedphrase" event handler
 	} // ElectronMain.SetCallbacks()
 } // ElectronMain class
-
 
 // ========== Prevent Multiple instances of Electron main process ==========
 // https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron

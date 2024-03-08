@@ -5,10 +5,12 @@
 
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
 
-const HEXA_ALPHABET      = "0123456789abcdefABCDEF";
-const ALLOWED_ALPHABETS  = { [PK_HEX_ID]: HEXA_ALPHABET };
-const FIELD_IDS          = [ SEED_ID, PK_HEX_ID, PK_B64_ID, SEEDPHRASE_ID, SEEDPHRASE_4LETTER_ID ];
-const EDITABLE_FIELD_IDS = [ SEED_ID, PK_HEX_ID, SEEDPHRASE_ID ];
+const HEXA_ALPHABET           = "0123456789abcdefABCDEF";
+const ALLOWED_ALPHABETS       = { [PK_HEX_ID]: HEXA_ALPHABET };
+const FIELD_IDS               = [ SEED_ID, SALT_ID, PK_HEX_ID, PK_B64_ID, SEEDPHRASE_ID, SEEDPHRASE_4LETTER_ID ];
+const WATERFALL_IDS           = [ SEED_ID, SALT_ID, PK_B64_ID, SEEDPHRASE_ID, SEEDPHRASE_4LETTER_ID ];
+const WATERFALL_FROM_SEED_IDS = [ PK_HEX_ID, PK_B64_ID, SEEDPHRASE_ID, SEEDPHRASE_4LETTER_ID ];
+const EDITABLE_FIELD_IDS      = [ SEED_ID, PK_HEX_ID, SEEDPHRASE_ID ];
 
 const trigger_event = (elt, eventType) => elt.dispatchEvent(new CustomEvent(eventType, {}));
 
@@ -59,7 +61,8 @@ class Renderer_GUI {
 															
 		Renderer_GUI.SetEventHandler(PK_B64_ID,             'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
 		
-		Renderer_GUI.SetEventHandler(SEED_ID,               'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );	
+		Renderer_GUI.SetEventHandler(SEED_ID,               'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
+        Renderer_GUI.SetEventHandler(SEED_ID,               'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );		
 		
 		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
 		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
@@ -77,10 +80,10 @@ class Renderer_GUI {
 		Renderer_GUI.SetEventHandler(FILE_IMPORT_BTN_ID,    'click',   (evt) => { Renderer_GUI.ImportRawData(); }        );		
 		
         Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,         'click',   async (evt) => { await Renderer_GUI.UpdateFields(); }   );		
-		Renderer_GUI.SetEventHandler(GENERATE_BTN_ID,       'click',   async (evt) => { await Renderer_GUI.GenerateFields(); } );									 
-		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,          'click',   Renderer_GUI.ClearFields);
+		Renderer_GUI.SetEventHandler(RANDOM_BTN_ID,         'click',   async (evt) => { await Renderer_GUI.GenerateRandomFields(); } );									 
+		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,          'click',   (evt) => { Renderer_GUI.ClearFields(FIELD_IDS); } );
 									 
-        trigger_event(Renderer_GUI.GetElement(GENERATE_BTN_ID), 'click');
+        trigger_event(Renderer_GUI.GetElement(RANDOM_BTN_ID), 'click');
 	} // Renderer_GUI.RegisterCallbacks()
 	
 	static async UpdateFields() {
@@ -91,6 +94,7 @@ class Renderer_GUI {
 		let seed_elt = Renderer_GUI.GetElement(SEED_ID); 
 		//log2Main("   raw_data_elt: " + raw_data_elt);
 		//log2Main("   raw_data_elt value:\n   " + raw_data_elt.value);
+		
 		if (seed_elt.value.length > 0) {
 			//log2Main("   raw_data_elt NOT EMPTY");
 			let new_uuid = await window.ipcMain.GetUUID();
@@ -116,17 +120,40 @@ class Renderer_GUI {
 			
 			//log2Main("   seed: " + seed_value);
 			
-			let sha_256_value_hex = await window.ipcMain.GetSHA256(seed_value);
-			//log2Main("   sha_256_value_hex: " + sha_256_value_hex);
+			let private_key = await window.ipcMain.GetSHA256(seed_value);
+			let secp256k1_result = await window.ipcMain.GetSecp256k1(private_key);
+			private_key = secp256k1_result['private_key'];
+			
+			let hash_count = secp256k1_result['hash_count'];
+			let pk_label_text = (hash_count > 1) ? "Private Key #":"Private Key";
+			let pk_label_elt = Renderer_GUI.GetElement(PK_LABEL_ID);
+		    pk_label_elt.textContent = pk_label_text;
+			
+			let wif = await window.ipcMain.GetWIF(private_key);
+			log2Main("   wif:   " + wif);
 			
 			//log2Main("   sha_256_value_hex:\n   " + sha_256_value_hex);
-			pk_hex_elt.value = sha_256_value_hex;
+			pk_hex_elt.value = private_key;
 			await Renderer_GUI.PropagateFields(pk_hex_elt.value);
 		}
 		else if (pk_hex_elt.value.length == Renderer_GUI.Required_Hex_digits) {
-			await Renderer_GUI.GenerateFields(pk_hex_elt.value);
-		}	
+			await Renderer_GUI.PropagateFields(pk_hex_elt.value);
+		}
+
+		let sb_msg_elt = Renderer_GUI.GetElement(SB_MSG_ID);
+		sb_msg_elt.textContent = "";		
 	} // Renderer_GUI.UpdateFields()
+	
+	static async GenerateRandomFields(pk_hex_value) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.GenerateRandomFields() " + _END_);
+		
+		let fortune_cookie = await window.ipcMain.GetFortuneCookie();
+		Renderer_GUI.SetField(SEED_ID, fortune_cookie);
+		
+		await Renderer_GUI.UpdateFields();
+		
+		Renderer_GUI.SetFocus(PK_HEX_ID);
+	} // Renderer_GUI.GenerateRandomFields()
 
 	static async PropagateFields(pk_hex_value) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.PropagateFields()" + _END_);
@@ -140,11 +167,14 @@ class Renderer_GUI {
 		let pk_b64_value = hexToB64(pk_hex_value);
 		Renderer_GUI.SetField(PK_B64_ID, pk_b64_value);
 		
-		let new_uuid = await window.ipcMain.GetUUID();
-		//Renderer_GUI.SetField(SALT_ID, new_uuid);
-		let salt_elt = Renderer_GUI.GetElement(SALT_ID);
-		salt_elt.textContent = new_uuid;
-
+		let seed_elt = Renderer_GUI.GetElement(SEED_ID);
+		if (seed_elt.value != "") {
+			let new_uuid = await window.ipcMain.GetUUID();
+			//Renderer_GUI.SetField(SALT_ID, new_uuid);
+			let salt_elt = Renderer_GUI.GetElement(SALT_ID);
+			salt_elt.textContent = new_uuid;
+        }
+		
 		let data_hex = pk_hex_value;
 		let lang = Renderer_GUI.GetElement(LANG_SELECT_ID).value;  
 		let data = { data_hex, lang };
@@ -155,23 +185,17 @@ class Renderer_GUI {
 		Renderer_GUI.SetField(SEEDPHRASE_4LETTER_ID, seedphrase_as_4letter);		
 	} // Renderer_GUI.PropagateFields()
 	
-	static async GenerateFields(pk_hex_value) {
-		log2Main(">> " + _CYAN_ + "Renderer_GUI.GenerateFields()" + _END_);
-		
-		Renderer_GUI.SetField(SEED_ID, "");
-				
-		await Renderer_GUI.PropagateFields(pk_hex_value);
-		
-		Renderer_GUI.SetFocus(PK_HEX_ID);
-	} // Renderer_GUI.GenerateFields()
-	
-	static ClearFields() {
-		log2Main(">> " + _CYAN_ + "Renderer_GUI.ClearFields()" + _END_);
-		for (let i=0; i < FIELD_IDS.length; i++) { 
-			let field_id = FIELD_IDS[i];
+	static ClearFields(field_ids) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.ClearFields() " + _END_);
+		for (let i=0; i < field_ids.length; i++) { 
+			let field_id = field_ids[i];
 			
 			let elt = Renderer_GUI.GetElement(field_id);
-		    elt.value = ""; 
+			
+			if (field_id == SALT_ID)
+				elt.textContent = "";
+			else	
+		        elt.value = ""; 
 			
 			elt.classList.remove(WITH_FOCUS_CSS_CLASS); 
 			elt.classList.add(WITHOUT_FOCUS_CSS_CLASS); 
@@ -214,6 +238,16 @@ class Renderer_GUI {
 		if (elt.id == PK_HEX_ID) {
 			Renderer_GUI.SetField(SEED_ID, "");
 		}
+		else if (elt.id == SEED_ID && elt.value.length > 0) {
+			Renderer_GUI.ClearFields(WATERFALL_FROM_SEED_IDS);
+			
+			let new_uuid = await window.ipcMain.GetUUID();
+			let salt_elt = Renderer_GUI.GetElement(SALT_ID);
+		    salt_elt.textContent = new_uuid;
+			
+			let sb_msg_elt = Renderer_GUI.GetElement(SB_MSG_ID);
+			sb_msg_elt.textContent = UPDATE_MSG;
+		}
 		
 		return true;
 	} // Renderer_GUI.OnKeyDown()
@@ -238,7 +272,11 @@ class Renderer_GUI {
 				//         + " has " + _GREEN_ + "VALID LENGTH (" + Renderer_GUI.Required_Hex_digits + ")" + _END_);
 				elt.classList.remove(INVALID_VALUE_CSS_CLASS); 
 				elt.classList.add(VALID_VALUE_CSS_CLASS); 
-				Renderer_GUI.SetField(SEED_ID, "");
+				//Renderer_GUI.SetField(SEED_ID, "");
+				Renderer_GUI.ClearFields(WATERFALL_IDS);
+				
+				let sb_msg_elt = Renderer_GUI.GetElement(SB_MSG_ID);
+			    sb_msg_elt.textContent = UPDATE_MSG;
 			}
 		} 
 		else if (elt.id == SEEDPHRASE_ID) {
@@ -348,39 +386,48 @@ class Renderer_GUI {
 		let event_name = data[0];
 				
 		switch ( event_name ) {
-			case DID_FINISH_LOAD:
-				log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + DID_FINISH_LOAD + _END_);
+			case FromMain_DID_FINISH_LOAD:
+				log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_DID_FINISH_LOAD + _END_);
 				Renderer_GUI.RegisterCallbacks();	
 				break;	
 
-            case SET_RENDERER_VALUE:
-                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + SET_RENDERER_VALUE + _END_);	
+            case FromMain_SET_RENDERER_VALUE:
+                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_RENDERER_VALUE + _END_);	
 				let cryptocalc_version = data[1];
 				//log2Main("   cryptocalc_version: " + cryptocalc_version);
                 RendererSession.SetValue(CRYPTO_CALC_VERSION, cryptocalc_version);				
 				break;
-				
-			case SET_INPUT_FIELD_VALUE:
-                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + SET_INPUT_FIELD_VALUE + _END_);	
-				let raw_data_str = data[1];
-				//log2Main("   SET_INPUT_FIELD_VALUE:\n" + raw_data_str);
-                Renderer_GUI.SetField(SEED_ID, raw_data_str);	
-				Renderer_GUI.UpdateFields();				
-				break;
-				
-			case REQUEST_FILE_SAVE:
-			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + REQUEST_FILE_SAVE + _END_);	
+	
+			case FromMain_FILE_SAVE:
+			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_FILE_SAVE + _END_);	
 				let crypto_info = await Renderer_GUI.GetCryptoInfo();
                 window.ipcMain.SavePrivateKeyInfo(crypto_info);				
 				break;
+			
+            // File/Import/From file...			
+			case FromMain_SET_SEED_FIELD_VALUE:
+                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_SEED_FIELD_VALUE + _END_);	
+				let raw_data_str = data[1];
+				//log2Main("   FromMain_SET_SEED_FIELD_VALUE:\n" + raw_data_str);
+                Renderer_GUI.SetField(SEED_ID, raw_data_str);	
+				Renderer_GUI.UpdateFields();				
+				break;
+			
+            // File/Import/Random Fortune Cookie			
+            case FromMain_SET_FORTUNE_COOKIE:
+			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_);
+				let fortune_cookie = data[1];
+				Renderer_GUI.SetField(SEED_ID, fortune_cookie);	
+				Renderer_GUI.UpdateFields();
+				break;
 				
-			case HELP_ABOUT:
-			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + HELP_ABOUT + _END_);
+			case FromMain_HELP_ABOUT:
+			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_HELP_ABOUT + _END_);
 				let crypto_calc_version = RendererSession.GetValue(CRYPTO_CALC_VERSION);
 				let description_data =   
 						  "<center><b>Cryptocalc " + crypto_calc_version + "</b></center><br>" 
 						+ "&nbsp;A crypto assets calculator";
-			    //log2Main("   " + HELP_ABOUT + " " + description_data);
+			    //log2Main("   " + FromMain_HELP_ABOUT + " " + description_data);
 
 				// https://izitoast.marcelodolza.com/
 				DialogManager.Clean();

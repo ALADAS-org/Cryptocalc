@@ -17,9 +17,12 @@ contextBridge.exposeInMainWorld(
 		HexToSeedPhrase:          (data) => ipcRenderer.invoke("request:hex_to_seedphrase", data),
 		SeedphraseAs4letter:      (data) => ipcRenderer.invoke("request:seedphrase_as_4letter", data),
 		GetSHA256:                (data) => ipcRenderer.invoke("request:get_SHA256", data),
+		GetSecp256k1:             (data) => ipcRenderer.invoke("request:get_Secp256k1", data),
+		GetWIF:                   (data) => ipcRenderer.invoke("request:get_WIF", data),
 		CheckSeedphrase:          (data) => ipcRenderer.invoke("request:check_seedphrase", data),
 		SeedPhraseToWordIndices:  (data) => ipcRenderer.invoke("request:seedphrase_to_word_indices", data),
 		GetUUID:                  (data) => ipcRenderer.invoke("request:get_UUID", data),
+		GetFortuneCookie:         (data) => ipcRenderer.invoke("request:get_FortuneCookie", data),
 		
 	    //send: (channel, data) => {
         //     // whitelist channels

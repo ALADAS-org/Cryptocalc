@@ -5,11 +5,22 @@ html, body , .outer, .inner {
 	font-family: Arial, Helvetica, sans-serif;
 } 
 
+hr {
+   border:            none;
+   height:            0.5px;
+   background-color:  #333;  /* Modern Browsers */
+}
+
+.HorizontalBar {
+	border:           none;
+	height:           1px;
+}
+
 .CalculatorLayout {
-	background-color:	#FFFFF0; /*#fafaf0;*/
-	width:      100%; 
-	height:     100%;
-	min-height: 100%;
+	background-color: #FFFFF0; /*#fafaf0;*/
+	width:            100%; 
+	height:           100%;
+	min-height:       100%;
 }
 
 .Button {
@@ -24,7 +35,7 @@ html, body , .outer, .inner {
 	min-width: 	85px;
 }
 
-#generate_btn_id {
+#random_btn_id {
 	background-color: 	#F4F400; /*#FFFDD0;*/
 	width: 	    85px;
 	min-width: 	85px;
@@ -42,13 +53,19 @@ html, body , .outer, .inner {
 }
 
 .ButtonsBar {
-	height:        50px;
+	margin-top: 0px;
+	height:     70px;
+    top:        10px;
+}
+
+.Button {
+	margin-bottom: 20px;
 }
 
 .table textarea {
-  max-width: 100%;
-  width: 100%;
-  height: 100px
+	max-width:  100%;
+	width:      100%;
+	height:     100px
 }
 
 .EllipsisButton {
