@@ -1,5 +1,5 @@
-## Cryptocalc 0.0.25
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_25.png)
+## Cryptocalc 0.0.26
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/v0_0_26.png)
 1. Purpose\
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
    conversions between a `Private Key` formats (eg. `Hex` vs `Base64`) and the matching _Seedphrase_. 
@@ -67,11 +67,19 @@
 		* 4.1.8. Input/Modify the _Seedphrase_  
 		You can now modify the _Seedphrase_ but you must provide valid _mnemonics_ (matching the selected _language_) and 
 		provide the expected number of _mnemonics_ (which is currently a constant equal to 24). 
-		* 4.1.9. Select Language    
+		* 4.1.9. Select Seedphrase Language  
 		You can select the _Language Wordlist_ (eg. _English_, _French_, _Deutsh_, etc...). Please notice
         that is not meant to be used with _Wallet Manager_ applications because most will only accept English mnemonics.  
         Indeed it's meant to add a scramble step in order to make it harder to steal your _Master Key_ because
-        it must be translated to English to be used with with a _Wallet Manager_. 		  
+        it must be translated to English to be used with with a _Wallet Manager_.
+        * 4.1.10. Support of Localization  
+        In _Cryptocalc_, the Localization (l10n) feature is translation of GUI Labels to adapt to the _locale_.
+        A _locale_ name can be composed of a base language, country (territory) of use, and optionnally a codeset (eg. `de_CH.UTF-8`).		
+		The _locale_ is provided as part of your machine's environment. _Cryptocalc_ only uses the 2 letter language part (eg. `en`). 
+		Localization is enabled by a _JSon_ file in the `www/js/L10n` folder (eg. `gui-msg-en.json`) . 
+		Currently only `en` and `fr` are provided, but I would be nice if contributors provide other languages 
+		(at the time being, only 16 labels to translate, I will of course cite the contributors name in the license) 
+		as I preferred to avoid _naive_ use of a translation tool.  		
    + 4.2. Use cases  
        * 4.2.1. Create a new _Crypto Wallet_: with a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) a _Seedphrase_
        is enough to import a new wallet, you just need to choose the coin (e.g. `BTC`, `ETH`, `DOGE`, `XRP`, `ADA`, `SOL`, etc...)   

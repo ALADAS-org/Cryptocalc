@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld(
 		SeedPhraseToWordIndices:  (data) => ipcRenderer.invoke("request:seedphrase_to_word_indices", data),
 		GetUUID:                  (data) => ipcRenderer.invoke("request:get_UUID", data),
 		GetFortuneCookie:         (data) => ipcRenderer.invoke("request:get_FortuneCookie", data),
+		GetL10nMsg:               (data) => ipcRenderer.invoke("request:get_L10n_Msg", data),
 		
 	    //send: (channel, data) => {
         //     // whitelist channels

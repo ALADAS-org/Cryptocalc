@@ -11,6 +11,8 @@ const REQUEST_GET_SECP256K1              = "request:get_Secp256k1";
 const REQUEST_GET_WIF                    = "request:get_WIF";
 
 const REQUEST_GET_UUID                   = "request:get_UUID";
+const REQUEST_GET_L10N_MSG               = "request:get_L10n_Msg";
+
 const REQUEST_HEX_TO_SEEDPHRASE          = "request:hex_to_seedphrase";
 const REQUEST_SEEDPHRASE_TO_PK           = "request:seedphrase_to_pk";
 const REQUEST_SEEDPHRASE_AS_4LETTER      = "request:seedphrase_as_4letter";
@@ -37,6 +39,7 @@ if (typeof exports === 'object') {
 	exports.REQUEST_GET_SECP256K1              = REQUEST_GET_SECP256K1
 	exports.REQUEST_GET_WIF                    = REQUEST_GET_WIF
 	exports.REQUEST_GET_UUID                   = REQUEST_GET_UUID
+	exports.REQUEST_GET_L10N_MSG               = REQUEST_GET_L10N_MSG
 	exports.REQUEST_HEX_TO_SEEDPHRASE          = REQUEST_HEX_TO_SEEDPHRASE
 	exports.REQUEST_SEEDPHRASE_TO_PK           = REQUEST_SEEDPHRASE_TO_PK
 	exports.REQUEST_SEEDPHRASE_AS_4LETTER      = REQUEST_SEEDPHRASE_AS_4LETTER

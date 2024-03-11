@@ -52,6 +52,17 @@ hr {
 	/*top: 0px;*/
 }
 
+#seed_id {
+	height = 'auto';
+	/* for support of ascii-art fortune cookies
+	font-family: monospace;
+	*/
+}
+
+#salt_id {
+	background-color: #FFFFF0;
+}
+
 .ButtonsBar {
 	margin-top: 0px;
 	height:     70px;

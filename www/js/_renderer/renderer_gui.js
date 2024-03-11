@@ -28,60 +28,135 @@ class Renderer_GUI {
 		); // window.ipcMain.receive() call
 	} // Renderer_GUI.Init()
 	
-	static GetElement(elt_id) {
-		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { return elt; }
-		return undefined;
-	} // Renderer_GUI.GetElement()
+	static async OnGUIEvent(data) {
+		//log2Main(">> " + _CYAN_ + "Renderer_GUI.OnGUIEvent()" + _END_);
+
+		let event_name = data[0];
+				
+		switch ( event_name ) {
+			case FromMain_DID_FINISH_LOAD:
+				log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_DID_FINISH_LOAD + _END_);
+				await Renderer_GUI.DidFinishLoadInit();	
+				break;	
+
+            case FromMain_SET_RENDERER_VALUE:
+                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_RENDERER_VALUE + _END_);	
+				let cryptocalc_version = data[1];
+				//log2Main("   cryptocalc_version: " + cryptocalc_version);
+                RendererSession.SetValue(CRYPTO_CALC_VERSION, cryptocalc_version);				
+				break;
 	
-	static GetField(elt_id) {
-		log2Main(">> " + _CYAN_ + "Renderer_GUI.GetField() " + _END_ + elt_id);
-		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { return elt.value; }
-		return undefined;
-	} // Renderer_GUI.GetField()
+			case FromMain_FILE_SAVE:
+			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_FILE_SAVE + _END_);	
+				let crypto_info = await Renderer_GUI.GetCryptoInfo();
+                window.ipcMain.SavePrivateKeyInfo(crypto_info);				
+				break;
+			
+            // File/Import/From file...			
+			case FromMain_SET_SEED_FIELD_VALUE:
+                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_SEED_FIELD_VALUE + _END_);	
+				let raw_data_str = data[1];
+				//log2Main("   FromMain_SET_SEED_FIELD_VALUE:\n" + raw_data_str);
+                Renderer_GUI.SetField(SEED_ID, raw_data_str);	
+				Renderer_GUI.UpdateFields();				
+				break;
+			
+            // File/Import/Random Fortune Cookie			
+            case FromMain_SET_FORTUNE_COOKIE:
+			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_);
+				let fortune_cookie = data[1];
+				Renderer_GUI.SetField(SEED_ID, fortune_cookie);	
+				Renderer_GUI.UpdateFields();
+				break;
+				
+			case FromMain_HELP_ABOUT:
+			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_HELP_ABOUT + _END_);
+				let crypto_calc_version = RendererSession.GetValue(CRYPTO_CALC_VERSION);
+				let i18n_msg = await window.ipcMain.GetL10nMsg("HelpAboutMsg");
+				let description_data =   
+						  "<center><b>Cryptocalc " + crypto_calc_version + "</b></center><br>" 
+						+ "&nbsp;" + i18n_msg;
+			    //log2Main("   " + FromMain_HELP_ABOUT + " " + description_data);
+
+				// https://izitoast.marcelodolza.com/
+				DialogManager.Clean();
+				iziToast.info({
+				//	iconUrl:         './icons/ZCash_rev_icn.png',
+					position:        'center',
+					backgroundColor: 'lightblue',
+					message:         description_data,
+					maxWidth:        450, layout: 2,
+					timeout:         false, progressBar: false
+				});
+				break;	
+				
+			default:
+				log2Main( ">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: "
+						  + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + "from main");
+				//DialogManager.Clean();
+				break;
+		} // switch ( event_name )
+	} // Renderer_GUI.OnGUIEvent()
 	
-	static SetField(elt_id, value_str) {
-		log2Main(">> " + _CYAN_ + "Renderer_GUI.SetField() " + _END_ + elt_id);
-		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { elt.value = value_str; }
-	} // Renderer_GUI.SetField()
+	static async DidFinishLoadInit() {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnceLoadedInit()" + _END_);
+		Renderer_GUI.RegisterCallbacks();
+		await Renderer_GUI.LocalizeHtmlNodes();
+	} // Renderer_GUI.DidFinishLoadInit()
 	
-	static SetEventHandler(elt_id, event_name, handler_function) {
-		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { 
-			elt.addEventListener(event_name, handler_function );
-		}
-	} // Renderer_GUI.SetEventHandler()
+	static async LocalizeHtmlNodes() {
+		 log2Main(">> " + _CYAN_ + "Renderer_GUI.LocalizeHtmlNodes()" + _END_);
+		 let msg_id   = "";
+		 let L10n_msg = "";
+		 let elt      = undefined;
+		 for (let i=0; i < HTML_NODE_IDS.length; i++) {
+			 //log2Main("---------->>");
+			 msg_id   = HTML_NODE_IDS[i];
+			 //log2Main("   msg_id[" + i + "] = " + msg_id);
+			 L10n_msg = await window.ipcMain.GetL10nMsg(msg_id);
+			 //log2Main("   L10n_msg[" + msg_id + "] = " + L10n_msg);
+			 elt = Renderer_GUI.GetElement(msg_id);
+			 //log2Main("   elt.nodeName : '" + elt.nodeName + "'");
+			 //log2Main("   elt: " + elt);
+			 if (elt.nodeName == "TD" || elt.nodeName == "SPAN") {
+				//log2Main("   change: textContent " + L10n_msg);
+				elt.textContent = L10n_msg;
+			 }
+			 else {
+				elt.value = L10n_msg;
+			 }	
+			 //log2Main("<<---");
+		 }
+	} // Renderer_GUI.LocalizeHtmlNodes()
 	
 	static RegisterCallbacks() {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.RegisterCallbacks()" + _END_);
 		
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,               'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
 															
-		Renderer_GUI.SetEventHandler(PK_B64_ID,             'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
+		Renderer_GUI.SetEventHandler(PK_B64_ID,               'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
 		
-		Renderer_GUI.SetEventHandler(SEED_ID,               'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
-        Renderer_GUI.SetEventHandler(SEED_ID,               'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );		
+		Renderer_GUI.SetEventHandler(SEED_ID,                 'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
+        Renderer_GUI.SetEventHandler(SEED_ID,                 'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );		
 		
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
-		Renderer_GUI.SetEventHandler(PK_HEX_ID,             'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,               'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
+		Renderer_GUI.SetEventHandler(PK_HEX_ID,               'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
 					
-		Renderer_GUI.SetEventHandler(PK_B64_ID,             'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
+		Renderer_GUI.SetEventHandler(PK_B64_ID,               'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );
 		
-		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,         'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );											   
-		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,         'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
-		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,         'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,           'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }                 );											   
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,           'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,           'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
 		
-		Renderer_GUI.SetEventHandler(LANG_SELECT_ID,        'change',  (evt) => { Renderer_GUI.OnChangeLanguage(evt); }        );
+		Renderer_GUI.SetEventHandler(LANG_SELECT_ID,          'change',  (evt) => { Renderer_GUI.OnChangeBip39Language(evt); }   );
 		
-		Renderer_GUI.SetEventHandler(SEEDPHRASE_4LETTER_ID, 'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }           );
+		Renderer_GUI.SetEventHandler(SEEDPHRASE_4LETTER_ID,   'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }           );
 		
-		Renderer_GUI.SetEventHandler(FILE_IMPORT_BTN_ID,    'click',   (evt) => { Renderer_GUI.ImportRawData(); }        );		
+		Renderer_GUI.SetEventHandler(FILE_IMPORT_BTN_ID,      'click',   (evt) => { Renderer_GUI.ImportRawData(); }        );		
 		
-        Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,         'click',   async (evt) => { await Renderer_GUI.UpdateFields(); }   );		
-		Renderer_GUI.SetEventHandler(RANDOM_BTN_ID,         'click',   async (evt) => { await Renderer_GUI.GenerateRandomFields(); } );									 
-		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,          'click',   (evt) => { Renderer_GUI.ClearFields(FIELD_IDS); } );
+        Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,           'click',   async (evt) => { await Renderer_GUI.UpdateFields(); }   );		
+		Renderer_GUI.SetEventHandler(RANDOM_BTN_ID,           'click',   async (evt) => { await Renderer_GUI.GenerateRandomFields(); } );									 
+		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,            'click',   (evt) => { Renderer_GUI.ClearFields(FIELD_IDS); } );
 									 
         trigger_event(Renderer_GUI.GetElement(RANDOM_BTN_ID), 'click');
 	} // Renderer_GUI.RegisterCallbacks()
@@ -125,7 +200,8 @@ class Renderer_GUI {
 			private_key = secp256k1_result['private_key'];
 			
 			let hash_count = secp256k1_result['hash_count'];
-			let pk_label_text = (hash_count > 1) ? "Private Key #":"Private Key";
+			let i18n_msg = await window.ipcMain.GetL10nMsg(PK_LABEL_ID);
+			let pk_label_text = (hash_count > 1) ? i18n_msg + "#":i18n_msg;
 			let pk_label_elt = Renderer_GUI.GetElement(PK_LABEL_ID);
 		    pk_label_elt.textContent = pk_label_text;
 			
@@ -202,18 +278,18 @@ class Renderer_GUI {
 		}
 	} // Renderer_GUI.ClearFields()
 	
-	static OnChangeLanguage(evt) {
+	static OnChangeBip39Language(evt) {
 		let elt = evt.target || evt.srcElement;
 		
 		if (elt.id == LANG_SELECT_ID) {
 			let lang_value = elt.value;
-			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeLanguage() " + _END_ + lang_value);
+			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeBip39Language() " + _END_ + lang_value);
 			Renderer_GUI.UpdateFields();
 	    }
 		else {
-			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeLanguage() " + _END_);	
+			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeBip39Language() " + _END_);	
 		}
-	} // Renderer_GUI.OnChangeLanguage()
+	} // Renderer_GUI.OnChangeBip39Language()
 	
 	static async OnKeyDown(evt) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnKeyDown() " + _END_ + "'" + evt.key+ "' keycode: " + evt.keyCode);		
@@ -380,74 +456,31 @@ class Renderer_GUI {
 		window.ipcMain.ImportRawData();
 	} // Renderer_GUI.ImportRawData()
 	
-	static async OnGUIEvent(data) {
-		//log2Main(">> " + _CYAN_ + "Renderer_GUI.OnGUIEvent()" + _END_);
-
-		let event_name = data[0];
-				
-		switch ( event_name ) {
-			case FromMain_DID_FINISH_LOAD:
-				log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_DID_FINISH_LOAD + _END_);
-				Renderer_GUI.RegisterCallbacks();	
-				break;	
-
-            case FromMain_SET_RENDERER_VALUE:
-                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_RENDERER_VALUE + _END_);	
-				let cryptocalc_version = data[1];
-				//log2Main("   cryptocalc_version: " + cryptocalc_version);
-                RendererSession.SetValue(CRYPTO_CALC_VERSION, cryptocalc_version);				
-				break;
+		static GetElement(elt_id) {
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { return elt; }
+		return undefined;
+	} // Renderer_GUI.GetElement()
 	
-			case FromMain_FILE_SAVE:
-			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_FILE_SAVE + _END_);	
-				let crypto_info = await Renderer_GUI.GetCryptoInfo();
-                window.ipcMain.SavePrivateKeyInfo(crypto_info);				
-				break;
-			
-            // File/Import/From file...			
-			case FromMain_SET_SEED_FIELD_VALUE:
-                log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_SEED_FIELD_VALUE + _END_);	
-				let raw_data_str = data[1];
-				//log2Main("   FromMain_SET_SEED_FIELD_VALUE:\n" + raw_data_str);
-                Renderer_GUI.SetField(SEED_ID, raw_data_str);	
-				Renderer_GUI.UpdateFields();				
-				break;
-			
-            // File/Import/Random Fortune Cookie			
-            case FromMain_SET_FORTUNE_COOKIE:
-			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_);
-				let fortune_cookie = data[1];
-				Renderer_GUI.SetField(SEED_ID, fortune_cookie);	
-				Renderer_GUI.UpdateFields();
-				break;
-				
-			case FromMain_HELP_ABOUT:
-			    log2Main(">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: " + _YELLOW_ + FromMain_HELP_ABOUT + _END_);
-				let crypto_calc_version = RendererSession.GetValue(CRYPTO_CALC_VERSION);
-				let description_data =   
-						  "<center><b>Cryptocalc " + crypto_calc_version + "</b></center><br>" 
-						+ "&nbsp;A crypto assets calculator";
-			    //log2Main("   " + FromMain_HELP_ABOUT + " " + description_data);
-
-				// https://izitoast.marcelodolza.com/
-				DialogManager.Clean();
-				iziToast.info({
-				//	iconUrl:         './icons/ZCash_rev_icn.png',
-					position:        'center',
-					backgroundColor: 'lightblue',
-					message:         description_data,
-					maxWidth:        450, layout: 2,
-					timeout:         false, progressBar: false
-				});
-				break;	
-				
-			default:
-				log2Main( ">> " + _CYAN_ + "Renderer_GUI OnGUIEvent: "
-						  + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + "from main");
-				//DialogManager.Clean();
-				break;
-		} // switch ( event_name )
-	} // Renderer_GUI.OnGUIEvent()
+	static GetField(elt_id) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.GetField() " + _END_ + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { return elt.value; }
+		return undefined;
+	} // Renderer_GUI.GetField()
+	
+	static SetField(elt_id, value_str) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.SetField() " + _END_ + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { elt.value = value_str; }
+	} // Renderer_GUI.SetField()
+	
+	static SetEventHandler(elt_id, event_name, handler_function) {
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { 
+			elt.addEventListener(event_name, handler_function );
+		}
+	} // Renderer_GUI.SetEventHandler()
 } // Renderer_GUI class
 
 Renderer_GUI.Init();

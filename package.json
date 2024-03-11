@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "description": "Crypto Calculator",
   "main": "./www/js/_main/electron_main.js",
   "note_debug": "electron .",
@@ -38,6 +38,7 @@
     "bip-39-de": "^5.0.1",
     "bip39": "^3.1.0",
     "bitcore-mnemonic": "^10.0.23",
+    "get-user-locale": "^2.3.1",
     "izitoast": "^1.4.0",
     "js-sha256": "^0.11.0",
     "secp256k1": "^5.0.0",

@@ -22,7 +22,7 @@ const { ElectronWindow }                = require('./electron_window.js');
 const { VIEW_TOGGLE_DEVTOOLS, 
        
         REQUEST_HEX_TO_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_PK, REQUEST_SEEDPHRASE_AS_4LETTER,
-        REQUEST_GET_SHA256, REQUEST_GET_UUID, 
+        REQUEST_GET_SHA256, REQUEST_GET_UUID, REQUEST_GET_L10N_MSG,
 		REQUEST_GET_SECP256K1, REQUEST_GET_WIF,
 		REQUEST_CHECK_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_WORD_INDICES,
 		REQUEST_SAVE_PK_INFO, REQUEST_IMPORT_RAW_DATA,
@@ -38,6 +38,7 @@ const { Seedphrase_API }                = require('../crypto/seedphrase_api.js')
 const { hexToBytes, hexWithoutPrefix }  = require('../crypto/hex_utils.js');
 const { getSecp256k1PK }                = require('../crypto/crypto_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
+const { getL10nMsg }                    = require('../L10n/get_L10n_msg.js');
 		
 const MAIN_WINDOW_WIDTH  = 800;
 const MAIN_WINDOW_HEIGHT = 500; 
@@ -51,26 +52,26 @@ const getRootPath = () => {
 // https://github.com/electron/electron/issues/19775
 // https://stackoverflow.com/questions/44391448/electron-require-is-not-defined
 const ELECTRON_MAIN_MENU_TEMPLATE = [
-	{ 	label: 'File',
-		submenu: [ {  label: 'Save', 
+	{ 	label: getL10nMsg("File"),
+		submenu: [ {  label:  getL10nMsg("Save"), 
 					  click() { ElectronMain.DoFileSave(); }
 			       },
-				   {  label: 'Import', 
-					  submenu: [ {  label: 'From file...', 
+				   {  label: getL10nMsg("Import"), 
+					  submenu: [ {  label: getL10nMsg("FromFile"), 
 									click() { ElectronMain.SelectFile(); }
 							     },
-								 {  label: 'Random Fortune Cookie', 
+								 {  label: getL10nMsg("FortuneCookie"), 
 									click() { ElectronMain.GetFortuneCookie(); }
 							     },
 				               ]
 				   },
-				   {  label: 'Quit', 
+				   {  label: getL10nMsg("Quit"), 
 					  click() { app.quit(); }
 			       }
 				 ]
 	},
-	{ 	label: 'View',
-		submenu: [ {  label: 'Toggle Debug Panel', type: 'checkbox',
+	{ 	label: getL10nMsg("View"),
+		submenu: [ {  label: getL10nMsg("ToggleDebug"), type: 'checkbox',
 				      click() {
 					      console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + VIEW_TOGGLE_DEVTOOLS + _END_);	
 						  ElectronMain.ToggleDebugPanel();  
@@ -78,8 +79,8 @@ const ELECTRON_MAIN_MENU_TEMPLATE = [
 			       }
 		         ]
 	},
-	{   role: 'help',
-        submenu: [ {  label: 'About...',
+	{   label: getL10nMsg("Help"), //"Help"
+        submenu: [ {  label: getL10nMsg("About"), //'About...',
 				      click() { 
 					      ElectronWindow.GetWindow().webContents.send('fromMain', [ FromMain_HELP_ABOUT ]);
 			          }
@@ -309,6 +310,14 @@ class ElectronMain {
 			let new_uuidv4 = uuidv4();
 			return new_uuidv4;
 		}); // "request:get_UUID" event handler
+		
+		// ================== REQUEST_GET_L10N_MSG ==================
+		// called like this by Renderer: await window.ipcMain.GetL10nMsg(msg_id)
+		ipcMain.handle(REQUEST_GET_L10N_MSG, (event, msg_id) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_L10N_MSG + _END_);
+			let L10n_msg = getL10nMsg(msg_id);
+			return L10n_msg;
+		}); // "request:get_L10n_Msg" event handler
 		
 		
 		// ================== REQUEST_GET_FORTUNE_COOKIE ==================

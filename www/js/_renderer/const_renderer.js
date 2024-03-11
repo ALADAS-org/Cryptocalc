@@ -19,7 +19,11 @@ const SEEDPHRASE_ID           = "seedphrase_id";
 const SEEDPHRASE_4LETTER_ID   = "seedphrase_4letter_id";
 const LANG_SELECT_ID          = "lang_select_id";
 
+const WORD_COUNT_ID           = "word_count_id";
+
+const UPDATE_LABEL_ID         = "update_label_id";
 const UPDATE_BTN_ID           = "update_btn_id";
+
 const RANDOM_BTN_ID           = "random_btn_id";
 const CLEAR_BTN_ID            = "clear_btn_id";
 
@@ -32,6 +36,8 @@ const VALID_VALUE_CSS_CLASS   = "ValidValue";
 const INVALID_VALUE_CSS_CLASS = "InvalidValue";
 
 const UPDATE_MSG              = "Use the [Update] button to refresh computed fields";
+
+const HTML_NODE_IDS           = [ PK_LABEL_ID, "update_btn_id", "random_btn_id", "clear_btn_id", WORD_COUNT_ID ];
 
 const log2Main = (msg) => {
 	window.ipcMain.log2Main(msg);
@@ -52,12 +58,16 @@ if (typeof exports === 'object') {
 	
 	exports.FILE_IMPORT_BTN_ID      = FILE_IMPORT_BTN_ID
 	
+	exports.UPDATE_LABEL_ID         = UPDATE_LABEL_ID
 	exports.UPDATE_BTN_ID           = UPDATE_BTN_ID
+	
 	exports.RANDOM_BTN_ID           = RANDOM_BTN_ID
 	exports.CLEAR_BTN_ID            = CLEAR_BTN_ID
 	
 	exports.SB_MSG_ID               = SB_MSG_ID
 	exports.UPDATE_MSG              = UPDATE_MSG
+	
+	exports.HTML_NODE_IDS           = HTML_NODE_IDS
 	
 	exports.WITH_FOCUS_CSS_CLASS    = WITH_FOCUS_CSS_CLASS
 	exports.WITHOUT_FOCUS_CSS_CLASS = WITHOUT_FOCUS_CSS_CLASS
