@@ -100,8 +100,21 @@ class Renderer_GUI {
 	
 	static async DidFinishLoadInit() {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnceLoadedInit()" + _END_);
+		
 		Renderer_GUI.RegisterCallbacks();
 		await Renderer_GUI.LocalizeHtmlNodes();
+		
+		// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
+		// Get the element with id="private_key_tab_link_id" and click on it
+		let pk_tab_link_elt = document.getElementById("pk_tab_link_id");
+		pk_tab_link_elt.click();
+		
+		if (Renderer_GUI.EltHasClass("pk_tab_link_id",        "ThreeBordersTabLink")) {
+			Renderer_GUI.EltAddClass("pk_tab_link_id",        "ThreeBordersTabLink");
+		}
+		if (! Renderer_GUI.EltHasClass("wallet_tab_link_id",  "FourBordersTabLink")) {
+			Renderer_GUI.EltRemoveClass("wallet_tab_link_id", "FourBordersTabLink");
+		}
 	} // Renderer_GUI.DidFinishLoadInit()
 	
 	static async LocalizeHtmlNodes() {
@@ -148,7 +161,9 @@ class Renderer_GUI {
 		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,           'input',   async (evt) => { await Renderer_GUI.OnInput(evt); }     );
 		Renderer_GUI.SetEventHandler(SEEDPHRASE_ID,           'keydown', async (evt) => { await Renderer_GUI.OnKeyDown(evt); }   );
 		
-		Renderer_GUI.SetEventHandler(LANG_SELECT_ID,          'change',  (evt) => { Renderer_GUI.OnChangeBip39Language(evt); }   );
+		Renderer_GUI.SetEventHandler(LANG_SELECT_ID,          'change',  (evt) => { Renderer_GUI.OnChangeBip39Language(evt); }   );		
+		
+		Renderer_GUI.SetEventHandler(WALLET_BLOCKCHAIN_ID,    'change',  async (evt) => { await Renderer_GUI.OnChangeBlockchain(evt); } );
 		
 		Renderer_GUI.SetEventHandler(SEEDPHRASE_4LETTER_ID,   'focus',   (evt) => { Renderer_GUI.OnFocus(evt); }           );
 		
@@ -157,6 +172,8 @@ class Renderer_GUI {
         Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,           'click',   async (evt) => { await Renderer_GUI.UpdateFields(); }   );		
 		Renderer_GUI.SetEventHandler(RANDOM_BTN_ID,           'click',   async (evt) => { await Renderer_GUI.GenerateRandomFields(); } );									 
 		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,            'click',   (evt) => { Renderer_GUI.ClearFields(FIELD_IDS); } );
+		
+		//Renderer_GUI.SetEventHandler(WALLET_EXPLORE_BTN_ID,   'click',   (evt) => { Renderer_GUI.OnExploreWallet(); } );
 									 
         trigger_event(Renderer_GUI.GetElement(RANDOM_BTN_ID), 'click');
 	} // Renderer_GUI.RegisterCallbacks()
@@ -206,14 +223,15 @@ class Renderer_GUI {
 		    pk_label_elt.textContent = pk_label_text;
 			
 			let wif = await window.ipcMain.GetWIF(private_key);
-			log2Main("   wif:   " + wif);
+			log2Main("   private_key: " + private_key);
+			log2Main("   wif:         " + wif);
 			
 			//log2Main("   sha_256_value_hex:\n   " + sha_256_value_hex);
 			pk_hex_elt.value = private_key;
-			await Renderer_GUI.PropagateFields(pk_hex_elt.value);
+			await Renderer_GUI.PropagateFields(pk_hex_elt.value, wif);
 		}
 		else if (pk_hex_elt.value.length == Renderer_GUI.Required_Hex_digits) {
-			await Renderer_GUI.PropagateFields(pk_hex_elt.value);
+			await Renderer_GUI.PropagateFields(pk_hex_elt.value, wif);
 		}
 
 		let sb_msg_elt = Renderer_GUI.GetElement(SB_MSG_ID);
@@ -230,36 +248,145 @@ class Renderer_GUI {
 		
 		Renderer_GUI.SetFocus(PK_HEX_ID);
 	} // Renderer_GUI.GenerateRandomFields()
-
-	static async PropagateFields(pk_hex_value) {
+	
+	static async PropagateFields(pk_hex_value, wif) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.PropagateFields()" + _END_);
 				
 		if (pk_hex_value == undefined) {
 			log2Main("   pk_hex_value UNDEFINED >> Generate Random PK");
 			pk_hex_value = getRandomHexValue(32);
 		}	
-		Renderer_GUI.SetField(PK_HEX_ID, pk_hex_value);
 		
-		let pk_b64_value = hexToB64(pk_hex_value);
+		let salt_uuid = await Renderer_GUI.UpdateSaltUUID();		
+		await Renderer_GUI.UpdatePrivateKey(pk_hex_value, salt_uuid, wif); 	
+	    await Renderer_GUI.UpdateSeedphrase(pk_hex_value);		
+	} // Renderer_GUI.PropagateFields()
+	
+	static async UpdateBlockchain(blockchain) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdateBlockchain() " + _END_ + blockchain);
+		let private_key = Renderer_GUI.GetField(PK_HEX_ID);
+		let salt_elt    = Renderer_GUI.GetElement(SALT_ID);
+		let salt_uuid   =	salt_elt.textContent;
+		let wallet = await Renderer_GUI.UpdateWalletAddress(blockchain, private_key, salt_uuid);
+		
+		let wif = "";
+		// NB: WIF Doesn't work with Guarda.com / Import LiteCoin 
+		if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+			wif = await window.ipcMain.GetWIF(private_key);
+		} 
+		Renderer_GUI.UpdateWIF(blockchain, wif);
+		
+		let coin_abbreviation = COIN_ABBREVIATIONS[blockchain];
+		log2Main("   coin: " + coin_abbreviation);
+		Renderer_GUI.SetField(WALLET_COIN_ID, coin_abbreviation);
+		
+		let wallet_address = wallet[ADDRESS];		
+	    log2Main("   wallet_address: " + wallet_address);
+
+        Renderer_GUI.UpdateWalletURL(blockchain, wallet_address);
+	} // Renderer_GUI.UpdateBlockchain()
+	
+	static async UpdateWalletAddress(blockchain, private_key, salt_uuid) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdateWalletAddress() " + _END_ + blockchain);
+		
+		let wallet = {};
+		const data = { private_key, salt_uuid, blockchain };
+		if (blockchain == ETHEREUM) {
+			wallet = await window.ipcMain.GetEthereumWallet(data);
+		}
+		else if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+			wallet = await window.ipcMain.GetCoinKeyWallet(data);
+		}
+
+        let wallet_address = wallet[ADDRESS];		
+		log2Main("   wallet address: " + wallet_address);
+		
+		Renderer_GUI.SetField(WALLET_ID,        wallet_address);
+		Renderer_GUI.SetField(WALLET_PK_HEX_ID, private_key);
+		
+		Renderer_GUI.UpdateWalletURL(blockchain, wallet_address);
+		
+		return wallet;
+	} // Renderer_GUI.UpdateWalletAddress()
+	
+	static UpdateWalletURL(blockchain, wallet_address) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdateWalletURL() " + _END_);
+		log2Main("   blockchain:     " + blockchain);
+		log2Main("   wallet_address: " + wallet_address);
+		
+		let explorer_URL = MAINNET_EXPLORER_URLs[blockchain] + wallet_address;
+		log2Main("   explorer_URL: " + explorer_URL);
+		
+		let wallet_URL_elt =  Renderer_GUI.GetElement(WALLET_URL_LINK_ID);
+		//log2Main("   wallet_URL_elt: " + wallet_URL_elt);
+		if (wallet_URL_elt != undefined) {
+			wallet_URL_elt.href = explorer_URL;
+		}
+	} // Renderer_GUI.UpdateWalletURL()
+	
+	static UpdateWIF(blockchain, wif) {
+		if (      (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN)
+  		      &&  wif != undefined &&  wif != "") {
+			Renderer_GUI.SetField(WIF_ID, wif);
+		}
+		else {
+			Renderer_GUI.SetField(WIF_ID, "");
+		}
+	} // Renderer_GUI.UpdateWIF()
+	
+	static async UpdatePrivateKey(private_key, salt_uuid, wif) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdatePrivateKey() " + _END_);
+		Renderer_GUI.SetField(PK_HEX_ID, private_key);
+		
+		let pk_b64_value = hexToB64(private_key);
 		Renderer_GUI.SetField(PK_B64_ID, pk_b64_value);
 		
+		let blockchain = Renderer_GUI.GetField(WALLET_BLOCKCHAIN_ID);		
+		let wallet = await Renderer_GUI.UpdateWalletAddress(blockchain, private_key, salt_uuid);
+		
+		Renderer_GUI.UpdateWIF(blockchain, wif);
+    } // Renderer_GUI.UpdatePrivateKey()
+	
+	static async UpdateSeedphrase(pk_hex_value) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdateSeedphrase() " + _END_);
+		let lang = Renderer_GUI.GetElement(LANG_SELECT_ID).value;  
+		let data = { pk_hex_value, lang };
+        let seedphrase = await window.ipcMain.HexToSeedPhrase(data);
+		Renderer_GUI.SetField(SEEDPHRASE_ID, seedphrase);		
+		
+		Renderer_GUI.SetField(WALLET_SEEDPHRASE_ID, seedphrase);
+		
+		let seedphrase_as_4letter = await window.ipcMain.SeedphraseAs4letter(seedphrase);
+		Renderer_GUI.SetField(SEEDPHRASE_4LETTER_ID, seedphrase_as_4letter);	
+    } // Renderer_GUI.UpdateSeedphrase()
+	
+	static async UpdateSaltUUID(pk_hex_value) {
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdateSaltUUID() " + _END_);
 		let seed_elt = Renderer_GUI.GetElement(SEED_ID);
+		let new_uuid = "";
 		if (seed_elt.value != "") {
-			let new_uuid = await window.ipcMain.GetUUID();
+			new_uuid = await window.ipcMain.GetUUID();
 			//Renderer_GUI.SetField(SALT_ID, new_uuid);
 			let salt_elt = Renderer_GUI.GetElement(SALT_ID);
 			salt_elt.textContent = new_uuid;
         }
+		return new_uuid;
+    } // Renderer_GUI.UpdateSaltUUID()
+	
+	//static OnExploreWallet() {
+	//	log2Main(">> " + _CYAN_ + "Renderer_GUI.OnExploreWallet() " + _END_);
+	//	
+	//	let blockchain = Renderer_GUI.GetField(WALLET_BLOCKCHAIN_ID);
+	//	log2Main("   blockchain: " + blockchain);
+
+	//	let wallet_address = Renderer_GUI.GetField(WALLET_ID);		
+	//	log2Main("   wallet_address: " + wallet_address);
 		
-		let data_hex = pk_hex_value;
-		let lang = Renderer_GUI.GetElement(LANG_SELECT_ID).value;  
-		let data = { data_hex, lang };
-        let seedphrase = await window.ipcMain.HexToSeedPhrase(data);
-		Renderer_GUI.SetField(SEEDPHRASE_ID, seedphrase);		
+	//	let explorer_URL = MAINNET_EXPLORER_URLs[blockchain] + wallet_address;
+	//	log2Main("   explorer_URL: " + explorer_URL);
 		
-		let seedphrase_as_4letter = await window.ipcMain.SeedphraseAs4letter(seedphrase);
-		Renderer_GUI.SetField(SEEDPHRASE_4LETTER_ID, seedphrase_as_4letter);		
-	} // Renderer_GUI.PropagateFields()
+	//	//window.ipcMain.OpenURL(explorer_URL);
+	//} // Renderer_GUI.OnExploreWallet()
 	
 	static ClearFields(field_ids) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.ClearFields() " + _END_);
@@ -278,9 +405,50 @@ class Renderer_GUI {
 		}
 	} // Renderer_GUI.ClearFields()
 	
-	static OnChangeBip39Language(evt) {
-		let elt = evt.target || evt.srcElement;
+	// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
+	static OpenTabPage(pageName, elt, color) {
+		log2Main(">>" + _CYAN_ + "Renderer_GUI.OpenTabPage " + elt.id + _END_);
 		
+		// Hide all elements with class="tabcontent" by default */
+		let i, tabcontent, tablinks;
+		tabcontent = document.getElementsByClassName("tabcontent");
+		for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = "none";
+		}
+
+		// Remove the background color of all tablinks/buttons
+		tablinks = document.getElementsByClassName("tablink");
+		for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].style.backgroundColor = "";
+		}
+
+		// Show the specific tab content
+		document.getElementById(pageName).style.display = "block";
+
+		// Add the specific color to the button used to open the tab content
+		elt.style.backgroundColor = color;
+		
+		if (Renderer_GUI.EltHasClass(elt.id,    "FourBordersTabLink")) {
+			Renderer_GUI.EltRemoveClass(elt.id, "FourBordersTabLink");
+		}
+		if (! Renderer_GUI.EltHasClass(elt.id, "ThreeBordersTabLink")) {
+			Renderer_GUI.EltAddClass(elt.id,   "ThreeBordersTabLink");
+		}
+			
+		let other_tab_link_id = (elt.id == "pk_tab_link_id") ? "wallet_tab_link_id" : "pk_tab_link_id";
+		//log2Main("   current_tab_link_id: " + elt.id);
+		//log2Main("   other_tab_link_id:   " + other_tab_link_id);
+		
+		if (Renderer_GUI.EltHasClass(other_tab_link_id,    "ThreeBordersTabLink")) {
+			Renderer_GUI.EltRemoveClass(other_tab_link_id, "ThreeBordersTabLink");
+		}
+		if (! Renderer_GUI.EltHasClass(other_tab_link_id, "FourBordersTabLink")) {
+			Renderer_GUI.EltAddClass(other_tab_link_id,   "FourBordersTabLink");
+		}
+	} // Renderer_GUI.OpenTabPage()
+	
+	static OnChangeBip39Language(evt) {
+		let elt = evt.target || evt.srcElement;		
 		if (elt.id == LANG_SELECT_ID) {
 			let lang_value = elt.value;
 			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeBip39Language() " + _END_ + lang_value);
@@ -290,6 +458,18 @@ class Renderer_GUI {
 			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeBip39Language() " + _END_);	
 		}
 	} // Renderer_GUI.OnChangeBip39Language()
+
+	static async OnChangeBlockchain(evt) {
+		let elt = evt.target || evt.srcElement;		
+		if (elt.id == WALLET_BLOCKCHAIN_ID) {
+			let blockchain = elt.value;
+			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeBlockchain() " + _END_ + blockchain);
+			await Renderer_GUI.UpdateBlockchain(blockchain);
+	    }
+		else {
+			log2Main(">> " + _CYAN_ + "Renderer_GUI.OnChangeBlockchain() " + _END_);	
+		}
+	} // Renderer_GUI.OnChangeBlockchain()
 	
 	static async OnKeyDown(evt) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.OnKeyDown() " + _END_ + "'" + evt.key+ "' keycode: " + evt.keyCode);		
@@ -413,6 +593,59 @@ class Renderer_GUI {
 		Renderer_GUI.SetFocus(source_elt.id);
 	} // Renderer_GUI.OnFocus()
 	
+	// https://stackoverflow.com/questions/2155737/remove-css-class-from-element-with-javascript-no-jquery
+	static EltHasClass(elt_id, className) {
+		//log2Main(">> EltHasClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt == undefined) { 
+		    return false;
+		}		
+		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
+		
+		if (elt.classList != null) {
+			return elt.classList.contains(className);
+		} else {
+			return (-1 < elt.className.indexOf(className));
+		}
+		return false;
+	} // Renderer_GUI.EltHasClass()
+	
+	static EltAddClass(elt_id, className) {
+		//log2Main(">> EltAddClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt == undefined) { 
+		    return;
+		}
+		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
+		
+		if (elt.classList != null) {
+			elt.classList.add(className);
+		} else if (! Renderer_GUI.EltHasClass(elt, className)) {
+			let classes = elt.className.split(" ");
+			classes.push(className);
+			elt.className = classes.join(" ");
+		}
+		return elt;
+	} // Renderer_GUI.EltAddClass()
+	
+	static EltRemoveClass(elt_id, className) {
+		//log2Main(">> EltRemoveClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt == undefined) { 
+		    return;
+		}
+		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
+		
+		if (elt.classList != null) {
+			elt.classList.remove(className);
+		} else {
+			let classes = elt.className.split(" ");
+			classes.splice(classes.indexOf(className), 1);
+			elt.className = classes.join(" ");
+		}
+		return elt;
+	} // Renderer_GUI.EltRemoveClass()
+	
 	static GetLang() {
 		let lang = "EN";
 		let elt = Renderer_GUI.GetElement(LANG_SELECT_ID);
@@ -465,14 +698,28 @@ class Renderer_GUI {
 	static GetField(elt_id) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.GetField() " + _END_ + elt_id);
 		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { return elt.value; }
+		if (elt != undefined) { 
+			if (elt.nodeName == "TD" || elt.nodeName == "SPAN") {
+				return elt.textContent;
+			}
+			else {
+				return elt.value;
+			}	
+		}
 		return undefined;
 	} // Renderer_GUI.GetField()
 	
 	static SetField(elt_id, value_str) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.SetField() " + _END_ + elt_id);
 		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { elt.value = value_str; }
+		if (elt != undefined) { 
+			if (elt.nodeName == "TD" || elt.nodeName == "SPAN") {
+				elt.textContent = value_str;
+			}
+			else {
+				elt.value = value_str;
+			}	
+		}
 	} // Renderer_GUI.SetField()
 	
 	static SetEventHandler(elt_id, event_name, handler_function) {

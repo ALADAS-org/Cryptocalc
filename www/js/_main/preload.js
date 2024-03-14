@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld(
 		log2Main:                 (data) => ipcRenderer.send("request:log2main", data),
 		SavePrivateKeyInfo:       (data) => ipcRenderer.send("request:save_pk_info", data),
 		ImportRawData:            (data) => ipcRenderer.send("request:import_raw_data", data),
+		OpenURL:                  (data) => ipcRenderer.send("request:open_URL", data),
 		
 		SeedPhraseToPrivateKey:   (data) => ipcRenderer.invoke("request:seedphrase_to_pk", data),
 		HexToSeedPhrase:          (data) => ipcRenderer.invoke("request:hex_to_seedphrase", data),
@@ -24,6 +25,10 @@ contextBridge.exposeInMainWorld(
 		GetUUID:                  (data) => ipcRenderer.invoke("request:get_UUID", data),
 		GetFortuneCookie:         (data) => ipcRenderer.invoke("request:get_FortuneCookie", data),
 		GetL10nMsg:               (data) => ipcRenderer.invoke("request:get_L10n_Msg", data),
+		
+		GetEthereumWallet:        (data) => ipcRenderer.invoke("request:get_ETH_wallet", data),
+		GetCoinKeyWallet:         (data) => ipcRenderer.invoke("request:get_coinkey_wallet", data),
+		GetHDWallet:              (data) => ipcRenderer.invoke("request:get_HD_wallet", data),
 		
 	    //send: (channel, data) => {
         //     // whitelist channels

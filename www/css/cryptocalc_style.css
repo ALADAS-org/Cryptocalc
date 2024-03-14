@@ -1,14 +1,22 @@
-html, body , .outer, .inner {
-	height:  100%;
-	width:   100%;
-	margin:  0;
+html, .outer, .inner {
+	height:      100%;
+	width:       100%;
+	margin:      0;
 	font-family: Arial, Helvetica, sans-serif;
 } 
 
+html, body , .outer, .inner {
+	height:      100%;
+	width:       100%;
+	margin:      0;
+	font-family: Arial, Helvetica, sans-serif;
+	overflow:    hidden;
+} 
+
 hr {
-   border:            none;
-   height:            0.5px;
-   background-color:  #333;  /* Modern Browsers */
+    border:            none;
+    height:            0.5px;
+    background-color:  #333;  /* Modern Browsers */
 }
 
 .HorizontalBar {
@@ -16,29 +24,114 @@ hr {
 	height:           1px;
 }
 
-.CalculatorLayout {
-	background-color: #FFFFF0; /*#fafaf0;*/
+/* ================================= Tab pages ================================= */
+/* https://www.w3schools.com/howto/howto_js_full_page_tabs.asp */
+.PrivateKeyTabLayout {
+	background-color: #FFFFF0;
 	width:            100%; 
 	height:           100%;
 	min-height:       100%;
 }
 
+.WalletTabLayout {
+	background-color: #F1FFFF;
+	width:            100%; 
+	height:           100%;
+	min-height:       100%;
+}
+
+.tablink {
+	background-color: #FFFFF0;
+	color:            black;
+	/*float:     	  left;*/
+	border:           none;
+	outline:          none;
+	cursor:           pointer;
+	font-size:        17px;
+	width:            25%;
+	margin-left:      -2px;
+	margin-right:     -3px;
+}
+
+#PrivateKey { 
+	background-color: #FFFFF0;   
+}
+
+#Wallet     { 
+	background-color: #F1FFFF; 
+}
+
+.EmptyTabLink { 
+	background-color: #FDFDFD; 
+	width:            50%;
+	min-width:        50%;
+	margin-right:     0px;
+}
+
+#pk_tab_link_id {
+	background-color: #FFFFF0;
+}
+#pk_tab_link_id:hover {
+	background-color: #C0FEC0;
+}
+
+#wallet_tab_link_id {
+	background-color: #F1FFFF;
+}
+#wallet_tab_link_id:hover {
+	background-color: #C0FEC0;
+}
+
+.ThreeBordersTabLink {
+	border-top:       1px solid black;
+	border-bottom:    1px solid #FFFFF0;
+    border-right:     1px solid black; 
+    border-left:      1px solid black;
+}
+
+.FourBordersTabLink {
+	border-top:       1px solid black;
+	border-bottom:    1px solid black;
+    border-right:     1px solid black; 
+    border-left:      1px solid black;
+}
+
+.EmptyTabLinkBorders {
+	border-bottom:    1px solid black;
+    border-left:      1px solid black;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+	color:   black;
+	display: none;
+	/*padding: 2px 20px;*/
+	height:  100%;
+}
+/* ================================= Tab pages */
+
 .Button {
 	font-size:     25x;
 	font-weight:   500;
 	height:        30px;
+	margin-bottom: 50px;
+}
+
+.WalletButton {
+	height:     20px;
+	margin-top: -10px;
 }
 
 #update_btn_id {
 	background-color: lightgreen;
-	width: 	    85px;
-	min-width: 	85px;
+	width: 	          85px;
+	min-width: 	      85px;
 }
 
 #random_btn_id {
-	background-color: 	#F4F400; /*#FFFDD0;*/
-	width: 	    85px;
-	min-width: 	85px;
+	background-color: #F4F400; /*#FFFDD0;*/
+	width: 	          85px;
+	min-width: 	      85px;
 }
 
 #clear_btn_id {
@@ -63,14 +156,14 @@ hr {
 	background-color: #FFFFF0;
 }
 
+#wallet_coin_id {
+	font-size:  14px;
+}
+
 .ButtonsBar {
 	margin-top: 0px;
 	height:     70px;
     top:        10px;
-}
-
-.Button {
-	margin-bottom: 20px;
 }
 
 .table textarea {

@@ -20,7 +20,7 @@ const { _CYAN_, _RED_, _PURPLE_, _YELLOW_,
 	  }                                 = require('../util/color/color_console_codes.js');
 const { ElectronWindow }                = require('./electron_window.js');	  
 const { VIEW_TOGGLE_DEVTOOLS, 
-       
+        REQUEST_LOG_2_MAIN, REQUEST_OPEN_URL,
         REQUEST_HEX_TO_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_PK, REQUEST_SEEDPHRASE_AS_4LETTER,
         REQUEST_GET_SHA256, REQUEST_GET_UUID, REQUEST_GET_L10N_MSG,
 		REQUEST_GET_SECP256K1, REQUEST_GET_WIF,
@@ -28,20 +28,34 @@ const { VIEW_TOGGLE_DEVTOOLS,
 		REQUEST_SAVE_PK_INFO, REQUEST_IMPORT_RAW_DATA,
 		REQUEST_GET_FORTUNE_COOKIE,
 		
+		REQUEST_GET_ETHEREUM_WALLET, REQUEST_GET_COINKEY_WALLET, REQUEST_GET_HD_WALLET, 
+		
 		FromMain_DID_FINISH_LOAD,
         FromMain_FILE_SAVE, FromMain_HELP_ABOUT,
 		FromMain_SET_FORTUNE_COOKIE, 
         FromMain_SET_RENDERER_VALUE, FromMain_SET_SEED_FIELD_VALUE 		
 	  }                                 = require('../_renderer/const_events.js');
+	  
+const { NULL_COIN, 
+		BITCOIN, ETHEREUM, 
+		BINANCE, SOLANA, CARDANO, RIPPLE, AVALANCHE, DOGECOIN, LITECOIN,
+		MAINNET, TESTNET,
+		BLOCKCHAIN, NULL_BLOCKCHAIN,
+		COIN_ABBREVIATIONS
+}                                       = require('../crypto/const_blockchains.js');
+
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
 const { Seedphrase_API }                = require('../crypto/seedphrase_api.js');
 const { hexToBytes, hexWithoutPrefix }  = require('../crypto/hex_utils.js');
 const { getSecp256k1PK }                = require('../crypto/crypto_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { getL10nMsg }                    = require('../L10n/get_L10n_msg.js');
+
+const { Ethereum_API }                  = require('../crypto/ethereum_api.js');
+const { CoinKey_API }                   = require('../crypto/coinkey_api.js');
 		
 const MAIN_WINDOW_WIDTH  = 800;
-const MAIN_WINDOW_HEIGHT = 500; 
+const MAIN_WINDOW_HEIGHT = 600; 
 
 let g_DidFinishLoad_FiredCount = 0;
 		
@@ -125,6 +139,7 @@ class ElectronMain {
 		// https://www.electronjs.org/docs/latest/api/web-contents#instance-events
 		// https://stackoverflow.com/questions/42284627/electron-how-to-know-when-renderer-window-is-ready
 		// Note: index.html loaded twice (first index.html redirect)
+		// ==================== 'did-finish-load' event handler ====================
 		ElectronWindow.GetWindow().webContents.on('did-finish-load', 
 			() => {
 				//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load --" + _END_);
@@ -146,10 +161,18 @@ class ElectronMain {
 					//console.log("   Send : " + FromMain_SET_RENDERER_VALUE + " = " + Cryptocalc_version);
 					ElectronWindow.GetWindow().webContents.send("fromMain", [ FromMain_SET_RENDERER_VALUE, Cryptocalc_version ]);
 					
+					// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
+					// Open urls in the user's browser
+					// nB: Triggeted by 'Renderer_GUI.OnExploreWallet()'
+					ElectronWindow.GetWindow().webContents.setWindowOpenHandler((edata) => {
+						shell.openExternal(edata.url);
+						return { action: "deny" };
+					});
+					
 					ElectronMain.SetCallbacks();
 				}
 			} // 'did-finish-load' callback
-		); // on 'did-finish-load' event handler
+		); // ==================== 'did-finish-load' event handler
 		
 		ElectronWindow.GetWindow().loadFile('./index.html');
 	} // ElectronMain.CreateWindow()
@@ -209,9 +232,31 @@ class ElectronMain {
 
 		// ====================== REQUEST_LOG_2_MAIN ======================
 		// called like this by Renderer: window.ipcMain.log2Main(data)
-		ipcMain.on("request:log2main", (event, data) => {
+		ipcMain.on(REQUEST_LOG_2_MAIN, (event, data) => {
 			console.log(data);
 		}); // "request:log2main" event handler
+		
+		// ====================== REQUEST_OPEN_URL ======================
+		// called like this by Renderer: window.ipcMain.OpenURL(url)
+		ipcMain.on(REQUEST_OPEN_URL, (event, url) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_OPEN_URL + _END_);
+			console.log("   URL: " + url);
+			
+			// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
+			ElectronWindow.GetWindow().location = url;
+			
+			
+			//const browser_window = new BrowserWindow();
+			//browser_window.webContents.setWindowOpenHandler(({ url }) => {
+			//	// config.fileProtocol is my custom file protocol
+			//	if (url.startsWith(config.fileProtocol)) {
+			//		return { action: 'allow' };
+			//	}
+			//	// open url in a browser and prevent default
+			//	shell.openExternal(url);
+			//	return { action: 'deny' };
+			//});
+		}); // "request:open_URL" event handler
 
 		// ====================== REQUEST_SAVE_PK_INFO ======================
 		// called like this by Renderer: window.ipcMain.SavePrivateKeyInfo(data)
@@ -259,10 +304,10 @@ class ElectronMain {
 		// called like this by Renderer: await window.ipcMain.HexToSeedPhrase(data)
 		ipcMain.handle(REQUEST_HEX_TO_SEEDPHRASE, (event, data) => {
 			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_HEX_TO_SEEDPHRASE + _END_);
-			const { data_hex, lang } = data;
+			const { pk_hex_value, lang } = data;
 			//console.log("   data_hex: " + data_hex);
 			//console.log("   lang: " + lang);
-			let seedphrase = Seedphrase_API.FromSHASeed(data_hex, lang);
+			let seedphrase = Seedphrase_API.FromSHASeed(pk_hex_value, lang);
 			//console.log(">> seedphrase: " + seedphrase); 
 			return seedphrase;
 		}); // "request:hex_to_seedphrase" event handler
@@ -345,6 +390,36 @@ class ElectronMain {
 			let check_result = Seedphrase_API.CheckSeedphrase(seedphrase, lang, wordcount);
 			return check_result;
 		}); // "request:check_seedphrase" event handler
+		
+		
+		// ================== REQUEST_GET_ETHEREUM_WALLET ==================
+		// called like this by Renderer: await window.ipcMain.GetEthereumWallet(data)
+		ipcMain.handle(REQUEST_GET_ETHEREUM_WALLET, (event, in_data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_ETHEREUM_WALLET + _END_);
+			const { private_key, salt_uuid, blockchain } = in_data;
+			let wallet = Ethereum_API.GetWallet(private_key, salt_uuid, blockchain, MAINNET);
+			return wallet;
+		}); // "request:get_ETH_wallet" event handler
+		
+		// ========== REQUEST_GET_COINKEY_WALLET ==========
+		// called like this by Renderer: await window.ipcMain.GetCoinKeyWallet(data)
+		ipcMain.handle(REQUEST_GET_COINKEY_WALLET, (event, in_data) => {
+			console.log(  '>> ' + _CYAN_ + '[Electron] ipcMain.handle: ' 
+						+ _YELLOW_ + REQUEST_GET_COINKEY_WALLET + _END_);
+			const { private_key, salt_uuid, blockchain } = in_data;
+			let wallet = CoinKey_API.GetWallet(private_key, salt_uuid, blockchain, MAINNET);
+			return wallet;
+		}); // "request:get_coinkey_wallet" event handler (invoke/handle)
+		
+		// ================== REQUEST_GET_HD_WALLET ==================
+		// called like this by Renderer: await window.ipcMain.GetHDWallet(data)
+		ipcMain.handle(REQUEST_GET_HD_WALLET, (event, in_data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_HD_WALLET + _END_);
+			const { private_key, salt_uuid, blockchain } = in_data;
+			let wallet = Ethereum_API.GetWallet(private_key, salt_uuid, blockchain, MAINNET);
+			return wallet;
+		}); // "request:get_HD_wallet" event handler
+		
 	} // ElectronMain.SetCallbacks()
 } // ElectronMain class
 

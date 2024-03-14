@@ -11,8 +11,13 @@
 		<script type="text/javascript" src="./js/util/html/w3.js"></script>
 		<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
 		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
+		
+		<script type="text/javascript" src="./js/crypto/const_blockchains.js"></script>
+		<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>
+		
 		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
 		<script type="text/javascript" src="./js/_renderer/const_events.js"></script>
+		
 		<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
 		<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
 		
@@ -23,13 +28,22 @@
 	<head>
 	
 	<body>
-	    <!--<div class="CalculatorContainer">-->
-			<!--<table class="CalculatorLayout" border="1"> -->
+		<button class="tablink" id="pk_tab_link_id" 
+				onclick="Renderer_GUI.OpenTabPage('PrivateKey', this, '#FFFFF0')">Private Key</button>
+		<button class="tablink" id="wallet_tab_link_id" 
+				onclick="Renderer_GUI.OpenTabPage('Wallet', this, '#F1FFFF')">Wallet</button>
+		<button class="tablink EmptyTabLink EmptyTabLinkBorders" id="empty_tab_link_id">&nbsp;</button>
+
+		<!-- ============================================================================================== -->
+		<!-- =================================== 'Private Key' Tab page =================================== -->
+		<!-- ============================================================================================== -->
+		<div id="PrivateKey" class="tabcontent">
 			<table class="inner CalculatorLayout"> 
-			    <!-- ============================================== -->
+				<!-- ----------------------------------------------------------- -->
+				<!-- --------------------------  Seed  ------------------------- -->
+				<!-- ----------------------------------------------------------- -->
 				<tr><td class="LabelColumn">Seed</td>
 					<td colspan="2" class="FieldColumn">
-					        <br/>
 					        <table width="100%">
 							<tr><td class="TextArea">
 									<textarea class="RawDataField WithoutFocus" rows="6" spellcheck="false"
@@ -42,14 +56,24 @@
 							</table>
 					</td>
 				</tr>
-				<!-- ======================= Salt (UUID) ======================= -->
+				<!-- -----------------------  Seed -->
+				
+				
+				<!-- ----------------------------------------------------------- -->
+				<!-- ----------------------- Salt (UUID) ----------------------- -->
+				<!-- ----------------------------------------------------------- -->
 				<tr><td class="LabelColumn">Salt</td>
 					<td colspan="2" class="FieldColumn">
 					    <input type="checkbox" id="use_salt_id" name="use" checked />
 						<span class="ReadOnlyValue" id="salt_id">XX</span>
 					</td>
 				</tr>
-				<!-- ======================= Private Key ======================= -->
+				<!-- ----------------------- Salt (UUID) -->
+				
+				
+				<!-- ----------------------------------------------------------- -->
+				<!-- ----------------------- Private Key ----------------------- -->
+				<!-- ----------------------------------------------------------- -->
 				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
 				<tr><td class="LabelColumn" id="PK_label_id">Private Key</td>
 					<td colspan="2" class="FieldColumn">
@@ -59,7 +83,12 @@
 							   id="pk_b64_id" type="text" value="XX">&nbsp;B64
 					</td>
 				</tr>
-				<!-- ======================= Seedphrase ======================= -->
+				<!-- ----------------------- Private Key -->
+				
+				
+				<!-- ----------------------------------------------------------- -->
+				<!-- ----------------------- Seedphrase ----------------------- -->
+				<!-- ----------------------------------------------------------- -->
 				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
 				<tr><td class="LabelColumn">
 						<span>Seedphrase</span>
@@ -83,38 +112,129 @@
 						</textarea>
 					</td>
 				</tr>
-				<!-- ======================= Buttons Bar ======================= -->
+				<!-- ----------------------- Seedphrase -->
+				
+				
+				<!-- ----------------------------------------------------------- -->
+				<!-- ----------------------- Buttons Bar ----------------------- -->
+				<!-- ----------------------------------------------------------- -->
 				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
 				<tr><td colspan="4" class="LabelColumn">
 						<table width="100%">
 						    <tr class="ButtonsBar">
 								<td width="33%">
-									<center>
-									<input class="Button" type="button"
-											       id="update_btn_id" value="Update">
+									<center><input class="Button" type="button" id="update_btn_id" value="Update">
 									</center>
 								</td>
 								<td width="33%">
-									<center><input class="Button" type="button"
-											       id="random_btn_id" value="Random">
+									<center><input class="Button" type="button" id="random_btn_id" value="Random">
 									</center>
 								</td>
 								<td width="33%">
-									<center><input class="Button" type="button"
-											       id="clear_btn_id" value="Clear">
+									<center><input class="Button" type="button" id="clear_btn_id" value="Clear">
 									</center>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
+				<!-- ----------------------- Buttons Bar -->
 			</table>
-		<!--</div>-->
+		</div>
+		<!-- =================================== 'Private Key' Tab page -->
 		
-		<!-- ========================= Status bar ========================= -->
+			
+		<!-- ========================================================================================= -->
+		<!-- =================================== 'Wallet' Tab page =================================== -->
+		<!-- ========================================================================================= -->
+		<div id="Wallet" class="tabcontent">
+			<table> 
+			    <!-- ---------------------------------------------------------- -->
+				<!-- ----------------------- Blockchain ----------------------- -->
+				<!-- ---------------------------------------------------------- -->
+				<tr><td class="HorizontalBar" colspan="4"><br></td></tr>
+				<tr><td class="LabelColumn" id="wallet_blockchain_label_id">Blockchain</td>
+					<td colspan="2" class="FieldColumn">
+						<select id="wallet_blockchain_id" class="InputField">
+							<option value="Ethereum" selected>Ethereum</option>							
+							<option value="Bitcoin">Bitcoin</option>
+							<option value="DogeCoin">DogeCoin</option>	
+							<option value="LiteCoin">LiteCoin</option>
+						</select>&nbsp;
+						<span id="wallet_coin_id">ETH						
+						</span>
+					</td>
+				</tr>
+				<!-- ----------------------- Blockchain -->
+				
+				
+				<!-- ---------------------------------------------------------- -->
+				<!-- ------------------------- Wallet ------------------------- -->
+				<!-- ---------------------------------------------------------- -->
+				<tr><td class="HorizontalBar" colspan="4"></td></tr>
+				<tr><td class="LabelColumn" id="wallet_label_id">Wallet</td>
+					<td colspan="2" class="FieldColumn">
+						<span id="wallet_id">0x83C1a2AF99f3783Be8A8c72DDA02B3832cb89f94						
+						</span>&nbsp;
+						<a id="wallet_URL_link_id"
+						   href="https://etherscan.io" target="_blank" rel="noreferrer">
+						   <input class="WalletButton" type="button" id="wallet_explore_btn_id" value="Explore...">
+						</a>
+					</td>
+				</tr>
+				<!-- ----------------------- Wallet -->
+				
+				<!-- ----------------------------------------------------------- -->
+				<!-- ----------------------- Private Key ----------------------- -->
+				<!-- ----------------------------------------------------------- -->
+				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
+				<tr><td class="LabelColumn" id="wallet_PK_label_id">Private Key</td>
+					<td colspan="2" class="FieldColumn">
+						<input class="DataField WithoutFocus ValidValue" readonly
+							   id="wallet_pk_hex_id" type="text" value="XX">
+					</td>
+				</tr>
+				<!-- ----------------------- Private Key -->
+				
+				
+				<!-- ---------------------------------------------------------- -->
+				<!-- -------------------------- WIF --------------------------- -->
+				<!-- ---------------------------------------------------------- -->
+				<tr><td class="HorizontalBar" colspan="4"></td></tr>
+				<tr><td class="LabelColumn" id="WIF_label_id">WIF</td>
+					<td colspan="2" class="FieldColumn">
+						<span id="WIF_id">Kyoa49fZdsv8YiH6Agj5DQiBdjphLRF1dZMMfAzKPVrCD2vbjxYV						
+						</span>
+					</td>
+				</tr>
+				<!-- ----------------------- WIF -->
+				
+				
+				<!-- ----------------------------------------------------------- -->
+				<!-- ----------------------- Seedphrase ----------------------- -->
+				<!-- ----------------------------------------------------------- -->
+				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
+				<tr><td class="LabelColumn">
+						<span>Seedphrase</span>
+					</td>
+					<td class="FieldColumn" colspan="2">
+						<textarea class="DataField WithoutFocus" rows="2" spellcheck="false" readonly
+							      id="wallet_seedphrase_id">XX								  
+						</textarea>&nbsp;<span id="word_count_id">Words: 24</span>
+					</td>
+				</tr>
+				<!-- ----------------------- Seedphrase -->
+			</table>
+		</div>
+		<!-- =================================== 'Wallet' Tab page -->
+		
+		
+		<!-- ========================================================================================= -->
+		<!-- ======================================= Status bar ====================================== -->
+		<!-- ========================================================================================= -->
 		<div w3-include-html="./html_components/status_bar/status_bar.html"></div>
 		<link rel="stylesheet" type="text/css" href="./html_components/status_bar/status_bar.css">
-		<!-- ========================= Status bar -->
+		<!-- ======================================= Status bar -->
 		
 		<script>
 			includeHTML(); // includes html <div> entities with 'w3-include-html' attribute
