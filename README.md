@@ -1,5 +1,5 @@
-## Cryptocalc 0.0.27
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/0_0_27_PK_Wallet_Animation.gif)
+## Cryptocalc 0.0.28
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/0_0_28_PK_Wallet_Animation.gif)
 1. Purpose\
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
    conversions between a `Private Key` formats (eg. `Hex` vs `Base64`) and the matching _Seedphrase_. 
@@ -27,9 +27,14 @@
         * Type `cd Cryptocalc`	
         * Type `npm install`	
 
-4. New in release `0.0.27`   
-   + 4.1. Features  
-		* 4.1.1. _Wallet Address_ computation  
+4. Release notes   
+   + 4.1. Features in `0.0.28`  
+		* 4.1.1. Fixes in Localization of GUI Labels   
+		* 4.1.2. In generated _Private Key_ informations (`File/Save`) 
+        - _timestamped subfolder_ now includes _Coin_ (eg. `2024_03_16_15h-43m-21s-9_ETH`)  
+        - `private_key_info.txt` now provides: _Blockchain_, _Coin_, _Wallet address_, _Blockchain explorer URL_ and _WIF (if applicable)       		
+   + 4.2. Features in `0.0.27`  
+		* 4.2.1. _Wallet Address_ computation  
 		Click on the `Wallet` tab to switch to the _Wallet Computer_. It is synchronized with the `Private Key` tab and will compute
         the _Wallet Address_ from the _Private Key_. You can use the [ Explore... ] button to open a _Blockchain Explorer_ with the computed _Wallet Address_.
         NB: _WIF_ (_Wallet Input Format_) is also computed, it is used in _Bitcoin_, _DogeCoin_ and _LiteCoin_ blockchains.    		
@@ -69,7 +74,7 @@
 		You can input a hex value (NB: requires 64 hex digits) for the `Private Key (Hex)` field. Notice that it will clear the other fields
 		, so you must use the [ Update ] button (cf. 5.1.1. _Seed to Seedphrase waterfall_) to refresh them.		  		
 		* 5.1.7. Save _Private Key_ informations  
-		With `File/Save` you can save the private key informations in a timestamped subfolder (eg. 2024_03_07_21h-4m-4s-3)
+		With `File/Save` you can save the private key informations in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
 		under `_output` folder. This subfolder contains `private_key_info.txt` and a `pk_info.json` with the displayed informations 
 		but there is also the word indices of the _mnemonics_ in the _Seedphrase_. 
 		* 5.1.8. Input/Modify the _Seedphrase_  
@@ -94,7 +99,7 @@
        * 5.2.2. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
        The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 144 bytes useable capacity.
 	   This is enough to store the _Shortened Seedphrase_, with a 24 words _Shortened Seedphrase_ 
-	   the maximum required capacity is 96 bytes/characters (24*4, cf. 4.1.1) or even less (as some mnemonics have only three characters).   
+	   the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.1) or even less (as some mnemonics have only three characters).   
        * 5.2.3. Store _Master password_   
        This is similar to the previous case, but the _Shortened Seedphrase_ (or `Private Key (B64)` value) can be used as a _Master password_  
        for a _Password Manager_ or for tools like [_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption

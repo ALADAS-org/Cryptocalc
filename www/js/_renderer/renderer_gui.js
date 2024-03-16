@@ -109,11 +109,11 @@ class Renderer_GUI {
 		let pk_tab_link_elt = document.getElementById("pk_tab_link_id");
 		pk_tab_link_elt.click();
 		
-		if (Renderer_GUI.EltHasClass("pk_tab_link_id",        "ThreeBordersTabLink")) {
-			Renderer_GUI.EltAddClass("pk_tab_link_id",        "ThreeBordersTabLink");
+		if (HtmlUtils.HasClass("pk_tab_link_id",        "ThreeBordersTabLink")) {
+			HtmlUtils.AddClass("pk_tab_link_id",        "ThreeBordersTabLink");
 		}
-		if (! Renderer_GUI.EltHasClass("wallet_tab_link_id",  "FourBordersTabLink")) {
-			Renderer_GUI.EltRemoveClass("wallet_tab_link_id", "FourBordersTabLink");
+		if (! HtmlUtils.HasClass("wallet_tab_link_id",  "FourBordersTabLink")) {
+			HtmlUtils.RemoveClass("wallet_tab_link_id", "FourBordersTabLink");
 		}
 	} // Renderer_GUI.DidFinishLoadInit()
 	
@@ -125,20 +125,8 @@ class Renderer_GUI {
 		 for (let i=0; i < HTML_NODE_IDS.length; i++) {
 			 //log2Main("---------->>");
 			 msg_id   = HTML_NODE_IDS[i];
-			 //log2Main("   msg_id[" + i + "] = " + msg_id);
 			 L10n_msg = await window.ipcMain.GetL10nMsg(msg_id);
-			 //log2Main("   L10n_msg[" + msg_id + "] = " + L10n_msg);
-			 elt = Renderer_GUI.GetElement(msg_id);
-			 //log2Main("   elt.nodeName : '" + elt.nodeName + "'");
-			 //log2Main("   elt: " + elt);
-			 if (elt.nodeName == "TD" || elt.nodeName == "SPAN") {
-				//log2Main("   change: textContent " + L10n_msg);
-				elt.textContent = L10n_msg;
-			 }
-			 else {
-				elt.value = L10n_msg;
-			 }	
-			 //log2Main("<<---");
+			 elt = Renderer_GUI.SetField(msg_id, L10n_msg);
 		 }
 	} // Renderer_GUI.LocalizeHtmlNodes()
 	
@@ -172,8 +160,6 @@ class Renderer_GUI {
         Renderer_GUI.SetEventHandler(UPDATE_BTN_ID,           'click',   async (evt) => { await Renderer_GUI.UpdateFields(); }   );		
 		Renderer_GUI.SetEventHandler(RANDOM_BTN_ID,           'click',   async (evt) => { await Renderer_GUI.GenerateRandomFields(); } );									 
 		Renderer_GUI.SetEventHandler(CLEAR_BTN_ID,            'click',   (evt) => { Renderer_GUI.ClearFields(FIELD_IDS); } );
-		
-		//Renderer_GUI.SetEventHandler(WALLET_EXPLORE_BTN_ID,   'click',   (evt) => { Renderer_GUI.OnExploreWallet(); } );
 									 
         trigger_event(Renderer_GUI.GetElement(RANDOM_BTN_ID), 'click');
 	} // Renderer_GUI.RegisterCallbacks()
@@ -373,20 +359,51 @@ class Renderer_GUI {
 		return new_uuid;
     } // Renderer_GUI.UpdateSaltUUID()
 	
-	//static OnExploreWallet() {
-	//	log2Main(">> " + _CYAN_ + "Renderer_GUI.OnExploreWallet() " + _END_);
-	//	
-	//	let blockchain = Renderer_GUI.GetField(WALLET_BLOCKCHAIN_ID);
-	//	log2Main("   blockchain: " + blockchain);
-
-	//	let wallet_address = Renderer_GUI.GetField(WALLET_ID);		
-	//	log2Main("   wallet_address: " + wallet_address);
+		static async GetCryptoInfo() {
+		let crypto_info = {};
 		
-	//	let explorer_URL = MAINNET_EXPLORER_URLs[blockchain] + wallet_address;
-	//	log2Main("   explorer_URL: " + explorer_URL);
+		let blockchain = Renderer_GUI.GetField(WALLET_BLOCKCHAIN_ID); 
+		crypto_info['Blockchain'] = blockchain;
 		
-	//	//window.ipcMain.OpenURL(explorer_URL);
-	//} // Renderer_GUI.OnExploreWallet()
+		let coin = Renderer_GUI.GetField(WALLET_COIN_ID).replaceAll('\n','').replaceAll('\t',''); 
+		crypto_info['coin'] = coin;
+		
+		let wallet_address = Renderer_GUI.GetField(WALLET_ID); 
+		crypto_info['Wallet'] = wallet_address;
+		
+		let wallet_URL_elt =  Renderer_GUI.GetElement(WALLET_URL_LINK_ID);
+		if (wallet_URL_elt != undefined) {
+			crypto_info['Blockchain Explorer'] = wallet_URL_elt.href;
+		}
+		
+		let pk_hex_value = Renderer_GUI.GetField(PK_HEX_ID); 
+		crypto_info['Private Key (Hex)'] = pk_hex_value;
+		
+		let pk_b64_value = Renderer_GUI.GetField(PK_B64_ID); 
+		crypto_info['Private Key (B64)'] = pk_b64_value;
+		
+		if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+			let WIF_value = Renderer_GUI.GetField(WIF_ID); 
+			crypto_info['WIF'] = WIF_value;
+		}
+		
+		let seedphrase_elt = Renderer_GUI.GetElement(SEEDPHRASE_ID); 
+		let seedphrase = seedphrase_elt.value;
+		crypto_info['Seedphrase'] = seedphrase;
+		
+		let shortened_seedphrase_elt = Renderer_GUI.GetElement(SEEDPHRASE_4LETTER_ID); 
+		let shortened_seedphrase = shortened_seedphrase_elt.value;
+		crypto_info['Shortened Seedphrase'] = shortened_seedphrase;
+		
+		let lang = Renderer_GUI.GetLang();
+		let data = { seedphrase, lang };
+		let word_indices = await window.ipcMain.SeedPhraseToWordIndices(data);
+		crypto_info['Word indices'] = JSON.stringify(word_indices);
+		
+		crypto_info['language'] = lang;
+		
+		return crypto_info;
+	} // Renderer_GUI.GetCryptoInfo()
 	
 	static ClearFields(field_ids) {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.ClearFields() " + _END_);
@@ -407,7 +424,7 @@ class Renderer_GUI {
 	
 	// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
 	static OpenTabPage(pageName, elt, color) {
-		log2Main(">>" + _CYAN_ + "Renderer_GUI.OpenTabPage " + elt.id + _END_);
+		log2Main(">> " + _CYAN_ + "Renderer_GUI.OpenTabPage " + _END_ + elt.id );
 		
 		// Hide all elements with class="tabcontent" by default */
 		let i, tabcontent, tablinks;
@@ -428,22 +445,22 @@ class Renderer_GUI {
 		// Add the specific color to the button used to open the tab content
 		elt.style.backgroundColor = color;
 		
-		if (Renderer_GUI.EltHasClass(elt.id,    "FourBordersTabLink")) {
-			Renderer_GUI.EltRemoveClass(elt.id, "FourBordersTabLink");
+		if (HtmlUtils.HasClass(elt.id,    "FourBordersTabLink")) {
+			HtmlUtils.RemoveClass(elt.id, "FourBordersTabLink");
 		}
-		if (! Renderer_GUI.EltHasClass(elt.id, "ThreeBordersTabLink")) {
-			Renderer_GUI.EltAddClass(elt.id,   "ThreeBordersTabLink");
+		if (! HtmlUtils.HasClass(elt.id, "ThreeBordersTabLink")) {
+			HtmlUtils.AddClass(elt.id,   "ThreeBordersTabLink");
 		}
 			
 		let other_tab_link_id = (elt.id == "pk_tab_link_id") ? "wallet_tab_link_id" : "pk_tab_link_id";
 		//log2Main("   current_tab_link_id: " + elt.id);
 		//log2Main("   other_tab_link_id:   " + other_tab_link_id);
 		
-		if (Renderer_GUI.EltHasClass(other_tab_link_id,    "ThreeBordersTabLink")) {
-			Renderer_GUI.EltRemoveClass(other_tab_link_id, "ThreeBordersTabLink");
+		if (HtmlUtils.HasClass(other_tab_link_id,    "ThreeBordersTabLink")) {
+			HtmlUtils.RemoveClass(other_tab_link_id, "ThreeBordersTabLink");
 		}
-		if (! Renderer_GUI.EltHasClass(other_tab_link_id, "FourBordersTabLink")) {
-			Renderer_GUI.EltAddClass(other_tab_link_id,   "FourBordersTabLink");
+		if (! HtmlUtils.HasClass(other_tab_link_id,  "FourBordersTabLink")) {
+			HtmlUtils.AddClass(other_tab_link_id,    "FourBordersTabLink");
 		}
 	} // Renderer_GUI.OpenTabPage()
 	
@@ -593,59 +610,6 @@ class Renderer_GUI {
 		Renderer_GUI.SetFocus(source_elt.id);
 	} // Renderer_GUI.OnFocus()
 	
-	// https://stackoverflow.com/questions/2155737/remove-css-class-from-element-with-javascript-no-jquery
-	static EltHasClass(elt_id, className) {
-		//log2Main(">> EltHasClass elt_id:" + elt_id);
-		let elt = document.getElementById(elt_id);
-		if (elt == undefined) { 
-		    return false;
-		}		
-		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
-		
-		if (elt.classList != null) {
-			return elt.classList.contains(className);
-		} else {
-			return (-1 < elt.className.indexOf(className));
-		}
-		return false;
-	} // Renderer_GUI.EltHasClass()
-	
-	static EltAddClass(elt_id, className) {
-		//log2Main(">> EltAddClass elt_id:" + elt_id);
-		let elt = document.getElementById(elt_id);
-		if (elt == undefined) { 
-		    return;
-		}
-		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
-		
-		if (elt.classList != null) {
-			elt.classList.add(className);
-		} else if (! Renderer_GUI.EltHasClass(elt, className)) {
-			let classes = elt.className.split(" ");
-			classes.push(className);
-			elt.className = classes.join(" ");
-		}
-		return elt;
-	} // Renderer_GUI.EltAddClass()
-	
-	static EltRemoveClass(elt_id, className) {
-		//log2Main(">> EltRemoveClass elt_id:" + elt_id);
-		let elt = document.getElementById(elt_id);
-		if (elt == undefined) { 
-		    return;
-		}
-		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
-		
-		if (elt.classList != null) {
-			elt.classList.remove(className);
-		} else {
-			let classes = elt.className.split(" ");
-			classes.splice(classes.indexOf(className), 1);
-			elt.className = classes.join(" ");
-		}
-		return elt;
-	} // Renderer_GUI.EltRemoveClass()
-	
 	static GetLang() {
 		let lang = "EN";
 		let elt = Renderer_GUI.GetElement(LANG_SELECT_ID);
@@ -655,35 +619,6 @@ class Renderer_GUI {
 		return lang;
 	} // Renderer_GUI.GetLang()
 	
-	static async GetCryptoInfo() {
-		let crypto_info = {};
-		
-		let pk_hex_elt = Renderer_GUI.GetElement(PK_HEX_ID); 
-		let pk_hex_value = pk_hex_elt.value;
-		crypto_info['Private Key (Hex)'] = pk_hex_value;
-		
-		let pk_b64_elt = Renderer_GUI.GetElement(PK_B64_ID); 
-		let pk_b64_value = pk_b64_elt.value;
-		crypto_info['Private Key (B64)'] = pk_b64_value;
-		
-		let seedphrase_elt = Renderer_GUI.GetElement(SEEDPHRASE_ID); 
-		let seedphrase = seedphrase_elt.value;
-		crypto_info['Seedphrase'] = seedphrase;
-		
-		let shortened_seedphrase_elt = Renderer_GUI.GetElement(SEEDPHRASE_4LETTER_ID); 
-		let shortened_seedphrase = shortened_seedphrase_elt.value;
-		crypto_info['Shortened Seedphrase'] = shortened_seedphrase;
-		
-		let lang = Renderer_GUI.GetLang();
-		let data = { seedphrase, lang };
-		let word_indices = await window.ipcMain.SeedPhraseToWordIndices(data);
-		crypto_info['Word indices'] = JSON.stringify(word_indices);
-		
-		crypto_info['language'] = lang;
-		
-		return crypto_info;
-	} // Renderer_GUI.GetCryptoInfo()
-		
 	static async ImportRawData() {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.ImportRawData()" + _END_);
 		window.ipcMain.ImportRawData();
@@ -713,7 +648,7 @@ class Renderer_GUI {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.SetField() " + _END_ + elt_id);
 		let elt = document.getElementById(elt_id);
 		if (elt != undefined) { 
-			if (elt.nodeName == "TD" || elt.nodeName == "SPAN") {
+			if (elt.nodeName == "TD" || elt.nodeName == "SPAN" || elt.nodeName == "BUTTON") {
 				elt.textContent = value_str;
 			}
 			else {

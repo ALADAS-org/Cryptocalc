@@ -265,11 +265,14 @@ class ElectronMain {
 			let timestamp = getDayTimestamp();
 			let output_path = app.getAppPath() + "/_output/" + timestamp;
 			
+			let coin = COIN_ABBREVIATIONS[crypto_info[BLOCKCHAIN]];
+			output_path = output_path + "_" + coin;
+			console.log("   " + output_path);
+			
 			if (! fs.existsSync(output_path)) {
 				fs.mkdirSync(output_path, { recursive: true });
-			}
+			}		
 			
-			//console.log(timestamp);
 			//console.log(JSON.stringify(crypto_info));
 
 			fs.writeFileSync( output_path + "/pk_info.json", JSON.stringify(crypto_info), error_handler );

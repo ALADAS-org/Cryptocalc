@@ -5,6 +5,9 @@
 
 const CRYPTO_CALC_VERSION        = "Cryptocalc_version";
 
+const PK_TAB_LINK_ID             = "pk_tab_link_id";
+const WALLET_TAB_LINK_ID         = "wallet_PK_label_id";
+
 const PK_LABEL_ID                = "PK_label_id";
 
 const PK_HEX_ID                  = "pk_hex_id";
@@ -21,6 +24,7 @@ const WALLET_ID                  = "wallet_id";
 const WALLET_SEEDPHRASE_ID       = "wallet_seedphrase_id";
 
 const WALLET_COIN_ID             = "wallet_coin_id";
+
 const WALLET_EXPLORE_BTN_ID      = "wallet_explore_btn_id";
 const WALLET_URL_LINK_ID         = "wallet_URL_link_id";
 
@@ -36,10 +40,11 @@ const SEEDPHRASE_4LETTER_ID      = "seedphrase_4letter_id";
 const LANG_SELECT_ID             = "lang_select_id";
 
 const WORD_COUNT_ID              = "word_count_id";
+const WALLET_WORD_COUNT_ID       = "wallet_word_count_id";
 
 const UPDATE_LABEL_ID            = "update_label_id";
-const UPDATE_BTN_ID              = "update_btn_id";
 
+const UPDATE_BTN_ID              = "update_btn_id";
 const RANDOM_BTN_ID              = "random_btn_id";
 const CLEAR_BTN_ID               = "clear_btn_id";
 
@@ -53,7 +58,12 @@ const INVALID_VALUE_CSS_CLASS    = "InvalidValue";
 
 const UPDATE_MSG                 = "Use the [Update] button to refresh computed fields";
 
-const HTML_NODE_IDS              = [ PK_LABEL_ID, "update_btn_id", "random_btn_id", "clear_btn_id", WORD_COUNT_ID ];
+const HTML_NODE_IDS              = [ PK_TAB_LINK_ID, WALLET_TAB_LINK_ID,
+                                     PK_LABEL_ID,
+                                     UPDATE_BTN_ID, RANDOM_BTN_ID, CLEAR_BTN_ID, 
+									 WALLET_EXPLORE_BTN_ID,
+									 WORD_COUNT_ID, WALLET_WORD_COUNT_ID
+								   ];
 
 const log2Main = (msg) => {
 	window.ipcMain.log2Main(msg);
