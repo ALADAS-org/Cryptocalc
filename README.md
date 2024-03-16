@@ -1,4 +1,4 @@
-## Cryptocalc 0.0.28
+## Cryptocalc 0.0.29
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/0_0_28_PK_Wallet_Animation.gif)
 1. Purpose\
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
@@ -31,13 +31,13 @@
    + 4.1. Features in `0.0.28`  
 		* 4.1.1. Fixes in Localization of GUI Labels   
 		* 4.1.2. In generated _Private Key_ informations (`File/Save`) 
-        - _timestamped subfolder_ now includes _Coin_ (eg. `2024_03_16_15h-43m-21s-9_ETH`)  
-        - `private_key_info.txt` now provides: _Blockchain_, _Coin_, _Wallet address_, _Blockchain explorer URL_ and _WIF (if applicable)       		
+            - _timestamped subfolder_ now includes _Coin_ (eg. `2024_03_16_15h-43m-21s-9_ETH`)  
+            - `private_key_info.txt` now provides: _Blockchain_, _Coin_, _Wallet address_, _Blockchain explorer URL_ and _WIF (if applicable)       		
    + 4.2. Features in `0.0.27`  
 		* 4.2.1. _Wallet Address_ computation  
 		Click on the `Wallet` tab to switch to the _Wallet Computer_. It is synchronized with the `Private Key` tab and will compute
-        the _Wallet Address_ from the _Private Key_. You can use the [ Explore... ] button to open a _Blockchain Explorer_ with the computed _Wallet Address_.
-        NB: _WIF_ (_Wallet Input Format_) is also computed, it is used in _Bitcoin_, _DogeCoin_ and _LiteCoin_ blockchains.    		
+        the _Wallet Address_ from the _Private Key_. You can use the [ Explore... ] button to open a _Blockchain Explorer_ with the computed _Wallet Address_.  
+        NB: _WIF_ (_Wallet Input Format_) is also computed, it is used in _Bitcoin_, _DogeCoin_ and _LiteCoin_ blockchains.   		
         Currently supported Blockchains: _Ethereum_, _Bitcoin_, DogeCoin_, _LiteCoin_ (only `mainnet` currently).					
 		
 5. _Cryptocalc_ User Guide  
