@@ -267,7 +267,7 @@ class ElectronMain {
 			
 			let coin = COIN_ABBREVIATIONS[crypto_info[BLOCKCHAIN]];
 			output_path = output_path + "_" + coin;
-			console.log("   " + output_path);
+			//console.log("   " + output_path);
 			
 			if (! fs.existsSync(output_path)) {
 				fs.mkdirSync(output_path, { recursive: true });
