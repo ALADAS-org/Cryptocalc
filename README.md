@@ -1,6 +1,6 @@
-## Cryptocalc 0.0.30
+## Cryptocalc 0.0.31
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/0_0_28_PK_Wallet_Animation.gif)
-1. Purpose
+1. Purpose  
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
    conversions between a `Private Key` formats (eg. `Hex` vs `Base64`) and the matching _Seedphrase_. 
    Even though there is already a lot of similar tools online, the purpose is to use these features
@@ -12,7 +12,7 @@
     + 2.1. [NodeJS](https://nodejs.org/en/)
 	+ 2.2. [Git](https://git-scm.com/)
 	
-3. Installation
+3. Installation  
    Import locally the [Cryptocalc repository](https://github.com/ALADAS-org/Cryptocalc)
     + 3.1. Open a _command line interpreter_
 	    * Use Windows Menu _Start_ then input `cmd`
@@ -41,7 +41,7 @@
         NB: _WIF_ (_Wallet Input Format_) is also computed, it is used in _Bitcoin_, _DogeCoin_ and _LiteCoin_ blockchains.  
         Currently supported Blockchains: _Ethereum_, _Bitcoin_, DogeCoin_, _LiteCoin_ (only `mainnet` currently).					
 		
-5. _Cryptocalc_ User Guide
+5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will open the _Cryptocalc_ desktop standalone application
     + 5.1. Features  
 		* 5.1.1. Generate a new _Private Key_ from a random _Fortune Cookie_  
@@ -67,7 +67,7 @@
 		a message in the status bar, at the bottom of the window).		
 		* 5.1.3. Import _Seed_ from a text file  
 		The text for the `Seed` field may also be provided with the `File/Import` menu or with the ellipsis button [...] at the right of the `Seed` field. 
-		* 5.1.4. Set `Seed` field with a random _Fortune Cookie_
+		* 5.1.4. Set `Seed` field with a random _Fortune Cookie_  
 		The text for the _Seed_ can be a random _Fortune Cookie_ (among 12803 cf. 5.1.1). 
 		* 5.1.5. Salt with _UIID_  
 		This allows to generate a different _Private Key_ at each [ Update ] even if the `Seed` value is the same, this is achieved by _Salting_
@@ -98,7 +98,7 @@
    + 5.2. Use cases
        * 5.2.1. Create a new _Crypto Wallet_  
 	   With a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) a _Seedphrase_
-       is enough to import a new wallet, you just need to choose the coin (e.g. `BTC`, `ETH`, `DOGE`, `XRP`, `ADA`, `SOL`, etc...)   
+       is enough to import a new wallet, you just need to choose the coin (e.g. `BTC`,`ETH`,`DOGE`,`XRP`,`ADA`,`SOL`, etc...)   
        * 5.2.2. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
        The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 144 bytes useable capacity.
 	   This is enough to store the _Shortened Seedphrase_, with a 24 words _Shortened Seedphrase_ 
