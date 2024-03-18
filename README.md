@@ -1,4 +1,4 @@
-## Cryptocalc 0.0.31
+## Cryptocalc 0.0.32
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/0_0_28_PK_Wallet_Animation.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
@@ -28,18 +28,22 @@
         * Type `npm install`	
 
 4. Release notes
-   + 4.1. Features in `0.0.28`
-		* 4.1.1. Fixes in Localization of GUI Labels  
-		* 4.1.2. In generated _Private Key_ informations (`File/Save`)  
+    + 4.1. Features in `0.0.32`
+        * 4.1.1. Support of _Solana_ blockchain  
+		NB: If you want to import the _Computed Wallet_ in [_Guarda_](https://https://guarda.com/), 
+		only the _Seedphrase_ allows to retrieve the correct _Wallet Address_.
+    + 4.2. Features in `0.0.28`
+		* 4.2.1. Fixes in Localization of GUI Labels  
+		* 4.2.2. In generated _Private Key_ informations (`File/Save`)  
             - _timestamped subfolder_ now includes _Coin_ (eg. `2024_03_16_15h-43m-21s-9_ETH`)
             - `private_key_info.txt` now provides: _Blockchain_, _Coin_, _Wallet address_, _Blockchain explorer URL_ and _WIF (if applicable)     		
-   + 4.2. Features in `0.0.27`
-		* 4.2.1. _Wallet Address_ computation  
+    + 4.3. Features in `0.0.27`
+		* 4.3.1. _Wallet Address_ computation  
 		Click on the `Wallet` tab to switch to the _Wallet Computer_ feature. This feature is synchronized with the `Private Key` tab and will compute
         the _Wallet Address_ from the _Private Key_ (indeed the `Private Key (B64)` and _Seedphrase_ are duplicated from the `Private Key` tab.
 		You can use the [ Explore... ] button to open a _Blockchain Explorer_ with the computed _Wallet Address_.  
         NB: _WIF_ (_Wallet Input Format_) is also computed, it is used in _Bitcoin_, _DogeCoin_ and _LiteCoin_ blockchains.  
-        Currently supported Blockchains: _Ethereum_, _Bitcoin_, DogeCoin_, _LiteCoin_ (only `mainnet` currently).					
+        Currently supported Blockchains: _Ethereum_, _Bitcoin_, _Solana_, _DogeCoin_, _LiteCoin_ (only `mainnet` currently).					
 		
 5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will open the _Cryptocalc_ desktop standalone application
@@ -75,10 +79,10 @@
 		* 5.1.6. Input the _Private Key_    
 		You can input a hex value (NB: requires 64 hex digits) for the `Private Key (Hex)` field. Notice that it will clear the other fields
 		, so you must use the [ Update ] button (cf. 5.1.1. _Seed to Seedphrase waterfall_) to refresh them.		  		
-		* 5.1.7. Save _Private Key_ informations    
-		With `File/Save` you can save the private key informations in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
+		* 5.1.7. Save _Private Key Informations_    
+		With `File/Save` you can save the _Private Key Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
 		under `_output` folder. This subfolder contains `private_key_info.txt` and a `pk_info.json` with the displayed informations 
-		but there is also the word indices of the _mnemonics_ in the _Seedphrase_. 
+		but there is also the word indices of each _mnemonic_ in the _Seedphrase_. 
 		* 5.1.8. Input/Modify the _Seedphrase_    
 		You can now modify the _Seedphrase_ but you must provide valid _mnemonics_ (matching the selected _language_) and 
 		provide the expected number of _mnemonics_ (which is currently a constant equal to 24). 
@@ -95,15 +99,20 @@
 		Currently only `en` and `fr` are provided, but I would be nice if contributors provide other languages 
 		(at the time being, only 16 labels to translate, I will of course cite the contributors name in the license) 
 		as I preferred to avoid _naive_ use of a translation tool.  		
-   + 5.2. Use cases
-       * 5.2.1. Create a new _Crypto Wallet_  
-	   With a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) a _Seedphrase_
-       is enough to import a new wallet, you just need to choose the coin (e.g. `BTC`,`ETH`,`DOGE`,`XRP`,`ADA`,`SOL`, etc...)   
-       * 5.2.2. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
-       The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 144 bytes useable capacity.
-	   This is enough to store the _Shortened Seedphrase_, with a 24 words _Shortened Seedphrase_ 
-	   the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.1) or even less (as some mnemonics have only three characters).   
-       * 5.2.3. Store _Master password_  
-       This is similar to the previous case, but the _Shortened Seedphrase_ (or `Private Key (B64)` value) can be used as a _Master password_  
-       for a _Password Manager_ or for tools like [_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption
-	   of your documents.
+    + 5.2. Use cases
+        * 5.2.1. Generate a new _Crypto Wallet_ from a _Seedphrase_  
+	    With a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) a _Seedphrase_
+        is enough to import a new wallet, you just need to choose the coin (e.g. `BTC`,`ETH`,`DOGE`,`XRP`,`ADA`,`SOL`, etc...). 
+		* 5.2.2. Import a _Computed Wallet_ from _Private Key Informations_  
+	    With [_Guarda_](https://https://guarda.com/) you can import the some of the _Private Key Informations_ to
+        retrieve the correct _Wallet Address_.  
+		NB: Please notice that depending on the _Blockchain_, _Guarda_ will not accept
+        the same _Private Key Information_: it could be the _Private Key_ (with or without `0x` prefix), the _Seedphrase_ or even the _WIF_.		
+        * 5.2.3. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
+        The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 144 bytes useable capacity.
+	    This is enough to store the _Shortened Seedphrase_, with a 24 words _Shortened Seedphrase_ 
+	    the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.1) or even less (as some mnemonics have only three characters).   
+        * 5.2.4. Store _Master password_  
+        This is similar to the previous case, but the _Shortened Seedphrase_ (or `Private Key (B64)` value) can be used as a _Master password_  
+        for a _Password Manager_ or for tools like [_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption
+	    of your documents.

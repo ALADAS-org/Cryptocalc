@@ -23,6 +23,7 @@ const REQUEST_SEEDPHRASE_TO_WORD_INDICES = "request:seedphrase_to_word_indices";
 
 const REQUEST_GET_ETHEREUM_WALLET        = "request:get_ETH_wallet";
 const REQUEST_GET_COINKEY_WALLET         = "request:get_coinkey_wallet";
+const REQUEST_GET_SOLANA_WALLET          = "request:get_SOLANA_wallet";
 const REQUEST_GET_HD_WALLET              = "request:get_HD_wallet";
 
 const REQUEST_GET_FORTUNE_COOKIE         = "request:get_FortuneCookie";
@@ -59,6 +60,7 @@ if (typeof exports === 'object') {
 	
 	exports.REQUEST_GET_ETHEREUM_WALLET        = REQUEST_GET_ETHEREUM_WALLET
 	exports.REQUEST_GET_COINKEY_WALLET         = REQUEST_GET_COINKEY_WALLET
+	exports.REQUEST_GET_SOLANA_WALLET          = REQUEST_GET_SOLANA_WALLET 
 	exports.REQUEST_GET_HD_WALLET              = REQUEST_GET_HD_WALLET
 	
 	exports.FromMain_DID_FINISH_LOAD           = FromMain_DID_FINISH_LOAD

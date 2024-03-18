@@ -28,6 +28,7 @@ contextBridge.exposeInMainWorld(
 		
 		GetEthereumWallet:        (data) => ipcRenderer.invoke("request:get_ETH_wallet", data),
 		GetCoinKeyWallet:         (data) => ipcRenderer.invoke("request:get_coinkey_wallet", data),
+		GetSolanaWallet:          (data) => ipcRenderer.invoke("request:get_SOLANA_wallet", data),
 		GetHDWallet:              (data) => ipcRenderer.invoke("request:get_HD_wallet", data),
 		
 	    //send: (channel, data) => {

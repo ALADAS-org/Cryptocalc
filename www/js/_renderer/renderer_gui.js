@@ -257,7 +257,8 @@ class Renderer_GUI {
 		
 		let wif = "";
 		// NB: WIF Doesn't work with Guarda.com / Import LiteCoin 
-		if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+		if (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN
+		    || blockchain == SOLANA) {
 			wif = await window.ipcMain.GetWIF(private_key);
 		} 
 		Renderer_GUI.UpdateWIF(blockchain, wif);
@@ -276,12 +277,16 @@ class Renderer_GUI {
 		log2Main(">> " + _CYAN_ + "Renderer_GUI.UpdateWalletAddress() " + _END_ + blockchain);
 		
 		let wallet = {};
-		const data = { private_key, salt_uuid, blockchain };
+		let data   = { private_key, salt_uuid, blockchain };
 		if (blockchain == ETHEREUM) {
 			wallet = await window.ipcMain.GetEthereumWallet(data);
 		}
 		else if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
 			wallet = await window.ipcMain.GetCoinKeyWallet(data);
+		}
+		else if (blockchain == SOLANA) {
+			data   = { private_key, salt_uuid };
+			wallet = await window.ipcMain.GetSolanaWallet(data);
 		}
 
         let wallet_address = wallet[ADDRESS];		
@@ -311,7 +316,8 @@ class Renderer_GUI {
 	} // Renderer_GUI.UpdateWalletURL()
 	
 	static UpdateWIF(blockchain, wif) {
-		if (      (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN)
+		if (      (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN
+		           || blockchain == SOLANA)
   		      &&  wif != undefined &&  wif != "") {
 			Renderer_GUI.SetField(WIF_ID, wif);
 		}
@@ -359,7 +365,7 @@ class Renderer_GUI {
 		return new_uuid;
     } // Renderer_GUI.UpdateSaltUUID()
 	
-		static async GetCryptoInfo() {
+	static async GetCryptoInfo() {
 		let crypto_info = {};
 		
 		let blockchain = Renderer_GUI.GetField(WALLET_BLOCKCHAIN_ID); 
@@ -382,7 +388,8 @@ class Renderer_GUI {
 		let pk_b64_value = Renderer_GUI.GetField(PK_B64_ID); 
 		crypto_info['Private Key (B64)'] = pk_b64_value;
 		
-		if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+		if (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN
+		    || blockchain == SOLANA) {
 			let WIF_value = Renderer_GUI.GetField(WIF_ID); 
 			crypto_info['WIF'] = WIF_value;
 		}
