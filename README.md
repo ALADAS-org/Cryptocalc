@@ -1,5 +1,5 @@
 ## Cryptocalc 0.1.0
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Cryptocalc_0_1_0.gif)
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Cryptocalc_0_1_0_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
    conversions between a `Private Key` (an `Hexadecimal` value) and the matching _Seedphrase_ .
