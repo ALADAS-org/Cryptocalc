@@ -163,13 +163,13 @@ it so simple that there are obviously no deficiencies and the other is to
 make it so complicated that there are no obvious deficiencies.
 - Charles Anthony Richard Hoare
 %
-Do not allow this language (Ada) in its present state to be used in
+Do not allow this lang_xuage (Ada) in its present state to be used in
 applications where reliability is critical, i.e., nuclear power stations,
 cruise missiles, early warning systems, anti-ballistic missle defense
-systems.  The next rocket to go astray as a result of a programming language
+systems.  The next rocket to go astray as a result of a programming lang_xuage
 error may not be an exploratory space rocket on a harmless trip to Venus:
 It may be a nuclear warhead exploding over one of our cities.  An unreliable
-programming language generating unreliable programs constitutes a far
+programming lang_xuage generating unreliable programs constitutes a far
 greater risk to our environment and to our society than unsafe cars, toxic
 pesticides, or accidents at nuclear power stations.
 - C. A. R. Hoare
@@ -239,13 +239,13 @@ engineer.
 Except for 75% of the women, everyone in the whole world wants to have sex.
 - Ellyn Mustard
 %
-The connection between the language in which we think/program and the problems
+The connection between the lang_xuage in which we think/program and the problems
 and solutions we can imagine is very close.  For this reason restricting
-language features with the intent of eliminating programmer errors is at best
+lang_xuage features with the intent of eliminating programmer errors is at best
 dangerous.
-- Bjarne Stroustrup in "The C++ Programming Language"
+- Bjarne Stroustrup in "The C++ Programming lang_xuage"
 %
-The only way to learn a new programming language is by writing programs in it.
+The only way to learn a new programming lang_xuage is by writing programs in it.
 - Brian Kernighan
 %
 Perfection is acheived only on the point of collapse.
@@ -2042,7 +2042,7 @@ Thufir's a Harkonnen now.
 %
 "By long-standing tradition, I take this opportunity to savage other
 designers in the thin disguise of good, clean fun."
--- P. J. Plauger, from his April Fool's column in April 88's "Computer Language"
+-- P. J. Plauger, from his April Fool's column in April 88's "Computer lang_xuage"
 %
 "If you want to eat hippopatomus, you've got to pay the freight."
 -- attributed to an IBM guy, about why IBM software uses so much memory
@@ -2078,16 +2078,16 @@ improvements."
 "How to make a million dollars:  First, get a million dollars."
 -- Steve Martin
 %
-"Language shapes the way we think, and determines what we can think about."
+"lang_xuage shapes the way we think, and determines what we can think about."
 -- B. L. Whorf
 %
-The language provides a programmer with a set of conceptual tools; if these are
+The lang_xuage provides a programmer with a set of conceptual tools; if these are
 inadequate for the task, they will simply be ignored.  For example, seriously
 restricting the concept of a pointer simply forces the programmer to use a
 vector plus integer arithmetic to implement structures, pointer, etc.  Good
-design and the absence of errors cannot be guaranteed by mere language
+design and the absence of errors cannot be guaranteed by mere lang_xuage
 features.
--- Bjarne Stroustrup, "The C++ Programming Language"
+-- Bjarne Stroustrup, "The C++ Programming lang_xuage"
 %
 "For the love of phlegm...a stupid wall of death rays.  How tacky can ya get?"
 - Post Brothers comics
@@ -3338,10 +3338,10 @@ suggestions that they may feel obliged to do so, we may survive beyond
 1988.  
 -- George Rostky, EE Times, June 20, 1988 p. 45
 %
-The essential ideas of Algol 68 were that the whole language should be
+The essential ideas of Algol 68 were that the whole lang_xuage should be
 precisely defined and that all the pieces should fit together smoothly.
 The basic idea behind Pascal was that it didn't matter how vague the
-language specification was (it took *years* to clarify) or how many rough
+lang_xuage specification was (it took *years* to clarify) or how many rough
 edges there were, as long as the CDC Pascal compiler was fast.
 -- Richard A. O'Keefe
 %
@@ -3435,10 +3435,10 @@ Round up to the nearest half-year.
 By the way, ALL software projects are done by iterative prototyping.
 Some companies call their prototypes "releases", that's all.
 %
-    UNIX Shell is the Best Fourth Generation Programming Language
+    UNIX Shell is the Best Fourth Generation Programming lang_xuage
 
     It is the UNIX shell that makes it possible to do applications in a small 
-    fraction of the code and time it takes in third generation languages.  In 
+    fraction of the code and time it takes in third generation lang_xuages.  In 
     the shell you process whole files at a time, instead of only a line at a 
     time.  And, a line of code in the UNIX shell is one or more programs,
     which do more than pages of instructions in a 3GL.  Applications can be
@@ -3674,7 +3674,7 @@ I just had to shoot one."
 -- Post Bros. Comics
 %
 interlard - vt., to intersperse; diversify
--- Webster's New World Dictionary Of The American Language
+-- Webster's New World Dictionary Of The American lang_xuage
 %
 "Everybody is talking about the weather but nobody does anything about it."
 -- Mark Twain
@@ -5376,7 +5376,7 @@ came up and bit him on his Internet."
 %
 I made it a rule to forbear all direct contradictions to the sentiments of 
 others, and all positive assertion of my own.  I even forbade myself the use 
-of every word or expression in the language that imported a fixed opinion, 
+of every word or expression in the lang_xuage that imported a fixed opinion, 
 such as "certainly", "undoubtedly", etc.   I adopted instead of them "I 
 conceive", "I apprehend", or "I imagine" a thing to be so or so; or "so it 
 appears to me at present".
@@ -5395,7 +5395,7 @@ prevailed with others to give up their mistakes and join with me when I
 happened to be in the right.
 -- Autobiography of Benjamin Franklin
 %
-"If I ever get around to writing that language depompisifier, it will change
+"If I ever get around to writing that lang_xuage depompisifier, it will change
 almost all occurences of the word "paradigm" into "example" or "model."
 -- Herbie Blashtfalt
 %

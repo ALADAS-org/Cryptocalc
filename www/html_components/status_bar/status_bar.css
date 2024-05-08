@@ -8,14 +8,8 @@
   font-size:  15px;
 }
 
-#status_item_pattern_id {
+#SB_item_message_id {
   width:       200px;
   margin-left: 6px;
   font-size:   12px;
-}
-
-#SB_item_message_id {
-  width: 200px;
-  margin-left: 12px;
-  font-size: 13px;
 }

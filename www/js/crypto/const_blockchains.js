@@ -10,6 +10,9 @@ const NULL_COIN       = "Null-COIN";
 const BLOCKCHAIN      = "Blockchain";
 const NULL_BLOCKCHAIN = "Null-Blockchain";
 
+const COIN         = "coin";
+const COIN_TYPE    = "coin_type";
+
 const MAINNET      = "mainnet";
 const TESTNET      = "testnet";
 
@@ -154,6 +157,9 @@ if (typeof exports === 'object') {
 	
 	exports.BLOCKCHAIN               = BLOCKCHAIN
 	exports.NULL_BLOCKCHAIN          = NULL_BLOCKCHAIN
+	
+	exports.COIN                     = COIN
+	exports.COIN_TYPE                = COIN_TYPE
 	
 	exports.TESTNET_COIN             = TESTNET_COIN	
 	

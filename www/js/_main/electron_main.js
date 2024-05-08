@@ -5,6 +5,9 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
 "use strict";
 
+const MAIN_WINDOW_WIDTH  = 975;
+const MAIN_WINDOW_HEIGHT = 600; 
+
 const { app, Menu, BrowserWindow, ipcMain, 
         shell, remote, dialog } = require('electron');	
 		// https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron
@@ -20,16 +23,28 @@ const { _CYAN_, _RED_, _PURPLE_, _YELLOW_,
 	  }                                 = require('../util/color/color_console_codes.js');
 
 const { VIEW_TOGGLE_DEVTOOLS, 
-        REQUEST_LOG_2_MAIN, REQUEST_OPEN_URL,
-        REQUEST_HEX_TO_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_PK, REQUEST_SEEDPHRASE_AS_4LETTER,
-        REQUEST_GET_SHA256, REQUEST_GET_UUID, REQUEST_GET_L10N_MSG,
-		REQUEST_GET_SECP256K1, REQUEST_GET_WIF,
-		REQUEST_CHECK_SEEDPHRASE, REQUEST_SEEDPHRASE_TO_WORD_INDICES,
-		REQUEST_SAVE_PK_INFO, REQUEST_IMPORT_RAW_DATA,
-		REQUEST_GET_FORTUNE_COOKIE,
+        REQUEST_LOG_2_MAIN, 
+		REQUEST_TOGGLE_DEBUG_PANEL,
+		REQUEST_OPEN_URL,
 		
-		REQUEST_GET_ETHEREUM_WALLET, REQUEST_GET_COINKEY_WALLET, 
-		REQUEST_GET_SOLANA_WALLET, REQUEST_GET_HD_WALLET, 
+		REQUEST_MNEMONICS_TO_ENTROPY_INFO, 
+		REQUEST_MNEMONICS_TO_HDWALLET_INFO,
+		REQUEST_ENTROPY_TO_MNEMONICS, REQUEST_ENTROPY_TO_CHECKSUM,
+		REQUEST_ENTROPY_SRC_TO_ENTROPY,	REQUEST_ENTROPY_SRC_TO_PK,	
+
+		REQUEST_MNEMONICS_AS_4LETTER,
+        REQUEST_GET_UUID, 
+		
+		REQUEST_GET_L10N_KEYPAIRS, REQUEST_GET_L10N_MSG, 
+		
+		REQUEST_GET_SECP256K1,
+		REQUEST_CHECK_MNEMONICS, 
+		REQUEST_MNEMONICS_TO_WORD_INDEXES, REQUEST_GUESS_MNEMONICS_LANG,
+		REQUEST_SAVE_WALLET_INFO, REQUEST_IMPORT_RAW_DATA,
+		REQUEST_GET_FORTUNE_COOKIE,		
+		
+		REQUEST_GET_HD_WALLET, 
+		REQUEST_GET_SOLANA_WALLET,
 		
 		FromMain_DID_FINISH_LOAD,
         FromMain_FILE_SAVE, FromMain_HELP_ABOUT,
@@ -43,51 +58,47 @@ const { NULL_COIN,
 		MAINNET, TESTNET,
 		BLOCKCHAIN, NULL_BLOCKCHAIN,
 		COIN_ABBREVIATIONS
-}                                       = require('../crypto/const_blockchains.js');
+      }                                 = require('../crypto/const_blockchains.js');
 
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
-const { Seedphrase_API }                = require('../crypto/seedphrase_api.js');
-const { hexToBytes, hexWithoutPrefix }  = require('../crypto/hex_utils.js');
-const { getSecp256k1PK }                = require('../crypto/crypto_utils.js');
+const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
+const { Bip32Utils }                    = require('../crypto/bip32_utils.js');
+const { hexToBytes, hexWithoutPrefix,
+        isHexString  }                  = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
-const { getL10nMsg }                    = require('../L10n/get_L10n_msg.js');
+const { L10nUtils }                     = require('../L10n/L10n_utils.js');
 
-const { Ethereum_API }                  = require('../crypto/ethereum_api.js');
-const { CoinKey_API }                   = require('../crypto/coinkey_api.js');
 const { Solana_API }                    = require('../crypto/solana_api.js');
 		
-const MAIN_WINDOW_WIDTH  = 800;
-const MAIN_WINDOW_HEIGHT = 600; 
-
 let g_DidFinishLoad_FiredCount = 0;
 		
 const getRootPath = () => {
 	return path.resolve(__dirname, '..');
 } // getRootPath()
 
+const createBrowserWindow = ( url ) => {
+   const win = new BrowserWindow({
+     height: 900,
+     width:  1200
+   });
+
+   win.loadURL( url );
+} // createBrowserWindow
+
 // https://github.com/electron/electron/issues/19775
 // https://stackoverflow.com/questions/44391448/electron-require-is-not-defined
 const ELECTRON_MAIN_MENU_TEMPLATE = [
-	{ 	label: getL10nMsg("File"),
-		submenu: [ {  label:  getL10nMsg("Save"), 
+	{ 	label: L10nUtils.GetLocalizedMsg("File"),
+		submenu: [ {  label:  L10nUtils.GetLocalizedMsg("Save"), 
 					  click() { ElectronMain.DoFileSave(); }
 			       },
-				   {  label: getL10nMsg("Import"), 
-					  submenu: [ {  label: getL10nMsg("FromFile"), 
-									click() { ElectronMain.SelectFile(); }
-							     },
-								 {  label: getL10nMsg("FortuneCookie"), 
-									click() { ElectronMain.GetFortuneCookie(); }
-							     },
-				               ]
-				   },
-				   {  label: getL10nMsg("Quit"), 
+				   {  label: L10nUtils.GetLocalizedMsg("Quit"), 
 					  click() { app.quit(); }
 			       }
 				 ]
 	},
-	{ 	label: getL10nMsg("View"),
-		submenu: [ {  label: getL10nMsg("ToggleDebug"), type: 'checkbox',
+	{ 	label: L10nUtils.GetLocalizedMsg("View"),
+		submenu: [ {  label: L10nUtils.GetLocalizedMsg("ToggleDebug"), type: 'checkbox',
 				      click() {
 					      console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + VIEW_TOGGLE_DEVTOOLS + _END_);	
 						  ElectronMain.ToggleDebugPanel();  
@@ -95,8 +106,18 @@ const ELECTRON_MAIN_MENU_TEMPLATE = [
 			       }
 		         ]
 	},
-	{   label: getL10nMsg("Help"), //"Help"
-        submenu: [ {  label: getL10nMsg("About"), //'About...',
+	{   label: L10nUtils.GetLocalizedMsg("Help"), //"Help"
+        submenu: [ { label: L10nUtils.GetLocalizedMsg("Resources"),
+				     submenu: [
+						{ label: "Ian Coleman BIP 39",
+						  click() { 
+							 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
+							 createBrowserWindow("https://iancoleman.io/bip39/");
+						  }
+						}
+				     ]
+				   },
+		           {  label: L10nUtils.GetLocalizedMsg("About"), //'About...',
 				      click() { 
 					      ElectronMain.MainWindow.webContents.send('fromMain', [ FromMain_HELP_ABOUT ]);
 			          }
@@ -167,7 +188,7 @@ class ElectronMain {
 					
 					// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
 					// Open urls in the user's browser
-					// nB: Triggeted by 'Renderer_GUI.OnExploreWallet()'
+					// nB: Triggered by 'RendererGUI.OnExploreWallet()'
 					ElectronMain.MainWindow.webContents.setWindowOpenHandler((edata) => {
 						shell.openExternal(edata.url);
 						return { action: "deny" };
@@ -197,7 +218,7 @@ class ElectronMain {
 		console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + "ToggleDebugPanel" + _END_);
 		gShow_DebugPanel = ! gShow_DebugPanel;
 		
-		if (gShow_DebugPanel) {
+		if ( gShow_DebugPanel ) {
 			ElectronMain.MainWindow.webContents.openDevTools();
 		}
 		else {
@@ -236,13 +257,19 @@ class ElectronMain {
 
 		// ====================== REQUEST_LOG_2_MAIN ======================
 		// called like this by Renderer: window.ipcMain.log2Main(data)
-		ipcMain.on(REQUEST_LOG_2_MAIN, (event, data) => {
+		ipcMain.on( REQUEST_LOG_2_MAIN, (event, data) => {
 			console.log(data);
 		}); // "request:log2main" event handler
 		
+		// ====================== REQUEST_TOGGLE_DEBUG_PANEL ======================
+		// called like this by Renderer: window.ipcMain.ToggleDebugPanel(data)
+		ipcMain.on( REQUEST_TOGGLE_DEBUG_PANEL, (event, data) => {
+			ElectronMain.ToggleDebugPanel();
+		}); // "request:toggle_debug_panel" event handler
+		
 		// ====================== REQUEST_OPEN_URL ======================
 		// called like this by Renderer: window.ipcMain.OpenURL(url)
-		ipcMain.on(REQUEST_OPEN_URL, (event, url) => {
+		ipcMain.on( REQUEST_OPEN_URL, (event, url) => {
 			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_OPEN_URL + _END_);
 			console.log("   URL: " + url);
 			
@@ -250,10 +277,10 @@ class ElectronMain {
 			ElectronMain.MainWindow.location = url;
 		}); // "request:open_URL" event handler
 
-		// ====================== REQUEST_SAVE_PK_INFO ======================
-		// called like this by Renderer: window.ipcMain.SavePrivateKeyInfo(data)
-		ipcMain.on(REQUEST_SAVE_PK_INFO, (event, crypto_info) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SAVE_PK_INFO + _END_);
+		// ====================== REQUEST_SAVE_WALLET_INFO ======================
+		// called like this by Renderer: window.ipcMain.SaveWalletInfo(data)
+		ipcMain.on( REQUEST_SAVE_WALLET_INFO, (event, crypto_info) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SAVE_WALLET_INFO + _END_);
 			let timestamp = getDayTimestamp();
 			let output_path = app.getAppPath() + "/_output/" + timestamp;
 			
@@ -266,163 +293,165 @@ class ElectronMain {
 			}		
 			
 			//console.log(JSON.stringify(crypto_info));
-			fs.writeFileSync( output_path + "/pk_info.json", JSON.stringify(crypto_info), error_handler );
+			fs.writeFileSync( output_path + "/wallet_info.json", JSON.stringify(crypto_info), error_handler );
 			
-			let pk_info_str = "";
-			let pk_keys = Object.keys(crypto_info); 
-			for (let i=0; i < pk_keys.length; i++) {
-				let current_key = pk_keys[i];
-				pk_info_str += current_key.padEnd(22,' ') + crypto_info[current_key] + "\n";
+			let wallet_info_str = "";
+			let wallet_keys = Object.keys(crypto_info); 
+			for (let i=0; i < wallet_keys.length; i++) {
+				let current_key = wallet_keys[i];
+				wallet_info_str += current_key.padEnd(22,' ') + crypto_info[current_key] + "\n";
 			}
-			fs.writeFileSync( output_path + "/private_key_info.txt", pk_info_str, error_handler );
-		}); // "request:save_pk_info" event handler
-		
-		
+			fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );
+		}); // "request:save_wallet_info" event handler
+				
 		// ====================== REQUEST_IMPORT_RAW_DATA ======================
 		// called like this by Renderer: window.ipcMain.ImportRawData(data)
-		ipcMain.on(REQUEST_IMPORT_RAW_DATA, (event, crypto_info) => {
+		ipcMain.on( REQUEST_IMPORT_RAW_DATA, (event, crypto_info) => {
 			ElectronMain.SelectFile();
         }); // "request:import_raw_data" event handler
+		
+		// ================== REQUEST_MNEMONICS_TO_HDWALLET_INFO ==================
+		// called like this by Renderer: await window.ipcMain.MnemonicsToHDWalletInfo( data )
+		ipcMain.handle( REQUEST_MNEMONICS_TO_HDWALLET_INFO, async (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_TO_HDWALLET_INFO + _END_);
+			const { mnemonics, options } = data;
+			//console.log("   options: " + JSON.stringify(options));
+			let hdwallet_info = await Bip32Utils.MnemonicsToHDWalletInfo( mnemonics, options );
+			return hdwallet_info;
+		}); // "request:mnemonics_to_hdwallet_info" event handler	
 
-
-		// ================== REQUEST_SEEDPHRASE_TO_PK ===================
-		// called like this by Renderer: await window.ipcMain.SeedPhraseToPrivateKey(data)
-		ipcMain.handle(REQUEST_SEEDPHRASE_TO_PK, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SEEDPHRASE_TO_PK + _END_);
-			const { seedphrase, lang } = data;
-			let private_key_hex = Seedphrase_API.ToPrivateKey(seedphrase, lang);
-			return private_key_hex;
-		}); // "request:seedphrase_to_pk" event handler
-
-		// ================== REQUEST_HEX_TO_SEEDPHRASE ===================
-		// called like this by Renderer: await window.ipcMain.HexToSeedPhrase(data)
-		ipcMain.handle(REQUEST_HEX_TO_SEEDPHRASE, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_HEX_TO_SEEDPHRASE + _END_);
-			const { pk_hex_value, lang } = data;
-			//console.log("   data_hex: " + data_hex);
+		// ================== REQUEST_MNEMONICS_TO_ENTROPY_INFO ===================
+		// called like this by Renderer: await window.ipcMain.MnemonicsToEntropyInfo( data )
+		ipcMain.handle( REQUEST_MNEMONICS_TO_ENTROPY_INFO, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_TO_ENTROPY_INFO + _END_);
+			const { mnemonics, lang } = data;
 			//console.log("   lang: " + lang);
-			let seedphrase = Seedphrase_API.FromSHASeed(pk_hex_value, lang);
+			let entropy_info = Bip39Utils.MnemonicsToEntropyInfo( mnemonics, lang );
+			return entropy_info;
+		}); // "request:mnemonics_to_entropy_info" event handler
+
+		// ================== REQUEST_ENTROPY_TO_MNEMONICS ===================
+		// called like this by Renderer: await window.ipcMain.EntropyToMnemonics( data )
+		ipcMain.handle( REQUEST_ENTROPY_TO_MNEMONICS, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_ENTROPY_TO_MNEMONICS + _END_);
+			const { entropy, options } = data;
+			//console.log("   data_hex: " + data_hex);
+			//console.log("   options: " + JSON.stringify(options));
+			let seedphrase = Bip39Utils.EntropyToMnemonics( entropy, options );
 			//console.log(">> seedphrase: " + seedphrase); 
 			return seedphrase;
-		}); // "request:hex_to_seedphrase" event handler
+		}); // "request:entropy_to_mnemonics" event handler
+		
+		// ================== REQUEST_ENTROPY_TO_CHECKSUM ===================
+		// called like this by Renderer: await window.ipcMain.EntropyToChecksum( data )
+		ipcMain.handle( REQUEST_ENTROPY_TO_CHECKSUM, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_ENTROPY_TO_CHECKSUM + _END_);
+			const { entropy, options } = data;
+			let checksum = Bip39Utils.EntropyToChecksum( entropy, options );
+			return checksum;
+		}); // "request:entropy_to_checksum" event handler
+		
+		// ================== REQUEST_ENTROPY_SRC_TO_ENTROPY ==================
+		// called like this by Renderer: await window.ipcMain.EntropySourceToEntropy( data )
+		ipcMain.handle( REQUEST_ENTROPY_SRC_TO_ENTROPY, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_ENTROPY_SRC_TO_ENTROPY + _END_);
+			const { entropy_src_str, options } = data;
+			let entropy = Bip39Utils.EntropySourceToEntropy( entropy_src_str, options );
+			return entropy;
+		}); // "request:entropy_src_to_entropy" event handler	
 
-		// ================== REQUEST_SEEDPHRASE_AS_4LETTER ==================
-		// called like this by Renderer: await window.ipcMain.SeedphraseAs4letter(data)
-		ipcMain.handle(REQUEST_SEEDPHRASE_AS_4LETTER, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SEEDPHRASE_AS_4LETTER + _END_);
+		// ================== REQUEST_MNEMONICS_AS_4LETTER ==================
+		// called like this by Renderer: await window.ipcMain.MnemonicsAs4letter( data )
+		ipcMain.handle( REQUEST_MNEMONICS_AS_4LETTER, (event, mnemonics) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_AS_4LETTER + _END_);
 			//console.log(">> data: " + data); 
-			let seedphrase_as_4letter = Seedphrase_API.As4letter(data);
-			//console.log(">> seedphrase: " + seedphrase); 
-			return seedphrase_as_4letter;
-		}); // "request:seedphrase_as_4letter" event handler
+			let mnemonics_as_4letter = Bip39Utils.MnemonicsAs4letter( mnemonics );
+			//console.log(">> mnemonics: " + mnemonics); 
+			return mnemonics_as_4letter;
+		}); // "request:mnemonics_as_4letter" event handler
 
-		// ================== REQUEST_GET_SHA256 ==================
-		// called like this by Renderer: await window.ipcMain.GetSHA256(data)
-		ipcMain.handle(REQUEST_GET_SHA256, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_SHA256 + _END_);
-			let hash = sha256.create();
-			hash.update(data);
-			return hash.hex();
-		}); // "request:get_SHA256" event handler		
-		
 		// ================== REQUEST_GET_SECP256K1 ==================
-		// called like this by Renderer: await window.ipcMain.GetSecp256k1(sha256_hex)
-		ipcMain.handle(REQUEST_GET_SECP256K1, (event, sha256_hex) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_SECP256K1 + _END_);
-			let result = getSecp256k1PK(sha256_hex);
-			return result;
-		}); // "request:get_Secp256k1" event handler		
+		// called like this by Renderer: await window.ipcMain.GetSecp256k1( entropy )
+		//ipcMain.handle( REQUEST_GET_SECP256K1, (event, entropy) => {
+		//	console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_SECP256K1 + _END_);
+		//	let entropy_is_hex = isHexString( entropy );
+		//	console.log("   entropy_is_hex: " + entropy_is_hex);
+		//	let entropy_bytes = entropy.length/2;
+		//	console.log("   entropy(" + entropy_bytes + "):    " + entropy);
+		//	let result = getSecp256k1PK( entropy );
+		//	return result;
+		//}); // "request:get_Secp256k1" event handler
 		
-		// ================== REQUEST_GET_WIF ==================
-		// called like this by Renderer: await window.ipcMain.GetWIF(sha256_hex)
-		ipcMain.handle(REQUEST_GET_WIF, (event, sha256_hex) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_WIF + _END_);
-			var private_key = Buffer.from(hexWithoutPrefix(sha256_hex), 'hex');
-            var key = wif.encode(128, private_key, true); // for the testnet use: wif.encode(239, ...
-			return key;
-		}); // "request:get_WIF" event handler
-		
-		// ================== REQUEST_GET_UUID ==================
-		// called like this by Renderer: await window.ipcMain.GetUUID(data)
-		ipcMain.handle(REQUEST_GET_UUID, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_UUID + _END_);
-			let new_uuidv4 = uuidv4();
-			return new_uuidv4;
-		}); // "request:get_UUID" event handler
-		
-		// ================== REQUEST_GET_L10N_MSG ==================
-		// called like this by Renderer: await window.ipcMain.GetL10nMsg(msg_id)
-		ipcMain.handle(REQUEST_GET_L10N_MSG, (event, msg_id) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_L10N_MSG + _END_);
-			let L10n_msg = getL10nMsg(msg_id);
-			return L10n_msg;
-		}); // "request:get_L10n_Msg" event handler
-		
-		
-		// ================== REQUEST_GET_FORTUNE_COOKIE ==================
+		// =================== REQUEST_GET_FORTUNE_COOKIE ==================
 		// called like this by Renderer: await window.ipcMain.GetFortuneCookie()
-		ipcMain.handle(REQUEST_GET_FORTUNE_COOKIE, (event, data) => {
+		ipcMain.handle( REQUEST_GET_FORTUNE_COOKIE, (event, data) => {
 			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_FORTUNE_COOKIE + _END_);
 			let fortune_cookie = getFortuneCookie();
 			return fortune_cookie;
 		}); // "request:get_FortuneCookie"
 
-		// ================== REQUEST_SEEDPHRASE_TO_WORD_INDICES ==================
-		// called like this by Renderer: await window.ipcMain.SeedPhraseToWordIndices(data)
-		ipcMain.handle(REQUEST_SEEDPHRASE_TO_WORD_INDICES, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SEEDPHRASE_TO_WORD_INDICES + _END_);
-			const { seedphrase, lang } = data;
-			let word_indices = Seedphrase_API.GetWordIndices(seedphrase, lang);
-			return word_indices;
-		}); // "request:seedphrase_to_word_indices" event handler
+		// =============== REQUEST_MNEMONICS_TO_WORD_INDEXES ===============
+		// called like this by Renderer: await window.ipcMain.MnemonicsToWordIndexes( data )
+		ipcMain.handle( REQUEST_MNEMONICS_TO_WORD_INDEXES, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_TO_WORD_INDEXES + _END_);
+			const { mnemonics, options } = data;
+			let word_indexes = Bip39Utils.GetWordIndexes( mnemonics, options );
+						
+			return word_indexes;
+		}); // "request:mnemonics_to_word_indexes" event handler
 
-		// ================== REQUEST_CHECK_SEEDPHRASE ==================
-		// called like this by Renderer: await window.ipcMain.CheckSeedPhrase(data)
-		ipcMain.handle(REQUEST_CHECK_SEEDPHRASE, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_CHECK_SEEDPHRASE + _END_);
-			const { seedphrase, lang, wordcount } = data;
-			let check_result = Seedphrase_API.CheckSeedphrase(seedphrase, lang, wordcount);
-			return check_result;
-		}); // "request:check_seedphrase" event handler
+		// =============== REQUEST_GUESS_MNEMONICS_LANG ===============
+		// called like this by Renderer: await window.ipcMain.GuessMnemonicsLang( data )
+		ipcMain.handle( REQUEST_GUESS_MNEMONICS_LANG, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GUESS_MNEMONICS_LANG + _END_);
+			const { mnemonics } = data;
+			let lang = Bip39Utils.GuessMnemonicsLang( mnemonics );
+
+			return lang;
+		}); // "request:lang" event handler		
 		
-		
-		// ================== REQUEST_GET_ETHEREUM_WALLET ==================
-		// called like this by Renderer: await window.ipcMain.GetEthereumWallet(data)
-		ipcMain.handle(REQUEST_GET_ETHEREUM_WALLET, (event, in_data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_ETHEREUM_WALLET + _END_);
-			const { private_key, salt_uuid, blockchain } = in_data;
-			let wallet = Ethereum_API.GetWallet(private_key, salt_uuid, blockchain, MAINNET);
-			return wallet;
-		}); // "request:get_ETH_wallet" event handler
-		
-		// ========== REQUEST_GET_COINKEY_WALLET ==========
-		// called like this by Renderer: await window.ipcMain.GetCoinKeyWallet(data)
-		ipcMain.handle(REQUEST_GET_COINKEY_WALLET, (event, in_data) => {
-			console.log(  '>> ' + _CYAN_ + '[Electron] ipcMain.handle: ' 
-						+ _YELLOW_ + REQUEST_GET_COINKEY_WALLET + _END_);
-			const { private_key, salt_uuid, blockchain } = in_data;
-			let wallet = CoinKey_API.GetWallet(private_key, salt_uuid, blockchain, MAINNET);
-			return wallet;
-		}); // "request:get_coinkey_wallet" event handler (invoke/handle)		
-		
-		// ========== REQUEST_GET_SOLANA_WALLET ==========
-		// called like this by Renderer: await window.ipcMain.GetSolanaWallet(data)
-		ipcMain.handle(REQUEST_GET_SOLANA_WALLET, (event, in_data) => {
+		// ================== REQUEST_GET_SOLANA_WALLET ===================
+		// called like this by Renderer: await window.ipcMain.GetSolanaWallet( data )
+		ipcMain.handle( REQUEST_GET_SOLANA_WALLET, async (event, data) => {
 			console.log(  '>> ' + _CYAN_ + '[Electron] ipcMain.handle: ' 
 						+ _YELLOW_ + REQUEST_GET_SOLANA_WALLET + _END_);
-			const { private_key, salt_uuid } = in_data;
-			let wallet = Solana_API.GetWallet(private_key, salt_uuid, MAINNET);
+			const { mnemonics, options } = data;
+			let wallet = await Solana_API.GetWallet( mnemonics, options );
 			return wallet;
 		}); // "request:get_SOLANA_wallet" event handler (invoke/handle)
 		
-		// ================== REQUEST_GET_HD_WALLET ==================
-		// called like this by Renderer: await window.ipcMain.GetHDWallet(data)
-		ipcMain.handle(REQUEST_GET_HD_WALLET, (event, in_data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_HD_WALLET + _END_);
-			const { private_key, salt_uuid, blockchain } = in_data;
-			let wallet = Ethereum_API.GetWallet(private_key, salt_uuid, blockchain, MAINNET);
-			return wallet;
-		}); // "request:get_HD_wallet" event handler
+		// =================== REQUEST_CHECK_MNEMONICS ====================
+		// called like this by Renderer: await window.ipcMain.CheckSeedPhrase(data)
+		ipcMain.handle( REQUEST_CHECK_MNEMONICS, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_CHECK_MNEMONICS + _END_);
+			const { mnemonics, options } = data;
+			let check_result = Bip39Utils.CheckMnemonics( mnemonics, options );
+			return check_result;
+		}); // "request:check_mnemonics" event handler
+
+		// ====================== REQUEST_GET_UUID =======================
+		// called like this by Renderer: await window.ipcMain.GetUUID(data)
+		ipcMain.handle( REQUEST_GET_UUID, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_UUID + _END_);
+			let new_uuidv4 = uuidv4();
+			return new_uuidv4;
+		}); // "request:get_UUID" event handler
+		
+		// ==================== REQUEST_GET_L10N_KEYPAIRS =====================
+		// called like this by Renderer: await window.ipcMain.GetL10nKeyPairs()
+		ipcMain.handle( REQUEST_GET_L10N_KEYPAIRS, (event, data) => {
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_L10N_KEYPAIRS + _END_);
+			let L10n_keypairs = L10nUtils.GetKeyPairs();
+			return L10n_keypairs;
+		}); // "request:get_L10n_keypairs" event handler	
+
+		// ==================== REQUEST_GET_L10N_MSG =====================
+		// called like this by Renderer: await window.ipcMain.GetLocalizedMsg(msg_id)
+		ipcMain.handle( REQUEST_GET_L10N_MSG, (event, msg_id) => {
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_L10N_MSG + _END_);
+			let L10n_msg = L10nUtils.GetLocalizedMsg( msg_id );
+			return L10n_msg;
+		}); // "request:get_L10n_Msg" event handler	
 		
 	} // ElectronMain.SetCallbacks()
 } // ElectronMain class

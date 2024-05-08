@@ -9,28 +9,33 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld(
 	"ipcMain", {
-		log2Main:                 (data) => ipcRenderer.send("request:log2main", data),
-		SavePrivateKeyInfo:       (data) => ipcRenderer.send("request:save_pk_info", data),
-		ImportRawData:            (data) => ipcRenderer.send("request:import_raw_data", data),
-		OpenURL:                  (data) => ipcRenderer.send("request:open_URL", data),
+		log2Main:                  (data) => ipcRenderer.send("request:log2main", data),
+		ToggleDebugPanel:          (data) => ipcRenderer.send("request:toggle_debug_panel", data),
 		
-		SeedPhraseToPrivateKey:   (data) => ipcRenderer.invoke("request:seedphrase_to_pk", data),
-		HexToSeedPhrase:          (data) => ipcRenderer.invoke("request:hex_to_seedphrase", data),
-		SeedphraseAs4letter:      (data) => ipcRenderer.invoke("request:seedphrase_as_4letter", data),
-		GetSHA256:                (data) => ipcRenderer.invoke("request:get_SHA256", data),
-		GetSecp256k1:             (data) => ipcRenderer.invoke("request:get_Secp256k1", data),
-		GetWIF:                   (data) => ipcRenderer.invoke("request:get_WIF", data),
-		CheckSeedphrase:          (data) => ipcRenderer.invoke("request:check_seedphrase", data),
-		SeedPhraseToWordIndices:  (data) => ipcRenderer.invoke("request:seedphrase_to_word_indices", data),
-		GetUUID:                  (data) => ipcRenderer.invoke("request:get_UUID", data),
-		GetFortuneCookie:         (data) => ipcRenderer.invoke("request:get_FortuneCookie", data),
-		GetL10nMsg:               (data) => ipcRenderer.invoke("request:get_L10n_Msg", data),
+		EntropySourceToEntropy:    (data) => ipcRenderer.invoke("request:entropy_src_to_entropy", data),
+		MnemonicsToEntropyInfo:    (data) => ipcRenderer.invoke("request:mnemonics_to_entropy_info", data),
+		EntropyToMnemonics:        (data) => ipcRenderer.invoke("request:entropy_to_mnemonics", data),
+		EntropyToChecksum:         (data) => ipcRenderer.invoke("request:entropy_to_checksum", data),
+		//EntropySourceToPrivateKey: (data) => ipcRenderer.invoke("request:entropy_src_to_pk", data),
+		MnemonicsToHDWalletInfo:   (data) => ipcRenderer.invoke("request:mnemonics_to_hdwallet_info", data),
 		
-		GetEthereumWallet:        (data) => ipcRenderer.invoke("request:get_ETH_wallet", data),
-		GetCoinKeyWallet:         (data) => ipcRenderer.invoke("request:get_coinkey_wallet", data),
-		GetSolanaWallet:          (data) => ipcRenderer.invoke("request:get_SOLANA_wallet", data),
-		GetHDWallet:              (data) => ipcRenderer.invoke("request:get_HD_wallet", data),
+		MnemonicsAs4letter:        (data) => ipcRenderer.invoke("request:mnemonics_as_4letter", data),		
 		
+		CheckMnemonics:            (data) => ipcRenderer.invoke("request:check_mnemonics", data),
+		MnemonicsToWordIndexes:    (data) => ipcRenderer.invoke("request:mnemonics_to_word_indexes", data),
+		GuessMnemonicsLang:        (data) => ipcRenderer.invoke("request:guess_mnemonics_lang", data),
+		GetUUID:                   (data) => ipcRenderer.invoke("request:get_UUID", data),
+		GetFortuneCookie:          (data) => ipcRenderer.invoke("request:get_FortuneCookie", data),
+		
+		GetL10nKeyPairs:           (data) => ipcRenderer.invoke("request:get_L10n_keypairs", data),
+		GetLocalizedMsg:           (data) => ipcRenderer.invoke("request:get_L10n_Msg", data),
+
+		GetSolanaWallet:           (data) => ipcRenderer.invoke("request:get_SOLANA_wallet", data),
+
+		SaveWalletInfo:            (data) => ipcRenderer.send("request:save_wallet_info", data),
+		ImportRawData:             (data) => ipcRenderer.send("request:import_raw_data", data),
+		OpenURL:                   (data) => ipcRenderer.send("request:open_URL", data),		
+			
 	    //send: (channel, data) => {
         //     // whitelist channels
         //    let validChannels = ['toMain'];

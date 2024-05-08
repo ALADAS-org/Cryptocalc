@@ -1,8 +1,11 @@
-//======================================================
-//=================  base58_utils.js  ==================
-//======================================================
+//========================================================================================
+//==================================  base58_utils.js  ===================================
+//========================================================================================
+// https://digitalbazaar.github.io/base58-spec/
 "use strict";
+
 const bs58 = require('bs58');
+const B58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
 const b58ToHex = (b58_str) => {
 	//const address = '16UjcYNBG9GTK4uq2f7yYEbuifqCzoLMGS'
@@ -12,6 +15,21 @@ const b58ToHex = (b58_str) => {
 	// => 003c176e659bea0f29a3e9bf7880c112b1b31b4dc826268187
 }; // b58ToHex()
 
+const isBase58String = (in_str) => {
+	if (in_str == undefined || in_str == null || in_str == "") {
+		return false;
+    }
+	
+	for (let i=0; i < in_str.length; i++) { 
+		if (B58_ALPHABET.indexOf(in_str[i]) == -1) {
+			return false;
+		}
+	}
+	return true;
+}; // isBase58String()
+
 if (typeof exports === 'object') {
-	exports.b58ToHex = b58ToHex
+	exports.B58_ALPHABET   = B58_ALPHABET
+	exports.isBase58String = isBase58String
+	exports.b58ToHex       = b58ToHex
 }

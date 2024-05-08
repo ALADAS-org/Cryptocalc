@@ -20,7 +20,7 @@ speaker of intuitive likes".
 (Bruce Ediger, bediger@teal.csn.org, in comp.os.linux.misc, on X the
 intuitiveness of a Mac interface.)
 %
-"All language designers are arrogant.  Goes with the territory..."
+"All lang_xuage designers are arrogant.  Goes with the territory..."
 (By Larry Wall)
 %
 And 1.1.81 is officially BugFree(tm), so if you receive any bug-reports
@@ -142,7 +142,7 @@ driver will be redirected to /dev/null, oh no, it's full...).
 (Michael Beck, describing the PC-speaker sound device)
 %
 "I don't know why, but first C programs tend to look a lot worse than
-first programs in any other language (maybe except for fortran, but then
+first programs in any other lang_xuage (maybe except for fortran, but then
 I suspect all fortran programs look like `firsts')"
 (By Olaf Kirch)
 %

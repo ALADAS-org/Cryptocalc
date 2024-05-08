@@ -1,22 +1,25 @@
+/* ================================================================================ */
+/* ============================= cryptocalc_style.css ============================= */
+/* ================================================================================ */
 html, .outer, .inner {
-	height:      100%;
-	width:       100%;
-	margin:      0;
-	font-family: Arial, Helvetica, sans-serif;
+	height:           100%;
+	width:            100%;
+	margin:           0;
+	font-family:      Arial, Helvetica, sans-serif;
 } 
 
 html, body , .outer, .inner {
-	height:      100%;
-	width:       100%;
-	margin:      0;
-	font-family: Arial, Helvetica, sans-serif;
-	overflow:    hidden;
+	height:           100%;
+	width:            100%;
+	margin:           0;
+	font-family:      Arial, Helvetica, sans-serif;
+	overflow:         hidden;
 } 
 
 hr {
-    border:            none;
-    height:            0.5px;
-    background-color:  #333;  /* Modern Browsers */
+    border:           none;
+    height:           0.5px;
+    background-color: #333;  /* Modern Browsers */
 }
 
 .HorizontalBar {
@@ -26,8 +29,8 @@ hr {
 
 /* ================================= Tab pages ================================= */
 /* https://www.w3schools.com/howto/howto_js_full_page_tabs.asp */
-.PrivateKeyTabLayout {
-	background-color: #FFFFF0;
+.SeedTabLayout {
+	background-color: #FFFFF0; 
 	width:            100%; 
 	height:           100%;
 	min-height:       100%;
@@ -53,196 +56,290 @@ hr {
 	margin-right:     -3px;
 }
 
-#PrivateKey { 
-	background-color: #FFFFF0;   
+#Seed { 
+	background-color:  #FFFFF0; 
+	height:            100%; 
 }
 
-#Wallet     { 
-	background-color: #F1FFFF; 
+#Wallet { 
+	background-color:  #F1FFFF; 
+	height:            100%;
 }
 
 .EmptyTabLink { 
-	background-color: #FDFDFD; 
-	width:            50%;
-	min-width:        50%;
-	margin-right:     0px;
+	background-color:  #FDFDFD; 
+	width:             50%;
+	min-width:         50%;
+	margin-right:      0px;
 }
 
-#pk_tab_link_id {
-	background-color: #FFFFF0;
+#seed_tab_link_id {
+	background-color:  #FFFFF0;
 }
-#pk_tab_link_id:hover {
-	background-color: #C0FEC0;
+#seed_tab_link_id:hover {
+	background-color:  #C0FEC0;
 }
 
 #wallet_tab_link_id {
-	background-color: #F1FFFF;
+	background-color:  #F1FFFF;
 }
 #wallet_tab_link_id:hover {
-	background-color: #C0FEC0;
+	background-color:  #C0FEC0;
 }
 
 .ThreeBordersTabLink {
-	border-top:       1px solid black;
-	border-bottom:    1px solid #FFFFF0;
-    border-right:     1px solid black; 
-    border-left:      1px solid black;
+	border-top:        1px solid black;
+	border-bottom:     1px solid #FFFFF0;
+    border-right:      1px solid black; 
+    border-left:       1px solid black;
 }
 
 .FourBordersTabLink {
-	border-top:       1px solid black;
-	border-bottom:    1px solid black;
-    border-right:     1px solid black; 
-    border-left:      1px solid black;
+	border-top:        1px solid black;
+	border-bottom:     1px solid black;
+    border-right:      1px solid black; 
+    border-left:       1px solid black;
 }
 
 .EmptyTabLinkBorders {
-	border-bottom:    1px solid black;
-    border-left:      1px solid black;
+	border-bottom:     1px solid black;
+    border-left:       1px solid black;
 }
 
 /* Style the tab content (and add height:100% for full page content) */
 .tabcontent {
-	color:   black;
-	display: none;
+	color:             black;
+	display:           none;
 	/*padding: 2px 20px;*/
-	height:  100%;
+	/*height:            100%;*/
 }
 /* ================================= Tab pages */
 
 .Button {
-	font-size:     25x;
-	font-weight:   500;
-	height:        30px;
-	margin-bottom: 50px;
+	font-size:         25x;
+	font-weight:       500;
+	height:            30px;
+	margin-bottom:     50px;
+}
+
+.GenerateButton {
+	background-color:  lightgreen;
+	font-size:         19px;
+	font-weight:       500;
+	min-width:         200px;
+	width:             200px;
+	height:            30px;
+	margin-bottom:     80px;
+}
+
+.RefreshButton {
+	background-color:  lightblue;
+	font-size:         19px;
+	font-weight:       500;
+	min-width:         200px;
+	width:             200px;
+	height:            30px;
+	margin-bottom:     80px;
+}
+
+/* https://stackoverflow.com/questions/34439452/blinking-background-color-animation
+*/
+.BlinkingButton {
+  /* width: 50px; */
+  /* height: 50px; */
+  -webkit-animation: REFRESH_ANIMATION 3s infinite; /* Safari 4+ */
+  -moz-animation:    REFRESH_ANIMATION 3s infinite;    /* Fx 5+ */
+  -o-animation:      REFRESH_ANIMATION 3s infinite;      /* Opera 12+ */
+  animation:         REFRESH_ANIMATION 3s infinite;         /* IE 10+, Fx 29+ */
+}
+
+@-webkit-keyframes REFRESH_ANIMATION {
+  0%, 49% {
+    background-color: lightblue;
+    border: 1px solid black;
+  }
+  50%, 100% {
+    background-color: lightblue;
+    border: 3px solid black;
+  }
 }
 
 .WalletButton {
-	height:     20px;
-	margin-top: -10px;
+	height:            20px;
+	margin-top:        -10px;
 }
 
-#update_btn_id {
-	background-color: lightgreen;
-	width: 	          85px;
-	min-width: 	      85px;
+.EntropyInput:invalid {
+	color:  red;
 }
 
-#random_btn_id {
-	background-color: #F4F400; /*#FFFDD0;*/
-	width: 	          85px;
-	min-width: 	      85px;
+.EntropySelector {
+	width:             80px;
 }
 
-#clear_btn_id {
-	width: 	    85px;
-	min-width: 	85px;
+.MnemonicsSelector {
+	background-color:  lightred;	
+	width:             80px;
+	font-size:         14px;
 }
 
-#word_count_id {
-	display:          inline-block;
-	/*background-color: lightgreen;*/
-	/*top: 0px;*/
-}
-
-#seed_id {
-	height = 'auto';
+#entropy_src_id {
+	height =           'auto';
 	/* for support of ascii-art fortune cookies
 	font-family: monospace;
 	*/
 }
 
+.DataFieldWithButton_Container { 
+	display:           flex;
+	align-items: 	   center;
+}
+
+#entropy_id { 
+	height:            20px;
+}
+
+.CopyButton {
+	display:           flex;
+	align-items: 	   center;
+	padding:           8px;
+	width:             22px;
+	height:            22px;
+	margin-left:       4px;
+	padding-left:      2px;
+	margin-top:        1px;
+}
+
+.Bip32CellHeader { 
+	background-color:  #E3E3FF;
+}
+
+.Bip32CellValue { 
+	background-color:  white;
+	font-size:         17px;
+	width:             60px;
+}
+
+.Bip32Cell { 
+	padding-right:     7px; 
+	padding-left:      7px; 
+	padding-top:       4px; 
+	padding-bottom:    4px; 
+	border:            1px solid black;
+    border-collapse:   collapse;
+}
+
+#update_btn_id {
+	background-color:  lightgreen;
+	width: 	           85px;
+	min-width: 	       85px;
+}
+
 #salt_id {
-	background-color: #FFFFF0;
+	background-color:  #FFFFF0;
 }
 
 #wallet_coin_id {
-	font-size:  14px;
+	font-size:         14px;
 }
 
-.ButtonsBar {
-	margin-top: 0px;
-	height:     70px;
-    top:        10px;
+#XPRIV_label_id {
+	font-size:         14px;
+}
+
+#XPRIV_id {
+	font-size:         12.5px;
+}
+
+.ButtonsBar {	
+    /*margin-top:        70px;*/
+	height:            70px;
+	position:          absolute;
+    bottom:            -50px;
 }
 
 .table textarea {
-	max-width:  100%;
-	width:      100%;
-	height:     100px
+	max-width:         100%;
+	width:             100%;
+	height:            100px
 }
 
 .EllipsisButton {
-	width:         27px;
-	min-width:     27px;
+	width:             27px;
+	min-width:         27px;
 }
 
 .LabelColumn {
-	/*margin-left:   20px;*/
-	padding-left:  10px;
-	width:         100px;
-	min-width:     100px;
-	max-width:     100px;
-	height:        25px;
+	/*margin-left:     20px;*/
+	padding-left:      10px;
+	width:             100px;
+	min-width:         100px;
+	max-width:         100px;
+	height:            25px;
 }
 
 .TextArea {
-	width:         100%;
-	min-width:     100%;
-	max-width:     100%;
-	height:        25px;
+	width:             100%;
+	min-width:         100%;
+	max-width:         100%;
+	height:            25px;
 }
 
 .FieldColumn {
-	/*margin-left:   20px;*/
-	padding-left:  5px;
-	width:         100%;
-	min-width:     100%;
-	height:        25px;
+	/*margin-left:     20px;*/
+	padding-left:      5px;
+	width:             100%;
+	min-width:         100%;
+	height:            25px;
 }
 
 .Selector {
-	margin-left:   10px;
+	margin-left:       10px;
 }
 
 .Filler {
-	width:         100%;
-	height:        100%;
-	min-height:    10%;
+	width:             100%;
+	height:            100%;
+	min-height:        10%;
 }
 
 .ReadOnlyValue {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size:   15px;
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         15px;
 }
 
 .DataField {
-	font-family: Arial, Helvetica, sans-serif;
-	width:       85%;
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             85%;
 }
 
 .SaltField {
-	font-family: Arial, Helvetica, sans-serif;
-	width:       81%;
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             81%;
 }
 
 .RawDataField {
-	font-family: Arial, Helvetica, sans-serif;
-	width:       98%;
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             98%;
+}
+
+.RawDataFieldWithButton {
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             95%;
 }
 
 .WithFocus {
-	background-color: #ECFFDC; /* very light green */
+	background-color:  #ECFFDC; /* very light green */
 }
 
 .WithoutFocus {
-	background-color: white;
+	background-color:  white;
 }
 
 .ValidValue {
-	color: black;
+	color:             black;
 }
 
 .InvalidValue {
-	color: red;
+	color:             red;
 }

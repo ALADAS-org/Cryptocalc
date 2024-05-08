@@ -56,4 +56,59 @@ class HtmlUtils {
 		}
 		return elt;
 	} // HtmlUtils.RemoveClass()
+	
+	static HideElement( elt_id ) {
+		//log2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt == undefined) { 
+		    return;
+		}
+		
+		elt.hidden = true; 
+	} // HtmlUtils.HideElement()
+	
+	static ShowElement( elt_id ) {
+		//log2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt == undefined) { 
+		    return;
+		}
+		
+		elt.hidden = false; 
+	} // HtmlUtils.ShowElement()
+	
+	static GetElement( elt_id ) {
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { return elt; }
+		return undefined;
+	} // HtmlUtils.GetElement)
+	
+	static GetField( elt_id ) {
+		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetField() " + _YELLOW_ + elt_id + _END_);
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { 
+			if (elt.nodeName == "TD" || elt.nodeName == "SPAN") {
+				return elt.textContent;
+			}
+			else {
+				return elt.value;
+			}	
+		}
+		return undefined;
+	} // HtmlUtils.GetField()
+	
+	static SetField( elt_id, value_str ) {
+		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetField() " + _END_ + elt_id);
+		//log2Main(" elt_id: " + elt_id);
+		let elt = document.getElementById( elt_id );
+		if (elt != undefined) {
+            //log2Main(" elt.nodeName: " + elt.nodeName);			
+			if ( elt.nodeName == "TD" || elt.nodeName == "SPAN" || elt.nodeName == "BUTTON" ) {
+				elt.textContent = value_str;
+			}
+			else {
+				elt.value = value_str;
+			}	
+		}
+	} // // HtmlUtils.SetField()
 } // HtmlUtils class

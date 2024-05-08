@@ -133,10 +133,10 @@ A Fortran compiler is the hobgoblin of little minis.
 %
 A hacker does for love what others would not do for money.
 %
-A language that doesn't affect the way you think about programming is
+A lang_xuage that doesn't affect the way you think about programming is
 not worth knowing.
 %
-A language that doesn't have everything is actually easier to program
+A lang_xuage that doesn't have everything is actually easier to program
 in than some that do.
 		-- Dennis M. Ritchie
 %
@@ -255,7 +255,7 @@ the hearts of DP managers everywhere?  If so, then let the Famous Programmers'
 School lead you on... into the world of professional computer programming.
 They say a good programmer can write 20 lines of effective program per day.
 With our unique training course, we'll show you how to write 20 lines of code
-and lots more besides.  Our training course covers every programming language
+and lots more besides.  Our training course covers every programming lang_xuage
 in existence, and some that aren't.  You'll learn why the on/off switch for a
 computer is so important, what the words *fatal error* mean, and who and what
 you should blame when you make a mistake.
@@ -348,7 +348,7 @@ of what is going wrong."  Knight turned the machine off and on.  The
 machine worked.
 %
 A person who is more than casually interested in computers should be well
-schooled in machine language, since it is a fundamental part of a computer.
+schooled in machine lang_xuage, since it is a fundamental part of a computer.
 		-- Donald Knuth
 %
 	A program should be light and agile, its subroutines connected like a
@@ -391,7 +391,7 @@ annoying and confounding a hopelessly defenseless department that was
 unfortunate enough to ask for the information in the first place.
 		-- IEEE Grid newsmagazine
 %
-A programming language is low level when its programs require attention
+A programming lang_xuage is low level when its programs require attention
 to the irrelevant.
 %
 A recent study has found that concentrating on difficult off-screen
@@ -445,7 +445,7 @@ These are great mysteries.
 %
 A year spent in artificial intelligence is enough to make one believe in God.
 %
-About the use of language: it is impossible to sharpen a pencil with a blunt
+About the use of lang_xuage: it is impossible to sharpen a pencil with a blunt
 ax.  It is equally vain to try to do it with ten blunt axes instead.
 		-- Edsger Dijkstra
 %
@@ -473,7 +473,7 @@ machines can think, a question of which we now know that it is about
 as relevant as the question of whether submarines can swim.
 		-- Dijkstra
 %
-Algol-60 surely must be regarded as the most important programming language
+Algol-60 surely must be regarded as the most important programming lang_xuage
 yet developed.
 		-- T. Cheatham
 %
@@ -581,7 +581,7 @@ confidence we trusted his vows of "it works pretty well" and installed it.
 
 JCL support as alternative to system menu.
 
-In our continuing effort to support languages other than LISP on the CADDR,
+In our continuing effort to support lang_xuages other than LISP on the CADDR,
 we have developed an OS/360-compatible JCL.  This can be used as an
 alternative to the standard system menu.  Type System J to get to a JCL
 interactive read-execute-diagnose loop window.  [Note that for 360
@@ -680,7 +680,7 @@ An elephant is a mouse with an operating system.
 %
 An engineer is someone who does list processing in FORTRAN.
 %
-An interpretation _I satisfies a sentence in the table language if and only if
+An interpretation _I satisfies a sentence in the table lang_xuage if and only if
 each entry in the table designates the value of the function designated by the
 function constant in the upper-left corner applied to the objects designated
 by the corresponding row and column labels.
@@ -701,7 +701,7 @@ Any given program, when running, is obsolete.
 %
 Any program which runs right is obsolete.
 %
-Any programming language is at its best before it is implemented and used.
+Any programming lang_xuage is at its best before it is implemented and used.
 %
 ... Any resemblance between the above views and those of my employer,
 my terminal, or the view out my window are purely coincidental.  Any
@@ -723,16 +723,16 @@ mold!" in the mouth of a hotel cocktail waitress.
 %
 APL hackers do it in the quad.
 %
-APL is a mistake, carried through to perfection.  It is the language of the
+APL is a mistake, carried through to perfection.  It is the lang_xuage of the
 future for the programming techniques of the past: it creates a new generation
 of coding bums.
 		-- Edsger W. Dijkstra, SIGPLAN Notices, Volume 17, Number 5
 %
-APL is a natural extension of assembler language programming;
+APL is a natural extension of assembler lang_xuage programming;
 ...and is best for educational purposes.
 		-- A. Perlis
 %
-APL is a write-only language.  I can write programs in APL, but I can't
+APL is a write-only lang_xuage.  I can write programs in APL, but I can't
 read any of them.
 		-- Roy Keir
 %
@@ -761,7 +761,7 @@ standards of their own.  When IBM recently abandoned some of its original
 standards and decreed new ones, many of its rivals declared a puritan
 allegiance to IBM's original faith, and denounced the company as a divisive
 innovator.  Still, the IBM world is united by its distrust of icons and
-imagery.  IBM's screens are designed for language, not pictures.  Graven
+imagery.  IBM's screens are designed for lang_xuage, not pictures.  Graven
 images may be tolerated by the luxurious cults, but the true IBM faith relies
 on the austerity of the word.
 		-- Edward Mendelson, "The New Republic", February 22, 1988
@@ -830,7 +830,7 @@ ASHes to ASHes, DOS to DOS.
 %
 Ask not for whom the <CONTROL-G> tolls.
 %
-Assembly language experience is [important] for the maturity
+Assembly lang_xuage experience is [important] for the maturity
 and understanding of how computers work that it provides.
 		-- D. Gries
 %
@@ -870,7 +870,7 @@ at least two human errors, including the error of blaming it on the computer.
 %
 Avoid strange women and temporary variables.
 %
-Basic is a high level languish.  APL is a high level anguish.
+Basic is a high level lang_xuish.  APL is a high level anguish.
 %
 BASIC is the Computer Science equivalent of `Scientific Creationism'.
 %
@@ -950,7 +950,7 @@ Have I explained yet about the bytes?
 %
 By long-standing tradition, I take this opportunity to savage other
 designers in the thin disguise of good, clean fun.
-		-- P.J. Plauger, "Computer Language", 1988, April
+		-- P.J. Plauger, "Computer lang_xuage", 1988, April
 		   Fool's column.
 %
 BYTE editors are people who separate the wheat from the chaff, and then
@@ -1515,7 +1515,7 @@ bend a disk.
 %
 Everybody needs a little love sometime; stop hacking and fall in love!
 %
-Everyone can be taught to sculpt: Michelangelo would have had to be
+Everyone can be taught to sculpt: Michelang_xelo would have had to be
 taught how ___not to.  So it is with the great programmers.
 %
 Evolution is a million line computer program falling into place by accident.
@@ -1564,7 +1564,7 @@ computers altogether?"
 %
 FORTH IF HONK THEN
 %
-FORTRAN is a good example of a language which is easier to parse
+FORTRAN is a good example of a lang_xuage which is easier to parse
 using ad hoc techniques.
 		-- D. Gries
 		[What's good about it?  Ed.]
@@ -1575,7 +1575,7 @@ FORTRAN is not a flower but a weed -- it is hardy, occasionally blooms,
 and grows in every computer.
 		-- A.J. Perlis
 %
-FORTRAN is the language of Powerful Computers.
+FORTRAN is the lang_xuage of Powerful Computers.
 		-- Steven Feiner
 %
 FORTRAN rots the brain.
@@ -1665,7 +1665,7 @@ Given its constituency, the only thing I expect to be "open" about [the
 Open Software Foundation] is its mouth.
 		-- John Gilmore
 %
-Giving up on assembly language was the apple in our Garden of Eden:  Languages
+Giving up on assembly lang_xuage was the apple in our Garden of Eden:  lang_xuages
 whose use squanders machine cycles are sinful.  The LISP machine now permits
 LISP programmers to abandon bra and fig-leaf.
 		-- Epigrams in Programming, ACM SIGPLAN Sept. 1982
@@ -1679,11 +1679,11 @@ logout
 %
 God is real, unless declared integer.
 %
-God made machine language; all the rest is the work of man.
+God made machine lang_xuage; all the rest is the work of man.
 %
 Good evening, gentlemen.  I am a HAL 9000 computer.  I became operational
 at the HAL plant in Urbana, Illinois, on January 11th, nineteen hundred
-ninety-five.  My supervisor was Mr. Langley, and he taught me to sing a
+ninety-five.  My supervisor was Mr. lang_xley, and he taught me to sing a
 song.  If you would like, I could sing it for you.
 %
 Grand Master Turing once dreamed that he was a machine.  When he awoke
@@ -1964,7 +1964,7 @@ against the wall when the revolution comes...
 %
 If a 6600 used paper tape instead of core memory, it would use up tape
 at about 30 miles/second.
-		-- Grishman, Assembly Language Programming
+		-- Grishman, Assembly lang_xuage Programming
 %
 If a group of _N persons implements a COBOL compiler, there will be _N-1
 passes.  Someone in the group has to be the manager.
@@ -2074,12 +2074,12 @@ feature, that.
 operating system is great, then the compiler is great.  If the compiler
 is great, then the application is great.  If the application is great, then
 the user is pleased and there is harmony in the world.
-	The Tao gave birth to machine language.  Machine language gave birth
+	The Tao gave birth to machine lang_xuage.  Machine lang_xuage gave birth
 to the assembler.
 	The assembler gave birth to the compiler.  Now there are ten thousand
-languages.
-	Each language has its purpose, however humble.  Each language
-expresses the Yin and Yang of software.  Each language has its place within
+lang_xuages.
+	Each lang_xuage has its purpose, however humble.  Each lang_xuage
+expresses the Yin and Yang of software.  Each lang_xuage has its place within
 the Tao.
 	But do not program in COBOL if you can avoid it.
 		-- Geoffrey James, "The Tao of Programming"
@@ -2170,7 +2170,7 @@ humidifier for a mid-range computer but manages to tie it into the network
 anyway.
 		-- The 5th Wave
 %
-In a five year period we can get one superb programming language.  Only
+In a five year period we can get one superb programming lang_xuage.  Only
 we can't control when the five year period will begin.
 %
 In a surprise raid last night, federal agents ransacked a house in search
@@ -2188,7 +2188,7 @@ the answer may be obtained by inspection.
 In computing, the mean time to failure keeps getting shorter.
 %
 In English, every word can be verbed.  Would that it were so in our
-programming languages.
+programming lang_xuages.
 %
 In every non-trivial program there is at least one bug.
 %
@@ -2281,7 +2281,7 @@ Now Available for only 12 1/2 cents!
 %
 IOT trap -- core dumped
 %
-Is a computer language with goto's totally Wirth-less?
+Is a computer lang_xuage with goto's totally Wirth-less?
 %
 Is it possible that software is not like anything else, that it is meant to
 be discarded:  that the whole point is to always see it as a soap bubble?
@@ -2303,7 +2303,7 @@ question, "What's your IQ?".  Upon receiving the answer "70",
 Einstein smiled and replied, "Got a minute to tell me about VMS 4.0?"
 %
 It appears that PL/I (and its dialects) is, or will be, the most widely
-used higher level language for systems programming.
+used higher level lang_xuage for systems programming.
 		-- J. Sammet
 %
 	It is a period of system war.  User programs, striking from a hidden
@@ -2356,9 +2356,9 @@ superficial design flaws.
 It is now pitch dark.  If you proceed, you will likely fall into a pit.
 %
 It is possible by ingenuity and at the expense of clarity... {to do almost
-anything in any language}.  However, the fact that it is possible to push
+anything in any lang_xuage}.  However, the fact that it is possible to push
 a pea up a mountain with your nose does not mean that this is a sensible
-way of getting it there.  Each of these techniques of language extension
+way of getting it there.  Each of these techniques of lang_xuage extension
 should be used in its proper place.
 		-- Christopher Strachey
 %
@@ -2567,7 +2567,7 @@ to him.
 	So Jack set out.  But as he was walking along a Hamilton path,
 he met the traveling salesman.
 	"Whither dost thy flow chart take thou?" prompted the salesman
-in high-level language.
+in high-level lang_xuage.
 	"I'm going to the market to exchange this RAM for some chips
 and Apples," commented Jack.
 	"I have a much better algorithm.  You needn't join a queue
@@ -2776,7 +2776,7 @@ is to say that Europeans call him by name, but Americans call him by value.
 %
 No directory.
 %
-No extensible language will be universal.
+No extensible lang_xuage will be universal.
 		-- T. Cheatham
 %
 No hardware designer should be allowed to produce any piece of hardware
@@ -2962,7 +2962,7 @@ foul up, there's no law against whacking them around a little.
 is our support for UNIX?
 	Unix was written on our machines and for our machines many years ago.
 Today, much of UNIX being done is done on our machines. Ten percent of our
-VAXs are going for UNIX use.  UNIX is a simple language, easy to understand,
+VAXs are going for UNIX use.  UNIX is a simple lang_xuage, easy to understand,
 easy to get started with. It's great for students, great for somewhat casual
 users, and it's great for interchanging programs between different machines.
 And so, because of its popularity in these markets, we support it.  We have
@@ -3073,10 +3073,10 @@ panic: kernel segmentation violation. core dumped		(only kidding)
 %
 panic: kernel trap (ignored)
 %
-Pascal is a language for children wanting to be naughty.
+Pascal is a lang_xuage for children wanting to be naughty.
 		-- Dr. Kasi Ananthanarayanan
 %
-Pascal is not a high-level language.
+Pascal is not a high-level lang_xuage.
 		-- Steven Feiner
 %
 "Pascal is Pascal is Pascal is dog meat."
@@ -3124,7 +3124,7 @@ Prof:    So the American government went to IBM to come up with a data
 	 encryption standard and they came up with ...
 Student: EBCDIC!"
 %
-Profanity is the one language all programmers know best.
+Profanity is the one lang_xuage all programmers know best.
 %
 Programmers do it bit by bit.
 %
@@ -3232,7 +3232,7 @@ Real computer scientists don't write code.  They occasionally tinker with
 Real computer scientists like having a computer on their desk, else how
 could they read their mail?
 %
-Real computer scientists only write specs for languages that might run
+Real computer scientists only write specs for lang_xuages that might run
 on future hardware.  Nobody trusts them to write specs for anything homo
 sapiens will ever be able to fit on a single planet.
 %
@@ -3479,7 +3479,7 @@ Is it some kind of wine you have with breakfast?
 Some people claim that the UNIX learning curve is steep, but at least you
 only have to climb it once.
 %
-Some programming languages manage to absorb change, but withstand progress.
+Some programming lang_xuages manage to absorb change, but withstand progress.
 		-- Epigrams in Programming, ACM SIGPLAN Sept. 1982
 %
 Somebody's terminal is dropping bits.  I found a pile of them over in the
@@ -3504,7 +3504,7 @@ Sure!  Why not?  Multiply a character string times a bit string and assign the
 result to a float decimal?  Go ahead!  Free a controlled variable procedure
 parameter and reallocate it before passing it back?  Overlay three different
 types of variable on the same memory location?  Anything you say!  Write a
-recursive macro?  Well, no, but Real Men use rescan.  How could a language
+recursive macro?  Well, no, but Real Men use rescan.  How could a lang_xuage
 so obviously designed and written by Real Men not be intended for Real Man use?
 %
 ***** Special AI Seminar (abstract)
@@ -3617,7 +3617,7 @@ Testing can show the presense of bugs, but not their absence.
 		-- Dijkstra
 %
 TeX is potentially the most significant invention in typesetting in this
-century.  It introduces a standard language for computer typography, and in
+century.  It introduces a standard lang_xuage for computer typography, and in
 terms of importance could rank near the introduction of the Gutenberg press.
 		-- Gordon Bell
 %
@@ -3692,8 +3692,8 @@ The bugs you have to avoid are the ones that give the user not only
 the inclination to get on a plane, but also the time.
 		-- Kay Bostic
 %
-"The C Programming Language -- A language which combines the flexibility of
-assembly language with the power of assembly language."
+"The C Programming lang_xuage -- A lang_xuage which combines the flexibility of
+assembly lang_xuage with the power of assembly lang_xuage."
 %
 The clothes have no emperor.
 		-- C.A.R. Hoare, commenting on ADA.
@@ -3713,9 +3713,9 @@ central power station is to the electrical industry.
 The computing field is always in need of new cliches.
 		-- Alan Perlis
 %
-The connection between the language in which we think/program and the problems
+The connection between the lang_xuage in which we think/program and the problems
 and solutions we can imagine is very close.  For this reason restricting
-language features with the intent of eliminating programmer errors is at best
+lang_xuage features with the intent of eliminating programmer errors is at best
 dangerous.
 		-- Bjarne Stroustrup
 %
@@ -3870,24 +3870,24 @@ processor.", I replied, "They used to say the same thing about drugs."
 %
 The less time planning, the more time programming.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #10: SIMPLE
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #10: SIMPLE
 
-SIMPLE is an acronym for Sheer Idiot's Monopurpose Programming Language
-Environment.  This language, developed at the Hanover College for
+SIMPLE is an acronym for Sheer Idiot's Monopurpose Programming lang_xuage
+Environment.  This lang_xuage, developed at the Hanover College for
 Technological Misfits, was designed to make it impossible to write code
 with errors in it.  The statements are, therefore, confined to BEGIN,
 END and STOP.  No matter how you arrange the statements, you can't make
 a syntax error.  Programs written in SIMPLE do nothing useful.  Thus
-they achieve the results of programs written in other languages without
+they achieve the results of programs written in other lang_xuages without
 the tedious, frustrating process of testing and debugging.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #12: LITHP
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #12: LITHP
 
-This otherwise unremarkable language is distinguished by the absence of
+This otherwise unremarkable lang_xuage is distinguished by the absence of
 an "S" in its character set; users must substitute "TH".  LITHP is said
 to be useful in protheththing lithtth.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #13: SLOBOL
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #13: SLOBOL
 
 SLOBOL is best known for the speed, or lack of it, of its compiler.
 Although many compilers allow you to take a coffee break while they
@@ -3895,9 +3895,9 @@ compile, SLOBOL compilers allow you to travel to Bolivia to pick the
 coffee.  Forty-three programmers are known to have died of boredom
 sitting at their terminals while waiting for a SLOBOL program to
 compile.  Weary SLOBOL programmers often turn to a related (but
-infinitely faster) language, COCAINE.
+infinitely faster) lang_xuage, COCAINE.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #14 -- VALGOL
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #14 -- VALGOL
 
 	VALGOL is enjoying a dramatic surge of popularity across the
 industry.  VALGOL commands include REALLY, LIKE, WELL, and Y*KNOW.
@@ -3921,7 +3921,7 @@ example, when the user makes a syntax error, the interpreter displays the
 message GAG ME WITH A SPOON!  A successful compile may be termed MAXIMALLY
 AWESOME!
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #15 -- DOGO
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #15 -- DOGO
 
 	Developed at the Massachusetts Institute of Obedience Training, DOGO
 DOGO heralds a new era of computer-literate pets.  DOGO commands include
@@ -3929,50 +3929,50 @@ SIT, STAY, HEEL, and ROLL OVER.  An innovative feature of DOGO is "puppy
 graphics", a small cocker spaniel that occasionally leaves a deposit as
 it travels across the screen.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #16: C-
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #16: C-
 
-This language was named for the grade received by its creator when he
+This lang_xuage was named for the grade received by its creator when he
 submitted it as a class project in a graduate programming class.  C- is best
-described as a "low-level" programming language.  In fact, the language
+described as a "low-level" programming lang_xuage.  In fact, the lang_xuage
 generally requires more C- statements than machine-code statements to
 execute a given task.  In this respect, it is very similar to COBOL.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #17: SARTRE
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #17: SARTRE
 
 Named after the late existential philosopher, SARTRE is an extremely
-unstructured language.  Statements in SARTRE have no purpose; they just are.
+unstructured lang_xuage.  Statements in SARTRE have no purpose; they just are.
 Thus SARTRE programs are left to define their own functions. SARTRE
 programmers tend to be boring and depressed, and are no fun at parties.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #18: FIFTH
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #18: FIFTH
 
-FIFTH is a precision mathematical language in which the data types
+FIFTH is a precision mathematical lang_xuage in which the data types
 refer to quantity.  The data types range from CC, OUNCE, SHOT, and
-JIGGER to FIFTH (hence the name of the language), LITER, MAGNUM and
+JIGGER to FIFTH (hence the name of the lang_xuage), LITER, MAGNUM and
 BLOTTO.  Commands refer to ingredients such as CHABLIS, CHARDONNAY,
 CABERNET, GIN, VERMOUTH, VODKA, SCOTCH, and WHATEVERSAROUND.
 
-The many versions of the FIFTH language reflect the sophistication and
+The many versions of the FIFTH lang_xuage reflect the sophistication and
 financial status of its users.  Commands in the ELITE dialect include
 VSOP and LAFITE, while commands in the GUTTER dialect include HOOTCH
 and RIPPLE. The latter is a favorite of frustrated FORTH programmers
-who end up using this language.
+who end up using this lang_xuage.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #2: RENE
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #2: RENE
 
 Named after the famous French philosopher and mathematician Rene DesCartes,
-RENE is a language used for artificial intelligence.  The language is being
+RENE is a lang_xuage used for artificial intelligence.  The lang_xuage is being
 developed at the Chicago Center of Machine Politics and Programming under a
-grant from the Jane Byrne Victory Fund.  A spokesman described the language
+grant from the Jane Byrne Victory Fund.  A spokesman described the lang_xuage
 as "Just as great as dis [sic] city of ours."
 
 The center is very pleased with progress to date.  They say they have almost
 succeeded in getting a VAX to think. However, sources inside the
 organization say that each time the machine fails to think it ceases to exist.
 %
-	THE LESSER-KNOWN PROGRAMMING LANGUAGES #8: LAIDBACK
+	THE LESSER-KNOWN PROGRAMMING lang_xUAGES #8: LAIDBACK
 
-This language was developed at the Marin County Center for T'ai Chi,
+This lang_xuage was developed at the Marin County Center for T'ai Chi,
 Mellowness and Computer Programming (now defunct), as an alternative to
 the more intense atmosphere in nearby Silicon Valley.
 
@@ -3981,7 +3981,7 @@ they worked.  Unfortunately few programmers could survive there because the
 center outlawed Pizza and Coca-Cola in favor of Tofu and Perrier.
 
 Many mourn the demise of LAIDBACK because of its reputation as a gentle and
-non-threatening language since all error messages are in lower case.  For
+non-threatening lang_xuage since all error messages are in lower case.  For
 example, LAIDBACK responded to syntax errors with the message:
 
 	"i hate to bother you, but i just can't relate to that.  can
@@ -3994,7 +3994,7 @@ master programmer to examine.  The magician wheeled a large black box into the
 master's office while the master waited in silence.
 	"This is an integrated, distributed, general-purpose workstation,"
 began the magician, "ergonomically designed with a proprietary operating
-system, sixth generation languages, and multiple state of the art user
+system, sixth generation lang_xuages, and multiple state of the art user
 interfaces.  It took my assistants several hundred man years to construct.
 Is it not amazing?"
 	The master raised his eyebrows slightly. "It is indeed amazing," he
@@ -4482,7 +4482,7 @@ student newspaper, of Tuesday, 3/10/87.
 
 	One disadvantage of the Univac system is that it does not use
 	Unix, a recently developed program which translates from one
-	computer language to another and has a built-in editing system
+	computer lang_xuage to another and has a built-in editing system
 	which identifies errors in the original program.
 %
 This screen intentionally left blank.
@@ -4996,7 +4996,7 @@ be solved.
 	Truly, this is the Tao of Programming.
 		-- Geoffrey James, "The Tao of Programming"
 %
-When someone says "I want a programming language in which I need only
+When someone says "I want a programming lang_xuage in which I need only
 say what I wish done," give him a lollipop.
 %
 When the Apple IIc was introduced, the informative copy led off with a couple
@@ -5093,7 +5093,7 @@ accounting department can call it overhead.
 %
 With your bare hands?!?
 %
-Within a computer, natural language is unnatural.
+Within a computer, natural lang_xuage is unnatural.
 %
 Work continues in this area.
 		-- DEC's SPR-Answering-Automaton
@@ -5317,7 +5317,7 @@ You can now buy more gates with less specifications than at any other time
 in history.
 		-- Kenneth Parker
 %
-You can tell how far we have to go, when FORTRAN is the language of
+You can tell how far we have to go, when FORTRAN is the lang_xuage of
 supercomputers.
 		-- Steven Feiner
 %

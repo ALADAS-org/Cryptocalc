@@ -6,7 +6,7 @@
 "use strict";
 
 // NB: copied from:
-// https://github.com/nibyou/bip-39/blob/main/langs/de_DE.json
+// https://github.com/nibyou/bip-39/blob/main/lang/de_DE.json
 //
 // Note: there is another list below, but it contains only 1626 mnemonics while 2048 are required by BIP39:
 // https://github.com/monero-project/monero/blob/master/src/mnemonics/german.h

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang_x="en">
 	<head>
 		<title>Cryptocalc</title>
 		
@@ -17,6 +17,7 @@
 		
 		<script type="text/javascript" src="./js/crypto/const_blockchains.js"></script>
 		<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>
+		<script type="text/javascript" src="./js/crypto/const_options.js"></script>
 		
 		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
 		<script type="text/javascript" src="./js/_renderer/const_events.js"></script>
@@ -31,72 +32,111 @@
 	<head>
 	
 	<body>
-		<button class="tablink" id="pk_tab_link_id" 
-				onclick="Renderer_GUI.OpenTabPage('PrivateKey', this, '#FFFFF0')">Private Key</button>
+		<!-- ====================================================================== -->
+		<!-- =========================== Main ToolBar ============================= -->
+		<!-- ===================================================================== -->
+		<div w3-include-html="./html_components/main_toolbar/main_toolbar.html"></div>
+		<!-- <link rel="stylesheet" type="text/css" href="./html_components/main_toolbar/main_toolbar.css"> -->
+		<!-- =========================== Main ToolBar -->
+		
+		
+		<!-- ======================== Tab Pages buttons ======================== -->
+		<button class="tablink" id="seed_tab_link_id" 
+				onclick="RendererGUI.GetInstance().openTabPage('Seed', this, '#FFFFF0')">Seed</button>
+				
 		<button class="tablink" id="wallet_tab_link_id" 
-				onclick="Renderer_GUI.OpenTabPage('Wallet', this, '#F1FFFF')">Wallet</button>
+				onclick="RendererGUI.GetInstance().openTabPage('Wallet', this, '#F1FFFF')">Wallet</button>
+				
 		<button class="tablink EmptyTabLink EmptyTabLinkBorders" id="empty_tab_link_id">&nbsp;</button>
-
-		<!-- ============================================================================================== -->
-		<!-- =================================== 'Private Key' Tab page =================================== -->
-		<!-- ============================================================================================== -->
-		<div id="PrivateKey" class="tabcontent">
-			<table class="inner CalculatorLayout"> 
-				<!-- ----------------------------------------------------------- -->
-				<!-- --------------------------  Seed  ------------------------- -->
-				<!-- ----------------------------------------------------------- -->
-				<tr><td class="LabelColumn">Seed</td>
+		<!-- ======================== Tab Pages buttons -->
+		
+		<!-- ========================== 'Seed' Tab page =========================== -->		
+		<div id="Seed" class="tabcontent">
+			<table class="inner SeedTabLayout">	
+                <tr><td class="HorizontalBar" colspan="4"><br/></td></tr>			
+				<!-- ----------------  Entropy Source ---------------- -->
+				<tr id="entropy_src_row"><td class="LabelColumn" id="entropy_src_label_id">Entropy Source</td>
 					<td colspan="2" class="FieldColumn">
-					        <table width="100%">
+						<table width="100%">
 							<tr><td class="TextArea">
-									<textarea class="RawDataField WithoutFocus" rows="6" spellcheck="false"
-								   	          id="seed_id"></textarea>
-							    </td>
-								<td width="10%">
-									<input class="EllipsisButton" type="button" id="file_import_btn_id" value="...">
+									<textarea class="RawDataField WithoutFocus" 
+											  rows="6" spellcheck="false"
+											  id="entropy_src_id">
+									</textarea>
 								</td>
 							</tr>
-							</table>
+						</table>
 					</td>
 				</tr>
-				<!-- -----------------------  Seed -->
+				<!-- ------------------ Entropy Source -->
 				
-				
-				<!-- ----------------------------------------------------------- -->
-				<!-- ----------------------- Salt (UUID) ----------------------- -->
-				<!-- ----------------------------------------------------------- -->
-				<tr><td class="LabelColumn">Salt</td>
+
+				<!-- ------------------------------------------------- -->
+				<!-- -----------------  Salt (UUID)  ----------------- -->
+				<!-- ------------------------------------------------- -->
+				<tr id="salt_row"><td class="LabelColumn">Salt</td>
 					<td colspan="2" class="FieldColumn">
-					    <input type="checkbox" id="use_salt_id" name="use" checked />
+					    <!-- <input type="checkbox" id="use_salt_id" name="use" checked /> -->
 						<span class="ReadOnlyValue" id="salt_id">XX</span>
 					</td>
 				</tr>
-				<!-- ----------------------- Salt (UUID) -->
+				<!-- ------------------ Salt (UUID) -->
 				
 				
 				<!-- ----------------------------------------------------------- -->
-				<!-- ----------------------- Private Key ----------------------- -->
+				<!-- ----------------- Entropy (128/256 bits) ------------------ -->
 				<!-- ----------------------------------------------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
-				<tr><td class="LabelColumn" id="PK_label_id">Private Key</td>
+				<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
+				<tr><td class="LabelColumn">
+						<span id="entropy_label_id">Entropy</span>                              <!-- ---- Entropy Label ---- -->
+						<select id="entropy_bits_select_id" class="InputField EntropySelector"> <!-- ----  Entropy Size ---- -->
+							<option value="128" selected>128 bits</option>	
+							<option value="160">160 bits</option>
+							<option value="192">192 bits</option>
+							<option value="224">224 bits</option>							
+							<option value="256">256 bits</option>	
+						</select>
+					</td>
 					<td colspan="2" class="FieldColumn">
-						<input class="DataField WithoutFocus ValidValue"
-							   id="pk_hex_id" type="text" value="XX">&nbsp;Hex
-						<input class="DataField WithoutFocus ValidValue" readonly
-							   id="pk_b64_id" type="text" value="XX">&nbsp;B64
+					    <!-- ---------- Entropy value ---------- -->
+						<div class="DataFieldWithButton_Container"
+						     id="entropy_container_id">
+							<input 
+							   class="RawDataFieldWithButton WithoutFocus ValidValue EntropyInput"
+							   id="entropy_id" type="text"
+							   minlength="32" maxlength="32"
+							   value="FF"/>
+							<button class="CopyButton" id="entropy_copy_btn_id">
+								<img src="icons/copy_16px_icn.png" 
+									 alt="Copy to Clipboard" border="0"/>
+							</button>
+						</div>
 					</td>
 				</tr>
-				<!-- ----------------------- Private Key -->
+				<!-- ----------------------- Entropy (128/256 bits) -->
+				
+				<!-- ---------------------------------------------------------- -->
+				<!-- ------------------------ Checksum ------------------------ -->
+				<!-- ---------------------------------------------------------- -->
+				<!-- <tr><td class="HorizontalBar" colspan="4"></td></tr> -->
+				<tr><td class="LabelColumn">
+						<span id="checksum_label_id">Checksum</span>
+					</td>
+					<td colspan="2" class="FieldColumn">
+						<span id="checksum_id">XX</span>
+					</td>
+				</tr>
+				<!-- ----------------------- Checksum -->
 				
 				
 				<!-- ----------------------------------------------------------- -->
-				<!-- ----------------------- Seedphrase ----------------------- -->
+				<!-- ----------------------- Seedphrase ------------------------ -->
 				<!-- ----------------------------------------------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
+				<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
 				<tr><td class="LabelColumn">
 						<span>Seedphrase</span>
-						<!-- https://www.andiamo.co.uk/resources/iso-language-codes/ -->
-						<select id="lang_select_id" class="InputField">
+						<!-- https://www.andiamo.co.uk/resources/iso-lang_xuage-codes/ -->
+						<select id="LANG_SELECT_ID" class="InputField MnemonicsSelector">
 							<option value="EN" selected>English</option>							
 							<option value="DE">Deutsch</option>
 							<option value="FR">French</option>
@@ -105,46 +145,55 @@
 							<option value="IT">Italian</option>
 							<option value="CS">Czech</option>				
 						</select>
+						<select id="word_count_select_id" class="InputField MnemonicsSelector">
+							<option value="12" selected>12 words</option>
+							<option value="15">15 words</option>
+							<option value="18">18 words</option>
+							<option value="21">21 words</option>							
+							<option value="24">24 words</option>	
+						</select>
 					</td>
 					<td class="FieldColumn" colspan="2">
-						<textarea class="DataField WithoutFocus" rows="2" spellcheck="false"
-							      id="seedphrase_id">XX								  
-						</textarea>&nbsp;<span id="word_count_id">Words: 24</span>
-						<textarea class="DataField WithoutFocus" rows="2" readonly
-							      id="seedphrase_4letter_id">XX								  
+					    <div class="DataFieldWithButton_Container" 
+						     id="seedphrase_container_id">
+							<textarea class="RawDataFieldWithButton WithoutFocus" 
+									  rows="2" spellcheck="false"
+									  id="mnemonics_id">XX								  
+							</textarea>
+							<button class="CopyButton" id="mnemonics_copy_btn_id">
+									<img src="icons/copy_16px_icn.png" 
+										 alt="Copy to Clipboard" border="0"/>
+							</button>
+						</div>
+						<textarea class="RawDataField WithoutFocus" rows="2" readonly
+							      id="mnemonics_4letter_id">XX								  
 						</textarea>
 					</td>
 				</tr>
 				<!-- ----------------------- Seedphrase -->
 				
-				
 				<!-- ----------------------------------------------------------- -->
-				<!-- ----------------------- Buttons Bar ----------------------- -->
+				<!-- ---------------------- Word Indexes ----------------------- -->
 				<!-- ----------------------------------------------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
-				<tr><td colspan="4" class="LabelColumn">
-						<table width="100%">
-						    <tr class="ButtonsBar">
-								<td width="33%">
-									<center><input class="Button" type="button" id="update_btn_id" value="Update">
-									</center>
-								</td>
-								<td width="33%">
-									<center><input class="Button" type="button" id="random_btn_id" value="Random">
-									</center>
-								</td>
-								<td width="33%">
-									<center><input class="Button" type="button" id="clear_btn_id" value="Clear">
-									</center>
-								</td>
-							</tr>
-						</table>
+				<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
+				<tr><td class="LabelColumn">
+						<span id="word_indexes_label_id">Word Indexes</span>
+						<select id="word_indexes_base_id" class="InputField MnemonicsSelector">
+							<option value="Decimal" selected>Decimal</option>
+							<option value="Binary" >Binary</option>								
+						</select>
+					</td>
+					<td class="FieldColumn" colspan="2">
+						<textarea class="RawDataField WithoutFocus" rows="3" spellcheck="false"
+							      id="word_indexes_id">XX								  
+						</textarea>
 					</td>
 				</tr>
-				<!-- ----------------------- Buttons Bar -->
+				<!-- ---------------------- Word Indexes -->	
+                <tr><td colspan="4"></td></tr>				
 			</table>
 		</div>
-		<!-- =================================== 'Private Key' Tab page -->
+		<!-- =================================== 'Seed' Tab page -->
 		
 			
 		<!-- ========================================================================================= -->
@@ -171,22 +220,58 @@
 				</tr>
 				<!-- ----------------------- Blockchain -->
 				
+				<!-- ----------------------------------------------------------- -->
+				<!-- -------------------- Derivation Path  --------------------- -->
+				<!-- ----------------------------------------------------------- -->
+				<tr><td class="LabelColumn">
+						<span id="derivation_path_label_id">Derivation Path</span>
+					</td>
+					<td class="FieldColumn" colspan="2">
+					    <table>
+							<tr>
+								<td class="Bip32Cell Bip32CellHeader">Root Node</td>
+								<td class="Bip32Cell Bip32CellHeader">Purpose</td>
+								<td class="Bip32Cell Bip32CellHeader">Coin Type</td>
+								<td class="Bip32Cell Bip32CellHeader">Account</td>
+								<td class="Bip32Cell Bip32CellHeader">Change</td>
+								<td class="Bip32Cell Bip32CellHeader">Address Index</td>
+							</tr>
+							<tr>
+								<td class="Bip32Cell">m/</td>
+								<td class="Bip32Cell">44'/</td>
+								<td id="coin_type_id"
+								    class="Bip32Cell">0'</td>
+								<td class="Bip32Cell">
+									<input id="account_id" type="text" class="Bip32CellValue" 
+									       value="0" maxlength="4"/><span>&nbsp;'/</span> 
+								</td>
+								<td class="Bip32Cell">0/</td>
+								<td class="Bip32Cell">
+									<input id="address_index_id" type="text" 
+									       class="Bip32CellValue" 
+									       value="0" maxlength="4"/>
+								</td>
+							</tr>							
+						</table>
+					</td>
+				</tr>
+				<!-- -------------------- Derivation Path -->				
 				
 				<!-- ---------------------------------------------------------- -->
-				<!-- ------------------------- Wallet ------------------------- -->
-				<!-- ---------------------------------------------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"></td></tr>
-				<tr><td class="LabelColumn" id="wallet_label_id">Wallet</td>
+				<!-- ------------------------- Address ------------------------ -->
+				<!-- ---------------------------------------------------------- -->				
+				<tr><td class="LabelColumn" id="address_label_id">Address</td>
 					<td colspan="2" class="FieldColumn">
-						<span id="wallet_id">0x83C1a2AF99f3783Be8A8c72DDA02B3832cb89f94						
+						<span id="address_id">FF						
 						</span>&nbsp;
 						<a id="wallet_URL_link_id"
 						   href="https://etherscan.io" target="_blank" rel="noreferrer">
-						   <input class="WalletButton" type="button" id="wallet_explore_btn_id" value="Explore...">
+						   <input class="WalletButton" type="button" 
+						          id="wallet_explore_btn_id" value="Explore...">
 						</a>
 					</td>
 				</tr>
-				<!-- ----------------------- Wallet -->
+				<!-- ----------------------- Address -->
 				
 				<!-- ----------------------------------------------------------- -->
 				<!-- ----------------------- Private Key ----------------------- -->
@@ -194,7 +279,7 @@
 				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
 				<tr><td class="LabelColumn" id="wallet_PK_label_id">Private Key</td>
 					<td colspan="2" class="FieldColumn">
-						<input class="DataField WithoutFocus ValidValue" readonly
+						<input class="RawDataField WithoutFocus ValidValue" readonly
 							   id="wallet_pk_hex_id" type="text" value="XX">
 					</td>
 				</tr>
@@ -204,34 +289,54 @@
 				<!-- ---------------------------------------------------------- -->
 				<!-- -------------------------- WIF --------------------------- -->
 				<!-- ---------------------------------------------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"></td></tr>
-				<tr><td class="LabelColumn" id="WIF_label_id">WIF</td>
+				<!-- <tr><td class="HorizontalBar" colspan="4"></td></tr> -->
+				<tr id="WIF_field_line_id"><td class="LabelColumn" id="WIF_label_id">WIF</td>
 					<td colspan="2" class="FieldColumn">
-						<span id="WIF_id">Kyoa49fZdsv8YiH6Agj5DQiBdjphLRF1dZMMfAzKPVrCD2vbjxYV						
+						<span id="WIF_id">						
 						</span>
 					</td>
 				</tr>
 				<!-- ----------------------- WIF -->
 				
 				
-				<!-- ----------------------------------------------------------- -->
-				<!-- ----------------------- Seedphrase ----------------------- -->
-				<!-- ----------------------------------------------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
-				<tr><td class="LabelColumn">
-						<span>Seedphrase</span>
-					</td>
-					<td class="FieldColumn" colspan="2">
-						<textarea class="DataField WithoutFocus" rows="2" spellcheck="false" readonly
-							      id="wallet_seedphrase_id">XX								  
-						</textarea>&nbsp;<span id="wallet_word_count_id">Words: 24</span>
+				<!-- ---------------------------------------------------------- -->
+				<!-- ------------------------- XPRIV -------------------------- -->
+				<!-- ---------------------------------------------------------- -->
+				<tr id="XPRIV_field_line_id" ><td class="LabelColumn" id="XPRIV_label_id">XPRIV</td>
+					<td colspan="2" class="FieldColumn">
+						<span id="XPRIV_id">						
+						</span>
 					</td>
 				</tr>
-				<!-- ----------------------- Seedphrase -->
+				<!-- ------------------------- XPRIV -->
+				<tr><td colspan="4"></td></tr>
 			</table>
 		</div>
 		<!-- =================================== 'Wallet' Tab page -->
 		
+		<!-- ----------------------------------------------------------- -->
+		<!-- ----------------------- Buttons Bar ----------------------- -->
+		<!-- ----------------------------------------------------------- -->
+		<table class="ButtonsBar" id="buttons_bar_container" width="100%">
+		    <tr><td class="HorizontalBar" colspan="3"><hr></td></tr>
+			<tr id="buttons_bar">
+				<td id="left_BtnBar_item_id" width="25%" hidden>
+					<center><span>&nbsp;<span></center>									
+				</td>
+				<td>
+					<center><input class="GenerateButton" 
+								   type="button" id="random_btn_id" value="Generate">
+					</center>
+				</td>
+				<td id="right_BtnBar_item_id" hidden>
+					<center>
+						<input class="RefreshButton BlinkingButton" 
+							   type="button" id="refresh_btn_id" value="Refresh">
+					</center>
+				</td>
+			</tr>
+		</table>
+		<!-- ----------------------- Buttons Bar -->
 		
 		<!-- ========================================================================================= -->
 		<!-- ======================================= Status bar ====================================== -->

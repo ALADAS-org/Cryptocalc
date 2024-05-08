@@ -12,18 +12,26 @@ let fortunes = [];
 
 const getFortuneCookies = () => {
 	//console.log(">> getFortuneCookies");
-	const fortune_files_str = fs.readFileSync(__dirname + "/fortune_catalog.txt").toString();
+	const fortune_list_str = fs.readFileSync(__dirname + "/fortune_catalog.txt").toString();
 	//console.log("   fortune_filenames_str:\n" + fortune_filenames_str);
-	let fortune_files = fortune_files_str.split('\n');
+	let fortune_list = fortune_list_str.split('\n');
 	//console.log("   fortune_files.length: " + fortune_files.length);
 	
-	for (let i=0; i < fortune_files.length; i++) {
-		let fortune_filename = fortune_files[i];
+	let fortune_path     = "";
+	let fortune_str      = "";
+	let current_fortunes = "";
+	let fortunes         = [];
+	
+	for (let i=0; i < fortune_list.length; i++) {
+		let fortune_filename = fortune_list[i];
 		//console.log("   fortune_filename[" + i + "]: " + fortune_filename);
-		const fortune_file_str = fs.readFileSync(__dirname + "/data/" + fortune_filename).toString();
-		let current_fortunes = fortune_file_str.split(/\n%\n/);
+		fortune_path = __dirname + "/data/" + fortune_filename
+		fortune_path = fortune_path.replaceAll("\r","");
+		
+		fortune_str = fs.readFileSync( fortune_path ).toString();
+		current_fortunes = fortune_str.split(/\n%\n/);
 		//console.log("   current_fortunes.length: " + current_fortunes.length);
-		fortunes = fortunes.concat(current_fortunes);
+		fortunes = fortunes.concat( current_fortunes );
 	}
 	return fortunes;
 }; // getFortuneCookies()
@@ -36,9 +44,13 @@ const getFortuneCookie = () => {
 	}
 	//console.log("   fortunes.length: " + fortunes.length);
 	
-	let random_index = getRandomInt(fortunes.length);
-	let fortune_cookie = fortunes[random_index];
-
+	let fortune_cookie = "";
+	let random_index   = 0;
+	while ( fortune_cookie.length == 0 ) { 
+		random_index   = getRandomInt( fortunes.length );
+		fortune_cookie = fortunes[random_index];
+    }
+	
     return fortune_cookie;
 }; // getFortuneCookie()
 
