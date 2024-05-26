@@ -1,4 +1,4 @@
-## Cryptocalc 0.1.3
+## Cryptocalc 0.1.4
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Cryptocalc_0_1_0_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -29,18 +29,22 @@
         * Type `npm install`	
 
 4. Release notes
-    + 4.1. Features in `0.1.3`
-        * 4.1.1. Rewrite of Wallet generation to support _BIP39_, _BIP32_ and _BIP44_ specifications  
+    + 4.1. Features in `0.1.4`
+	    * 4.1.1. Fixed bugs in drawing of fortune cookies. 
+		* 4.1.2. Updates and fixes in README.md. 
+		* 4.1.3. Addes [_Guarda_](https://guarda.com/app/) url in Help menu.
+    + 4.2. Features in `0.1.0`
+        * 4.2.1. Rewrite of Wallet generation to support _BIP39_, _BIP32_ and _BIP44_ specifications  
 		I rewrote _Wallet generation_ in order to make it compatible with these 
 		computations: [_Ian Coleman BIP39_](https://iancoleman.io/bip39/)
 		Note that now the _WIF_ (NB: _Private Key_ for _Ethereum_) can be used (see 5.2.1) 
 		to import a wallet in [_Guarda_](https://guarda.com/app/).
 		The terminology has been changed, the _Wallet generation waterfall_ is now:  
 		_Entropy source_ => _Entropy_ => _Seedphrase_ => _Private Key_/WIF => _Wallet Address_
-		* 4.1.2. Support of 12..24 words for the _Seedphrase_ 
+		* 4.2.2. Support of 12..24 words for the _Seedphrase_ 
 		With a variable _Entropy Size_ (128..256 bits), the _Seedphrase_ size varies from 12 to 24 words.
 		The _Entropy Size_ size impacts the _Seedphrase_ and conversely.
-		* 4.1.3. _Entropy Checksum_ bits are now displayed (see 5.1.7)
+		* 4.2.3. _Entropy Checksum_ bits are now displayed (see 5.1.7)
 5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will open the _Cryptocalc_ desktop standalone application
     + 5.1. Features  

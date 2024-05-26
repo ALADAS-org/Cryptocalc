@@ -27,6 +27,7 @@ const getFortuneCookies = () => {
 		fortune_filename = fortune_list[i];
 		//console.log("   fortune_filename[" + i + "]: " + fortune_filename);
 		fortune_path = __dirname + "/data/" + fortune_filename;
+		fortune_path = fortune_path.replaceAll("\r","");
 				
 		fortune_str = fs.readFileSync( fortune_path ).toString();
 		fortune_str = fortune_str.replaceAll("\r","");
