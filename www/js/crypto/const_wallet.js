@@ -38,9 +38,6 @@ const WIF             = 'wif';
 const ADDRESS         = 'address';
 const MNEMONICS       = 'mnemonics';
 
-const ACCOUNT_INDEX   = 'account_index';
-const ADDRESS_INDEX   = 'address_index';
-
 const BALANCE_URL     = 'balance_URL';
 
 if (typeof exports === 'object') {
@@ -77,9 +74,6 @@ if (typeof exports === 'object') {
 	
 	exports.ADDRESS         = ADDRESS
 	exports.MNEMONICS       = MNEMONICS
-	
-	exports.ACCOUNT_INDEX   = ACCOUNT_INDEX
-	exports.ADDRESS_INDEX   = ADDRESS_INDEX
 	
 	exports.BALANCE_URL     = BALANCE_URL 
 } // 'const_wallet.js' exports

@@ -1,4 +1,4 @@
-## Cryptocalc 0.1.1
+## Cryptocalc 0.1.2
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Cryptocalc_0_1_0_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which provides straigthforward
