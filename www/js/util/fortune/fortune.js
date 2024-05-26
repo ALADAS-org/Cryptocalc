@@ -20,15 +20,16 @@ const getFortuneCookies = () => {
 	let fortune_path     = "";
 	let fortune_str      = "";
 	let current_fortunes = "";
+	let fortune_filename = "";
 	let fortunes         = [];
 	
 	for (let i=0; i < fortune_list.length; i++) {
-		let fortune_filename = fortune_list[i];
+		fortune_filename = fortune_list[i];
 		//console.log("   fortune_filename[" + i + "]: " + fortune_filename);
-		fortune_path = __dirname + "/data/" + fortune_filename
-		fortune_path = fortune_path.replaceAll("\r","");
-		
+		fortune_path = __dirname + "/data/" + fortune_filename;
+				
 		fortune_str = fs.readFileSync( fortune_path ).toString();
+		fortune_str = fortune_str.replaceAll("\r","");
 		current_fortunes = fortune_str.split(/\n%\n/);
 		//console.log("   current_fortunes.length: " + current_fortunes.length);
 		fortunes = fortunes.concat( current_fortunes );

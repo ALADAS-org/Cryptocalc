@@ -1,11 +1,10 @@
-## Cryptocalc 0.1.2
+## Cryptocalc 0.1.3
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Cryptocalc_0_1_0_EN.gif)
 1. Purpose  
-   _Cryptocalc_ is a standalone desktop application which provides straigthforward
-   conversions between a `Private Key` (an `Hexadecimal` value) and the matching _Seedphrase_ .
-   (12 to 24 _mnemonics_ from the _BIP39_ dictionary). 
-   Even though there is already a lot of similar tools online, the purpose is to use these features
-   locally on your computer in order to reduce the risk of having your _Private Key_ 
+   _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
+   with the "Hierarchical Deterministic" paradigm.
+   Even though there is already a similar tools online, the purpose is to use these features
+   locally on your computer in order to reduce the risk of having your _Private Key_/_WIF_ 
    or _Seedphrase_ informations stealed.     
    NB: _Cryptocalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron)
@@ -30,18 +29,18 @@
         * Type `npm install`	
 
 4. Release notes
-    + 4.1. Features in `0.1.0`
-        * 4.1.1. Complete rewrite of Wallet generation to support _BIP39_, _BIP32_ and _BIP44_ specifications  
-		I had it mostly wrong (especially the computation of _Entropy Checksum_). I rewrote _Wallet generation_
-		in order to make it compatible with these computations: [_Ian Coleman BIP39_](https://iancoleman.io/bip39/)
-		Note that now the _Private Key_ or _WIF_ (only _Private Key_ for _Ethereum_) are used (see 5.2.2.) to import a wallet 
-		in [_Guarda_](https://guarda.com/app/).
+    + 4.1. Features in `0.1.3`
+        * 4.1.1. Rewrite of Wallet generation to support _BIP39_, _BIP32_ and _BIP44_ specifications  
+		I rewrote _Wallet generation_ in order to make it compatible with these 
+		computations: [_Ian Coleman BIP39_](https://iancoleman.io/bip39/)
+		Note that now the _WIF_ (NB: _Private Key_ for _Ethereum_) can be used (see 5.2.1) 
+		to import a wallet in [_Guarda_](https://guarda.com/app/).
 		The terminology has been changed, the _Wallet generation waterfall_ is now:  
 		_Entropy source_ => _Entropy_ => _Seedphrase_ => _Private Key_/WIF => _Wallet Address_
 		* 4.1.2. Support of 12..24 words for the _Seedphrase_ 
 		With a variable _Entropy Size_ (128..256 bits), the _Seedphrase_ size varies from 12 to 24 words.
 		The _Entropy Size_ size impacts the _Seedphrase_ and conversely.
-		* 4.1.3. _Entropy Checksum_ bits are now displayed (see 6.1.2)
+		* 4.1.3. _Entropy Checksum_ bits are now displayed (see 5.1.7)
 5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will open the _Cryptocalc_ desktop standalone application
     + 5.1. Features  
@@ -57,10 +56,9 @@
 		NB: As some _mnemonics_ are only 3 characters long, the abbreviation will of course only be whole _mnemonic_.  
 		Here is an example below:  
         _Seedphrase_  
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;goddess also genre east slam borrow amateur pupil merit clinic check zone \
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;produce bomb deliver submit demise organ cherry race purchase post finish common
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rent expand super sea summer pull catalog mobile proud solve oven goose    
         _Shortened Seedphrase_  
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ProdBombDeliSubmDemiOrgaCherRacePurcPostFiniComm 
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos 
         * 5.1.2. Several wallets in the same _BIP32 HD wallet tree_
         The _BIP32 HD wallet tree_ is determined by the _Entropy_ or _Seedphrase_. 
 		These are 2 isomorphic representations of the _SRP_ (_Secret Recovery Passphrase_).		
@@ -75,64 +73,66 @@
 		will recompute the wallet accordingly.
 		* 5.1.3. Check the generated wallets against _Ian Coleman BIP39_: an item
         in the menu (Help/Resources/Ian Coleman BIP39) eases the checking by opening 
-        [_Ian Coleman BIP39_](https://iancoleman.io/bip39/).		
-		* 5.1.4. _Salted Entropy_  
+        [_Ian Coleman BIP39_](https://iancoleman.io/bip39/).
+		* 5.1.4. Import a wallet in Guarda: an item
+        in the menu (Help/Resources/Guarda) eases importing a wallet in a
+		_Wallet Manager_ application by opening 
+        [_Guarda_](https://guarda.com/).	
+		* 5.1.5. _Salted Entropy_  
 		The _Salting_ is adding a unique information (e.g. a _UUID_) so that
         even if the _Entropy Source_ is the same, the _Entropy_ will be unique 		
 		at each press of [ Generate ] button.
-		* 5.1.5. Choose _Entropy Size_ 
+		* 5.1.6. Choose _Entropy Size_ 
 		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). 
-		This is equivalent a _Seedphrase size_ between 12 to 24 words. 
+		This is equivalent to a _Seedphrase size_ between 12 and 24 words. 
 		Changing _Entropy Size_ impacts the _Seedphrase size_ and conversely.
-		* 5.1.6. Display of the _Checksum bits_ (see 5.1.9)
-		* 5.1.7. Save _Wallet Informations_    
+		* 5.1.7. Display of the _Checksum bits_ (see explanations in 5.1.10)
+		* 5.1.8. Save _Wallet Informations_    
 		With `File/Save` (or the _Save_ icon in the main toolbar), you can save 
 		the _Wallet Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
 		under `_output` folder. This subfolder contains `wallet_info.txt` and a `wallet.json` 
 		with the informations displayed in _Seed_ and _Wallet_ tab pages. 
-		* 5.1.8. Select _Seedphrase Language_    
-		You can select the _Language Wordlist_ (eg. _English_, _French_, _Deutsh_, etc...). 
-		Please notice that is not meant to be used with _Wallet Manager_ applications 
-		because most will only accept _English_ mnemonics.  
-        This feature is indeed a mean to add a scramble step in order to make it 
-		harder to steal your _Secret Recovery Passphrase_ because 
+		* 5.1.9. Select _Seedphrase Language_    
+		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
+		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
+        Changing _Wordlist Language_ is indeed a mean to add a scramble step in order 
+		to make it harder to steal your _Secret Recovery Passphrase_ because 
         it should be translated to _English_ to be used with a _Wallet Manager_.   
 		NB: the translation between languages is native in _Cryptocalc_
-		because the reference is indeed the _Word Indexes_ (see 5.1.9) not the words.
-		* 5.1.9. Display of _Word Indexes_
+		because the reference is the _Word Indexes_ (see 5.1.10) not the words.
+		* 5.1.10. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
-		_Seedphrase_ words in the _BIP39_ dictionary. You can choose to display 
-		these indexes in _Decimal_ or _Binary_ (in _Binary_ you can check that the 
-		computed _Checksum bits_ are added at the end of the converted _Entropy_ to
-		determine the index of the last word).
-		* 5.1.10. Display of the _BIP32 Derivation Path_
+		_Seedphrase_ words in the _BIP39_ dictionary (see also 6.1.1). 
+		You can choose to display these indexes in _Decimal_ or _Binary_ 
+		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
+		of the converted _Entropy_ to determine the index of the last word).
+		* 5.1.11. Display of the _BIP32 Derivation Path_
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same _BIP32_ hierarchy that is determined by the
 		_Seedphrase_ (also called the _Secret Recovery Passphrase_).
-        * 5.1.11. Support of _Localization_    
-        In _Cryptocalc_, the _Localization_ (`l10n`) feature is the translation of GUI 
-		Labels to adapt to the _locale_.
+        * 5.1.12. Support of _Localization_    
+        In _Cryptocalc_, the _Localization_ (`l10n`) feature is the translation of 
+		_GUI Labels_ to adapt to the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use, 
 		and optionnally a codeset (eg. `de_CH.UTF-8`).		
 		The _locale_ is provided as part of your machine's environment. 
 		_Cryptocalc_ only uses the 2 letter language part (eg. `en`). 
 		Localization is enabled by a _JSon_ file in the `www/js/L10n` folder 
 		(eg. `gui-msg-en.json`) . 
-		Currently only `en` and `fr` are provided, but I would be nice if contributors 
-		could provide other languages (I will of course cite the contributors name in the license) 
-		as I preferred to avoid _naive_ use of a translation tool.  		
+		Currently only `en` and `fr` are provided.  		
     + 5.2. Use cases
-        * 5.2.1. Generate a new _Wallet_ and importit in a _Wallet manager_  
+        * 5.2.1. Generate a new _Wallet_ and import it in a _Wallet manager_  
 	    With a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) you can import
 		a wallet generated by _Cryptocalc_:   
         * 5.2.1.a. Choose a coin (e.g. `BTC`,`ETH`,`DOGE`,`LTC,``SOL`) 
-		* 5.2.1.b. Enter _WIF_ or _Private Key_ (No _Private Key_ for `ETH` wallets)    
+		* 5.2.1.b. Enter _WIF_ (NB: _Private Key_ for `ETH` wallets)    
         * 5.2.3. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
         The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 
 		144 bytes useable capacity. This is enough to store the _Shortened Seedphrase_, 
 		with a 24 words _Shortened Seedphrase_ 
-	    the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.1) or even less (as some mnemonics have only three characters).   
+	    the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.1) 
+		or even less (as some mnemonics have only three characters).   
         * 5.2.4. Store _Master password_  
         This is similar to the previous case, but the _Shortened Seedphrase_ 
 		can be used as a _Master password_ for a _Password Manager_ or for tools like
@@ -173,12 +173,12 @@
 	it is more secure to use a 24 words _Seedphrase_ if possible 
 	(e.g. _Ledger_ hardware wallet manager).    
 	    Example: meaning of each part for `m/44'/60'/0'/0/0`:    
-	    * Start at the master key                                  (m)    
-        * Follow the BIP44 standard                                (44′)    
-        * Derive the key for _Ethereum_                            (60′)    
-        * Access the first account                                 (0′)    
-        * Choose the external chain, used for public addresses     (0)    
-        * And finally, generate the first address in this sequence (0)    
+	    * Start at the master key                                      (m)    
+        * Follow the BIP44 standard                                    (44′)    
+        * Derive the key for _Ethereum_ (for which _Coin type_ is 60)  (60′)    
+        * Access the first account                                     (0′)    
+        * Choose the external chain, used for public addresses         (0)    
+        * And finally, generate the first address in this sequence     (0)    
         	
 	* Reference    
 	    + [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))

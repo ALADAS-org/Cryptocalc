@@ -109,12 +109,18 @@ const ELECTRON_MAIN_MENU_TEMPLATE = [
 	{   label: L10nUtils.GetLocalizedMsg("Help"), //"Help"
         submenu: [ { label: L10nUtils.GetLocalizedMsg("Resources"),
 				     submenu: [
-						{ label: "Ian Coleman BIP 39",
+						{ label: "Ian Coleman BIP39",
 						  click() { 
 							 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
 							 createBrowserWindow("https://iancoleman.io/bip39/");
 						  }
-						}
+						},
+						{ label: "Guarda",
+						  click() { 
+							 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
+							 createBrowserWindow("https://guarda.com/");
+						  }
+						}						
 				     ]
 				   },
 		           {  label: L10nUtils.GetLocalizedMsg("About"), //'About...',
