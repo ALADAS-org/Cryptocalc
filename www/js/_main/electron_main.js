@@ -54,12 +54,14 @@ const { VIEW_TOGGLE_DEVTOOLS,
 	  
 const { NULL_COIN, 
 		BITCOIN, ETHEREUM, 
-		BINANCE, SOLANA, CARDANO, RIPPLE, AVALANCHE, DOGECOIN, LITECOIN,
+		BINANCE, SOLANA, CARDANO, AVALANCHE, 
+		DOGECOIN, LITECOIN,
+		RIPPLE, TRON, BITCOIN_CASH, FIRO,
 		MAINNET, TESTNET,
 		BLOCKCHAIN, NULL_BLOCKCHAIN,
 		COIN_ABBREVIATIONS
       }                                 = require('../crypto/const_blockchains.js');
-
+	  
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
 const { Bip32Utils }                    = require('../crypto/bip32_utils.js');
@@ -71,10 +73,6 @@ const { L10nUtils }                     = require('../L10n/L10n_utils.js');
 const { Solana_API }                    = require('../crypto/solana_api.js');
 		
 let g_DidFinishLoad_FiredCount = 0;
-		
-const getRootPath = () => {
-	return path.resolve(__dirname, '..');
-} // getRootPath()
 
 const createBrowserWindow = ( url ) => {
    const win = new BrowserWindow({
@@ -142,6 +140,7 @@ const error_handler = (err) => {
 
 class ElectronMain {
 	static MainWindow = null;
+	static Defaults   = {};
 	
 	//==================== CreateWindow() ====================
 	// https://stackoverflow.com/questions/44391448/electron-require-is-not-defined
@@ -200,6 +199,8 @@ class ElectronMain {
 						return { action: "deny" };
 					});
 					
+					ElectronMain.ReadDefaults();
+					
 					ElectronMain.SetCallbacks();
 				}
 			} // 'did-finish-load' callback
@@ -257,6 +258,15 @@ class ElectronMain {
 			console.log(err)
 		});
 	} // ElectronMain.SelectFile()
+	
+	static ReadDefaults() {
+		console.log(">> " + _CYAN_ + "ElectronMain.ReadDefaults" + _END_);
+		let config_path = app.getAppPath() + '/www/config';
+		console.log("config_path: " + config_path);
+		const defaults_str = fs.readFileSync(config_path + '/defaults.json');
+		ElectronMain.Defaults = JSON.parse(defaults_str);
+		console.log("ElectronMain.Defaults: " + JSON.stringify(ElectronMain.Defaults));
+	} // ElectronMain.ReadDefaults()
 	
 	static SetCallbacks() {
 		console.log(">> " + _CYAN_ + "ElectronMain.SetCallbacks" + _END_);

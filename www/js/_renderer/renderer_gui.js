@@ -418,7 +418,10 @@ class RendererGUI {
         let new_derivation_path = "";		
 		
 		if (   blockchain == ETHEREUM
-		    || blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+		    || blockchain == BITCOIN 
+			|| blockchain == DOGECOIN || blockchain == LITECOIN
+			|| blockchain == RIPPLE   || blockchain == TRON || blockchain == BITCOIN_CASH
+			|| blockchain == FIRO ) {
 
 			options = { "blockchain": blockchain, 
 			            [ACCOUNT_INDEX]: this.bip32_account_index,
@@ -434,11 +437,16 @@ class RendererGUI {
 				xpriv = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
 				wif   = "";
 			}
-			else if ( blockchain == DOGECOIN || blockchain == LITECOIN ) {				
+			else if (    blockchain == DOGECOIN || blockchain == LITECOIN
+                      || blockchain == FIRO	|| blockchain == BITCOIN_CASH ) {				
 				xpriv = ( new_wallet[XPRIV] != undefined ) ? new_wallet[XPRIV] : "";
 				wif   = "";
-			}
-            			
+			}  	
+			else if (   blockchain == RIPPLE 
+			         || blockchain == TRON ) {				
+				xpriv = new_wallet[PRIVATE_KEY_HEX];
+				wif   = "";
+			}   			
 		}
 		else if ( blockchain == SOLANA ) {			
 			options = { "blockchain": SOLANA, "uuid": salt_uuid };
@@ -504,7 +512,8 @@ class RendererGUI {
 	} // updateWalletURL()
 	
 	updateWIF( blockchain, wif ) {
-		if (      (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN
+		if (      (   blockchain == BITCOIN 
+		           || blockchain == DOGECOIN || blockchain == LITECOIN
 		           || blockchain == SOLANA)
   		      &&  wif != undefined && wif != "") {
 			HtmlUtils.SetField( WIF_ID, wif );
@@ -517,14 +526,27 @@ class RendererGUI {
 	} // updateWIF()
 		
 	updateXPRIV( blockchain, xpriv ) {
-		if (      (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN
-		           || blockchain == ETHEREUM )
+		if (      (   blockchain == BITCOIN 
+		           || blockchain == DOGECOIN || blockchain == LITECOIN
+		           || blockchain == ETHEREUM 
+				   || blockchain == RIPPLE || blockchain == FIRO)
   		      &&  xpriv != undefined && xpriv != "") {
 			HtmlUtils.SetField( XPRIV_ID, xpriv );
-			HtmlUtils.ShowElement( XPRIV_FIELD_LINE_ID );
-			if ( blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN ) {
+			HtmlUtils.ShowElement( XPRIV_FIELD_LINE_ID );			
+	
+			if (   blockchain == BITCOIN 
+			    || blockchain == DOGECOIN || blockchain == LITECOIN ) {
 				HtmlUtils.SetField( XPRIV_LABEL_ID, "WIF");
-			}	
+			}
+			else if ( blockchain == RIPPLE || blockchain == TRON ) {
+				HtmlUtils.SetField( XPRIV_LABEL_ID, "Private Key");
+				HtmlUtils.HideElement( XPRIV_FIELD_LINE_ID );
+			
+			}
+			else if ( blockchain == FIRO ) {
+				HtmlUtils.SetField( XPRIV_LABEL_ID, "Private Key (B58)");
+				HtmlUtils.HideElement( WIF_FIELD_LINE_ID );
+			}			
 		}
 		else {
 			HtmlUtils.SetField( XPRIV_ID, "" );
@@ -1182,11 +1204,13 @@ class RendererGUI {
 			crypto_info['Blockchain Explorer'] = wallet_URL_elt.href;
 		}
 		
-		let entropy_value = HtmlUtils.GetField( ENTROPY_ID ); 
-		crypto_info["Entropy"] = entropy_value;
+		log2Main("blockchain " + blockchain );
 		
-		if (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN
-		    || blockchain == ETHEREUM) {
+		if (   blockchain == BITCOIN 
+		    || blockchain == DOGECOIN || blockchain == LITECOIN
+		    || blockchain == ETHEREUM
+			|| blockchain == RIPPLE       || blockchain == TRON  
+			|| blockchain == BITCOIN_CASH || blockchain == FIRO) {
 				
 			let WIF_value = HtmlUtils.GetField( WIF_ID ); 
 			if ( WIF_value != "" ) {
@@ -1196,7 +1220,27 @@ class RendererGUI {
 			let xpriv = HtmlUtils.GetField( XPRIV_ID );
 			if ( xpriv != "" ) {
 				crypto_info[XPRIV] = xpriv;
-			}	
+			}
+
+            let xpriv_value = "";
+            if (blockchain == RIPPLE ) {
+				xpriv_value = crypto_info[XPRIV];
+				delete crypto_info[XPRIV];
+				crypto_info["Private Key"] = xpriv_value; 
+			}
+			else if ( blockchain == TRON ) {
+				//log2Main("blockchain is TRON " + HtmlUtils.GetField( WALLET_PK_HEX_ID ) );
+				crypto_info["Private Key"] = HtmlUtils.GetField( WALLET_PK_HEX_ID ); 
+			}
+			else if ( blockchain == BITCOIN_CASH ) {
+				log2Main("blockchain is TRON " + HtmlUtils.GetField( WALLET_PK_HEX_ID ) );
+				crypto_info["Private Key"] = HtmlUtils.GetField( WALLET_PK_HEX_ID ); 
+			}
+            else if (blockchain == FIRO) {
+				xpriv_value = crypto_info[XPRIV];
+				delete crypto_info[XPRIV];
+				crypto_info["Private Key (B58)"] = xpriv_value; 
+			}			
 		}
 		
 		let mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_ID ); 
@@ -1217,6 +1261,14 @@ class RendererGUI {
 		crypto_info['Word indexes'] = word_indexes_str;
 		
 		//log2Main(">> " + _CYAN_ + "RendererGUI.getCryptoInfo() " + _END_);
+		
+		crypto_info["Derivation Path"] =  "m/44'/" + COIN_TYPES[blockchain] + "'/"
+		                                 + HtmlUtils.GetField( ACCOUNT_ID ) + "'/0/"
+										 + HtmlUtils.GetField( ADDRESS_INDEX_ID );
+		
+		let entropy_value = HtmlUtils.GetField( ENTROPY_ID ); 
+		crypto_info["Entropy"] = entropy_value;
+		
 		crypto_info['lang'] = lang;
 		
 		return crypto_info;

@@ -60,21 +60,6 @@ const { BIP32Factory
 // You must wrap a tiny-secp256k1 compatible implementation
 const bip32            = BIP32Factory(ecc);
 
-const CS_WORDLIST_JSON = require('@scure/bip39/wordlists/czech');
-const CS_WORDLIST      = CS_WORDLIST_JSON['wordlist'];
-
-const PT_WORDLIST_JSON = require('@scure/bip39/wordlists/portuguese');
-const PT_WORDLIST      = PT_WORDLIST_JSON['wordlist'];
-
-//const { wordlist as japanese }           = require('@scure/bip39/wordlists/japanese';
-//const { wordlist as korean }             = require('@scure/bip39/wordlists/korean';
-//const { wordlist as simplifiedChinese }  = require('@scure/bip39/wordlists/simplified-chinese';
-//const { wordlist as traditionalChinese } = require('@scure/bip39/wordlists/traditional-chinese';
-
-const { GERMAN_MNEMONICS }   = require('../lib/mnemonics/DE_mnemonics.js');
-
-const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT" ];
-
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, 
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
 		_END_ }              = require('../util/color/color_console_codes.js');
@@ -85,10 +70,10 @@ const { BLOCKCHAIN, NULL_BLOCKCHAIN,
 		COIN, NULL_COIN, COIN_ABBREVIATIONS, 
 		COIN_TYPE, COIN_TYPES,				
 		
-	    BITCOIN, ETHEREUM, 
+	    BITCOIN,  ETHEREUM, 
 		//BINANCE,
-		CARDANO, RIPPLE, 
-		DOGECOIN, TRON, 
+		CARDANO,  RIPPLE, 
+		DOGECOIN, TRON, BITCOIN_CASH,
 		LITECOIN, DASH
 		//AVALANCHE,				
       }                      = require('./const_blockchains.js');
@@ -117,6 +102,8 @@ const { b58ToHex,
 	  }                      = require('./base58_utils.js');
 
 const { Bip39Utils  }        = require('./bip39_utils.js');
+
+const bchaddr = require('bchaddrjs');
 
 /*
 - Génération d'un hash SHA256 (24 mots) ou SHA-1 (128 bits, 12 mots)
@@ -164,6 +151,7 @@ class Bip32Utils {
 		//console.log("   address_index typeof: " + typeof address_index );
 		
 		let hdwallet_info = {};
+		
 		hdwallet_info[BLOCKCHAIN]     = blockchain;
 		hdwallet_info["coin"]         = coin;
 		hdwallet_info["coin_type"]    = coin_type;		
@@ -292,11 +280,19 @@ class Bip32Utils {
 		
 		hdwallet_info[ADDRESS] = addresses[0].address;
 		
+		if ( blockchain == BITCOIN_CASH ) {
+			hdwallet_info[ADDRESS] = bchaddr.toCashAddress( hdwallet_info[ADDRESS] );
+		}
+		
 		let child_private_key = hexWithoutPrefix(addresses[0]["privKey"]);
 		let child_private_key_hex = child_private_key;
 		console.log(   "   " + _YELLOW_ 
 		             + "child_private_key:      " + _END_ + child_private_key);
-		if ( ! isHexString(child_private_key) ) { 
+					 
+		if ( blockchain == BITCOIN_CASH ) {
+			hdwallet_info[PRIVATE_KEY_HEX] = child_private_key;
+		}
+		else if ( ! isHexString(child_private_key) ) { 
 			if ( isBase58String(child_private_key) ) {
 				hdwallet_info[XPRIV] = child_private_key;
 				child_private_key_hex = b58ToHex( child_private_key );

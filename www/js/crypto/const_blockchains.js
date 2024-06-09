@@ -27,10 +27,12 @@ const CARDANO      = "Cardano";
 const AVALANCHE    = "Avalanche";
 const DOGECOIN     = "DogeCoin";
 const TRON         = "TRON";
+const BITCOIN_CASH = "Bitcoin Cash";
 const POLKADOT     = "Polkadot";
 const POLYGON      = "Polygon";
 const LITECOIN     = "LiteCoin";
 const FILECOIN     = "Filecoin";
+const FIRO         = "Firo";
 
 // Monero mnemonic library (https://github.com/pywallet-cli/bip-utils)
 // If you use the official Monero wallet, you'll probably notice that Monero generates 
@@ -64,6 +66,7 @@ const COIN_ABBREVIATIONS = {
 	[AVALANCHE]    : "AVAX",	
 	[DOGECOIN]     : "DOGE",
 	[TRON]         : "TRX",
+	[BITCOIN_CASH] : "BCH",
 	[POLKADOT]     : "DOT",
 	[POLYGON]      : "MATIC",
 	[LITECOIN]     : "LTC",
@@ -73,7 +76,8 @@ const COIN_ABBREVIATIONS = {
 	[ZILLIQA]      : "ZIL",
 	[ZCASH]        : "ZEC",
 	[KUSAMA]       : "KSM",
-	[DASH]         : "DASH",	
+	[DASH]         : "DASH",
+	[FIRO]         : "FIRO",	
 	// ------------ https://coinmarketcap.com/			
 	
 	[NAMECOIN]     : "NMC"	
@@ -94,7 +98,9 @@ const COIN_TYPES = {
 	[ETHEREUM]     :   60,
 	[MONERO]       :  128,
 	[ZCASH]        :  133,
+	[FIRO]         :  136,
 	[RIPPLE]       :  144,
+	[BITCOIN_CASH] :  145,
 	[TRON]         :  195,
 	[ZILLIQA]      :  313,
 	[KUSAMA]       :  434,
@@ -108,48 +114,54 @@ const COIN_TYPES = {
 }; // COIN_TYPES
 
 const FAUCET_URLs = {
-    [NULL_COIN]  : "Null-URL",	
-	[ETHEREUM]   : "https://mumbaifaucet.com/",
-	[BITCOIN]    : "https://coinfaucet.eu/en/btc-testnet/",
-	[SOLANA]     : "https://solfaucet.com/",
-	[CARDANO]    : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
-	[DOGECOIN]   : "https://testnet-faucet.com/doge-testnet/",
-	[AVALANCHE]  : "Null-URL",
-	[TRON]       : "Null-URL",
-	[DASH]       : "Null-URL",
-	[LITECOIN]   : "https://litecointf.salmen.website/"
+    [NULL_COIN]    : "Null-URL",	
+	[ETHEREUM]     : "https://mumbaifaucet.com/",
+	[BITCOIN]      : "https://coinfaucet.eu/en/btc-testnet/",
+	[SOLANA]       : "https://solfaucet.com/",
+	[CARDANO]      : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
+	[DOGECOIN]     : "https://testnet-faucet.com/doge-testnet/",
+	[AVALANCHE]    : "Null-URL",
+	[TRON]         : "Null-URL",
+	[DASH]         : "Null-URL",
+	[FIRO]         : "Null-URL",
+	[BITCOIN_CASH] : "Null-URL",
+	[LITECOIN]     : "https://litecointf.salmen.website/"
 }; // FAUCET_URLs
 
 // https://shardeum.org/blog/best-blockchain-explorers/
 // 1. Blockchain
 // 1. BlockCypher
 const MAINNET_EXPLORER_URLs = {	
-	[NULL_COIN]:   "Null-URL",
+	[NULL_COIN]:    "Null-URL",
 	
-	[ETHEREUM]:    "https://etherscan.io/address/",	
-	[BITCOIN]:     "https://www.blockchain.com/explorer/addresses/btc/",	
-	[SOLANA]:      "https://explorer.solana.com/address/",
-	[CARDANO]:     "https://blockchair.com/fr/cardano/address/",
-	[RIPPLE]:      "https://blockchair.com/fr/search?q=",	
-	[DOGECOIN]:    "https://dogechain.info/address/",
-	[AVALANCHE]:   "https://snowtrace.io/address/",
-	[TRON]:        "https://tronscan.org/#/address/",
-	[DASH]:        "https://explorer.dash.org/insight/address/",
-	[LITECOIN]:    "https://live.blockcypher.com/ltc/address/"
+	[ETHEREUM]:     "https://etherscan.io/address/",	
+	[BITCOIN]:      "https://www.blockchain.com/explorer/addresses/btc/",	
+	[SOLANA]:       "https://explorer.solana.com/address/",
+	[CARDANO]:      "https://blockchair.com/fr/cardano/address/",
+	[DOGECOIN]:     "https://dogechain.info/address/",
+	[AVALANCHE]:    "https://snowtrace.io/address/",
+	[TRON]:         "https://tronscan.org/#/address/",
+	[BITCOIN_CASH]: "https://explorer.btc.com/bch/address/",
+	[DASH]:         "https://explorer.dash.org/insight/address/",
+	[RIPPLE]:       "https://livenet.xrpl.org/accounts/",
+	[FIRO]:         "https://explorer.firo.org/address/",
+	[LITECOIN]:     "https://live.blockcypher.com/ltc/address/"
 }; // MAINNET_EXPLORER_URLs
 
 const TESTNET_EXPLORER_URLs = {
-	[NULL_COIN]:   "Null-URL",	
-	[ETHEREUM]:    "https://sepolia.etherscan.io/address/%ADDRESS%",	
-	[BITCOIN]:     "https://live.blockcypher.com/btc-testnet/address/%ADDRESS%",	
-	[SOLANA]:      "https://explorer.solana.com/%ADDRESS%/?cluster=testnet",	
-	[CARDANO]:     "https://preprod.cardanoscan.io/address/%ADDRESS%",	
-    [RIPPLE]:      "Null-URL",
-	[DOGECOIN]:    "https://sochain.com/address/DOGETEST/%ADDRESS%",
-	[AVALANCHE]:   "Null-URL",
-    [TRON]:        "Null-URL",
-	[DASH]:        "Null-URL",
-    [LITECOIN]:    "https://sochain.com/address/LTCTEST/%ADDRESS%"	
+	[NULL_COIN]:    "Null-URL",	
+	[ETHEREUM]:     "https://sepolia.etherscan.io/address/%ADDRESS%",	
+	[BITCOIN]:      "https://live.blockcypher.com/btc-testnet/address/%ADDRESS%",	
+	[SOLANA]:       "https://explorer.solana.com/%ADDRESS%/?cluster=testnet",	
+	[CARDANO]:      "https://preprod.cardanoscan.io/address/%ADDRESS%",	
+    [RIPPLE]:       "Null-URL",
+	[DOGECOIN]:     "https://sochain.com/address/DOGETEST/%ADDRESS%",
+	[AVALANCHE]:    "Null-URL",
+    [TRON]:         "Null-URL",
+	[BITCOIN_CASH]: "Null-URL",
+	[DASH]:         "Null-URL",
+	[FIRO]:         "Null-URL",
+    [LITECOIN]:     "https://sochain.com/address/LTCTEST/%ADDRESS%"	
 }; // TESTNET_EXPLORER_URLs
 
 if (typeof exports === 'object') {
@@ -175,6 +187,7 @@ if (typeof exports === 'object') {
 	exports.AVALANCHE                = AVALANCHE
 	exports.DOGECOIN                 = DOGECOIN
 	exports.TRON                     = TRON
+	exports.BITCOIN_CASH             = BITCOIN_CASH
 	exports.POLKADOT                 = POLKADOT
     exports.POLYGON                  = POLYGON
 	exports.LITECOIN                 = LITECOIN
@@ -184,6 +197,7 @@ if (typeof exports === 'object') {
 	exports.ZILLIQA                  = ZILLIQA
 	exports.KUSAMA                   = KUSAMA
 	exports.DASH                     = DASH
+	exports.FIRO                     = FIRO
 	
 	exports.ZCASH                    = ZCASH
 	

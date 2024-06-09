@@ -1,8 +1,8 @@
-## Cryptocalc 0.1.4
+## Cryptocalc 0.1.5
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Cryptocalc_0_1_0_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
-   with the "Hierarchical Deterministic" paradigm.
+   with the _Hierarchical Deterministic_ (`BIP32`) paradigm.
    Even though there is already a similar tools online, the purpose is to use these features
    locally on your computer in order to reduce the risk of having your _Private Key_/_WIF_ 
    or _Seedphrase_ informations stealed.     
@@ -29,18 +29,23 @@
         * Type `npm install`	
 
 4. Release notes
-    + 4.1. Features in `0.1.4`
-	    * 4.1.1. Fixed bugs in drawing of fortune cookies. 
-		* 4.1.2. Updates and fixes in README.md. 
-		* 4.1.3. Addes [_Guarda_](https://guarda.com/app/) url in Help menu.
-    + 4.2. Features in `0.1.0`
-        * 4.2.1. Rewrite of Wallet generation to support _BIP39_, _BIP32_ and _BIP44_ specifications  
+    + 4.1. Features in `0.1.5`
+	    * 4.1.1. Added `XRP` (_Ripple_), `TRX` (_TRON_), 
+		`BCH` (_Bitcoin Cash_) and `FIRO` (_Firo_, ex. _ZCoin_)
+		* 4.1.2. Added _Derivation Path_ field in generated `_wallet_info.txt` (`File/Save` menu 
+		or `Save` icon in Toolbar).
+    + 4.2. Features in `0.1.4`
+	    * 4.2.1. Fixed bugs in drawing of fortune cookies. 
+		* 4.2.2. Updates and fixes in README.md. 
+		* 4.2.3. Added [_Guarda_](https://guarda.com/app/) url in Help menu.
+    + 4.3. Features in `0.1.0`
+        * 4.3.1. Rewrite of Wallet generation to support `BIP39`, `BIP32` and `BIP44` specifications  
 		I rewrote _Wallet generation_ in order to make it compatible with these 
 		computations: [_Ian Coleman BIP39_](https://iancoleman.io/bip39/)
 		Note that now the _WIF_ (NB: _Private Key_ for _Ethereum_) can be used (see 5.2.1) 
 		to import a wallet in [_Guarda_](https://guarda.com/app/).
 		The terminology has been changed, the _Wallet generation waterfall_ is now:  
-		_Entropy source_ => _Entropy_ => _Seedphrase_ => _Private Key_/WIF => _Wallet Address_
+		_Entropy source_ => _Entropy_ => _Seedphrase_ => _Private Key_ or WIF => _Wallet Address_
 		* 4.2.2. Support of 12..24 words for the _Seedphrase_ 
 		With a variable _Entropy Size_ (128..256 bits), the _Seedphrase_ size varies from 12 to 24 words.
 		The _Entropy Size_ size impacts the _Seedphrase_ and conversely.
@@ -62,9 +67,13 @@
         _Seedphrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rent expand super sea summer pull catalog mobile proud solve oven goose    
         _Shortened Seedphrase_  
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos 
-        * 5.1.2. Several wallets in the same _BIP32 HD wallet tree_
-        The _BIP32 HD wallet tree_ is determined by the _Entropy_ or _Seedphrase_. 
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos    
+        NB: Please notice that the _Shortened Seedphrase_ is not meant to be used
+        to import a wallet in a _Wallet Manager_, it's only a trick to _compress_
+        the _Seedphrase_ and make it easier to store on a device with limited memory
+        like a `NTAG213 NFC` (see 5.2.3). 		
+		* 5.1.2. Several wallets in the same _BIP32 HD wallet tree_
+        The `BIP32` HD wallet tree_ is determined by the _Entropy_ or _Seedphrase_. 
 		These are 2 isomorphic representations of the _SRP_ (_Secret Recovery Passphrase_).		
 		So you can generate new wallets (_Address_ + _Private Key_ or _WIF_)
 		by Pasting a previous _Entropy_ or _Seedphrase_. 
@@ -106,14 +115,14 @@
 		because the reference is the _Word Indexes_ (see 5.1.10) not the words.
 		* 5.1.10. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
-		_Seedphrase_ words in the _BIP39_ dictionary (see also 6.1.1). 
+		_Seedphrase_ words in the `BIP39` dictionary (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
 		* 5.1.11. Display of the _BIP32 Derivation Path_
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
-		which belong to the same _BIP32_ hierarchy that is determined by the
+		which belong to the same `BIP32` hierarchy that is determined by the
 		_Seedphrase_ (also called the _Secret Recovery Passphrase_).
         * 5.1.12. Support of _Localization_    
         In _Cryptocalc_, the _Localization_ (`l10n`) feature is the translation of 
@@ -143,8 +152,8 @@
 		[_PGP Tool_](https://pgptool.github.io) which provide encryption/decryption
 	    of your documents.
 6. Appendix  
-    + 6.1. _BIP39_: a _Dictionary_ of 2048 words    
-	_BIP39_ (_BIP_ is the acronym of _Bitcoin Improvement Proposal_) is a specification regarding:
+    + 6.1. `BIP39`: a _Dictionary_ of 2048 words    
+	`BIP39` (`BIP` is the acronym of _Bitcoin Improvement Proposal_) is a specification regarding:
 		* 6.1.1. A _Dictionary_ of 2048 words    
 		The _Dictionary_ contains 2048 _English_ words each with a their unique 4 starting characters 
 		(or 3 if the word is 3 characters long). This dictionary exists also in other languages 
@@ -170,15 +179,15 @@
 			is 4 bits long then the 4 bits at the end are removed.
 		* Reference    
 		[BIP39 — Mnemonic Generation with detailed explanation](https://medium.com/@sundar.sat84/bip39-mnemonic-generation-with-detailed-explanation-84abde9da4c1)
-	+ 6.2. _BIP32_: Hierarchic Deterministic wallets
-	_BIP32_ specifies how to generate wallets with are all derived from the same _Entropy_
+	+ 6.2. `BIP32`: Hierarchic Deterministic wallets
+	`BIP32` specifies how to generate wallets with are all derived from the same _Entropy_
 	or _Seedphrase_ (also called the _Secret Recovery Passphrase_).
     A _Seedphrase_ of only 12 words is enough is most _Wallet Managers_ but 
 	it is more secure to use a 24 words _Seedphrase_ if possible 
 	(e.g. _Ledger_ hardware wallet manager).    
 	    Example: meaning of each part for `m/44'/60'/0'/0/0`:    
 	    * Start at the master key                                      (m)    
-        * Follow the BIP44 standard                                    (44′)    
+        * Follow the `BIP44` specification                             (44′)    
         * Derive the key for _Ethereum_ (for which _Coin type_ is 60)  (60′)    
         * Access the first account                                     (0′)    
         * Choose the external chain, used for public addresses         (0)    
