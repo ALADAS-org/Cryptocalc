@@ -19,6 +19,7 @@ const Bip39Mnemonic  = require('bitcore-mnemonic');
 const bip39          = require('bip39');
 const HdAddGen       = require('hdaddressgenerator');
 const { v4: uuidv4 } = require('uuid');
+const { getShortEntropySourceStr } = require('../util/system/trace_utils.js');
 
 // https://bitcoin.stackexchange.com/questions/113286/uncaught-typeerror-bip32-fromseed-is-not-a-function
 //const bip32         = require('bip32'); => ERROR: "bip32.fromSeed in not a function"
@@ -75,7 +76,7 @@ const { WORD_COUNT,
 		
 const { hexToBinary, binaryToHex,
         hexWithPrefix, hexWithoutPrefix, isHexString,
-        uint8ArrayToHex, hexToUint8Array 
+        uint8ArrayToHex, hexToUint8Array  
 	  }                      = require('./hex_utils.js');	
 
 // https://stackoverflow.com/questions/10073699/pad-a-number-with-leading-zeros-in-javascript
@@ -169,7 +170,7 @@ class Bip39Utils {
 		options = Bip39Utils.GetOptions( options );
 		let word_count = options["word_count"];	
 
-        console.log("   entropy_src_str:\n" + entropy_src_str);		
+        console.log("   entropy_src_str: " + getShortEntropySourceStr(entropy_src_str));		
 		console.log("   word_count:             " + word_count);
 		
 		let checksum_bit_count = Bip39Utils.GetChecksumBitCount( word_count );
@@ -218,7 +219,7 @@ class Bip39Utils {
 		console.log(">> " + _CYAN_ + "Bip39Utils.EntropySourceToMnemonics" + _END_);
 		
 		let entropy_hex = Bip39Utils.EntropySourceToEntropy( entropy_src_str, options );
-	    console.log("   entropy:           " + entropy_hex);
+	    console.log("   entropy_hex:       " + entropy_hex);
 		
 		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex, options );
 		return mnemonics;

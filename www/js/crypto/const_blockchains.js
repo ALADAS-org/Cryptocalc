@@ -3,6 +3,13 @@
 // =====================================================================================
 "use strict";
 
+// up to 100 (coinmarketcap)
+//    ETC : Ethereum Classic
+//    XLM:  Stellar
+//    VET:  VeChain
+// 79 BSV:  Bitcoin SV
+// 98 EOS:  EOS
+
 // cf. capitalization order on https://coinmarketcap.com/
 // BUT Ethereum in First place because of the "ecosystem popularity"l
 const NULL_COIN       = "Null-COIN";

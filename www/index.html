@@ -11,6 +11,7 @@
 		<!-- ----------------- Renderer prerequisite modules ----------------- -->
 		<script type="text/javascript" src="./js/util/html/w3.js"></script>
 		<script type="text/javascript" src="./js/util/html/html_utils.js"></script>
+		<script type="text/javascript" src="./js/util/system/trace_utils.js"></script>
 		
 		<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
 		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
@@ -55,14 +56,43 @@
 			<table class="inner SeedTabLayout">	
                 <tr><td class="HorizontalBar" colspan="4"><br/></td></tr>			
 				<!-- ----------------  Entropy Source ---------------- -->
-				<tr id="entropy_src_row"><td class="LabelColumn" id="entropy_src_label_id">Entropy Source</td>
+				<tr id="entropy_src_row">
+					<td class="LabelColumn">
+					    <span id="entropy_src_label_id" class="LabelColumn">Entropy Source</span>
+						<select id="entropy_src_selector_id" 
+						        class="InputField EntropySelector"> 
+							<option value="Image" selected>Image</option>	
+							<option value="Fortunes">Fortunes</option>			
+						</select>
+					</td>
 					<td colspan="2" class="FieldColumn">
 						<table width="100%">
 							<tr><td class="TextArea">
 									<textarea class="RawDataField WithoutFocus" 
 											  rows="6" spellcheck="false"
-											  id="entropy_src_id">
-									</textarea>
+											  id="entropy_src_fortunes_id" hidden>
+									</textarea>									
+												
+									<table id="entropy_src_img_container_id">
+										<tr>
+											<td>
+												<div id="entropy_src_img_div_id" ondrop="drop(event)" 
+													 ondragover="allowDrop(evt)">
+													 <img id="entropy_src_img_id" style="object-fit: none;"
+														  src="img/MazePattern.png"	draggable="true">
+													  <script>function allowDrop(evt) { 
+															     ev.preventDefault(); 
+														      }        
+													  </script>
+												</div>
+											</td>
+											<td>
+												&nbsp;&nbsp;&nbsp;<p style="display:inline">
+												Drag an image in <br>
+												&nbsp;&nbsp;&nbsp;the white rectangle</p> 
+											</td>
+										</tr>
+									</table>
 								</td>
 							</tr>
 						</table>
@@ -208,8 +238,8 @@
 				<tr><td class="LabelColumn" id="wallet_blockchain_label_id">Blockchain</td>
 					<td colspan="2" class="FieldColumn">
 						<select id="wallet_blockchain_id" class="InputField">
-							<option value="Ethereum" selected>Ethereum</option>							
-							<option value="Bitcoin">Bitcoin</option>
+							<option value="Bitcoin" selected>Bitcoin</option>
+							<option value="Ethereum">Ethereum</option>		
 							<option value="Solana">Solana</option>
 							<option value="Ripple">Ripple</option>
 							<option value="DogeCoin">DogeCoin</option>

@@ -1,10 +1,10 @@
-## Cryptocalc 0.1.5
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Cryptocalc_0_1_0_EN.gif)
+## Cryptocalc 0.1.6
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_6_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
    with the _Hierarchical Deterministic_ (`BIP32`) paradigm.
    Even though there is already a similar tools online, the purpose is to use these features
-   locally on your computer in order to reduce the risk of having your _Private Key_/_WIF_ 
+   locally on your computer in order to reduce the risk of having your _Private Key_ / _WIF_ 
    or _Seedphrase_ informations stealed.     
    NB: _Cryptocalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron)
@@ -29,33 +29,22 @@
         * Type `npm install`	
 
 4. Release notes
-    + 4.1. Features in `0.1.5`
-	    * 4.1.1. Added `XRP` (_Ripple_), `TRX` (_TRON_), 
+	+ 4.1. Features in `0.1.6`
+	    * 4.1.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
+		be switched between `Image` (Default) and `Fortunes` (_Fortune Cookies_).    
+		* 4.1.2. Default Cryptocurrency changed from `ETH` to `BTC`.
+		* 4.1.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
+	    * 4.1.4. Fixed unused dependencies in `package.json`.
+    + 4.2. Features in `0.1.5`
+	    * 4.2.1. Added `XRP` (_Ripple_), `TRX` (_TRON_), 
 		`BCH` (_Bitcoin Cash_) and `FIRO` (_Firo_, ex. _ZCoin_)
-		* 4.1.2. Added _Derivation Path_ field in generated `_wallet_info.txt` (`File/Save` menu 
-		or `Save` icon in Toolbar).
-    + 4.2. Features in `0.1.4`
-	    * 4.2.1. Fixed bugs in drawing of fortune cookies. 
-		* 4.2.2. Updates and fixes in README.md. 
-		* 4.2.3. Added [_Guarda_](https://guarda.com/app/) url in Help menu.
-    + 4.3. Features in `0.1.0`
-        * 4.3.1. Rewrite of Wallet generation to support `BIP39`, `BIP32` and `BIP44` specifications  
-		I rewrote _Wallet generation_ in order to make it compatible with these 
-		computations: [_Ian Coleman BIP39_](https://iancoleman.io/bip39/)
-		Note that now the _WIF_ (NB: _Private Key_ for _Ethereum_) can be used (see 5.2.1) 
-		to import a wallet in [_Guarda_](https://guarda.com/app/).
-		The terminology has been changed, the _Wallet generation waterfall_ is now:  
-		_Entropy source_ => _Entropy_ => _Seedphrase_ => _Private Key_ or WIF => _Wallet Address_
-		* 4.2.2. Support of 12..24 words for the _Seedphrase_ 
-		With a variable _Entropy Size_ (128..256 bits), the _Seedphrase_ size varies from 12 to 24 words.
-		The _Entropy Size_ size impacts the _Seedphrase_ and conversely.
-		* 4.2.3. _Entropy Checksum_ bits are now displayed (see 5.1.7)
+		* 4.2.2. Added _Derivation Path_ field in generated `_wallet_info.txt` 
+		(`File/Save` menu or `Save` icon in Toolbar).    
 5. _Cryptocalc_ User Guide  
-    Double click on `_run.bat`: this will open the _Cryptocalc_ desktop standalone application
+    Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
     + 5.1. Features  
-		* 5.1.1. Generate _Entropy_ from a random _Fortune Cookie_  
-		Use [ Generate ] button to draw a random _Fortune Cookie_ 
-		(among a compilation of 12803 fortune cookies) 
+		* 5.1.1. Generate _Entropy_ from _Entropy Source_  
+		Use [Generate] button to draw a random image (cf. 5.1.2)
 		which then will be used as the _Entropy_ (with the _Salt_) to generate a new _Seedphrase_ (between 12 and
 		24 words) which is derived to get the _Private Key_ from which the _Wallet Address_ is obtained
 		(NB: _Private Key_ and _Wallet Address_ are in the _Wallet_ Tab).
@@ -71,60 +60,71 @@
         NB: Please notice that the _Shortened Seedphrase_ is not meant to be used
         to import a wallet in a _Wallet Manager_, it's only a trick to _compress_
         the _Seedphrase_ and make it easier to store on a device with limited memory
-        like a `NTAG213 NFC` (see 5.2.3). 		
-		* 5.1.2. Several wallets in the same _BIP32 HD wallet tree_
+        like a `NTAG213 NFC` (see 5.2.3). 	
+	    * 5.1.2. _Entropy Source_ : `Image` or `Fortunes`
+		_Entropy Source_ may be switched between `Image` (Default source) 
+		and `Fortunes` (drawn from a compilation of 12803 _Fortune Cookies_). 
+		Please notice that a text is not considered as random enough 
+		for an _Entropy Source_ thus `Image` is now the default _Entropy Source_ 
+        (Notice that an image is much better in terms of randomness than a text).    
+		    * 5.1.2.a: You can _Drag'n'Drop_ images (`png`, `jpg` or `svg`) from you local folders.		
+            * 5.1.2.b: Image samples are provided in `www/js/img` folder.  		
+            * 5.1.2.c: When using [Generate], _Cryptocurrency logos_ are drawn 
+			from the `www/js/img/CryptoCurrency` folder and the first image 
+			is always our logo (`Zilver_64px.svg`).						
+		* 5.1.3. Several wallets in the same _BIP32 HD wallet tree_
         The `BIP32` HD wallet tree_ is determined by the _Entropy_ or _Seedphrase_. 
 		These are 2 isomorphic representations of the _SRP_ (_Secret Recovery Passphrase_).		
 		So you can generate new wallets (_Address_ + _Private Key_ or _WIF_)
 		by Pasting a previous _Entropy_ or _Seedphrase_. 
 		This will hide the _Entropy Source_ and _Salt_ fields which are meaningless in
         this situation. You can then change either the _Account_ or _Address Index_
-        fields in the _Wallet_ tab page. This will show a new [ Refresh ] button
+        fields in the _Wallet_ tab page. This will show a new [Refresh] button
         to recompute the wallet once you gave finished editing these fields 
 		(you can input a decimal value between 0 and 9999).		
-		Pushing the [ Refresh ] button (or hitting either [ Return ] or [ Enter ] keys) 
+		Pushing the [Refresh] button (or hitting either [ Return ] or [ Enter ] keys) 
 		will recompute the wallet accordingly.
-		* 5.1.3. Check the generated wallets against _Ian Coleman BIP39_: an item
+		* 5.1.4. Check the generated wallets against _Ian Coleman BIP39_: an item
         in the menu (Help/Resources/Ian Coleman BIP39) eases the checking by opening 
         [_Ian Coleman BIP39_](https://iancoleman.io/bip39/).
-		* 5.1.4. Import a wallet in Guarda: an item
+		* 5.1.5. Import a wallet in Guarda: an item
         in the menu (Help/Resources/Guarda) eases importing a wallet in a
 		_Wallet Manager_ application by opening 
         [_Guarda_](https://guarda.com/).	
-		* 5.1.5. _Salted Entropy_  
+		* 5.1.6. _Salted Entropy_  
 		The _Salting_ is adding a unique information (e.g. a _UUID_) so that
         even if the _Entropy Source_ is the same, the _Entropy_ will be unique 		
-		at each press of [ Generate ] button.
-		* 5.1.6. Choose _Entropy Size_ 
+		at each press of [Generate] button.
+		* 5.1.7. Choose _Entropy Size_ 
 		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). 
 		This is equivalent to a _Seedphrase size_ between 12 and 24 words. 
 		Changing _Entropy Size_ impacts the _Seedphrase size_ and conversely.
-		* 5.1.7. Display of the _Checksum bits_ (see explanations in 5.1.10)
-		* 5.1.8. Save _Wallet Informations_    
+		* 5.1.8. Display of the _Checksum bits_ (see explanations in 5.1.11)
+		* 5.1.9. Save _Wallet Informations_    
 		With `File/Save` (or the _Save_ icon in the main toolbar), you can save 
 		the _Wallet Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
 		under `_output` folder. This subfolder contains `wallet_info.txt` and a `wallet.json` 
 		with the informations displayed in _Seed_ and _Wallet_ tab pages. 
-		* 5.1.9. Select _Seedphrase Language_    
+		* 5.1.10. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
         Changing _Wordlist Language_ is indeed a mean to add a scramble step in order 
 		to make it harder to steal your _Secret Recovery Passphrase_ because 
         it should be translated to _English_ to be used with a _Wallet Manager_.   
 		NB: the translation between languages is native in _Cryptocalc_
-		because the reference is the _Word Indexes_ (see 5.1.10) not the words.
-		* 5.1.10. Display of _Word Indexes_    
+		because the reference is the _Word Indexes_ (see 5.1.11) not the words.
+		* 5.1.11. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
 		_Seedphrase_ words in the `BIP39` dictionary (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
-		* 5.1.11. Display of the _BIP32 Derivation Path_
+		* 5.1.12. Display of the _BIP32 Derivation Path_
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
 		_Seedphrase_ (also called the _Secret Recovery Passphrase_).
-        * 5.1.12. Support of _Localization_    
+        * 5.1.13. Support of _Localization_    
         In _Cryptocalc_, the _Localization_ (`l10n`) feature is the translation of 
 		_GUI Labels_ to adapt to the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use, 

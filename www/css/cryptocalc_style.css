@@ -1,6 +1,13 @@
 /* ================================================================================ */
 /* ============================= cryptocalc_style.css ============================= */
 /* ================================================================================ */
+/* https://www.w3schools.com/css/css3_variables.asp */
+:root {
+  --SeedTab_color:       #FFFFF0; /*#FFFFF0;*/
+  --WalletTab_color:     #F1FFFF; /*#F1FFFF;*/
+  --TabLinkHover_color:  #C0FEC0; /*#C0FEC0;*/
+}
+
 html, .outer, .inner {
 	height:           100%;
 	width:            100%;
@@ -30,21 +37,25 @@ hr {
 /* ================================= Tab pages ================================= */
 /* https://www.w3schools.com/howto/howto_js_full_page_tabs.asp */
 .SeedTabLayout {
-	background-color: #FFFFF0; 
+	/*background-color: #FFFFF0;*/ 
+	background-color: var(--SeedTab_color); 
 	width:            100%; 
 	height:           100%;
 	min-height:       100%;
 }
 
 .WalletTabLayout {
-	background-color: #F1FFFF;
+	/*background-color: #F1FFFF;*/
+	background-color: var(--WalletTab_color); 
 	width:            100%; 
 	height:           100%;
 	min-height:       100%;
 }
 
 .tablink {
-	background-color: #FFFFF0;
+	/*background-color: #FFFFF0;*/ 
+	background-color: var(--SeedTab_color);
+	
 	color:            black;
 	/*float:     	  left;*/
 	border:           none;
@@ -57,12 +68,14 @@ hr {
 }
 
 #Seed { 
-	background-color:  #FFFFF0; 
+	/*background-color: #FFFFF0;*/ 
+	background-color:  var(--SeedTab_color);
 	height:            100%; 
 }
 
 #Wallet { 
-	background-color:  #F1FFFF; 
+    /*background-color: #F1FFFF;*/
+	background-color:  var(--WalletTab_color); 
 	height:            100%;
 }
 
@@ -74,17 +87,21 @@ hr {
 }
 
 #seed_tab_link_id {
-	background-color:  #FFFFF0;
+    /*background-color: #FFFFF0;*/ 
+	background-color:  var(--SeedTab_color);
 }
 #seed_tab_link_id:hover {
-	background-color:  #C0FEC0;
+	/*background-color:  #C0FEC0;*/
+	background-color:  var(--TabLinkHover_color); 
 }
 
 #wallet_tab_link_id {
-	background-color:  #F1FFFF;
+	/*background-color: #F1FFFF;*/
+	background-color:  var(--WalletTab_color); 
 }
 #wallet_tab_link_id:hover {
-	background-color:  #C0FEC0;
+	/*background-color:  #C0FEC0;*/
+	background-color:  var(--TabLinkHover_color); 
 }
 
 .ThreeBordersTabLink {
@@ -165,7 +182,7 @@ hr {
 }
 
 .WalletButton {
-	height:            20px;
+	height:             20px;
 	margin-top:        -10px;
 }
 
@@ -183,11 +200,27 @@ hr {
 	font-size:         14px;
 }
 
-#entropy_src_id {
+#entropy_src_img_div_id {
+	background-color:  white;
+	border-top:        1px dashed black;
+	border-bottom:     1px dashed black;
+    border-right:      1px dashed black; 
+    border-left:       1px dashed black;
+}
+
+#entropy_src_fortunes_id {
 	height =           'auto';
 	/* for support of ascii-art fortune cookies
 	font-family: monospace;
 	*/
+}
+
+#entropy_src_img_id, #entropy_src_img_div_id {
+	width:				400px; 
+	height:				130px; 
+	min-width:			400px; 
+	min-height:			130px;
+	align:              middle;
 }
 
 .DataFieldWithButton_Container { 

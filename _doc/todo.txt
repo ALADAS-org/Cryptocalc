@@ -1,0 +1,14 @@
+- Entropy source:
+  - Image
+  - Mouvement de ls Souris
+  
+- Modes: Basic / Advanced => Tools/Options...
+  Basic: XMR (Monero), DASH, ADA, AVAX (Avalanche)
+
+- QRCode for address and for Private Key or Seedphrase
+  - "Micro QRCode
+  - Logo coin dans QRCode
+  
+- Themes / CSS
+
+- Installateur ou exe Windows

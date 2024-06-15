@@ -10,6 +10,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld(
 	"ipcMain", {
 		log2Main:                  (data) => ipcRenderer.send("request:log2main", data),
+		
 		ToggleDebugPanel:          (data) => ipcRenderer.send("request:toggle_debug_panel", data),
 		
 		EntropySourceToEntropy:    (data) => ipcRenderer.invoke("request:entropy_src_to_entropy", data),
@@ -35,8 +36,10 @@ contextBridge.exposeInMainWorld(
 		SaveWalletInfo:            (data) => ipcRenderer.send("request:save_wallet_info", data),
 		ImportRawData:             (data) => ipcRenderer.send("request:import_raw_data", data),
 		OpenURL:                   (data) => ipcRenderer.send("request:open_URL", data),		
-			
-	    //send: (channel, data) => {
+		
+        LoadImageFromFile:         (data) => ipcRenderer.invoke("request:load_image_from_file", data),		
+	    DropRandomCryptoLogo:      (data) => ipcRenderer.invoke("request:drop_rnd_crypto_logo", data),
+		//send: (channel, data) => {
         //     // whitelist channels
         //    let validChannels = ['toMain'];
 		//	console.log(">> ================= preload: send 1");

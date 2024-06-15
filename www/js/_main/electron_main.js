@@ -6,7 +6,7 @@
 "use strict";
 
 const MAIN_WINDOW_WIDTH  = 975;
-const MAIN_WINDOW_HEIGHT = 600; 
+const MAIN_WINDOW_HEIGHT = 630; 
 
 const { app, Menu, BrowserWindow, ipcMain, 
         shell, remote, dialog } = require('electron');	
@@ -18,14 +18,13 @@ const sha256         = require('js-sha256');
 const wif            = require('wif');
 const { v4: uuidv4 } = require('uuid');
 
-const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, 
-        _END_ 
-	  }                                 = require('../util/color/color_console_codes.js');
+const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_ 
+	  } = require('../util/color/color_console_codes.js');
 
-const { VIEW_TOGGLE_DEVTOOLS, 
+const { VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
         REQUEST_LOG_2_MAIN, 
 		REQUEST_TOGGLE_DEBUG_PANEL,
-		REQUEST_OPEN_URL,
+		REQUEST_OPEN_URL, REQUEST_LOAD_IMG_FROM_FILE, REQUEST_DROP_RND_CRYPTO_LOGO,
 		
 		REQUEST_MNEMONICS_TO_ENTROPY_INFO, 
 		REQUEST_MNEMONICS_TO_HDWALLET_INFO,
@@ -48,9 +47,13 @@ const { VIEW_TOGGLE_DEVTOOLS,
 		
 		FromMain_DID_FINISH_LOAD,
         FromMain_FILE_SAVE, FromMain_HELP_ABOUT,
+		FromMain_SEND_IMG_URL,
 		FromMain_SET_FORTUNE_COOKIE, 
         FromMain_SET_RENDERER_VALUE, FromMain_SET_SEED_FIELD_VALUE 		
 	  }                                 = require('../_renderer/const_events.js');
+	  
+const { ENTROPY_SOURCE_IMG_ID
+      }                                 = require('../_renderer/const_renderer.js');
 	  
 const { NULL_COIN, 
 		BITCOIN, ETHEREUM, 
@@ -63,10 +66,11 @@ const { NULL_COIN,
       }                                 = require('../crypto/const_blockchains.js');
 	  
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
+const { FileUtils }                     = require('../util/system/file_utils.js');
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
 const { Bip32Utils }                    = require('../crypto/bip32_utils.js');
 const { hexToBytes, hexWithoutPrefix,
-        isHexString  }                  = require('../crypto/hex_utils.js');
+        isHexString, getRandomInt  }    = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { L10nUtils }                     = require('../L10n/L10n_utils.js');
 
@@ -101,6 +105,14 @@ const ELECTRON_MAIN_MENU_TEMPLATE = [
 					      console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + VIEW_TOGGLE_DEVTOOLS + _END_);	
 						  ElectronMain.ToggleDebugPanel();  
 				      }		 
+			       }
+		         ]
+	},
+	{ 	label: L10nUtils.GetLocalizedMsg("Tools"),
+		submenu: [ {  label: "Options...",
+				      click() {
+					      console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + TOOLS_OPTIONS + _END_);	
+	 				  }		 
 			       }
 		         ]
 	},
@@ -141,6 +153,8 @@ const error_handler = (err) => {
 class ElectronMain {
 	static MainWindow = null;
 	static Defaults   = {};
+	
+	static FirstImageAsEntropySource = true;
 	
 	//==================== CreateWindow() ====================
 	// https://stackoverflow.com/questions/44391448/electron-require-is-not-defined
@@ -325,6 +339,61 @@ class ElectronMain {
 		ipcMain.on( REQUEST_IMPORT_RAW_DATA, (event, crypto_info) => {
 			ElectronMain.SelectFile();
         }); // "request:import_raw_data" event handler
+		
+		const loadImageFromFile = ( image_file_path ) => {			
+			let img_data_asURL = fs.readFileSync( image_file_path, {encoding: 'base64'} );
+			let image_file_path_items = image_file_path.split('.');
+			
+			let image_file_extension  = "png";
+			let items_count = image_file_path_items.length;
+			if (items_count > 1) {
+				image_file_extension = image_file_path_items[items_count-1].toLowerCase();
+			    if (image_file_extension == "jpg") {
+					image_file_extension = "jpeg";
+				}
+			    else if (image_file_extension == "svg") {
+					image_file_extension = "svg+xml";
+				}				
+			}	
+			console.log("   image_file_extension: " + image_file_extension);
+			//console.log("   img_data_asURL:\n" + img_data_asURL);
+			ElectronMain.MainWindow.webContents
+			            .send('fromMain', 
+						      [ FromMain_SEND_IMG_URL, ENTROPY_SOURCE_IMG_ID, 
+							    img_data_asURL, image_file_extension ]);
+		}; // loadImageFromFile
+		
+		// ====================== REQUEST_LOAD_IMG_FROM_FILE ======================
+		// called like this by Renderer: window.ipcMain.LoadImageFromFile(data)
+		ipcMain.handle( REQUEST_LOAD_IMG_FROM_FILE, (event, image_file_path) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_LOAD_IMG_FROM_FILE + _END_);
+			loadImageFromFile( image_file_path );
+		}); // "request:load_image_from_file" event handler
+
+		// ====================== REQUEST_DROP_RND_CRYPTO_LOGO ======================
+		// called like this by Renderer: window.ipcMain.LoadImageFromFile(data)
+		ipcMain.handle( REQUEST_DROP_RND_CRYPTO_LOGO, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_DROP_RND_CRYPTO_LOGO + _END_);
+			
+			let app_path = app.getAppPath();
+			console.log("   app_path: " + app_path);
+			
+			let crypto_logos_path = app_path + "/www/img/CryptoCurrency";
+			
+			let crypto_logos = FileUtils.GetFilesInFolder(crypto_logos_path);
+			console.log("   crypto_logos.length: " + crypto_logos.length);
+			
+			let image_file_path = crypto_logos_path + "/";
+			let crypto_logo_filename = "Zilver_64px.svg";
+			if (! ElectronMain.FirstImageAsEntropySource ) {
+				let	random_index = getRandomInt( crypto_logos.length );
+		        crypto_logo_filename = crypto_logos[random_index];			
+			}
+			ElectronMain.FirstImageAsEntropySource = false;
+			image_file_path += crypto_logo_filename;
+			
+			loadImageFromFile( image_file_path );			
+		}); // "request:drop_rnd_crypto_logo" event handler
 		
 		// ================== REQUEST_MNEMONICS_TO_HDWALLET_INFO ==================
 		// called like this by Renderer: await window.ipcMain.MnemonicsToHDWalletInfo( data )

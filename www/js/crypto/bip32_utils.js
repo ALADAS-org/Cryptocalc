@@ -204,17 +204,17 @@ class Bip32Utils {
 		//********-------------------- Test HDKey --------------------
 		// https://www.npmjs.com/package/hdkey
 		const hdkey = HDKey.fromMasterSeed( Buffer.from(master_seed_hex, 'hex') );
-		console.log(  "   " + _YELLOW_
-	                + "hdkey.XPRIV:            " + _END_ + hdkey.privateExtendedKey);
+		//console.log(  "   " + _YELLOW_
+	    //            + "hdkey.XPRIV:            " + _END_ + hdkey.privateExtendedKey);
 
-		console.log(  "   " + _YELLOW_
-	                + "hdkey.XPUB:             " + _END_ + hdkey.publicExtendedKey);
+		//console.log(  "   " + _YELLOW_
+	    //            + "hdkey.XPUB:             " + _END_ + hdkey.publicExtendedKey);
 					
 		const childkey = hdkey.derive( master_derivation_path );		
-		console.log(  "   " + _YELLOW_
-	                + "childkey.XPRIV:         " + _END_ + childkey.privateExtendedKey);
-		console.log(  "   " + _YELLOW_
-	                + "childkey.XPUB:          " + _END_ + childkey.publicExtendedKey);
+		//console.log(  "   " + _YELLOW_
+	    //            + "childkey.XPRIV:         " + _END_ + childkey.privateExtendedKey);
+		//console.log(  "   " + _YELLOW_
+	    //            + "childkey.XPUB:          " + _END_ + childkey.publicExtendedKey);
 		//-------------------- Test HDKey
 		//********
  
@@ -238,9 +238,9 @@ class Bip32Utils {
 		// seed (64 bytes/512 bits) = LeftSide(32 bytes/256 bits) + RightSide(32 bytes/256 bits) 				
 		let chaincode = uint8ArrayToHex( master_seed ).substring( 64 );
 	    let chaincode_bytes = chaincode.length / 2;
-	    console.log(    "   " + _YELLOW_
-		              + Bip39Utils.LabelWithSize("chaincode", chaincode_bytes) 
-	                  + "          " + _END_ + chaincode);
+	    //console.log(    "   " + _YELLOW_
+		//              + Bip39Utils.LabelWithSize("chaincode", chaincode_bytes) 
+	    //              + "          " + _END_ + chaincode);
 		hdwallet_info[CHAINCODE] = chaincode;
         //------------------------ Chaincode
 		
@@ -250,8 +250,8 @@ class Bip32Utils {
 					  
 		//-------------------- BIP32 root key -------------------	
 		let BIP32_root_key = master_node.toBase58();
-		console.log(  "   " + _YELLOW_
-		            + "BIP32 root key:         " + _END_ + BIP32_root_key);
+		//console.log(  "   " + _YELLOW_
+		//            + "BIP32 root key:         " + _END_ + BIP32_root_key);
 		hdwallet_info[BIP32_ROOT_KEY] = BIP32_root_key;
 		//-------------------- BIP32 root key
 		
@@ -309,8 +309,8 @@ class Bip32Utils {
 		//-ok-------------------- Extended Private key -----------------------
 		let account_derivation_path = "m/44'/" + coin_type + "'" + "/" + account_index + "'";
 		let account_xpriv = master_node.derivePath( account_derivation_path ).toBase58();
-		console.log(   "   " + _YELLOW_ 
-		             + "Account XPRIV:          " + _END_ + account_xpriv);
+		//console.log(   "   " + _YELLOW_ 
+		//             + "Account XPRIV:          " + _END_ + account_xpriv);
 		hdwallet_info[ACCOUNT_XPRIV] = account_xpriv;
 		//----------------------- Extended Private key
 		
@@ -332,8 +332,8 @@ class Bip32Utils {
 		            + "account_index type: " + _END_ + typeof account_index);
 		
 		let account_xpub = getMasterPublicKey( master_seed, coin_type, account_index );
-		console.log(  "   " + _YELLOW_
-		            + "Account XPUB:           " + _END_ + account_xpub);
+		//console.log(  "   " + _YELLOW_
+		//            + "Account XPUB:           " + _END_ + account_xpub);
 		hdwallet_info[ACCOUNT_XPUB] = account_xpub;
 		//----------------------- Extended Public key
 					 
