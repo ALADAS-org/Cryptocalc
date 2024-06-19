@@ -61,9 +61,9 @@ const WIF_FIELD_LINE_ID            = "WIF_field_line_id";
 const WIF_LABEL_ID                 = "WIF_label_id";
 const WIF_ID                       = "WIF_id";
 
-const XPRIV_FIELD_LINE_ID          = "XPRIV_field_line_id";
-const XPRIV_LABEL_ID               = "XPRIV_label_id";
-const XPRIV_ID                     = "XPRIV_id";
+const PRIV_KEY_FIELD_LINE_ID       = "PRIV_KEY_field_line_id";
+const PRIV_KEY_LABEL_ID            = "PRIV_KEY_label_id";
+const PRIV_KEY_ID                  = "PRIV_KEY_id";
 
 const UPDATE_LABEL_ID              = "update_label_id";
 
@@ -136,7 +136,7 @@ if (typeof exports === 'object') {
     exports.WALLET_PK_HEX_ID           = WALLET_PK_HEX_ID
 	
 	exports.WIF_ID                     = WIF_ID
-	exports.XPRIV_ID                   = XPRIV_ID
+	exports.PRIV_KEY_ID                = PRIV_KEY_ID
 	exports.CHECKSUM_ID				   = CHECKSUM_ID
 	
 	exports.UPDATE_LABEL_ID            = UPDATE_LABEL_ID

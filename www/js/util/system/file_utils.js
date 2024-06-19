@@ -31,6 +31,15 @@ const FileUtils = class {
 		}
 		return filtered_files;
 	} // GetFilesInFolder()
+	
+	static CreateSubfolder( parent_path, subfolder_name ) {
+		//console.log("> evt handler: folder:create: " + folderName);
+		let output_path = parent_path + "/" + subfolder_name;
+		if ( !fs.existsSync( output_path ) ) {
+			fs.mkdirSync( output_path, { recursive: true } );
+		}
+		return output_path;
+   }; // CreateSubfolder()
 }; // FileUtils class
 
 if (typeof exports === 'object') {

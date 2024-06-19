@@ -18,6 +18,8 @@ const sha256         = require('js-sha256');
 const wif            = require('wif');
 const { v4: uuidv4 } = require('uuid');
 
+const bwipjs = require('bwip-js');
+
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_ 
 	  } = require('../util/color/color_console_codes.js');
 
@@ -65,11 +67,15 @@ const { NULL_COIN,
 		COIN_ABBREVIATIONS
       }                                 = require('../crypto/const_blockchains.js');
 	  
+const { ADDRESS, WIF, PRIV_KEY, 
+        PRIVATE_KEY_HEX, MNEMONICS   
+      }                                 = require('../crypto/const_wallet.js');
+	  
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
 const { FileUtils }                     = require('../util/system/file_utils.js');
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
 const { Bip32Utils }                    = require('../crypto/bip32_utils.js');
-const { hexToBytes, hexWithoutPrefix,
+const { hexToBytes, hexWithoutPrefix, hexToB64,
         isHexString, getRandomInt  }    = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { L10nUtils }                     = require('../L10n/L10n_utils.js');
@@ -306,7 +312,57 @@ class ElectronMain {
 			// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
 			ElectronMain.MainWindow.location = url;
 		}); // "request:open_URL" event handler
-
+		
+		// https://github.com/metafloor/bwip-js/blob/master/README.md
+		const createQRCode = ( path, filename, qrcode_text, qrcode_type, filetype ) => {
+			 if ( filetype == undefined ) {
+				filetype = "png";
+			 }
+			 
+			 const writePNGfile = ( err, png_data ) => {
+				if ( err ) { // `err` may be a string or Error object
+				     console.log("error " + err);
+				} 
+				else {
+				  fs.writeFileSync( path + "/" + filename, png_data, "binary", 
+					 (err) => { if ( ! err ) 
+								  console.log(`${filename} created successfully!`);
+							  }
+				  );
+				}
+			 }; // writePNGfile
+			
+			 if ( filetype == "png" ) {
+				bwipjs.toBuffer(
+					{       bcid:       qrcode_type,  // Barcode type
+						    text:       qrcode_text,  // Text to encode
+						    scale:      3
+					}, 
+					writePNGfile );
+			 }
+			 else if ( filetype == "svg" ) {
+				// console.log("qrcode_text: '" + qrcode_text + "'");
+				let options = {  bcid:        qrcode_type,  // Barcode type
+							     text:        qrcode_text,  // Text to encode
+								 scale:       1,
+							     width:       24,           // width
+							     height:      24            // height
+				              };
+				if ( qrcode_type == "rectangularmicroqrcode" ) {
+					options["version"] = "R15x59";
+					options["eclevel"] = "M";
+					delete options["width"];
+					delete options["height"];
+				}	
+				let svg_data = bwipjs.toSVG( options );
+				fs.writeFileSync( path + "/" + filename, svg_data, "binary", 
+					 (err) => { if ( ! err ) 
+								  console.log(`${filename} created successfully!`);
+							  }
+				);
+			 }
+        }; // createQRCode
+		
 		// ====================== REQUEST_SAVE_WALLET_INFO ======================
 		// called like this by Renderer: window.ipcMain.SaveWalletInfo(data)
 		ipcMain.on( REQUEST_SAVE_WALLET_INFO, (event, crypto_info) => {
@@ -322,21 +378,63 @@ class ElectronMain {
 				fs.mkdirSync(output_path, { recursive: true });
 			}		
 			
-			//console.log(JSON.stringify(crypto_info));
-			fs.writeFileSync( output_path + "/wallet_info.json", JSON.stringify(crypto_info), error_handler );
+			// console.log(JSON.stringify(crypto_info));
+			// fs.writeFileSync( output_path + "/wallet_info.json", JSON.stringify(crypto_info), error_handler );
 			
 			let wallet_info_str = "";
-			let wallet_keys = Object.keys(crypto_info); 
+			let wallet_keys = Object.keys(crypto_info);
+			
+            let private_key = "";
+            let pk_key      = "";
+            let wif         = "";  			
 			for (let i=0; i < wallet_keys.length; i++) {
 				let current_key = wallet_keys[i];
+				
+				if (   current_key == PRIV_KEY 
+				    || current_key == PRIVATE_KEY_HEX || current_key == "Private Key") {
+					
+                    pk_key = current_key;
+                    //console.log("wallet_keys[" + i + "]: " + current_key);					
+                    private_key = crypto_info[pk_key];	
+                    //console.log("private_key: " + private_key);					
+				}				
+				else {
+					//console.log("wallet_keys[" + i + "]: " + current_key);
+				}
+				
+				if ( current_key == WIF ) {					
+                    wif = crypto_info[current_key];					
+				}				
+				
 				wallet_info_str += current_key.padEnd(22,' ') + crypto_info[current_key] + "\n";
 			}
+			
 			fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );
+		
+		    // console.log("crypto_info[ADDRESS]: " + crypto_info['address']);
+		    createQRCode( output_path, "Address.png", crypto_info['address'], "qrcode" );			
+			
+			if ( pk_key != "" ) {
+				// console.log("pk_key: " + pk_key);
+				createQRCode( output_path, "PrivateKey.png", private_key, "qrcode" );
+            }
+			
+			if ( wif != "" ) {
+				// console.log("wif: " + wif);
+				createQRCode( output_path, "WIF.png", wif, "qrcode" );
+            }
+			createQRCode( output_path, "Seedphrase.png", crypto_info[MNEMONICS], "qrcode" );
+			
+			FileUtils.CreateSubfolder(output_path, "xtras");
+			createQRCode( output_path + "/xtras", "Address.svg",         crypto_info['address'], "qrcode", "svg" );
+			createQRCode( output_path + "/xtras", "PrivateKey.svg",      private_key, "qrcode", "svg" );
+			createQRCode( output_path + "/xtras", "PrivateKeyMicro.svg", hexToB64(private_key).replace('=',''), "rectangularmicroqrcode", "svg" );
+			createQRCode( output_path + "/xtras", "Seedphrase.svg",      crypto_info[MNEMONICS], "qrcode", "svg" );
 		}); // "request:save_wallet_info" event handler
 				
 		// ====================== REQUEST_IMPORT_RAW_DATA ======================
 		// called like this by Renderer: window.ipcMain.ImportRawData(data)
-		ipcMain.on( REQUEST_IMPORT_RAW_DATA, (event, crypto_info) => {
+		ipcMain.on( REQUEST_IMPORT_RAW_DATA, ( event, crypto_info ) => {
 			ElectronMain.SelectFile();
         }); // "request:import_raw_data" event handler
 		
@@ -355,7 +453,7 @@ class ElectronMain {
 					image_file_extension = "svg+xml";
 				}				
 			}	
-			console.log("   image_file_extension: " + image_file_extension);
+			//console.log("   image_file_extension: " + image_file_extension);
 			//console.log("   img_data_asURL:\n" + img_data_asURL);
 			ElectronMain.MainWindow.webContents
 			            .send('fromMain', 
@@ -381,7 +479,7 @@ class ElectronMain {
 			let crypto_logos_path = app_path + "/www/img/CryptoCurrency";
 			
 			let crypto_logos = FileUtils.GetFilesInFolder(crypto_logos_path);
-			console.log("   crypto_logos.length: " + crypto_logos.length);
+			//console.log("   crypto_logos.length: " + crypto_logos.length);
 			
 			let image_file_path = crypto_logos_path + "/";
 			let crypto_logo_filename = "Zilver_64px.svg";
@@ -562,4 +660,4 @@ else {
 		ElectronMain.CreateWindow();
 	})
 }
-// ========== Prevent Multiple instances of Electron main process
+// ========== Prevent Multiple instances of Electron main process// =====================================================================================

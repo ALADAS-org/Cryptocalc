@@ -25,15 +25,16 @@ const CHAINCODE       = 'chaincode';
 const DERIVATION_PATH = 'derivation_path';
 
 const BIP32_ROOT_KEY  = 'BIP32_root_key';
-const XPRIV           = 'XPRIV';
-const XPUB            = 'XPUB';
+const PRIV_KEY        = 'PRIV KEY';
+const XPRIV           = 'xpriv';
+const XPUB            = 'xpub';
 const ACCOUNT_XPRIV   = 'account_xpriv';
 const ACCOUNT_XPUB    = 'account_xpub';
 
 const PRIVATE_KEY_HEX = 'private_key_hex';
 const PUBLIC_KEY_HEX  = 'public_key_hex';
 
-const WIF             = 'wif';
+const WIF             = 'WIF';
 
 const ADDRESS         = 'address';
 const MNEMONICS       = 'mnemonics';
@@ -60,7 +61,7 @@ if (typeof exports === 'object') {
 	exports.DERIVATION_PATH = DERIVATION_PATH 
 	
 	exports.BIP32_ROOT_KEY  = BIP32_ROOT_KEY
-	exports.XPRIV           = XPRIV
+	exports.PRIV_KEY           = PRIV_KEY
 	exports.XPUB            = XPUB
 	exports.ACCOUNT_XPRIV   = ACCOUNT_XPRIV
 	exports.ACCOUNT_XPUB    = ACCOUNT_XPUB

@@ -1,4 +1,4 @@
-## Cryptocalc 0.1.7
+## Cryptocalc 0.1.8
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_6_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -29,17 +29,14 @@
         * Type `npm install`	
 
 4. Release notes
-	+ 4.1. Features in `0.1.6`
-	    * 4.1.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
+    + 4.1. Features in `0.1.8`    
+        * Added _QRcodes_ in generated _Wallet Informations_	
+	+ 4.2. Features in `0.1.6`
+	    * 4.2.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
 		be switched between `Image` (Default) and `Fortunes` (_Fortune Cookies_).    
-		* 4.1.2. Default Cryptocurrency changed from `ETH` to `BTC`.
-		* 4.1.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
-	    * 4.1.4. Fixed unused dependencies in `package.json`.
-    + 4.2. Features in `0.1.5`
-	    * 4.2.1. Added `XRP` (_Ripple_), `TRX` (_TRON_), 
-		`BCH` (_Bitcoin Cash_) and `FIRO` (_Firo_, ex. _ZCoin_)
-		* 4.2.2. Added _Derivation Path_ field in generated `_wallet_info.txt` 
-		(`File/Save` menu or `Save` icon in Toolbar).    
+		* 4.2.2. Default Cryptocurrency changed from `ETH` to `BTC`.
+		* 4.2.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
+	    * 4.2.4. Fixed unused dependencies in `package.json`. 
 5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
     + 5.1. Features  
@@ -61,7 +58,7 @@
         to import a wallet in a _Wallet Manager_, it's only a trick to _compress_
         the _Seedphrase_ and make it easier to store on a device with limited memory
         like a `NTAG213 NFC` (see 5.2.3). 	
-	    * 5.1.2. _Entropy Source_ : `Image` or `Fortunes`
+	    * 5.1.2. _Entropy Source_ : `Image` or `Fortunes`    
 		_Entropy Source_ may be switched between `Image` (Default source) 
 		and `Fortunes` (drawn from a compilation of 12803 _Fortune Cookies_). 
 		Please notice that a text is not considered as random enough 
@@ -72,7 +69,7 @@
             * 5.1.2.c: When using [Generate], _Cryptocurrency logos_ are drawn 
 			from the `www/js/img/CryptoCurrency` folder and the first image 
 			is always our logo (`Zilver_64px.svg`).						
-		* 5.1.3. Several wallets in the same _BIP32 HD wallet tree_
+		* 5.1.3. Several wallets in the same _BIP32 HD wallet tree_    
         The `BIP32` HD wallet tree_ is determined by the _Entropy_ or _Seedphrase_. 
 		These are 2 isomorphic representations of the _SRP_ (_Secret Recovery Passphrase_).		
 		So you can generate new wallets (_Address_ + _Private Key_ or _WIF_)
@@ -84,18 +81,17 @@
 		(you can input a decimal value between 0 and 9999).		
 		Pushing the [Refresh] button (or hitting either [ Return ] or [ Enter ] keys) 
 		will recompute the wallet accordingly.
-		* 5.1.4. Check the generated wallets against _Ian Coleman BIP39_: an item
-        in the menu (Help/Resources/Ian Coleman BIP39) eases the checking by opening 
-        [_Ian Coleman BIP39_](https://iancoleman.io/bip39/).
-		* 5.1.5. Import a wallet in Guarda: an item
-        in the menu (Help/Resources/Guarda) eases importing a wallet in a
-		_Wallet Manager_ application by opening 
-        [_Guarda_](https://guarda.com/).	
-		* 5.1.6. _Salted Entropy_  
+		* 5.1.4. Check generated wallets against _Ian Coleman BIP39_    
+		an item in the menu (Help/Resources/Ian Coleman BIP39) eases the checking 
+		by opening [_Ian Coleman BIP39_](https://iancoleman.io/bip39/).
+		* 5.1.5. Import a wallet in Guarda    
+		an item in the menu (Help/Resources/Guarda) eases importing a wallet in a
+		_Wallet Manager_ application by opening [_Guarda_](https://guarda.com/).	
+		* 5.1.6. _Salted Entropy_    
 		The _Salting_ is adding a unique information (e.g. a _UUID_) so that
         even if the _Entropy Source_ is the same, the _Entropy_ will be unique 		
 		at each press of [Generate] button.
-		* 5.1.7. Choose _Entropy Size_ 
+		* 5.1.7. Choose _Entropy Size_    
 		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). 
 		This is equivalent to a _Seedphrase size_ between 12 and 24 words. 
 		Changing _Entropy Size_ impacts the _Seedphrase size_ and conversely.
@@ -104,7 +100,19 @@
 		With `File/Save` (or the _Save_ icon in the main toolbar), you can save 
 		the _Wallet Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
 		under `_output` folder. This subfolder contains `wallet_info.txt` and a `wallet.json` 
-		with the informations displayed in _Seed_ and _Wallet_ tab pages. 
+		with the informations displayed in _Seed_ and _Wallet_ tab pages.    
+        _QRCodes_ (`PNG` format) are also generated for `Address`, `Private Key` and `Seedphrase`.
+        Notice that there is also a `xtras`	subfolder where these _QRCodes_ are provided
+        as in the `SVG` as well as a _Rectangular Micro QR Code_ (R15x59) which
+        allows to encode the private key encoded in Base64 (44 characters) 
+		but to be compatible with this encoding, the last (`=`) character
+		is removed and the encoded text has a length of 43 characters.    
+        * 5.1.9.a: In order to retrieve the Hexadecimal value of the `Private Key`, 
+		add a `=` character at the end and enter it in a 
+		[_Hex to Base64 converter_](https://base64.guru/converter/encode/hex).    
+        * 5.1.9.b: Notice that most _Android QRcode apps_ will not be compatible with
+        _Rectangular Micro QR Code_ but it works with `QRQR` published by _Arara_
+		on the _Google Play Store_.  		
 		* 5.1.10. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
@@ -119,7 +127,7 @@
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
-		* 5.1.12. Display of the _BIP32 Derivation Path_
+		* 5.1.12. Display of the _BIP32 Derivation Path_    
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the

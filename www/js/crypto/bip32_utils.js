@@ -12,9 +12,9 @@
 // ---------- 'Guarda.com': Wallet Import Tests ----------
 // 2024/04/22..2024/04/25
 // * _Bitcoin_  
-// 12 words: Validated for 'private key', WIF, XPRIV ('BIP32 Root Key'), Seedphrase  
-// 18 words: Validated for 'private key', WIF, XPRIV ('BIP32 Root Key'), Seedphrase  
-// 24 words: Validated for 'private key', WIF, XPRIV ('BIP32 Root Key'), Seedphrase  
+// 12 words: Validated for 'private key', WIF, PRIV_KEY ('BIP32 Root Key'), Seedphrase  
+// 18 words: Validated for 'private key', WIF, PRIV_KEY ('BIP32 Root Key'), Seedphrase  
+// 24 words: Validated for 'private key', WIF, PRIV_KEY ('BIP32 Root Key'), Seedphrase  
 //
 // * _Ethereum_  
 // 12 words: Validated for 'private key', Seedphrase  
@@ -26,12 +26,12 @@
 // 24 words: Validated for 'private key', Seedphrase
 //			
 // * _DogeCoin_  
-// 12 words: Validated for 'private key', XPRIV ('Wallet Private Key') 
-// 24 words: Validated for 'private key', XPRIV ('Wallet Private Key') 
+// 12 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key') 
+// 24 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key') 
 //
 // * _LiteCoin_  
-// 12 words: Validated for 'private key', XPRIV ('Wallet Private Key')
-// 24 words: Validated for 'private key', XPRIV ('Wallet Private Key')
+// 12 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key')
+// 24 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key')
 // ---------- 'Guarda.com': Wallet Import Tests
 //
 // https://support.ledger.com/hc/fr-fr/articles/4415198323089-Comment-un-appareil-Ledger-g%C3%A9n%C3%A8re-une-phrase-de-r%C3%A9cup%C3%A9ration-de-24-mots&language-suggestion?docs=true
@@ -84,7 +84,7 @@ const { NULL_HEX,
 		MASTER_PK_HEX, CHAINCODE, ROOT_PK_HEX, WIF,
 		BIP32_ROOT_KEY,		
 		PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,
-		XPRIV, XPUB,
+		PRIV_KEY, XPUB,
 		ACCOUNT_XPRIV, ACCOUNT_XPUB		
 	  }                      = require('./const_wallet.js');
 	  
@@ -144,17 +144,17 @@ class Bip32Utils {
 		let coin_type     = COIN_TYPES[blockchain];
 		
 		let account_index = options[ACCOUNT_INDEX];
-		console.log("   account_index: " + account_index );
-		
 		let address_index = options[ADDRESS_INDEX];
-		console.log("   address_index: " + address_index );
+		
+		console.log(   "   account_index: " + account_index + "   " 
+		             + "   address_index: " + address_index );
 		//console.log("   address_index typeof: " + typeof address_index );
 		
 		let hdwallet_info = {};
 		
-		hdwallet_info[BLOCKCHAIN]     = blockchain;
-		hdwallet_info["coin"]         = coin;
-		hdwallet_info["coin_type"]    = coin_type;		
+		hdwallet_info[BLOCKCHAIN]   = blockchain;
+		hdwallet_info[COIN]         = coin;
+		hdwallet_info[COIN_TYPE]    = coin_type;		
 		
 		//console.log("   coin_type:                  " + coin_type);		
 		
@@ -205,14 +205,14 @@ class Bip32Utils {
 		// https://www.npmjs.com/package/hdkey
 		const hdkey = HDKey.fromMasterSeed( Buffer.from(master_seed_hex, 'hex') );
 		//console.log(  "   " + _YELLOW_
-	    //            + "hdkey.XPRIV:            " + _END_ + hdkey.privateExtendedKey);
+	    //            + "hdkey.PRIV_KEY:            " + _END_ + hdkey.privateExtendedKey);
 
 		//console.log(  "   " + _YELLOW_
 	    //            + "hdkey.XPUB:             " + _END_ + hdkey.publicExtendedKey);
 					
 		const childkey = hdkey.derive( master_derivation_path );		
 		//console.log(  "   " + _YELLOW_
-	    //            + "childkey.XPRIV:         " + _END_ + childkey.privateExtendedKey);
+	    //            + "childkey.PRIV_KEY:         " + _END_ + childkey.privateExtendedKey);
 		//console.log(  "   " + _YELLOW_
 	    //            + "childkey.XPUB:          " + _END_ + childkey.publicExtendedKey);
 		//-------------------- Test HDKey
@@ -261,6 +261,7 @@ class Bip32Utils {
 		console.log(   "   " + _YELLOW_ 
 		             + "private_key_hex:        " + _END_ + private_key_hex);
 		hdwallet_info[PRIVATE_KEY_HEX] = private_key_hex;
+		hdwallet_info[PRIV_KEY]           = private_key_hex;
 		//-------------------- First Private Key
 
 		
@@ -291,10 +292,11 @@ class Bip32Utils {
 					 
 		if ( blockchain == BITCOIN_CASH ) {
 			hdwallet_info[PRIVATE_KEY_HEX] = child_private_key;
+			hdwallet_info[PRIV_KEY]          = child_private_key;
 		}
 		else if ( ! isHexString(child_private_key) ) { 
 			if ( isBase58String(child_private_key) ) {
-				hdwallet_info[XPRIV] = child_private_key;
+				hdwallet_info[PRIV_KEY] = child_private_key;
 				child_private_key_hex = b58ToHex( child_private_key );
 				console.log(   "   " + _YELLOW_ 
 		             + "child_private_key_hex:  " + _END_ + child_private_key_hex);
@@ -308,17 +310,17 @@ class Bip32Utils {
 		
 		//-ok-------------------- Extended Private key -----------------------
 		let account_derivation_path = "m/44'/" + coin_type + "'" + "/" + account_index + "'";
-		let account_xpriv = master_node.derivePath( account_derivation_path ).toBase58();
+		let ACCOUNT_XPRIV = master_node.derivePath( account_derivation_path ).toBase58();
 		//console.log(   "   " + _YELLOW_ 
-		//             + "Account XPRIV:          " + _END_ + account_xpriv);
-		hdwallet_info[ACCOUNT_XPRIV] = account_xpriv;
+		//             + "Account PRIV_KEY:          " + _END_ + ACCOUNT_XPRIV);
+		hdwallet_info[ACCOUNT_XPRIV] = ACCOUNT_XPRIV;
 		//----------------------- Extended Private key
 		
 		//----------------------- Extended Public key ------------------------
 		// https://github.com/elastos/Elastos.SDK.Keypair.Javascript/blob/master/src/Api.js	
 		const getMasterPublicKey = ( seed, coinType, account_index ) => {
 			const prvKey = HDPrivateKey.fromSeed( seed );
-			const parent = new HDPrivateKey( prvKey.xprivkey );
+			const parent = new HDPrivateKey( prvKey.PRIV_KEYkey );
 			
 			const multiWallet = parent
 				.deriveChild( 44, true )
