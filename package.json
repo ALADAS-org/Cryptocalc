@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Crypto Calculator",
   "main": "./www/js/_main/electron_main.js",
   "//1": "electron .",
@@ -18,7 +18,10 @@
     "cryptocurrency",
     "cryptography",
     "seedphrase",
+	"private key",
+	"fortune cookies",
     "mnemonic",
+	"QR Code",
     "bip39",
     "bip32",
     "bip44",
