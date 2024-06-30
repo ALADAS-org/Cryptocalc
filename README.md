@@ -1,4 +1,4 @@
-## Cryptocalc 0.1.9
+## Cryptocalc 0.1.10
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_6_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -29,15 +29,20 @@
         * Type `npm install`	
 
 4. Release notes
-    + 4.1. Features in `0.1.8`    
+    + 4.1. Features in `0.1.10`    
+        * Bug Fixes in the generated `QRCodes` of `wallet information` folder (`www/_output`).	
+		* Subfolder renamed from `xtras` to `svg`
+		* Replaced `PrivateKeyMicro.svg` by `Entropy_MicroQR.png` and `Entropy_MicroQR.svg`
+		* Update of this `README` (cf. 5.1.9) 
+    + 4.2. Features in `0.1.8`    
         * Added _QR Code_ images (PNG) in the generated _Wallet Informations_
 		folder (`www/_output`).	
-	+ 4.2. Features in `0.1.6`
-	    * 4.2.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
+	+ 4.3. Features in `0.1.6`
+	    * 4.3.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
 		be switched between `Image` (Default) and `Fortunes` (_Fortune Cookies_).    
-		* 4.2.2. Default Cryptocurrency changed from `ETH` to `BTC`.
-		* 4.2.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
-	    * 4.2.4. Fixed unused dependencies in `package.json`. 
+		* 4.3.2. Default Cryptocurrency changed from `ETH` to `BTC`.
+		* 4.3.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
+	    * 4.3.4. Fixed unused dependencies in `package.json`. 
 5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
     + 5.1. Features  
@@ -102,21 +107,35 @@
 		the _Wallet Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
 		under `_output` folder. This subfolder contains `wallet_info.txt` and a `wallet.json` 
 		with the informations displayed in _Seed_ and _Wallet_ tab pages.    
-        _QR Code_ `PNG` images are also generated for `Address`, `Private Key` and `Seedphrase`.
-        Notice that there is also a `xtras`	subfolder where these _QR Codes_ are provided
-        in the `SVG` format and there is also a minified version of the `Private Key` _QR Code_
+        _QR Code_ (`PNG` images) are generated for `Address`, `Private Key`, `Seedphrase`,
+		`Entropy` and `Entropy_MicroQR` (a _Rectangular Micro QRCode_ of _Entropy_).    
+        Notice that there is also a `svg` subfolder where these _QR Codes_ are provided
+        in the `SVG` format and there is also a _Micro QR Code_ of the `Entropy` 
 		(_Rectangular Micro QR Code_, `R15x59` version) which
-        allows to encode the `Private Key` in Base64 (44 characters) 
-		but to be compatible with this encoding, the last character (`=`)
-		is removed so that the encoded text has a length of 43 characters.    
-            * 5.1.9.a: In order to retrieve the Hexadecimal value of the `Private Key`, 
-		    add a `=` character at the end and enter it in a 
-		    [_Hex to Base64 converter_](https://base64.guru/converter/encode/hex).    
-            * 5.1.9.b: Notice that most Android _QR Code reader_ apps will not be compatible with
-            _Rectangular Micro QR Code_ but it works with 
-			[`QRQR`](https://play.google.com/store/apps/details?id=com.arara.q&hl=en)	 
-			an Android _QR Code reader_ published by _Arara_ on the _Google Play Store_.  	
-		* 5.1.10. Select _Seedphrase Language_    
+        encodes the `Entropy` in Base64 (44 characters) but to be compatible with 
+		the capacity of this encoding, the last character (`=`) is removed so that 
+		the encoded text has a length of 43 characters.
+		    * 5.1.9.a: How to retrieve a wallet from the _Rectangular Micro QR Code_    
+		        * 5.1.9.a.I: Notice that most Android _QR Code reader_ apps will 
+			    not be compatible with _Rectangular Micro QR Code_ but it works with 
+			    [`QRQR`](https://play.google.com/store/apps/details?id=com.arara.q&hl=en)	 
+			    an Android _QR Code reader_ published by _Arara_ on the _Google Play Store_. 
+                * 5.1.9.a.II: In order to retrieve the Hexadecimal value of the _Entropy_, 
+		        add a `=` character at the end and enter it in a 
+		        [_Hex to Base64 converter_](https://base64.guru/converter/encode/hex).    
+                * 5.1.9.a.III: Then you can convert the _Entropy_ to the matching _Seedphrase_ 
+			    by doing a copy/paste of the _Entropy_ (an hexadecimal value)
+			    inside the `Entropy` field in _Cryptocalc_.    
+				* 5.1.9.a.IV: Then you can convert the _Entropy_ to the matching _Seedphrase_ 
+			    by doing a copy/paste of the _Entropy_ (an hexadecimal value)
+			    inside the `Entropy` field in _Cryptocalc_.    
+				**Caution**: Take care to input the same `Entropy Size` and `Derivation path`
+				if applicable (use the [Refresh] button).
+				These informations are provided in the `wallet_info.txt` file
+				which was generated when the wallet was created.    
+				e.g.1. `Entropy Size` is 128 bits if there are 32 hexadecimal digits in the _Entropy_    
+                e.g.2. `Entropy Size` is 256 bits if there are 64 hexadecimal digits in the _Entropy_  				
+        * 5.1.10. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
         Changing _Wordlist Language_ is indeed a mean to add a scramble step in order 
