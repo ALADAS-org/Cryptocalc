@@ -1,12 +1,12 @@
+https://www.npmjs.com/package/crypto-wallets
+
 - Entropy source:
-  - Image
-  - Mouvement de ls Souris
+  - Mouvement de la Souris
   
 - Modes: Basic / Advanced => Tools/Options...
   Basic: XMR (Monero), DASH, ADA, AVAX (Avalanche)
 
 - QRCode for address and for Private Key or Seedphrase
-  - "Micro QRCode
   - Logo coin dans QRCode
   
 - Themes / CSS

@@ -330,8 +330,8 @@ class Bip32Utils {
 			return multiWallet.xpubkey;
 		}; // getMasterPublicKey()
 		
-		console.log(  "   " + _YELLOW_
-		            + "account_index type: " + _END_ + typeof account_index);
+		//console.log(  "   " + _YELLOW_
+		//            + "account_index type: " + _END_ + typeof account_index);
 		
 		let account_xpub = getMasterPublicKey( master_seed, coin_type, account_index );
 		//console.log(  "   " + _YELLOW_

@@ -338,7 +338,7 @@ class ElectronMain {
 			 }; // writePNGfile
 			 
 			 if ( qrcode_type == "rectangularmicroqrcode" ) {
-				options["version"] = "R15x59";
+				options["version"] = "R15x77"; // R15x59";
 				options["eclevel"] = "M";
 			 }	
 			
@@ -423,12 +423,14 @@ class ElectronMain {
             }
 			createQRCode( output_path, "Seedphrase.png", crypto_info[MNEMONICS], "qrcode" );
 			
-			createQRCode( output_path, "Entropy_MicroQR.png", hexToB64(entropy).replace('=',''), "rectangularmicroqrcode", "png" );
+			//createQRCode( output_path, "Entropy_MicroQR.png", hexToB64(entropy).replace('=',''), "rectangularmicroqrcode", "png" );
+			createQRCode( output_path, "Entropy_MicroQR.png", entropy, "rectangularmicroqrcode", "png" );
 			
 			FileUtils.CreateSubfolder(output_path, "svg");
 			createQRCode( output_path + "/svg", "Address.svg",         crypto_info['address'], "qrcode", "svg" );
 			createQRCode( output_path + "/svg", "PrivateKey.svg",      private_key, "qrcode", "svg" );
-			createQRCode( output_path + "/svg", "Entropy_MicroQR.svg", hexToB64(entropy).replace('=',''), "rectangularmicroqrcode", "svg" );
+			//createQRCode( output_path + "/svg", "Entropy_MicroQR.svg", hexToB64(entropy).replace('=',''), "rectangularmicroqrcode", "svg" );
+			createQRCode( output_path + "/svg", "Entropy_MicroQR.svg", entropy, "rectangularmicroqrcode", "svg" );
 			createQRCode( output_path + "/svg", "Seedphrase.svg",      crypto_info[MNEMONICS], "qrcode", "svg" );
 		}); // "request:save_wallet_info" event handler
 				
@@ -459,17 +461,19 @@ class ElectronMain {
 			            .send('fromMain', 
 						      [ FromMain_SEND_IMG_URL, ENTROPY_SOURCE_IMG_ID, 
 							    img_data_asURL, image_file_extension ]);
+			return img_data_asURL;
 		}; // loadImageFromFile
 		
 		// ====================== REQUEST_LOAD_IMG_FROM_FILE ======================
 		// called like this by Renderer: window.ipcMain.LoadImageFromFile(data)
 		ipcMain.handle( REQUEST_LOAD_IMG_FROM_FILE, (event, image_file_path) => {
 			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_LOAD_IMG_FROM_FILE + _END_);
-			loadImageFromFile( image_file_path );
+			let img_data_asURL = loadImageFromFile( image_file_path );
+			return img_data_asURL;
 		}); // "request:load_image_from_file" event handler
 
 		// ====================== REQUEST_DROP_RND_CRYPTO_LOGO ======================
-		// called like this by Renderer: window.ipcMain.LoadImageFromFile(data)
+		// called like this by Renderer: window.ipcMain.DropRandomCryptoLogo(data)
 		ipcMain.handle( REQUEST_DROP_RND_CRYPTO_LOGO, (event, data) => {
 			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_DROP_RND_CRYPTO_LOGO + _END_);
 			
@@ -490,7 +494,8 @@ class ElectronMain {
 			ElectronMain.FirstImageAsEntropySource = false;
 			image_file_path += crypto_logo_filename;
 			
-			loadImageFromFile( image_file_path );			
+			let img_data_asURL = loadImageFromFile( image_file_path );
+            return img_data_asURL;			
 		}); // "request:drop_rnd_crypto_logo" event handler
 		
 		// ================== REQUEST_MNEMONICS_TO_HDWALLET_INFO ==================

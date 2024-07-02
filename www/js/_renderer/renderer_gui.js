@@ -113,6 +113,8 @@ class RendererGUI {
 		
 		this.entropy_source_is_user_input = false;
 		
+		this.img_data_asURL = "";
+		
 		log2Main(">> " + _CYAN_ + "RendererGUI.constructor()" + _END_);
 
 		window.ipcMain.receive("fromMain", 
@@ -346,7 +348,7 @@ class RendererGUI {
 			log2Main("   expected_word_count:     " + this.expected_word_count);
 			
 			let entropy_src_str = await this.getSaltedEntropySource();
-			log2Main("   entropy_src_str: " + getShortEntropySourceStr(entropy_src_str));
+			log2Main("   Salted Entropy:          " + getShortEntropySourceStr(entropy_src_str));
 			
 			if ( entropy_src_str.length > 0 ) {
 				const options = { "lang": "EN", "word_count": this.expected_word_count };
@@ -396,22 +398,17 @@ class RendererGUI {
 		let salt_elt = HtmlUtils.GetElement( SALT_ID );
 		salt_elt.textContent = new_uuid;
 		
-		let salted_entropy_src = entropy_src_elt.value;
+		let entropy_source = HtmlUtils.GetField( ENTROPY_SOURCE_SELECTOR_ID );
+		log2Main("   entropy_source: " + entropy_source);
 		
-		// NB; Dont use "salt checkbox"
-		//let use_salt_elt = HtmlUtils.GetElement( USE_SALT_ID) ;
-		//let use_salt = use_salt_elt.checked;
-		let use_salt = true;
-		//log2Main("   use_salt: " + use_salt);
+		let entropy_src_value = "";
+		if (entropy_source == "Fortunes") 
+			entropy_src_value = entropy_src_elt.value;
+		else if (entropy_source == "Image") 
+		    entropy_src_value = this.img_data_asURL;
 		
-		if ( use_salt ) {
-			let salt           =  salt_elt.textContent;				
-			salted_entropy_src += salt;
-			//log2Main("   seed is SALTED " + salt);
-		}
-		else {
-			//log2Main("   seed is NOT SALTED");
-		}
+		let salt               =  salt_elt.textContent;				
+		let salted_entropy_src = salt + entropy_src_value;
                                                         
 		return salted_entropy_src;	
 	} // getSaltedEntropySource()
@@ -670,7 +667,7 @@ class RendererGUI {
 		this.updateEntropySourceIsUserInput( false );
 		
 		let entropy_source = HtmlUtils.GetField( ENTROPY_SOURCE_SELECTOR_ID );
-		log2Main("   entropy_source: " + entropy_source);
+		log2Main("   entropy_source:         " + entropy_source);
 		
 		if ( entropy_source == "Fortunes") {
 			let fortune_cookie = await window.ipcMain.GetFortuneCookie();
@@ -678,7 +675,7 @@ class RendererGUI {
 		}
 		else if ( entropy_source == "Image") {
 			// Draw image in "www/img/CryptoCurrency" folder
-			await window.ipcMain.DropRandomCryptoLogo();
+			this.img_data_asURL = await window.ipcMain.DropRandomCryptoLogo();
 		}
 		await this.updateFields();
 		
@@ -1350,6 +1347,9 @@ class RendererGUI {
 		let entropy_value = HtmlUtils.GetField( ENTROPY_ID ); 
 		crypto_info['Entropy'] = entropy_value;
 		
+		let entropy_size = (entropy_value.length / 2) * 8;
+		crypto_info['Entropy Size'] = entropy_size + " bits";
+		
 		crypto_info['lang'] = lang;
 		
 		return crypto_info;
@@ -1416,7 +1416,7 @@ class RendererGUI {
 	
 	// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
 	// https://www.geeksforgeeks.org/how-to-drag-and-drop-images-using-html5/	
-	onDropImage( evt ) {
+	async onDropImage( evt ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.onDropImage()" + _END_);		
 		evt.preventDefault();
 		evt.stopPropagation();
@@ -1429,7 +1429,8 @@ class RendererGUI {
 		}
 		let img_file_path = file_path[0]
 		log2Main("   " + img_file_path);
-		window.ipcMain.LoadImageFromFile( img_file_path );
+		let img_data_asURL = await window.ipcMain.LoadImageFromFile( img_file_path );
+		this.img_data_asURL = img_data_asURL; 
 	} // RendererGUI.onDropImage()
 	
 	setEventHandler( elt_id, event_name, handler_function ) {
