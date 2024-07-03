@@ -725,23 +725,23 @@ class RendererGUI {
 		this.expected_entropy_digits = 32;
 		this.expected_word_count     = 12;
 		switch ( entropy_bit_count ) { 
-			case 128: 	this.expected_entropy_bytes = 16;
+			case 128: 	this.expected_entropy_bytes = 16; // 32 hexadecimal digits
 						this.expected_word_count    = 12;
 						break;
 						
-			case 160: 	this.expected_entropy_bytes = 20;
+			case 160: 	this.expected_entropy_bytes = 20; // 40 hexadecimal digits
 						this.expected_word_count    = 15;
 						break;
 						
-			case 192: 	this.expected_entropy_bytes = 24;
+			case 192: 	this.expected_entropy_bytes = 24; // 48 hexadecimal digits
 						this.expected_word_count    = 18;
 						break;
 						
-			case 224: 	this.expected_entropy_bytes = 28;
+			case 224: 	this.expected_entropy_bytes = 28; // 56 hexadecimal digits
 						this.expected_word_count    = 21;
 						break;
 						
-			case 256: 	this.expected_entropy_bytes = 32;
+			case 256: 	this.expected_entropy_bytes = 32; // 64 hexadecimal digits
 						this.expected_word_count    = 24;
 						break;
 		} // entropy_bit_count
@@ -1323,11 +1323,12 @@ class RendererGUI {
 		
 		let mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_ID ); 
 		let mnemonics = mnemonics_elt.value;
-		crypto_info[MNEMONICS] = mnemonics;		
+		//crypto_info[MNEMONICS] = mnemonics;	
+		crypto_info['Seedphrase'] = mnemonics;	
 		
 		let shortened_mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_4LETTER_ID ); 
 		let shortened_mnemonics = shortened_mnemonics_elt.value;
-		crypto_info['Shortened Mnemonics'] = shortened_mnemonics;
+		crypto_info['Shortened Seedphrase'] = shortened_mnemonics;
 		
 		let lang = this.getLang();
 		let options = { "lang": lang };

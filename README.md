@@ -1,4 +1,4 @@
-## Cryptocalc 0.1.11
+## Cryptocalc 0.1.12
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_6_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -29,24 +29,33 @@
         * Type `npm install`	
 
 4. Release notes
-    + 4.1. Features in `0.1.11`    
-        * Simplification of `Rectangular Micro QRCode` for _Entropy_: _Entropy_ now
+    + 4.1. Features in `0.1.12`    
+        * Added Border to generated _QR codes_		
+		* Added `svg` version of the `QR code` for `WIF` (if applicable, only `Bitcoin` ATM)
+		* Rename of `mnemonics` field of `wallet_info.txt` to `Seedphrase`
+		* Rename of `Entropy_MicroQR.svg` (or `.png`)  to `Entropy_rMQR.svg` (or `.png`)
+		* Optimized `rMQR` (_Rectangular Micro QR code_) variant depending on `Entropy Size`
+		* Experimental generation of `Ultracode` for `Entropy` (2D color Barcode, 
+		46% less space than regular B&W `QR code`). Didn't found yet a compatible 
+		Android app reader yet.   
+    + 4.2. Features in `0.1.11`    
+        * Simplification of `Rectangular Micro QR code` for _Entropy_: _Entropy_ now
         in `Hexadecimal` (no more conversion from `Base64` to `Hexadecimal` required)
         * `Entropy Size` field added in `wallet_info.txt`		
-    + 4.2. Features in `0.1.10`    
+    + 4.3. Features in `0.1.10`    
         * Bug Fixes in the generated `QRCodes` of `wallet information` folder (`www/_output`).	
 		* Subfolder renamed from `xtras` to `svg`
 		* Replaced `PrivateKeyMicro.svg` by `Entropy_MicroQR.png` and `Entropy_MicroQR.svg`
 		* Update of this `README` (cf. 5.1.9) 
-    + 4.3. Features in `0.1.8`    
+    + 4.4. Features in `0.1.8`    
         * Added _QR Code_ images (PNG) in the generated _Wallet Informations_
 		folder (`www/_output`).	
-	+ 4.4. Features in `0.1.6`
-	    * 4.4.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
+	+ 4.5. Features in `0.1.6`
+	    * 4.5.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
 		be switched between `Image` (Default) and `Fortunes` (_Fortune Cookies_).    
-		* 4.4.2. Default Cryptocurrency changed from `ETH` to `BTC`.
-		* 4.4.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
-	    * 4.4.4. Fixed unused dependencies in `package.json`. 
+		* 4.5.2. Default Cryptocurrency changed from `ETH` to `BTC`.
+		* 4.5.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
+	    * 4.5.4. Fixed unused dependencies in `package.json`. 
 5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
     + 5.1. Features  
@@ -111,21 +120,21 @@
 		the _Wallet Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
 		under `_output` folder. This subfolder contains `wallet_info.txt` and a `wallet.json` 
 		with the informations displayed in _Seed_ and _Wallet_ tab pages.    
-        _QR Code_ (`PNG` images) are generated for `Address`, `Private Key`, `Seedphrase`,
-		`Entropy` and `Entropy_MicroQR` (a _Rectangular Micro QRCode_ of _Entropy_).    
-        Notice that there is also a `svg` subfolder where these _QR Codes_ are provided
-        in the `SVG` format and there is also a _Micro QR Code_ of the `Entropy` 
-		(_Rectangular Micro QR Code_, `R15x77` version) which
-        encodes the `Entropy` in Hexadecimal.
-		    * 5.1.9.a: How to retrieve a wallet from the _Rectangular Micro QR Code_    
+        _QR Code_ (`png` images) are generated for `Address`, `Private Key`, `Seedphrase`,
+		`Entropy`, `Entropy_rMQR` (a _Rectangular Micro QRCode_ of _Entropy_)
+		and `WIF` (if applicable, `BTC` only ATM).    
+        Notice that there is a `svg` subfolder where these _QR codes_ are provided
+        in the `svg` format and there is also a _Rectangular Micro QR code_ (`rMQR`) of the 
+		`Entropy` (_Rectangular Micro QR Code_, `R15x59` or `R15x77` version depending on		
+		`Entropy size`).
+		    * 5.1.9.a: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
 		        * 5.1.9.a.I: Notice that most Android _QR Code reader_ apps will 
 			    not be compatible with _Rectangular Micro QR Code_ but it works with 
 			    [`QRQR`](https://play.google.com/store/apps/details?id=com.arara.q&hl=en)	 
 			    an Android _QR Code reader_ published by _Arara_ on the _Google Play Store_.              
                 * 5.1.9.a.II: Then convert the _Entropy_ to the matching _Seedphrase_ 
-			    by doing a copy/paste of the _Entropy_ (hexadecimal value)
-			    in the `Entropy` field in _Cryptocalc_.    
-				**Caution**: Take care to set _Cryptocalc_ the same `Entropy Size` and 
+			    by doing a copy/paste in the `Entropy` field of _Cryptocalc_.    
+				**Caution**: Take care to set _Cryptocalc_ with the same `Entropy Size` and 
 				`Derivation path` (if applicable, don't forget to use the [Refresh] button)
 				than those used when the wallet was created (these informations 
 				are provided in the `wallet_info.txt` file).	  				

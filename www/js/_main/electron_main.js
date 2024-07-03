@@ -75,7 +75,7 @@ const { getDayTimestamp }               = require('../util/system/timestamp.js')
 const { FileUtils }                     = require('../util/system/file_utils.js');
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
 const { Bip32Utils }                    = require('../crypto/bip32_utils.js');
-const { hexToBytes, hexWithoutPrefix, hexToB64,
+const { hexToBytes, hexWithoutPrefix, hexWithPrefix, hexToB64,
         isHexString, getRandomInt  }    = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { L10nUtils }                     = require('../L10n/L10n_utils.js');
@@ -323,6 +323,9 @@ class ElectronMain {
 			 options["text"]            = qrcode_text;
 			 options["bcid"]            = qrcode_type;	
 			 options["backgroundcolor"] = "FFFFFF";
+			 options["showborder"]      = true;
+			 options["borderwidth"]     = 1;
+			 options["bordercolor"]     = "FFFFFF";
 			 
 			 const writePNGfile = ( err, png_data ) => {
 				if ( err ) { // `err` may be a string or Error object
@@ -337,13 +340,28 @@ class ElectronMain {
 				}
 			 }; // writePNGfile
 			 
-			 if ( qrcode_type == "rectangularmicroqrcode" ) {
-				options["version"] = "R15x77"; // R15x59";
+			 let qrcode_text_bit_count = 256;
+			 if ( qrcode_type == "rectangularmicroqrcode" ) {				
+				let version = "R15x77";
+                if ( isHexString(qrcode_text) )  {
+					qrcode_text_bit_count = (qrcode_text.length / 2) * 8;			
+					if (qrcode_text_bit_count <= 192) { 			
+						version = "R15x59";
+					}
+                }				
+				options["version"] = version;
 				options["eclevel"] = "M";
 			 }	
 			
 			 if ( filetype == "png" ) {			
-				options["scale"] = 3;				
+				if (qrcode_type == "qrcode") {	
+				    options["scale"]  = 1;				
+					options["width"]  = 250;
+					options["height"] = 250;
+				}	
+				else if (qrcode_type == "rectangularmicroqrcode") {	
+				    options["scale"] = 5;
+				}	
 				bwipjs.toBuffer( options, writePNGfile );
 			 }
 			 else if ( filetype == "svg" ) {
@@ -373,9 +391,6 @@ class ElectronMain {
 			if (! fs.existsSync(output_path)) {
 				fs.mkdirSync(output_path, { recursive: true });
 			}		
-			
-			// console.log(JSON.stringify(crypto_info));
-			// fs.writeFileSync( output_path + "/wallet_info.json", JSON.stringify(crypto_info), error_handler );
 			
 			let wallet_info_str = "";
 			let wallet_keys = Object.keys(crypto_info);
@@ -409,29 +424,30 @@ class ElectronMain {
 			
 			fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );
 		
-		    // console.log("crypto_info[ADDRESS]: " + crypto_info['address']);
-		    createQRCode( output_path, "Address.png", crypto_info['address'], "qrcode" );			
+		    createQRCode( output_path, "Address.png", crypto_info['address'], 'qrcode' );			
 			
 			if ( pk_key != "" ) {
-				// console.log("pk_key: " + pk_key);
-				createQRCode( output_path, "PrivateKey.png", private_key, "qrcode" );
+				createQRCode( output_path, "PrivateKey.png", private_key, 'qrcode' );
             }
 			
 			if ( wif != "" ) {
-				// console.log("wif: " + wif);
-				createQRCode( output_path, "WIF.png", wif, "qrcode" );
+				createQRCode( output_path, "WIF.png", wif, 'qrcode' );
             }
-			createQRCode( output_path, "Seedphrase.png", crypto_info[MNEMONICS], "qrcode" );
+			createQRCode( output_path, "Seedphrase.png",        crypto_info['Seedphrase'], 'qrcode' );
+			createQRCode( output_path, "Entropy_rMQR.png",      entropy, 'rectangularmicroqrcode', 'png' );
+			createQRCode( output_path, "Entropy_Ultracode.png", entropy, 'ultracode', 'png' );
 			
-			//createQRCode( output_path, "Entropy_MicroQR.png", hexToB64(entropy).replace('=',''), "rectangularmicroqrcode", "png" );
-			createQRCode( output_path, "Entropy_MicroQR.png", entropy, "rectangularmicroqrcode", "png" );
-			
-			FileUtils.CreateSubfolder(output_path, "svg");
-			createQRCode( output_path + "/svg", "Address.svg",         crypto_info['address'], "qrcode", "svg" );
-			createQRCode( output_path + "/svg", "PrivateKey.svg",      private_key, "qrcode", "svg" );
-			//createQRCode( output_path + "/svg", "Entropy_MicroQR.svg", hexToB64(entropy).replace('=',''), "rectangularmicroqrcode", "svg" );
-			createQRCode( output_path + "/svg", "Entropy_MicroQR.svg", entropy, "rectangularmicroqrcode", "svg" );
-			createQRCode( output_path + "/svg", "Seedphrase.svg",      crypto_info[MNEMONICS], "qrcode", "svg" );
+			//-------- SVG output --------
+			FileUtils.CreateSubfolder( output_path, "svg" );
+				createQRCode( output_path + "/svg", "Address.svg",      crypto_info['address'], 'qrcode', 'svg' );
+				createQRCode( output_path + "/svg", "PrivateKey.svg",   private_key, 'qrcode', 'svg' );
+				createQRCode( output_path + "/svg", "Entropy_rMQR.svg", entropy, 'rectangularmicroqrcode', 'svg' );
+				createQRCode( output_path + "/svg", "Entropy_Ultracode.svg", entropy, "ultracode", 'svg' );
+			    if ( wif != "" ) {
+				    createQRCode( output_path + "/svg", "WIF.svg", wif, 'qrcode', 'svg' );
+                }			
+				createQRCode( output_path + "/svg", "Seedphrase.svg", crypto_info['Seedphrase'], 'qrcode', 'svg' );
+		    //-------- SVG output
 		}); // "request:save_wallet_info" event handler
 				
 		// ====================== REQUEST_IMPORT_RAW_DATA ======================
