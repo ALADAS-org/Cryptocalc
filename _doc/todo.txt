@@ -1,4 +1,8 @@
-https://www.npmjs.com/package/crypto-wallets
+Simple Wallet:
+  https://www.npmjs.com/package/crypto-wallets
+
+GUI:
+  https://jsuites.net/docs
 
 - Entropy source:
   - Mouvement de la Souris

@@ -5,7 +5,7 @@
 
 const CRYPTO_CALC_VERSION          = "Cryptocalc_version";
 
-const TOOLS_OPTIONS_DIALOG_ID      = "tools_options_dialog_id"; 
+const TOOLS_OPTIONS_DIALOG_ID      = "tools_options_dialog_id";
 
 const SEED_TAB_LINK_ID             = "seed_tab_link_id";
 const WALLET_TAB_LINK_ID           = "wallet_tab_link_id";
@@ -17,7 +17,7 @@ const ENTROPY_SRC_IMG_CONTAINER_ID = "entropy_src_img_container_id";
 const ENTROPY_SOURCE_IMG_DIV_ID    = "entropy_src_img_div_id";
 const ENTROPY_SOURCE_IMG_ID        = "entropy_src_img_id";
 
-const ENTROPY_SOURCE_SELECTOR_ID   = "entropy_src_selector_id";
+const ENTROPY_SRC_TYPE_SELECTOR_ID = "entropy_src_type_selector_id";
 
 const ENTROPY_LABEL_ID             = "entropy_label_id";
 const ENTROPY_ID                   = "entropy_id";

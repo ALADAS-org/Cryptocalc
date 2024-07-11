@@ -11,6 +11,24 @@
 // BIP32: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
 //
 // https://support.ledger.com/hc/fr-fr/articles/4415198323089-Comment-un-appareil-Ledger-g%C3%A9n%C3%A8re-une-phrase-de-r%C3%A9cup%C3%A9ration-de-24-mots&language-suggestion?docs=true
+
+// ====================================  Bip39Utils class  ====================================
+// // static Methods: 
+// * PrivateKeyToMnemonics( private_key_hex )
+// * EntropyToMnemonics( entropy_hex, options )
+// * EntropyToChecksum( entropy_hex, options )
+// * EntropySourceToEntropy( entropy_src_str, options )
+// * EntropySourceToMnemonics( entropy_src_str, options )
+// * MnemonicsToEntropyInfo( mnemonics )
+// * GetWordIndexes( mnemonics, options )
+// * WordIndexesToSeedPhrase( word_indexes, lang )
+// * GuessMnemonicsLang( mnemonics )
+// * CheckMnemonics( mnemonics, private_key, options ) 
+// * MnemonicsAs4letter( mnemonics )
+// * MnemonicsAsTwoParts( mnemonics )
+// * GetBIP39Dictionary( lang )
+// * GetOptions( options )
+
 const sha256         = require('js-sha256');
 const { sha512 }     = require('js-sha512');
 const { Base64 }     = require('js-base64');
@@ -19,7 +37,6 @@ const Bip39Mnemonic  = require('bitcore-mnemonic');
 const bip39          = require('bip39');
 const HdAddGen       = require('hdaddressgenerator');
 const { v4: uuidv4 } = require('uuid');
-const { getShortEntropySourceStr } = require('../util/system/trace_utils.js');
 
 // https://bitcoin.stackexchange.com/questions/113286/uncaught-typeerror-bip32-fromseed-is-not-a-function
 //const bip32         = require('bip32'); => ERROR: "bip32.fromSeed in not a function"
@@ -72,12 +89,14 @@ const { NULL_HEX,
 	  
 const { WORD_COUNT, 
         ACCOUNT_INDEX, ADDRESS_INDEX
-	  }                      = require('./const_options.js');
+	  }                      = require('../const_options.js');
 		
 const { hexToBinary, binaryToHex,
         hexWithPrefix, hexWithoutPrefix, isHexString,
         uint8ArrayToHex, hexToUint8Array  
 	  }                      = require('./hex_utils.js');	
+
+const { getShortenedString } = require('../util/values/string_utils.js');
 
 // https://stackoverflow.com/questions/10073699/pad-a-number-with-leading-zeros-in-javascript
 const pad = (n, width, z) => {
@@ -86,28 +105,9 @@ const pad = (n, width, z) => {
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }; // pad()	
 
-// ============================================================================================
-// ====================================  Bip39Utils class  ====================================
-// ============================================================================================
-// static Methods: 
-// * PrivateKeyToMnemonics( private_key_hex )
-// * EntropyToMnemonics( entropy_hex, options )
-// * EntropySourceToEntropy( entropy_src_str, options )
-// * EntropySourceToMnemonics( entropy_src_str, options )
-// * MnemonicsToEntropyInfo( mnemonics )
-// * GetWordIndexes( mnemonics, options )
-// * WordIndexesToSeedPhrase( word_indexes, lang )
-// * GuessMnemonicsLang( mnemonics )
-// * CheckMnemonics( mnemonics, private_key, options ) 
-// * MnemonicsAs4letter( mnemonics )
-// * MnemonicsAsTwoParts( mnemonics )
-// * GetBIP39Dictionary( lang )
-// * GetOptions( options )
-//
 class Bip39Utils {
 	static PrivateKeyToMnemonics( private_key_hex ) {		
-		console.log(">> " + _CYAN_ + "Bip39Utils.PrivateKeyToMnemonics" + _END_);
-
+		//console.log(">> " + _CYAN_ + "Bip39Utils.PrivateKeyToMnemonics" + _END_);
 		let lang       = "EN";		
 
         // TEST https://github.com/massmux/HowtoCalculateBip39Mnemonic?tab=readme-ov-file 
@@ -116,9 +116,9 @@ class Bip39Utils {
 		
 		private_key_hex = hexWithoutPrefix( private_key_hex );
 		let private_key_byte_count = private_key_hex.length / 2;
-		console.log(  "   " + _YELLOW_
-		            + Bip39Utils.LabelWithSize("private_key", private_key_byte_count) 
-		            + "        " + _END_ + private_key_hex);	
+		//console.log(  "   " + _YELLOW_
+		//            + Bip39Utils.LabelWithSize("private_key", private_key_byte_count) 
+		//            + "        " + _END_ + private_key_hex);	
 		
 		if ( ! isHexString( private_key_hex ) ) {
 			let error_msg = "**ERROR** Input for 'Private Key' is Not a in Hexadecimal";
@@ -141,9 +141,9 @@ class Bip39Utils {
 	    let checksum_size = ( (private_key_hex.length / 2) * 8 ) / 32;	
 	    let checksum_bits = private_key_bits.substring(0, checksum_size);
 		
-		console.log(  "   " + _YELLOW_ 
-		            + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) 
-		            + "       " + _END_ + checksum_bits);
+		//console.log(  "   " + _YELLOW_ 
+		//            + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) 
+		//            + "       " + _END_ + checksum_bits);
 	
 	    private_key_bits += checksum_bits;
 		
@@ -168,14 +168,14 @@ class Bip39Utils {
 		console.log(">> " + _CYAN_ + "Bip39Utils.EntropySourceToEntropy" + _END_);
 		
 		options = Bip39Utils.GetOptions( options );
-		let word_count = options["word_count"];	
+		let word_count = options[WORD_COUNT];	
 
-        console.log("   entropy_src_str: " + getShortEntropySourceStr(entropy_src_str));		
-		console.log("   word_count:             " + word_count);
+        console.log("   entropy_src_str:        " + getShortenedString( entropy_src_str ));		
+		//console.log("   word_count:             " + word_count);
 		
 		let checksum_bit_count = Bip39Utils.GetChecksumBitCount( word_count );
 		let expected_bit_count = ( word_count * 11 ) - checksum_bit_count;
-		console.log("   expected_bit_count:     " + expected_bit_count);
+		//console.log("   expected_bit_count:     " + expected_bit_count);
 		
 		let entropy_hex = "";	
 		// test: https://github.com/massmux/HowtoCalculateBip39Mnemonic?tab=readme-ov-file
@@ -210,7 +210,7 @@ class Bip39Utils {
 						break;
 		} // word_count
 		
-		console.log("   entropy_hex:            " + entropy_hex);
+		//console.log("   entropy_hex:            " + entropy_hex);
 		
 		return entropy_hex;
 	} // Bip39Utils.EntropySourceToEntropy()
@@ -274,9 +274,9 @@ class Bip39Utils {
 	    
 	    let checksum_bits = entropy_hex_sha256_bits.substring(0, checksum_size);
 
-		console.log(  "   " + _YELLOW_
-		            + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) + _END_
-					+ "       " + checksum_bits);
+		//console.log(  "   " + _YELLOW_
+		//            + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) + _END_
+		//		      + "       " + checksum_bits);
 	
 	    entropy_binary = entropy_binary + checksum_bits;
 
@@ -299,16 +299,16 @@ class Bip39Utils {
 	} // Bip39Utils.EntropyToMnemonics()
 	
 	static EntropyToChecksum( entropy_hex, options ) {
-		console.log(">> " + _CYAN_ + "Bip39Utils.EntropyToChecksum" + _END_);
+		//console.log(">> " + _CYAN_ + "Bip39Utils.EntropyToChecksum" + _END_);
 		
 		options = Bip39Utils.GetOptions( options );
 		let word_count    		= options["word_count"];
 		let checksum_size 		= 4;
 		let entropy_bytes_count = entropy_hex.length / 2;
 		
-		console.log(  "   " + _YELLOW_
-		            + Bip39Utils.LabelWithSize("entropy_hex", entropy_bytes_count) + _END_
-					+ "        " + entropy_hex);
+		//console.log(  "   " + _YELLOW_
+		//           + Bip39Utils.LabelWithSize("entropy_hex", entropy_bytes_count) + _END_
+		//			+ "        " + entropy_hex);
 		
 		switch ( word_count ) {
 			case 12:	entropy_hex = entropy_hex.substring(0, 32); // [0..31]: first 32 chars of SHA256
@@ -348,9 +348,9 @@ class Bip39Utils {
 		let entropy_hex_sha256_bits = hexToBinary( entropy_hex_sha256 );	    
 	    let checksum_bits           = entropy_hex_sha256_bits.substring(0, checksum_size);
 
-		console.log(  "   " + _YELLOW_
-		            + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) + _END_
-					+ "       " + checksum_bits);
+		//console.log(  "   " + _YELLOW_
+		//           + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) + _END_
+		//		  + "       " + checksum_bits);
 		
 		return checksum_bits;
 	} // Bip39Utils.EntropyToChecksum()
@@ -392,7 +392,7 @@ class Bip39Utils {
 		console.log("   checksum_bit_count:         " + checksum_bit_count);
 	    
 		let checksum_bits = entropy_binary.substring( entropy_binary.length - checksum_bit_count );
-		console.log("   checksum_bits:              " + checksum_bits);
+		//console.log("   checksum_bits:              " + checksum_bits);
 		entropy_info[CHECKSUM] = checksum_bits;
 		
 		let entropy_bits = entropy_binary.substring( 0, entropy_binary.length - checksum_bit_count );
@@ -434,8 +434,8 @@ class Bip39Utils {
 	} // Bip39Utils.GetChecksumBitCount()
 	
 	static GetWordIndexes( mnemonics, options ) {
-		console.log(">> " + _CYAN_ + "Bip39Utils.GetWordIndexes " + _END_);
-		console.log("   mnemonics: " + mnemonics);
+		//console.log(">> " + _CYAN_ + "Bip39Utils.GetWordIndexes " + _END_);
+		//console.log("   mnemonics: " + mnemonics);
 		
 		options = Bip39Utils.GetOptions( options );
 		let lang            = (options["lang"] != undefined) ? options["lang"] : "EN";
@@ -484,7 +484,7 @@ class Bip39Utils {
 	} // Bip39Utils.WordIndexesToMnemonics()
 	
 	static GetBIP39Dictionary( lang ) {	
-		console.log(">> " + _CYAN_ + "Bip39Utils.GetBIP39Dictionary " + _END_);	
+		//console.log(">> " + _CYAN_ + "Bip39Utils.GetBIP39Dictionary " + _END_);	
 		if (lang == undefined) {
 			lang = "EN";
 		}
@@ -553,7 +553,7 @@ class Bip39Utils {
 		let word_count = options["word_count"];
 
 		let words = mnemonics.split(' ');
-		// console.log("   words.length: " + words.length);
+		//console.log("   words.length: " + words.length);
 		if (words.length != word_count ) { 
 			return false;
 		}
@@ -571,7 +571,7 @@ class Bip39Utils {
 	} // Bip39Utils.CheckMnemonics()
 	
 	static MnemonicsAs4letter( mnemonics ) {
-		console.log(">> " + _CYAN_ + "Bip39Utils.MnemonicsAs4letter" + _END_);
+		//console.log(">> " + _CYAN_ + "Bip39Utils.MnemonicsAs4letter" + _END_);
 		let word_4letter_prefixes = "";
 		let words = mnemonics.split(' ');
 		let word_count = words.length;

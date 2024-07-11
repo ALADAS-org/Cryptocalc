@@ -16,12 +16,41 @@ html, .outer, .inner {
 } 
 
 html, body , .outer, .inner {
-	height:           100%;
-	width:            100%;
-	margin:           0;
-	font-family:      Arial, Helvetica, sans-serif;
-	overflow:         hidden;
+   height:          100%;
+   width:           100%;
+   margin:          0;
+   font-family:     Arial, Helvetica, sans-serif;
+   overflow:        hidden;
 } 
+
+.ui-dialog {
+  /*top:            0px;*/
+  position:         relative;
+  background-color: red;
+  height:           14px;
+  font-size:        18px;
+  font-weight:      normal;
+  margin:           2px;
+  padding:          .2em;
+  border:           2px solid black;
+}
+
+.ui-widget-content
+{
+   border: 2px solid black;
+   background-color: #F2F2F2;
+}
+
+.ui-dialog-titlebar {
+  top:              0px;
+  background:       lightblue;
+  background-color: lightblue;
+  height:           20px;
+  font-size:        16px;
+  font-weight:      bold;
+  margin:           0px;
+  padding:          10x;
+}
 
 hr {
     border:           none;
@@ -32,6 +61,39 @@ hr {
 .HorizontalBar {
 	border:           none;
 	height:           1px;
+}
+
+.SaveButton {
+  font-size:       18px;
+  background:      yellow;
+  padding-top:     3px;
+  padding-left:    20px;
+  padding-right:   20px;
+}
+
+.RestoreButton {
+  font-size:       18px;
+  background:      lightblue;
+  padding-top:     3px;
+  padding-left:    8px;
+  padding-right:   8px;
+}
+
+.ApplyButton {
+  font-size:       20px;
+  font-weight:     bold;
+  background:      lightgreen;
+  padding-top:     3px;
+  padding-left:    20px;
+  padding-right:   20px;
+}
+
+.CancelButton {
+  font-size:       18px;
+  background:      lightgrey;
+  padding-top:     3px;
+  padding-left:    20px;
+  padding-right:   20px;
 }
 
 /* ================================= Tab pages ================================= */
@@ -302,6 +364,15 @@ hr {
 	min-width:         27px;
 }
 
+.Dialog_LabelColumn {
+	font-size:         14px;
+	padding-left:      5px;
+	width:             100px;
+	min-width:         100px;
+	max-width:         100px;
+	height:            25px;
+}
+
 .LabelColumn {
 	/*margin-left:     20px;*/
 	padding-left:      10px;
@@ -316,6 +387,37 @@ hr {
 	min-width:         100%;
 	max-width:         100%;
 	height:            25px;
+}
+
+.Dialog_Form {
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         14px;
+	width:             100%;
+	min-width:         100%;
+	left:              0px;
+}
+
+.Dialog_ButtonBar {
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         14px;
+	width:             100%;
+	min-width:         100%;
+	padding-bottom:    20px;
+}
+
+.Dialog_FieldColumn {
+	font-size:         14px;
+	padding-left:      10px;
+	width:             100%;
+	min-width:         100%;
+	max-width:         100%;
+	height:            25px;
+}
+
+.Dialog_DataField {
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         14px;
+	width:             100%;
 }
 
 .FieldColumn {

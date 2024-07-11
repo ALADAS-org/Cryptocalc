@@ -1,50 +1,10 @@
 // =====================================================================================
 // ================================   renderer_gui.js   ================================
 // =====================================================================================
+// https://www.electronjs.org/docs/latest/tutorial/quick-start
 "use strict";
 
-// https://www.electronjs.org/docs/latest/tutorial/quick-start
-
-const ALLOWED_ALPHABETS       = { [ENTROPY_ID]: HEX_ALPHABET };
-const FIELD_IDS               = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
-const WATERFALL_IDS           = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
-const WATERFALL_FROM_SEED_IDS = [ ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
-const EDITABLE_FIELD_IDS      = [ ENTROPY_SRC_FORTUNES_ID, ENTROPY_ID, MNEMONICS_ID ];
-
-const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "RendererGUI.onGUIEvent: ";
-
-const trigger_event = ( elt, event_type ) => elt.dispatchEvent( new CustomEvent( event_type, {} ) );
-
-const getChecksumBitCount = ( word_count ) => {
-	if ( word_count == undefined ) {
-		 word_count = 12;
-	}
-	let checksum_bit_count = 4; // default case is 12 words / 4 bits
-	switch ( word_count ) {
-		case 12:	checksum_bit_count = 4;
-					break;
-					
-		case 15:	checksum_bit_count = 5;
-					break;
-					
-		case 18:	checksum_bit_count = 6;
-					break;
-					
-		case 21:	checksum_bit_count = 7;
-					break;
-					
-		case 24:	checksum_bit_count = 8;
-					break;
-					
-		default:	checksum_bit_count = 4;
-					break;
-	}		
-	return checksum_bit_count;
-}; // getChecksumBitCount()	
-
-// ============================================================================================
-// ===================================  RendererGUI class  ===================================
-// ============================================================================================
+// ===============================  RendererGUI class  ===============================
 // static
 // * GetInstance( entropy_hex, options )
 // ------------------------------------------------------
@@ -85,7 +45,45 @@ const getChecksumBitCount = ( word_count ) => {
 // *       getField( elt_id )
 // *       setField( elt_id, value_str )
 // *       setEventHandler( elt_id, event_name, handler_function )
-//
+
+const ALLOWED_ALPHABETS       = { [ENTROPY_ID]: HEX_ALPHABET };
+const FIELD_IDS               = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
+const WATERFALL_IDS           = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
+const WATERFALL_FROM_SEED_IDS = [ ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
+const EDITABLE_FIELD_IDS      = [ ENTROPY_SRC_FORTUNES_ID, ENTROPY_ID, MNEMONICS_ID ];
+
+const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "RendererGUI.onGUIEvent: ";
+
+const trigger_event = ( elt, event_type ) => elt.dispatchEvent( new CustomEvent( event_type, {} ) );
+
+const getChecksumBitCount = ( word_count ) => {
+	if ( word_count == undefined ) {
+		 word_count = 12;
+	}
+	let checksum_bit_count = 4; // default case is 12 words / 4 bits
+	switch ( word_count ) {
+		case 12:	checksum_bit_count = 4;
+					break;
+					
+		case 15:	checksum_bit_count = 5;
+					break;
+					
+		case 18:	checksum_bit_count = 6;
+					break;
+					
+		case 21:	checksum_bit_count = 7;
+					break;
+					
+		case 24:	checksum_bit_count = 8;
+					break;
+					
+		default:	checksum_bit_count = 4;
+					break;
+	}		
+	return checksum_bit_count;
+}; // getChecksumBitCount()	
+
+
 class RendererGUI {	
 	static #key = {};
 	static #_Singleton = new RendererGUI(this.#key);
@@ -97,36 +95,61 @@ class RendererGUI {
         return RendererGUI.#_Singleton;
     } // RendererGUI.GetInstance() 
 
+    // ** Private constructor **
 	constructor( key ) {
 		if (key !== RendererGUI.#key) {
-			throw new TypeError("RendererGUI is not constructable.");
+			throw new TypeError("RendererGUI constructor is private.");
 		}
 		
 		this.initWallet();
 		
-		this.expected_entropy_bytes  = 16;
-		this.expected_entropy_digits = 32;
-		this.expected_word_count     = 12;
+		this.Options = {};
 		
-		this.bip32_account_index = 0;
-		this.bip32_address_index = 0;
+		this.entropy_source_type          = IMAGE_ENTROPY_SRC_TYPE;
+		
+		this.expected_entropy_bytes       = 16;
+		this.expected_entropy_digits      = 32;
+		this.expected_word_count          = 12;
+		
+		this.bip32_account_index          = 0;
+		this.bip32_address_index          = 0;
 		
 		this.entropy_source_is_user_input = false;
 		
-		this.img_data_asURL = "";
+		this.img_data_asURL               = "";
 		
 		log2Main(">> " + _CYAN_ + "RendererGUI.constructor()" + _END_);
 
 		window.ipcMain.receive("fromMain", 
 			async (data) => { await this.onGUIEvent(data); }
 		); // window.ipcMain.receive() call
-	} // constructor();
+	} // ** Private constructor **
 	
 	initWallet() {
 		this.wallet = {};
 		this.wallet[BLOCKCHAIN] = ETHEREUM;
 	} // initWallet();
 	
+	async updateOptionsFields( json_data ) {
+		let log_msg = ">> " + _CYAN_ + "RendererGUI.updateOptionsFields" + _END_;
+		log2Main(log_msg);
+		
+		let default_blockchain = json_data['Default Blockchain'];
+		//log2Main( "   default_blockchain: " + default_blockchain );
+		HtmlUtils.SetField( WALLET_BLOCKCHAIN_ID, default_blockchain );		
+		HtmlUtils.SetField( WALLET_COIN_ID, COIN_ABBREVIATIONS[default_blockchain] );
+
+		//let wallet_mode = json_data['Wallet Mode'];
+		//log2Main( "   wallet_mode: " + wallet_mode );
+		//HtmlUtils.SetField( WALLET_MODE_SELECT_ID, wallet_mode );
+
+		let entropy_size = json_data['Entropy Size'];
+        await this.updateEntropySize( entropy_size );		
+	} // updateOptionsFields()
+	
+	//**********************************************************************************
+	//*****************************   onGUIEvent( data )   *****************************
+	//**********************************************************************************
 	async onGUIEvent( data ) {
 		//log2Main(">> " + _CYAN_ + "RendererGUI.OnGUIEvent()" + _END_);
 
@@ -151,18 +174,25 @@ class RendererGUI {
                 window.ipcMain.SaveWalletInfo( crypto_info );				
 				break;
 				
+			case FromMain_UPDATE_OPTIONS:
+			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_UPDATE_OPTIONS + _END_ );	
+				this.Options = data[1];	
+                log2Main("   this.Options: " + JSON.stringify(this.Options));
+                await this.updateOptionsFields( this.Options );				
+				break;
+				
 			case FromMain_SEND_IMG_URL:
 				log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SEND_IMG_URL + _END_ );			
 				let img_elt_id   = data[1];
-				log2Main("   img_elt_id: " + img_elt_id);
+				// log2Main("   img_elt_id:             " + img_elt_id);
 				
 				let img_file_extension = data[3];
-				log2Main("   img_file_extension: " + img_file_extension);
+				// log2Main("   img_file_extension:     " + img_file_extension);
 				
-				let img_data_URL = 
-					"data:image/" + img_file_extension + ";base64, " + data[2]
+				let URL_prefix = "data:image/" + img_file_extension + ";base64, ";
+				let img_data_URL = URL_prefix+ data[2]
 				                   .replaceAll('\r', '').replaceAll('\n', '');
-				log2Main("   img_data_URL:\n" + img_data_URL.substring(0,80));
+				log2Main("   img_data_URL: " + img_data_URL.substring(0,80));
 				let img_elt = HtmlUtils.GetElement( img_elt_id );
 				//log2Main("   img_elt: " + img_elt);
 				//log2Main("   img_elt.id: " + img_elt.id);
@@ -180,7 +210,7 @@ class RendererGUI {
 				}); // hashValue()                
 
                 let salt = await this.generateSalt( true );	
-                log2Main("   salt: " + salt);				
+                log2Main("   salt:                   " + salt);				
 				
 				// https://www.30secondsofcode.org/js/s/hash-sha-256/
 				let entropy_data = await hashValue( img_data_URL + salt);
@@ -211,12 +241,20 @@ class RendererGUI {
             case FromMain_SET_FORTUNE_COOKIE:
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_ );
 				let fortune_cookie = data[1];
-				HtmlUtils.SetField( ENTROPY_ID, fortune_cookie );	
+				log2Main("   fortune_cookie: " + getShortenedString( fortune_cookie ));
+				// HtmlUtils.SetField( ENTROPY_ID, fortune_cookie );	
+				HtmlUtils.SetField( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
 				this.updateFields();
 				break;
 				
 			case FromMain_SHOW_ERROR_DIALOG:
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SHOW_ERROR_DIALOG + _END_ );
+				break;
+				
+			case FromMain_TOOLS_OPTIONS_DIALOG:
+				log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_TOOLS_OPTIONS_DIALOG + _END_ );
+				let options_data = data[1];
+				ToolsOptionsDialog.ShowDialog( options_data );
 				break;
 				
 			case FromMain_HELP_ABOUT:
@@ -305,8 +343,8 @@ class RendererGUI {
 							  
 		this.setEventHandler( ENTROPY_SOURCE_IMG_ID, 'dragover', 
 		                      (evt) => {  evt.preventDefault(); evt.stopPropagation(); } );
-		this.setEventHandler( ENTROPY_SOURCE_SELECTOR_ID, 'click', 
-							  async (evt) => { await this.onSwitchEntropySource(); } );
+		this.setEventHandler( ENTROPY_SRC_TYPE_SELECTOR_ID, 'change', 
+							  async (evt) => { await this.onSwitchEntropySourceType(); } );
 		
 		this.setEventHandler( ENTROPY_COPY_BTN_ID,   'click',    (evt) => { this.onCopyButton(ENTROPY_COPY_BTN_ID); } );
 		
@@ -333,6 +371,8 @@ class RendererGUI {
 	async updateFields( entropy ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.updateFields()" + _END_);
 		
+		log2Main("   this.entropy_source_type: " + this.entropy_source_type);
+		
 		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID ); 
 		
 		this.showRefreshButton( false );
@@ -340,15 +380,16 @@ class RendererGUI {
         if ( this.entropy_source_is_user_input ) {
 			await this.propagateFields( entropy );
 		}
-		else {		
+		else {	
+            log2Main("   " + _YELLOW_ + "Entropy is NOT User input" + _END_);		
 			let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID ); 
 			
 			//log2Main("   expected_entropy_bytes:  " + this.expected_entropy_bytes);
 			//log2Main("   expected_entropy_digits: " + this.expected_entropy_digits);
-			log2Main("   expected_word_count:     " + this.expected_word_count);
+			//log2Main("   expected_word_count:    " + this.expected_word_count);
 			
 			let entropy_src_str = await this.getSaltedEntropySource();
-			log2Main("   Salted Entropy:          " + getShortEntropySourceStr(entropy_src_str));
+			log2Main("   Salted Entropy:         " + getShortenedString( entropy_src_str ));
 			
 			if ( entropy_src_str.length > 0 ) {
 				const options = { "lang": "EN", "word_count": this.expected_word_count };
@@ -379,10 +420,10 @@ class RendererGUI {
 		}	
 		
 		if ( this.entropy_source_is_user_input ) { 
-		    this.updateEntropySourceIsUserInput( true );			
+		    this.setEntropySourceIsUserInput( true );			
 		}
 		else {
-			this.updateEntropySourceIsUserInput( false );	
+			this.setEntropySourceIsUserInput( false );	
 			await this.generateSalt();	
 		}	
 		await this.updateEntropy( entropy ); 	
@@ -390,24 +431,25 @@ class RendererGUI {
 	} // propagateFields()
 	
 	async getSaltedEntropySource() {
-		log2Main(">> " + _CYAN_ + "RendererGUI.getSaltedEntropySource()" + _END_);
-		
-		let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID ); 
+		let entropy_source = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		log2Main(  ">> " + _RED_ + "RendererGUI.getSaltedEntropySource()" 
+		         + "  " + _YELLOW_ + entropy_source + _END_ );		 
 		
 		let new_uuid = await window.ipcMain.GetUUID();
 		let salt_elt = HtmlUtils.GetElement( SALT_ID );
-		salt_elt.textContent = new_uuid;
-		
-		let entropy_source = HtmlUtils.GetField( ENTROPY_SOURCE_SELECTOR_ID );
-		log2Main("   entropy_source: " + entropy_source);
+		salt_elt.textContent = new_uuid;		
 		
 		let entropy_src_value = "";
-		if (entropy_source == "Fortunes") 
-			entropy_src_value = entropy_src_elt.value;
-		else if (entropy_source == "Image") 
+		if ( entropy_source == FORTUNES_ENTROPY_SRC_TYPE ) {
+			entropy_src_value = HtmlUtils.GetField( ENTROPY_SRC_FORTUNES_ID );
+		}	
+		else if (entropy_source == IMAGE_ENTROPY_SRC_TYPE) {
 		    entropy_src_value = this.img_data_asURL;
+		}
 		
-		let salt               =  salt_elt.textContent;				
+		log2Main("   entropy_src_value:      " + getShortenedString( entropy_src_value ));
+		
+		let salt               = salt_elt.textContent;				
 		let salted_entropy_src = salt + entropy_src_value;
                                                         
 		return salted_entropy_src;	
@@ -450,30 +492,46 @@ class RendererGUI {
 	} // updateBlockchain()
 	
 	async generateWalletAddress( blockchain, entropy ) {
-		log2Main(">> " + _CYAN_ + "RendererGUI.generateWalletAddress() " + _END_ + blockchain);		
+		log2Main(  ">> " + _CYAN_ + "RendererGUI.generateWalletAddress() " 
+		         + _YELLOW_ + blockchain + " " + this.entropy_source_type + _END_);		
+		log2Main("   " + _YELLOW_ + "entropy:                " + _END_ + entropy);
 		
-		log2Main("   " + _YELLOW_ + "entropy:               " + _END_ + entropy);
+		let entropy_src_type = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		this.entropy_source_type = entropy_src_type;
 		
-		let entropy_src = HtmlUtils.GetField( ENTROPY_SRC_FORTUNES_ID );	
-		log2Main("   entropy_src:  " + getShortEntropySourceStr(entropy_src));
+		let entropy_src = "XX";
+			
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = HtmlUtils.GetField( ENTROPY_SRC_FORTUNES_ID );
+		}
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = this.img_data_asURL;
+		}
 		
-		let new_wallet     	= {};
-		let options        	= {};
-        let hd_private_key 	= undefined;	
-		let data           	= undefined;
+		log2Main("   entropy_src:            " + getShortenedString( entropy_src ));
 		
-		let mnemonics      	= HtmlUtils.GetField( MNEMONICS_ID );
-		log2Main("   mnemonics:\n" + mnemonics);
+		let new_wallet     = {};
+		let options        = {};
+        let hd_private_key = undefined;	
+		let data           = undefined;
+		
+		let mnemonics      = HtmlUtils.GetField( MNEMONICS_ID );
+		let words          = mnemonics.split(' ');
+		
+		let separator      = '\n';
+		if ( words.length == 12 ) separator = '              '; 
+		log2Main("   mnemonics:" + separator + mnemonics);
 		
 		let wif            	    = "";
-		let PRIV_KEY               = "";
+		let PRIV_KEY            = "";
 		let salt_uuid    	    = HtmlUtils.GetField( SALT_ID );
         let new_derivation_path = "";		
 		
 		if (   blockchain == ETHEREUM
 		    || blockchain == BITCOIN 
 			|| blockchain == DOGECOIN || blockchain == LITECOIN
-			|| blockchain == RIPPLE   || blockchain == TRON || blockchain == BITCOIN_CASH
+			|| blockchain == RIPPLE   || blockchain == TRON 
+			|| blockchain == BITCOIN_CASH
 			|| blockchain == FIRO ) {
 
 			options = { "blockchain": blockchain, 
@@ -512,8 +570,8 @@ class RendererGUI {
 		
 		//---------- Update 'Derivation Path' in "Wallet" Tab ----------
 		new_derivation_path = new_wallet[DERIVATION_PATH];
-		log2Main(  "   " + _YELLOW_ 
-		         + "new_derivation_path:    " + _END_ + new_derivation_path);
+		//log2Main(  "   " + _YELLOW_ 
+		//         + "new_derivation_path:    " + _END_ + new_derivation_path);
 				 
 		let derivation_path_nodes = new_derivation_path.split("/");
         HtmlUtils.SetField( COIN_TYPE_ID,     derivation_path_nodes[2] + "/" );
@@ -550,12 +608,12 @@ class RendererGUI {
 	} // generateWalletAddress()
 	
 	updateWalletURL( blockchain, wallet_address ) {
-		log2Main(">> " + _CYAN_ + "RendererGUI.updateWalletURL() " + _END_);
-		log2Main("   " + _YELLOW_ + "blockchain:             " + _END_ + blockchain);
-		log2Main("   " + _YELLOW_ + "wallet_address:         " + _END_ + wallet_address);
+		log2Main(">> " + _CYAN_ + "RendererGUI.updateWalletURL() " + _YELLOW_ + blockchain + _END_);
+		// log2Main("   " + _YELLOW_ + "blockchain:             " + _END_ + blockchain);
+		// log2Main("   " + _YELLOW_ + "wallet_address:         " + _END_ + wallet_address);
 		
 		let explorer_URL = MAINNET_EXPLORER_URLs[blockchain] + wallet_address;
-		log2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
+		// log2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
 		
 		let wallet_URL_elt =  HtmlUtils.GetElement( WALLET_URL_LINK_ID );
 		//log2Main("   wallet_URL_elt: " + wallet_URL_elt);
@@ -613,13 +671,13 @@ class RendererGUI {
 		const options = { "word_count": this.expected_word_count }; 
 		const data = { entropy, options }; 
 		let checksum = await window.ipcMain.EntropyToChecksum( data );
-		log2Main(  ">> " + _CYAN_ 
-		         + "RendererGUI.updateChecksum() " + _YELLOW_ + checksum +_END_);		
+		//log2Main(  ">> " + _CYAN_ 
+		//         + "RendererGUI.updateChecksum() " + _YELLOW_ + checksum +_END_);		
 		HtmlUtils.SetField( CHECKSUM_ID, checksum );
 	} // updateChecksum()
 	
 	async updateMnemonics( entropy ) {
-		log2Main(">> " + _CYAN_ + "RendererGUI.updateMnemonics() " + _END_);
+		//log2Main(">> " + _CYAN_ + "RendererGUI.updateMnemonics() " + _END_);
 		let lang       = HtmlUtils.GetElement( LANG_SELECT_ID ).value; 
 		let blockchain = HtmlUtils.GetField( WALLET_BLOCKCHAIN_ID );
         let options = { "lang": lang, "word_count": this.expected_word_count, "blockchain": blockchain }; 		
@@ -634,7 +692,7 @@ class RendererGUI {
     } // updateMnemonics()
 	
 	async updateWordIndexes() {
-		log2Main(">> " + _CYAN_ + "RendererGUI.updateWordIndexes() " + _END_);
+		//log2Main(">> " + _CYAN_ + "RendererGUI.updateWordIndexes() " + _END_);
 		let mnemonics = HtmlUtils.GetField( MNEMONICS_ID ); 
 		let lang      = HtmlUtils.GetElement( LANG_SELECT_ID ).value; 
 		
@@ -648,7 +706,7 @@ class RendererGUI {
 		HtmlUtils.SetField( WORD_INDEXES_ID, word_indexes_str) ;
     } // updateWordIndexes()
 	
-	async generateSalt(force_generation) {
+	async generateSalt( force_generation ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.generateSalt() " + _END_);
 		let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID );
 		let new_uuid = "";
@@ -662,25 +720,31 @@ class RendererGUI {
     } // generateSalt()
 	
 	async generateRandomFields() {
-		log2Main(">> " + _CYAN_ + "RendererGUI.generateRandomFields() " + _END_);
+		log2Main(">> " + _CYAN_ + "RendererGUI.generateRandomFields() " + _END_);		
+		await this.getNewEntropySource();
+	} // generateRandomFields()
+	
+	async getNewEntropySource() {
+		log2Main(">> " + _CYAN_ + "RendererGUI.getNewEntropySource() " + _END_);
 
-		this.updateEntropySourceIsUserInput( false );
+		this.setEntropySourceIsUserInput( false );
 		
-		let entropy_source = HtmlUtils.GetField( ENTROPY_SOURCE_SELECTOR_ID );
-		log2Main("   entropy_source:         " + entropy_source);
+		let entropy_source_type = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		log2Main("   entropy_source_type:    " + entropy_source_type);
 		
-		if ( entropy_source == "Fortunes") {
+		if ( entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
 			let fortune_cookie = await window.ipcMain.GetFortuneCookie();
 			HtmlUtils.SetField( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );
+			log2Main(">> getNewEntropySource fortune_cookie: " + fortune_cookie);
 		}
-		else if ( entropy_source == "Image") {
+		else if ( entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
 			// Draw image in "www/img/CryptoCurrency" folder
-			this.img_data_asURL = await window.ipcMain.DropRandomCryptoLogo();
+			this.img_data_asURL = await window.ipcMain.DrawRandomCryptoLogo();
 		}
 		await this.updateFields();
 		
 		this.setFocus( ENTROPY_ID );
-	} // generateRandomFields()
+	} // getNewEntropySource()
 	
 	clearFields( field_ids ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.clearFields() " + _END_);
@@ -724,6 +788,10 @@ class RendererGUI {
 		this.expected_entropy_bytes  = 16;
 		this.expected_entropy_digits = 32;
 		this.expected_word_count     = 12;
+		//log2Main(" typeof entropy_bit_count: " + typeof entropy_bit_count);
+		if ( isString( entropy_bit_count ) ) {
+			entropy_bit_count = parseInt( entropy_bit_count );
+		}
 		switch ( entropy_bit_count ) { 
 			case 128: 	this.expected_entropy_bytes = 16; // 32 hexadecimal digits
 						this.expected_word_count    = 12;
@@ -751,12 +819,31 @@ class RendererGUI {
 		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
 		entropy_elt.setAttribute("minlength", this.expected_entropy_digits);
 		entropy_elt.setAttribute("maxlength", this.expected_entropy_digits);
+		
+		//log2Main("   this.expected_word_count: " + this.expected_word_count);
 			
 		HtmlUtils.SetField( ENTROPY_SIZE_SELECT_ID, entropy_bit_count );
 		HtmlUtils.SetField( WORD_COUNT_SELECT_ID,   this.expected_word_count );
 		
 		await this.updateFields();
 	} // updateEntropySize()
+	
+	async onSwitchEntropySourceType() {
+		log2Main(">> " + _CYAN_ + "RendererGUI.onSwitchEntropySource() " + _END_);
+		this.entropy_source_type = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		log2Main("   entropy_source_type: " +  this.entropy_source_type);
+		
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE) {
+			HtmlUtils.ShowElement( ENTROPY_SRC_FORTUNES_ID );
+			HtmlUtils.HideElement( ENTROPY_SRC_IMG_CONTAINER_ID );
+		}
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE) {
+			HtmlUtils.ShowElement( ENTROPY_SRC_IMG_CONTAINER_ID );
+			HtmlUtils.HideElement( ENTROPY_SRC_FORTUNES_ID );
+		}
+		
+        await this.getNewEntropySource();		
+    } // onSwitchEntropySourceType()
 	
 	async onChangeBip39Lang( evt ) {
 		let elt = evt.target || evt.srcElement;		
@@ -878,7 +965,7 @@ class RendererGUI {
 		entropy_elt.selectionStart = text_cursor_pos;
 		entropy_elt.selectionEnd   = text_cursor_pos;
 		
-		this.updateEntropySourceIsUserInput( true );
+		this.setEntropySourceIsUserInput( true );
 		this.updateStatusbarInfo( true );		
 
 		if ( new_entropy.length == this.expected_entropy_digits ) {
@@ -900,7 +987,7 @@ class RendererGUI {
 		const BACKSPACE_KEY_CODE = 8;
 		const DEL_KEY_CODE       = 46;
 		if (evt.keyCode == BACKSPACE_KEY_CODE || evt.keyCode == DEL_KEY_CODE) {
-			this.updateEntropySourceIsUserInput( true );
+			this.setEntropySourceIsUserInput( true );
 			this.updateStatusbarInfo( true );
 			this.setEntropyValueValidity( false );
 		}
@@ -957,7 +1044,7 @@ class RendererGUI {
 			}	
 
             if ( new_entropy.length == this.expected_entropy_digits ) {			
-				this.updateEntropySourceIsUserInput( true );
+				this.setEntropySourceIsUserInput( true );
 				this.updateStatusbarInfo( true );
 				HtmlUtils.SetField( ENTROPY_ID, new_entropy );	
 					
@@ -974,7 +1061,7 @@ class RendererGUI {
 		let paste_words = paste_data.split(' ');
 		
 		log2Main("  paste_data(w: " + paste_words.length + "): " + paste_data);
-		log2Main("  this.expected_word_count: " + this.expected_word_count);		
+		//log2Main("  this.expected_word_count: " + this.expected_word_count);		
 		
 		let current_mnemonics = HtmlUtils.GetField( MNEMONICS_ID );
 		let current_words = current_mnemonics.split(' ');
@@ -1023,7 +1110,7 @@ class RendererGUI {
 			log2Main("  new_entropy: " + new_entropy);
 			
 			// 3. Update 'Mnemonics' from 'Entropy'
-			this.updateEntropySourceIsUserInput( true );
+			this.setEntropySourceIsUserInput( true );
 			this.updateStatusbarInfo( true );
 			HtmlUtils.SetField( ENTROPY_ID, new_entropy );	
 					
@@ -1111,30 +1198,8 @@ class RendererGUI {
 		//log2Main("   continue");
 		this.showRefreshButton( true );
 		//log2Main("   AFTER continue");
-	} // onBIP32FieldKeypress()
-	
-	async onSwitchEntropySource() {
-		log2Main(">> " + _CYAN_ + "RendererGUI.onSwitchEntropySource() " + _END_);
-		let entropy_source = HtmlUtils.GetField( ENTROPY_SOURCE_SELECTOR_ID );
-		log2Main("   entropy_source: " +  entropy_source);
-		this.setEntropySource( entropy_source );
-    } // onSwitchEntropySource()
-	
-	async setEntropySource( entropy_source ) {
-		log2Main(">> " + _CYAN_ + "RendererGUI.setEntropySource() " + _END_);
-		log2Main("   entropy_source: " +  entropy_source);
-		if ( entropy_source == "Fortunes") {
-			HtmlUtils.ShowElement( ENTROPY_SRC_FORTUNES_ID );
-			HtmlUtils.HideElement( ENTROPY_SRC_IMG_CONTAINER_ID );
-		}
-		else if ( entropy_source == "Image") {
-			HtmlUtils.ShowElement( ENTROPY_SRC_IMG_CONTAINER_ID );
-			HtmlUtils.HideElement( ENTROPY_SRC_FORTUNES_ID );
-		}
-		
-        await this.generateRandomFields();		
-    } // setEntropySource()
-	
+	} // onBIP32FieldKeypress()	
+
 	async onRefreshButton() {
 		log2Main(">> " + _CYAN_ + "RendererGUI.onRefreshButton() " + _END_);
 		await this.updateWalletAddress();
@@ -1154,7 +1219,7 @@ class RendererGUI {
 				parseInt( HtmlUtils.GetField( ADDRESS_INDEX_ID ) );
 		log2Main( "   bip32_address_index:  " + this.bip32_address_index);
 		
-		this.updateEntropySourceIsUserInput( true );
+		this.setEntropySourceIsUserInput( true );
 		this.updateStatusbarInfo( true );
 		
 		await this.updateFields( entropy );	
@@ -1172,7 +1237,7 @@ class RendererGUI {
 		}
 	} // showRefreshButton()
 	
-	updateEntropySourceIsUserInput( is_user_input ) {
+	setEntropySourceIsUserInput( is_user_input ) {
 		this.entropy_source_is_user_input = is_user_input;
 		this.updateStatusbarInfo( is_user_input );
 		if ( is_user_input ) {
@@ -1192,7 +1257,7 @@ class RendererGUI {
             HtmlUtils.ShowElement("entropy_bits_select_id");
 			HtmlUtils.ShowElement("word_count_select_id");
 		}
-	} // updateEntropySourceIsUserInput()
+	} // setEntropySourceIsUserInput()
 	
 	async displayMessageInStatusbar( msg_id ) {
 		if (msg_id != undefined) {
@@ -1358,7 +1423,7 @@ class RendererGUI {
 	
 	// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
 	openTabPage( pageName, elt, color ) {
-		log2Main(">> " + _CYAN_ + "RendererGUI.openTabPage " + _END_ + elt.id );
+		// log2Main(">> " + _CYAN_ + "RendererGUI.openTabPage " + _END_ + elt.id );
 		
 		// Hide all elements with class="tabcontent" by default */
 		let i, tabcontent, tablinks;
@@ -1425,10 +1490,10 @@ class RendererGUI {
 		let file_path = [];
 		for (const f of evt.dataTransfer.files) {
 			// Using the path attribute to get absolute file path
-			// console.log('File Path of dragged files: ', f.path)
+			//console.log('File Path of dragged files: ', f.path)
 			file_path.push(f.path); // assemble array for main.js
 		}
-		let img_file_path = file_path[0]
+		let img_file_path = file_path[0];
 		log2Main("   " + img_file_path);
 		let img_data_asURL = await window.ipcMain.LoadImageFromFile( img_file_path );
 		this.img_data_asURL = img_data_asURL; 

@@ -32,20 +32,28 @@ const REQUEST_GET_FORTUNE_COOKIE                = "request:get_FortuneCookie";
 const REQUEST_GET_SECP256K1                     = "request:get_Secp256k1";
 const REQUEST_GET_UUID                          = "request:get_UUID";
 
-const REQUEST_GET_L10N_KEYPAIRS                     = "request:get_L10n_keypairs";
+const REQUEST_GET_L10N_KEYPAIRS                 = "request:get_L10n_keypairs";
 const REQUEST_GET_L10N_MSG                      = "request:get_L10n_Msg";
 
 const REQUEST_SAVE_WALLET_INFO                  = "request:save_wallet_info";
+
+const REQUEST_UPDATE_OPTIONS                    = "request:update_options";
+const REQUEST_SAVE_OPTIONS                      = "request:save_options";
+const REQUEST_RESET_OPTIONS                     = "request:reset_options";
+
 const REQUEST_IMPORT_RAW_DATA                   = "request:import_raw_data";
 
 const REQUEST_LOAD_IMG_FROM_FILE                = "request:load_image_from_file";
-const REQUEST_DROP_RND_CRYPTO_LOGO              = "request:drop_rnd_crypto_logo";
+const REQUEST_DRAW_RND_CRYPTO_LOGO              = "request:draw_rnd_crypto_logo";
 
 const FromMain_DID_FINISH_LOAD                  = "FromMain:did-finish-load";
 const FromMain_FILE_SAVE                        = "FromMain:File/Save";
 const FromMain_SET_FORTUNE_COOKIE               = "FromMain:File/Import/Random Fortune Cookie";
+const FromMain_UPDATE_OPTIONS                   = "FromMain:UpdateOptions";
+
 const FromMain_SET_SEED_FIELD_VALUE             = "FromMain:Set/SeedFieldValue";
-const FromMain_SHOW_ERROR_DIALOG                = "FromMain:ShowErrorDialog";	
+const FromMain_SHOW_ERROR_DIALOG                = "FromMain:ShowErrorDialog";
+const FromMain_TOOLS_OPTIONS_DIALOG             = "FromMain:ToolsOptionsDialog";	
 const FromMain_HELP_ABOUT                       = "FromMain:Help/About";
 const FromMain_SET_RENDERER_VALUE               = "FromMain:Set/RendererValue";
 const FromMain_SEND_IMG_URL                     = "FromMain:SendImageURL";
@@ -79,9 +87,14 @@ if (typeof exports === 'object') {
 	exports.REQUEST_GET_FORTUNE_COOKIE         = REQUEST_GET_FORTUNE_COOKIE
 	
 	exports.REQUEST_SAVE_WALLET_INFO           = REQUEST_SAVE_WALLET_INFO
+	
+	exports.REQUEST_SAVE_OPTIONS               = REQUEST_SAVE_OPTIONS
+	exports.REQUEST_RESET_OPTIONS              = REQUEST_RESET_OPTIONS
+	exports.REQUEST_UPDATE_OPTIONS             = REQUEST_UPDATE_OPTIONS
+	
 	exports.REQUEST_IMPORT_RAW_DATA            = REQUEST_IMPORT_RAW_DATA
 	exports.REQUEST_LOAD_IMG_FROM_FILE         = REQUEST_LOAD_IMG_FROM_FILE 
-	exports.REQUEST_DROP_RND_CRYPTO_LOGO       = REQUEST_DROP_RND_CRYPTO_LOGO
+	exports.REQUEST_DRAW_RND_CRYPTO_LOGO       = REQUEST_DRAW_RND_CRYPTO_LOGO
 	
 	exports.REQUEST_GET_HD_WALLET              = REQUEST_GET_HD_WALLET
 	exports.REQUEST_GET_SOLANA_WALLET          = REQUEST_GET_SOLANA_WALLET 
@@ -91,6 +104,8 @@ if (typeof exports === 'object') {
 	exports.FromMain_SEND_IMG_URL              = FromMain_SEND_IMG_URL
 	exports.FromMain_SET_FORTUNE_COOKIE        = FromMain_SET_FORTUNE_COOKIE
 	exports.FromMain_SHOW_ERROR_DIALOG         = FromMain_SHOW_ERROR_DIALOG
+	exports.FromMain_TOOLS_OPTIONS_DIALOG      = FromMain_TOOLS_OPTIONS_DIALOG
+	exports.FromMain_UPDATE_OPTIONS            = FromMain_UPDATE_OPTIONS
 	exports.FromMain_HELP_ABOUT                = FromMain_HELP_ABOUT	
 	exports.FromMain_SET_RENDERER_VALUE        = FromMain_SET_RENDERER_VALUE
 	exports.FromMain_SET_SEED_FIELD_VALUE      = FromMain_SET_SEED_FIELD_VALUE

@@ -1,7 +1,6 @@
 // =====================================================================================
 // ================================   electron_main.js   ===============================
 // =====================================================================================
-
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
 "use strict";
 
@@ -18,7 +17,7 @@ const sha256         = require('js-sha256');
 const wif            = require('wif');
 const { v4: uuidv4 } = require('uuid');
 
-const bwipjs = require('bwip-js');
+const bwipjs         = require('bwip-js');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_ 
 	  } = require('../util/color/color_console_codes.js');
@@ -26,7 +25,7 @@ const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_
 const { VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
         REQUEST_LOG_2_MAIN, 
 		REQUEST_TOGGLE_DEBUG_PANEL,
-		REQUEST_OPEN_URL, REQUEST_LOAD_IMG_FROM_FILE, REQUEST_DROP_RND_CRYPTO_LOGO,
+		REQUEST_OPEN_URL, REQUEST_LOAD_IMG_FROM_FILE, REQUEST_DRAW_RND_CRYPTO_LOGO,
 		
 		REQUEST_MNEMONICS_TO_ENTROPY_INFO, 
 		REQUEST_MNEMONICS_TO_HDWALLET_INFO,
@@ -41,18 +40,20 @@ const { VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
 		REQUEST_GET_SECP256K1,
 		REQUEST_CHECK_MNEMONICS, 
 		REQUEST_MNEMONICS_TO_WORD_INDEXES, REQUEST_GUESS_MNEMONICS_LANG,
-		REQUEST_SAVE_WALLET_INFO, REQUEST_IMPORT_RAW_DATA,
-		REQUEST_GET_FORTUNE_COOKIE,		
+		REQUEST_SAVE_WALLET_INFO, 
+		REQUEST_SAVE_OPTIONS, REQUEST_RESET_OPTIONS, REQUEST_UPDATE_OPTIONS,
+		REQUEST_IMPORT_RAW_DATA, REQUEST_GET_FORTUNE_COOKIE,		
 		
 		REQUEST_GET_HD_WALLET, 
 		REQUEST_GET_SOLANA_WALLET,
 		
 		FromMain_DID_FINISH_LOAD,
         FromMain_FILE_SAVE, FromMain_HELP_ABOUT,
+		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_UPDATE_OPTIONS, 
 		FromMain_SEND_IMG_URL,
 		FromMain_SET_FORTUNE_COOKIE, 
         FromMain_SET_RENDERER_VALUE, FromMain_SET_SEED_FIELD_VALUE 		
-	  }                                 = require('../_renderer/const_events.js');
+	  }                                 = require('../const_events.js');
 	  
 const { ENTROPY_SOURCE_IMG_ID
       }                                 = require('../_renderer/const_renderer.js');
@@ -70,86 +71,28 @@ const { NULL_COIN,
 const { ADDRESS, WIF, PRIV_KEY, 
         PRIVATE_KEY_HEX, MNEMONICS   
       }                                 = require('../crypto/const_wallet.js');
-	  
+
+const { getShortenedString }            = require('../util/values/string_utils.js');	  
 const { getDayTimestamp }               = require('../util/system/timestamp.js');
 const { FileUtils }                     = require('../util/system/file_utils.js');
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
 const { Bip32Utils }                    = require('../crypto/bip32_utils.js');
-const { hexToBytes, hexWithoutPrefix, hexWithPrefix, hexToB64,
+const { hexToBytes, hexToB64,
+        hexWithoutPrefix, hexWithPrefix,
         isHexString, getRandomInt  }    = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { L10nUtils }                     = require('../L10n/L10n_utils.js');
 
 const { Solana_API }                    = require('../crypto/solana_api.js');
+
+const default_options = {
+	"Default Blockchain": "Bitcoin",
+	"Wallet Mode":        "HD Wallet",  
+	"Entropy Size":       "128",
+	"Theme":              "Default"
+};
 		
-let g_DidFinishLoad_FiredCount = 0;
-
-const createBrowserWindow = ( url ) => {
-   const win = new BrowserWindow({
-     height: 900,
-     width:  1200
-   });
-
-   win.loadURL( url );
-} // createBrowserWindow
-
-// https://github.com/electron/electron/issues/19775
-// https://stackoverflow.com/questions/44391448/electron-require-is-not-defined
-const ELECTRON_MAIN_MENU_TEMPLATE = [
-	{ 	label: L10nUtils.GetLocalizedMsg("File"),
-		submenu: [ {  label:  L10nUtils.GetLocalizedMsg("Save"), 
-					  click() { ElectronMain.DoFileSave(); }
-			       },
-				   {  label: L10nUtils.GetLocalizedMsg("Quit"), 
-					  click() { app.quit(); }
-			       }
-				 ]
-	},
-	{ 	label: L10nUtils.GetLocalizedMsg("View"),
-		submenu: [ {  label: L10nUtils.GetLocalizedMsg("ToggleDebug"), type: 'checkbox',
-				      click() {
-					      console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + VIEW_TOGGLE_DEVTOOLS + _END_);	
-						  ElectronMain.ToggleDebugPanel();  
-				      }		 
-			       }
-		         ]
-	},
-	{ 	label: L10nUtils.GetLocalizedMsg("Tools"),
-		submenu: [ {  label: "Options...",
-				      click() {
-					      console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + TOOLS_OPTIONS + _END_);	
-	 				  }		 
-			       }
-		         ]
-	},
-	{   label: L10nUtils.GetLocalizedMsg("Help"), //"Help"
-        submenu: [ { label: L10nUtils.GetLocalizedMsg("Resources"),
-				     submenu: [
-						{ label: "Ian Coleman BIP39",
-						  click() { 
-							 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
-							 createBrowserWindow("https://iancoleman.io/bip39/");
-						  }
-						},
-						{ label: "Guarda",
-						  click() { 
-							 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
-							 createBrowserWindow("https://guarda.com/");
-						  }
-						}						
-				     ]
-				   },
-		           {  label: L10nUtils.GetLocalizedMsg("About"), //'About...',
-				      click() { 
-					      ElectronMain.MainWindow.webContents.send('fromMain', [ FromMain_HELP_ABOUT ]);
-			          }
-                   }
-                 ]
-    }
-]; // menu_template
-
-const gotTheLock       = app.requestSingleInstanceLock();
-let   gShow_DebugPanel = false;
+const gotTheLock = app.requestSingleInstanceLock();
 
 const error_handler = (err) => { 
 	if (err) return console.log("error: " + err);
@@ -157,106 +100,202 @@ const error_handler = (err) => {
 }; // error_handler()
 
 class ElectronMain {
-	static MainWindow = null;
-	static Defaults   = {};
+	static #key = {};
+	static #_Singleton = new ElectronMain( this.#key );
 	
-	static FirstImageAsEntropySource = true;
+	static GetInstance() {
+		if( ElectronMain.#_Singleton == undefined ){
+			ElectronMain.#_Singleton = new ElectronMain();
+        }
+        return ElectronMain.#_Singleton;
+    } // ElectronMain.GetInstance() 
+
+    // ** Private constructor **
+	constructor( key ) {
+		if ( key !== ElectronMain.#key ) {
+			throw new TypeError("ElectronMain constructor is private.");
+		}
+		
+		this.DidFinishLoad_FiredCount  = 0;
+		this.Show_DebugPanel           = false;
+		
+		this.MainWindow                = null;
+	    this.Options                   = {};	
+	    this.FirstImageAsEntropySource = true;
+	} // ** Private constructor **
 	
-	//==================== CreateWindow() ====================
+	createBrowserWindow( url ) {
+	   const win = new BrowserWindow(
+	     { height: 900, width:  1200 } 
+	   );
+
+	   win.loadURL( url );
+    } // createBrowserWindow
+
+    getMainWindow() {
+		return this.MainWindow;
+	} // getMainWindow()
+	
+	// https://github.com/electron/electron/issues/19775
 	// https://stackoverflow.com/questions/44391448/electron-require-is-not-defined
-	static CreateWindow() {
-		console.log(">> " + _CYAN_ + "ElectronMain.CreateWindow" + _END_);
+	getMenuTemplate() {
+		let ELECTRON_MAIN_MENU_TEMPLATE = [
+			{ 	label: L10nUtils.GetLocalizedMsg("File"),
+				submenu: [ {  label:  L10nUtils.GetLocalizedMsg("Save"), 
+							  click() { ElectronMain.GetInstance().doFileSave(); }
+						   },
+						   {  label: L10nUtils.GetLocalizedMsg("Quit"), 
+							  click() { app.quit(); }
+						   }
+						 ]
+			},
+			{ 	label: L10nUtils.GetLocalizedMsg("View"),
+				submenu: [ {  label: L10nUtils.GetLocalizedMsg("ToggleDebug"), type: 'checkbox',
+							  click() {
+								  console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + VIEW_TOGGLE_DEVTOOLS + _END_);	
+								  ElectronMain.GetInstance().toggleDebugPanel();  
+							  }		 
+						   }
+						 ]
+			},
+			{ 	label: L10nUtils.GetLocalizedMsg("Tools"),
+				submenu: [ {  label: "Options...",
+							  click() {
+								  console.log('>> ' + _CYAN_ + '[Electron] ' + _YELLOW_ + TOOLS_OPTIONS + _END_);				  
+								  ElectronMain.GetInstance().getMainWindow()
+								    .webContents.send
+									( 'fromMain', 
+									  [ FromMain_TOOLS_OPTIONS_DIALOG, 
+									    ElectronMain.GetInstance().Options ] 
+									);
+							  }		 
+						   }
+						 ]
+			},
+			{   label: L10nUtils.GetLocalizedMsg("Help"), //"Help"
+				submenu: [ { label: L10nUtils.GetLocalizedMsg("Resources"),
+							 submenu: [
+								{ label: "Ian Coleman BIP39",
+								  click() { 
+									 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
+									 ElectronMain.GetInstance()
+									     .createBrowserWindow("https://iancoleman.io/bip39/");
+								  }
+								},
+								{ label: "Guarda",
+								  click() { 
+									 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
+									 ElectronMain.GetInstance()
+									     .createBrowserWindow("https://guarda.com/");
+								  }
+								}						
+							 ]
+						   },
+						   {  label: L10nUtils.GetLocalizedMsg("About"), //'About...',
+							  click() { 
+								  ElectronMain.GetInstance().getMainWindow()
+								      .webContents.send('fromMain', [ FromMain_HELP_ABOUT ]);
+							  }
+						   }
+						 ]
+			}
+		]; // menu_template
+		
+		return ELECTRON_MAIN_MENU_TEMPLATE;
+	} // getMenuTemplate()
+	
+	//==================== createWindow() ====================
+	// https://stackoverflow.com/questions/44391448/electron-require-is-not-defined
+	createWindow() {
+		console.log(">> " + _CYAN_ + "ElectronMain.createWindow" + _END_);
 
 		// to Hide 'Security Warning'
 		process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 		
 		//console.log(__dirname);
-		let main_window = new BrowserWindow({
-			width:  MAIN_WINDOW_WIDTH, height: MAIN_WINDOW_HEIGHT,
-			//icon:   path.join(__dirname, "../../icons/ZCash_rev_icn.png"),
-			webPreferences: {
-					contextIsolation: true, // NB: 'true' is default value but keep it there anyway
-					preload:          path.join(__dirname, "./preload.js")
-				}
-		});
-		ElectronMain.MainWindow = main_window;
+		this.MainWindow = new BrowserWindow(
+			{ width:  MAIN_WINDOW_WIDTH, 
+			  height: MAIN_WINDOW_HEIGHT,
+			  //icon:   path.join(__dirname, "../../icons/ZCash_rev_icn.png"),
+			  webPreferences: {
+				contextIsolation: true, // NB: 'true' is default value but keep it there anyway
+				preload:          path.join(__dirname, "./preload.js")
+			  }
+			}
+		);
 			
-		const menu_bar = Menu.buildFromTemplate(ELECTRON_MAIN_MENU_TEMPLATE);
-		Menu.setApplicationMenu(menu_bar);	
-		
-		//ipcMain_toggleDebugPanel();
+		const menu_bar = Menu.buildFromTemplate( this.getMenuTemplate() );
+		Menu.setApplicationMenu( menu_bar );	
 		
 		// https://www.electronjs.org/docs/latest/api/web-contents#instance-events
 		// https://stackoverflow.com/questions/42284627/electron-how-to-know-when-renderer-window-is-ready
 		// Note: index.html loaded twice (first index.html redirect)
 		// ==================== 'did-finish-load' event handler ====================
-		ElectronMain.MainWindow.webContents.on('did-finish-load', 
-			() => {
+		this.MainWindow.webContents.on( 'did-finish-load', 
+			async () => {
 				//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load --" + _END_);
 				
 				// Note: must load twice (I suspect because of first 'index.html' redirect)
-				g_DidFinishLoad_FiredCount++;
+				this.DidFinishLoad_FiredCount++;
 				
-				if (g_DidFinishLoad_FiredCount == 2) {
+				if ( this.DidFinishLoad_FiredCount == 2 ) {
 					console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + " did-finish-load " + _END_ + "FiredCount==2");	
 					
 					//---------- Set 'Cryptocalc_version' in Renderer GUI ----------
 					let Cryptocalc_version = process.env.npm_package_version;
 					//console.log("   Cryptocalc: " + Cryptocalc_version);				
-					ElectronMain.MainWindow.setTitle('Cryptocalc ' + Cryptocalc_version); 
+					this.MainWindow.setTitle('Cryptocalc ' + Cryptocalc_version); 
 					//---------- Set 'Cryptocalc_version' in Renderer GUI
 					
-					ElectronMain.MainWindow.webContents.send("fromMain", [ FromMain_DID_FINISH_LOAD ]);
+					this.MainWindow.webContents.send("fromMain", [ FromMain_DID_FINISH_LOAD ]);
 					
 					//console.log("   Send : " + FromMain_SET_RENDERER_VALUE + " = " + Cryptocalc_version);
-					ElectronMain.MainWindow.webContents.send("fromMain", [ FromMain_SET_RENDERER_VALUE, Cryptocalc_version ]);
+					this.MainWindow.webContents.send("fromMain", [ FromMain_SET_RENDERER_VALUE, Cryptocalc_version ]);
 					
 					// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
 					// Open urls in the user's browser
 					// nB: Triggered by 'RendererGUI.OnExploreWallet()'
-					ElectronMain.MainWindow.webContents.setWindowOpenHandler((edata) => {
+					this.MainWindow.webContents.setWindowOpenHandler((edata) => {
 						shell.openExternal(edata.url);
 						return { action: "deny" };
 					});
 					
-					ElectronMain.ReadDefaults();
+					await this.loadOptions();
 					
-					ElectronMain.SetCallbacks();
+					this.setCallbacks();
 				}
 			} // 'did-finish-load' callback
 		); // ==================== 'did-finish-load' event handler
 		
-		ElectronMain.MainWindow.loadFile('./index.html');
-	} // ElectronMain.CreateWindow()
+		this.MainWindow.loadFile( './index.html' );
+	} // createWindow()
 	
-	static DoFileSave() {
-		console.log(">> " + _CYAN_ + "ElectronMain.DoFileSave" + _END_);		
-		ElectronMain.MainWindow.webContents.send("fromMain", [ FromMain_FILE_SAVE ]);
-	} // ElectronMain.DoFileSave()
+	doFileSave() {
+		console.log(">> " + _CYAN_ + "ElectronMain.doFileSave" + _END_);		
+		this.MainWindow.webContents.send( "fromMain", [ FromMain_FILE_SAVE ] );
+	} // doFileSave()
 	
-	// File/Import/Random Fortune CookieI
-	static GetFortuneCookie() {
-		console.log(">> " + _CYAN_ + "ElectronMain.GetFortuneCookie" + _END_);
+	// File/Import/Random Fortune Cookie
+	getNewFortuneCookie() {
+		console.log(">> " + _CYAN_ + "ElectronMain.getNewFortuneCookie" + _END_);
 		let fortune_cookie = getFortuneCookie();
-		ElectronMain.MainWindow.webContents.send("fromMain", [ FromMain_SET_FORTUNE_COOKIE, fortune_cookie ]);
-	} // ElectronMain.GetFortuneCookie()
+		console.log("   fortune_cookie: " + getShortenedString( fortune_cookie) );
+		this.MainWindow.webContents.send( "fromMain", 
+		                                  [ FromMain_SET_FORTUNE_COOKIE, fortune_cookie ] );
+	} // getNewFortuneCookie()
 	
-	static ToggleDebugPanel() {
-		console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + "ToggleDebugPanel" + _END_);
-		gShow_DebugPanel = ! gShow_DebugPanel;
+	toggleDebugPanel() {
+		console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + "toggleDebugPanel" + _END_);
+		this.Show_DebugPanel = ! this.Show_DebugPanel;
 		
-		if ( gShow_DebugPanel ) {
-			ElectronMain.MainWindow.webContents.openDevTools();
-		}
-		else {
-			ElectronMain.MainWindow.webContents.closeDevTools();
-		}
-		// ElectronMain.MainWindow.webContents.send
-		//	 ("fromMain", [ "View/ToggleDebugPanel", gShow_DebugPanel ]);
-	} // ElectronMain.ToggleDebugPanel()
+		if ( this.Show_DebugPanel )
+			this.MainWindow.webContents.openDevTools();
+		else
+			this.MainWindow.webContents.closeDevTools();
+	} // toggleDebugPanel()
 	
-	static SelectFile() {
-		console.log(">> " + _CYAN_ + "ElectronMain.SelectFile" + _END_);
+	getUserSelectedFile() {
+		console.log(">> " + _CYAN_ + "ElectronMain.getUserSelectedFile" + _END_);
 		const browserWindow = BrowserWindow.getFocusedWindow();
 		let input_path = app.getAppPath() + "\\_assets\\texts";
 		console.log("   input_path: " + input_path);
@@ -267,29 +306,72 @@ class ElectronMain {
 			properties:  ['openFile']
 		}).then(result => {
 			if (result.filePaths != '') {
-				let in_file_name = path.basename(result.filePaths[0]);
+				let in_file_name = path.basename( result.filePaths[0] );
 				console.log("   " + in_file_name);
-				const raw_data_str = fs.readFileSync(input_path + '//' + in_file_name, { encoding: 'utf8', flag: 'r' });
+				const raw_data_str = fs.readFileSync( input_path + '//' + in_file_name, { encoding: 'utf8', flag: 'r' });
 				//console.log("   " + raw_data_str);
-				ElectronMain.MainWindow.webContents.send
-					("fromMain", [ FromMain_SET_SEED_FIELD_VALUE, raw_data_str ]);
+				this.MainWindow.webContents.send
+					( "fromMain", [ FromMain_SET_SEED_FIELD_VALUE, raw_data_str ] );
 			}
 		}).catch(err => {
 			console.log(err)
 		});
-	} // ElectronMain.SelectFile()
+	} // getUserSelectedFile()
 	
-	static ReadDefaults() {
-		console.log(">> " + _CYAN_ + "ElectronMain.ReadDefaults" + _END_);
+	async loadOptions() {
+		console.log(">> " + _CYAN_ + "ElectronMain.loadOptions" + _END_);
 		let config_path = app.getAppPath() + '/www/config';
-		console.log("config_path: " + config_path);
-		const defaults_str = fs.readFileSync(config_path + '/defaults.json');
-		ElectronMain.Defaults = JSON.parse(defaults_str);
-		console.log("ElectronMain.Defaults: " + JSON.stringify(ElectronMain.Defaults));
-	} // ElectronMain.ReadDefaults()
+		//console.log("config_path: " + config_path);
+		
+		let options_path = config_path + '/options.json';
+		if ( ! fs.existsSync( options_path ) ) { 
+			await this.setDefaultOptions();
+		}
+		const options_str = fs.readFileSync( options_path );
+		//console.log("   options_str: " + options_str);
+		
+		if ( options_str == "[]"  ||  options_str == "{}" ) { 
+			await this.setDefaultOptions();			
+		}
+		else {		
+			this.Options = JSON.parse( options_str );		
+        }
+		
+		await this.MainWindow.webContents
+			.send('fromMain', [ FromMain_UPDATE_OPTIONS, this.Options ]);
+		
+		console.log("ElectronMain.Options: " + JSON.stringify( this.Options ));
+	} // async loadOptions()
 	
-	static SetCallbacks() {
-		console.log(">> " + _CYAN_ + "ElectronMain.SetCallbacks" + _END_);
+	async setDefaultOptions() {
+		console.log(">> " + _CYAN_ + "ElectronMain.resetOptions" + _END_);
+		this.Options = default_options;
+		await this.saveOptions( this.Options );
+	} // async setDefaultOptions()
+	
+	async saveOptions( json_data ) {
+		console.log(">> " + _CYAN_ + "ElectronMain.saveOptions" + _END_);
+		this.Options = json_data;
+		let config_path  = app.getAppPath() + '/www/config';		
+		let options_path = config_path + '/options.json';
+		fs.writeFileSync( options_path, JSON.stringify( json_data ) );
+		
+		await this.MainWindow.webContents
+			      .send('fromMain', [ FromMain_UPDATE_OPTIONS, json_data ]);
+	} // async saveOptions()
+	
+	async resetOptions() {
+		console.log(">> " + _CYAN_ + "ElectronMain.resetOptions" + _END_);
+		let config_path  = app.getAppPath() + '/www/config';		
+		let default_options_path = config_path + '/defaults/options.json';
+		let default_options_str  = fs.readFileSync( default_options_path ).toString();
+		console.log("   default_options_str: " + default_options_str);
+		this.Options = JSON.parse(default_options_str);
+		await this.saveOptions( this.Options );
+	} // async resetOptions()
+	
+	setCallbacks() {
+		console.log(">> " + _CYAN_ + "ElectronMain.setCallbacks" + _END_);
 
 		// ====================== REQUEST_LOG_2_MAIN ======================
 		// called like this by Renderer: window.ipcMain.log2Main(data)
@@ -300,7 +382,7 @@ class ElectronMain {
 		// ====================== REQUEST_TOGGLE_DEBUG_PANEL ======================
 		// called like this by Renderer: window.ipcMain.ToggleDebugPanel(data)
 		ipcMain.on( REQUEST_TOGGLE_DEBUG_PANEL, (event, data) => {
-			ElectronMain.ToggleDebugPanel();
+			this.toggleDebugPanel();
 		}); // "request:toggle_debug_panel" event handler
 		
 		// ====================== REQUEST_OPEN_URL ======================
@@ -310,7 +392,7 @@ class ElectronMain {
 			console.log("   URL: " + url);
 			
 			// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
-			ElectronMain.MainWindow.location = url;
+			this.MainWindow.location = url;
 		}); // "request:open_URL" event handler
 		
 		// https://github.com/metafloor/bwip-js/blob/master/README.md
@@ -365,7 +447,7 @@ class ElectronMain {
 				bwipjs.toBuffer( options, writePNGfile );
 			 }
 			 else if ( filetype == "svg" ) {
-				// console.log("qrcode_text: '" + qrcode_text + "'");
+				//console.log("qrcode_text: '" + qrcode_text + "'");
 				options["scale"] = 1;
 	
 				let svg_data = bwipjs.toSVG( options );
@@ -449,11 +531,41 @@ class ElectronMain {
 				createQRCode( output_path + "/svg", "Seedphrase.svg", crypto_info['Seedphrase'], 'qrcode', 'svg' );
 		    //-------- SVG output
 		}); // "request:save_wallet_info" event handler
+		
+		// ====================== REQUEST_RESET_OPTIONS ======================
+		// called like this by Renderer: window.ipcMain.ResetOptions( data )
+		ipcMain.handle( REQUEST_RESET_OPTIONS, async (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_RESET_OPTIONS + _END_);
+				
+			ElectronMain.GetInstance().resetOptions();
+		}); // "request:reset_options" event handler
+		
+		// ====================== REQUEST_SAVE_OPTIONS ======================
+		// called like this by Renderer: window.ipcMain.SaveOptions( data )
+		ipcMain.handle( REQUEST_SAVE_OPTIONS, async (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SAVE_OPTIONS + _END_);
+			
+			let json_data = data;
+			console.log("   json_data: " + JSON.stringify(json_data)); 
+			ElectronMain.GetInstance().saveOptions( json_data );
+			
+			await this.MainWindow.webContents
+			          .send('fromMain', [ FromMain_UPDATE_OPTIONS, json_data ]);
+		}); // "request:save_options" event handler
+		
+		// ====================== REQUEST_UPDATE_OPTIONS ======================
+		// called like this by Renderer: window.ipcMain.UpdateOptions( json_data )
+		ipcMain.on( REQUEST_UPDATE_OPTIONS, (event, json_data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_UPDATE_OPTIONS + _END_);
+			
+			this.MainWindow.webContents
+			            .send('fromMain', [ FromMain_UPDATE_OPTIONS, json_data ]);
+		}); // "request:update_options" event handler
 				
 		// ====================== REQUEST_IMPORT_RAW_DATA ======================
 		// called like this by Renderer: window.ipcMain.ImportRawData(data)
 		ipcMain.on( REQUEST_IMPORT_RAW_DATA, ( event, crypto_info ) => {
-			ElectronMain.SelectFile();
+			this.getUserSelectedFile();
         }); // "request:import_raw_data" event handler
 		
 		const loadImageFromFile = ( image_file_path ) => {			
@@ -473,7 +585,7 @@ class ElectronMain {
 			}	
 			//console.log("   image_file_extension: " + image_file_extension);
 			//console.log("   img_data_asURL:\n" + img_data_asURL);
-			ElectronMain.MainWindow.webContents
+			this.MainWindow.webContents
 			            .send('fromMain', 
 						      [ FromMain_SEND_IMG_URL, ENTROPY_SOURCE_IMG_ID, 
 							    img_data_asURL, image_file_extension ]);
@@ -488,13 +600,13 @@ class ElectronMain {
 			return img_data_asURL;
 		}); // "request:load_image_from_file" event handler
 
-		// ====================== REQUEST_DROP_RND_CRYPTO_LOGO ======================
-		// called like this by Renderer: window.ipcMain.DropRandomCryptoLogo(data)
-		ipcMain.handle( REQUEST_DROP_RND_CRYPTO_LOGO, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_DROP_RND_CRYPTO_LOGO + _END_);
+		// ====================== REQUEST_DRAW_RND_CRYPTO_LOGO ======================
+		// called like this by Renderer: window.ipcMain.DrawRandomCryptoLogo(data)
+		ipcMain.handle( REQUEST_DRAW_RND_CRYPTO_LOGO, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_DRAW_RND_CRYPTO_LOGO + _END_);
 			
 			let app_path = app.getAppPath();
-			console.log("   app_path: " + app_path);
+			//console.log("   app_path: " + app_path);
 			
 			let crypto_logos_path = app_path + "/www/img/CryptoCurrency";
 			
@@ -503,11 +615,11 @@ class ElectronMain {
 			
 			let image_file_path = crypto_logos_path + "/";
 			let crypto_logo_filename = "Zilver_64px.svg";
-			if (! ElectronMain.FirstImageAsEntropySource ) {
+			if (! this.FirstImageAsEntropySource ) {
 				let	random_index = getRandomInt( crypto_logos.length );
 		        crypto_logo_filename = crypto_logos[random_index];			
 			}
-			ElectronMain.FirstImageAsEntropySource = false;
+			this.FirstImageAsEntropySource = false;
 			image_file_path += crypto_logo_filename;
 			
 			let img_data_asURL = loadImageFromFile( image_file_path );
@@ -537,7 +649,7 @@ class ElectronMain {
 		// ================== REQUEST_ENTROPY_TO_MNEMONICS ===================
 		// called like this by Renderer: await window.ipcMain.EntropyToMnemonics( data )
 		ipcMain.handle( REQUEST_ENTROPY_TO_MNEMONICS, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_ENTROPY_TO_MNEMONICS + _END_);
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_ENTROPY_TO_MNEMONICS + _END_);
 			const { entropy, options } = data;
 			//console.log("   data_hex: " + data_hex);
 			//console.log("   options: " + JSON.stringify(options));
@@ -549,7 +661,7 @@ class ElectronMain {
 		// ================== REQUEST_ENTROPY_TO_CHECKSUM ===================
 		// called like this by Renderer: await window.ipcMain.EntropyToChecksum( data )
 		ipcMain.handle( REQUEST_ENTROPY_TO_CHECKSUM, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_ENTROPY_TO_CHECKSUM + _END_);
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_ENTROPY_TO_CHECKSUM + _END_);
 			const { entropy, options } = data;
 			let checksum = Bip39Utils.EntropyToChecksum( entropy, options );
 			return checksum;
@@ -567,7 +679,7 @@ class ElectronMain {
 		// ================== REQUEST_MNEMONICS_AS_4LETTER ==================
 		// called like this by Renderer: await window.ipcMain.MnemonicsAs4letter( data )
 		ipcMain.handle( REQUEST_MNEMONICS_AS_4LETTER, (event, mnemonics) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_AS_4LETTER + _END_);
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_AS_4LETTER + _END_);
 			//console.log(">> data: " + data); 
 			let mnemonics_as_4letter = Bip39Utils.MnemonicsAs4letter( mnemonics );
 			//console.log(">> mnemonics: " + mnemonics); 
@@ -590,14 +702,14 @@ class ElectronMain {
 		// called like this by Renderer: await window.ipcMain.GetFortuneCookie()
 		ipcMain.handle( REQUEST_GET_FORTUNE_COOKIE, (event, data) => {
 			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_FORTUNE_COOKIE + _END_);
-			let fortune_cookie = getFortuneCookie();
+			let fortune_cookie = this.getNewFortuneCookie();
 			return fortune_cookie;
 		}); // "request:get_FortuneCookie"
 
 		// =============== REQUEST_MNEMONICS_TO_WORD_INDEXES ===============
 		// called like this by Renderer: await window.ipcMain.MnemonicsToWordIndexes( data )
 		ipcMain.handle( REQUEST_MNEMONICS_TO_WORD_INDEXES, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_TO_WORD_INDEXES + _END_);
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_MNEMONICS_TO_WORD_INDEXES + _END_);
 			const { mnemonics, options } = data;
 			let word_indexes = Bip39Utils.GetWordIndexes( mnemonics, options );
 						
@@ -636,7 +748,7 @@ class ElectronMain {
 		// ====================== REQUEST_GET_UUID =======================
 		// called like this by Renderer: await window.ipcMain.GetUUID(data)
 		ipcMain.handle( REQUEST_GET_UUID, (event, data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_UUID + _END_);
+			//console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_GET_UUID + _END_);
 			let new_uuidv4 = uuidv4();
 			return new_uuidv4;
 		}); // "request:get_UUID" event handler
@@ -660,6 +772,7 @@ class ElectronMain {
 	} // ElectronMain.SetCallbacks()
 } // ElectronMain class
 
+
 // ========== Prevent Multiple instances of Electron main process ==========
 // https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron
 if (! gotTheLock) {
@@ -668,17 +781,18 @@ if (! gotTheLock) {
 else {
 	app.on('second-instance', (event, commandLine, workingDirectory) => {
 	// Someone tried to run a second instance, we should focus our window.
-	if (ElectronMain.MainWindow != null) {
-			if (ElectronMain.MainWindow) {
-				ElectronMain.MainWindow.restore(); 
+	let main_window = ElectronMain.GetInstance().getMainWindow();
+	if ( main_window != null ) {
+			if ( main_window ) {
+				 main_window.restore(); 
 			}
-			ElectronMain.MainWindow.focus()
+			main_window.focus()
 		}
 	}) // Manage case of second instance
 
 	// Create Electron main window, load the rest of the app, etc...
 	app.whenReady().then(() => {
-		ElectronMain.CreateWindow();
+		ElectronMain.GetInstance().createWindow();
 	})
 }
 // ========== Prevent Multiple instances of Electron main process// =====================================================================================

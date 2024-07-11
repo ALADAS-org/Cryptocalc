@@ -12,6 +12,9 @@ contextBridge.exposeInMainWorld(
 		log2Main:                  (data) => ipcRenderer.send("request:log2main", data),
 		
 		ToggleDebugPanel:          (data) => ipcRenderer.send("request:toggle_debug_panel", data),
+		SaveOptions:               (data) => ipcRenderer.invoke("request:save_options", data),
+		ResetOptions:              (data) => ipcRenderer.invoke("request:reset_options", data),
+		UpdateOptions:             (data) => ipcRenderer.send("request:update_options", data),
 		
 		EntropySourceToEntropy:    (data) => ipcRenderer.invoke("request:entropy_src_to_entropy", data),
 		MnemonicsToEntropyInfo:    (data) => ipcRenderer.invoke("request:mnemonics_to_entropy_info", data),
@@ -38,7 +41,7 @@ contextBridge.exposeInMainWorld(
 		OpenURL:                   (data) => ipcRenderer.send("request:open_URL", data),		
 		
         LoadImageFromFile:         (data) => ipcRenderer.invoke("request:load_image_from_file", data),		
-	    DropRandomCryptoLogo:      (data) => ipcRenderer.invoke("request:drop_rnd_crypto_logo", data),
+	    DrawRandomCryptoLogo:      (data) => ipcRenderer.invoke("request:draw_rnd_crypto_logo", data),
 		//send: (channel, data) => {
         //     // whitelist channels
         //    let validChannels = ['toMain'];

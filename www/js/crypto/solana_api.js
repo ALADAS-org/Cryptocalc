@@ -187,9 +187,9 @@ class Solana_API {
 		// seed (64 bytes/512 bits) = LeftSide(32 bytes/256 bits) + RightSide(32 bytes/256 bits) 
 		let master_pk_key_hex = uint8ArrayToHex( master_seed ).substring( 0, 64 ); // LeftSide: 256 first bits 
 	    let master_pk_bytes   = master_pk_key_hex.length / 2;
-	    console.log(  "   " + _YELLOW_
-		            + Bip39Utils.LabelWithSize("master_private_key", master_pk_bytes) 
-	                + " " + _END_ + master_pk_key_hex);
+	    //console.log(  "   " + _YELLOW_
+		//            + Bip39Utils.LabelWithSize("master_private_key", master_pk_bytes) 
+	    //            + " " + _END_ + master_pk_key_hex);
 		hdwallet_info[MASTER_PK_HEX] = master_pk_key_hex;
 		//-------------------- Master Private Key
 		

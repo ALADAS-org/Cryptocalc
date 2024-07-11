@@ -7,7 +7,28 @@
 
 const isString = (x) => {
   return Object.prototype.toString.call(x) === "[object String]"
-}; // isString())
+}; // isString()
+
+const getShortenedString = ( in_str, max_length ) => {
+		const MAX_SHORTENED_LENGTH = 90;
+		if ( max_length == undefined ) {
+			max_length = 90;
+		}
+
+		if (in_str.length < max_length) { 
+			max_length = in_str.length;			
+        }
+		
+		if ( in_str == undefined ) in_str = "Null_String";
+		
+		let shortened_str = in_str.substring(0, max_length)
+		                    .replaceAll('\n', ' ').replaceAll('\r', '');	
+		if (in_str.length > max_length) { 
+			shortened_str += "...";			
+        }
+		
+		return shortened_str;
+} // getShortenedString()
 
 const stringify = (obj) => {
   let cache = [];
@@ -67,8 +88,9 @@ const stringToHex = (in_str) => {
 
 //module.exports = { stringify }
 if (typeof exports === 'object') {
-	exports.isString          = isString
-	exports.stringify         = stringify
-	exports.insertAfterEveryN = insertAfterEveryN
-	exports.stringToHex       = stringToHex
+	exports.isString           = isString
+	exports.stringify          = stringify
+	exports.insertAfterEveryN  = insertAfterEveryN
+	exports.stringToHex        = stringToHex
+	exports.getShortenedString = getShortenedString
 } // exports of 'string_utils.js' 

@@ -85,30 +85,40 @@ class HtmlUtils {
 	
 	static GetField( elt_id ) {
 		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetField() " + _YELLOW_ + elt_id + _END_);
-		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { 
-			if (elt.nodeName == "TD" || elt.nodeName == "SPAN") {
+		let elt = document.getElementById( elt_id );	
+        		
+		if ( elt != undefined ) { 
+			if ( elt.nodeName == "TD" || elt.nodeName == "SPAN" ) {
 				return elt.textContent;
 			}
 			else {
 				return elt.value;
 			}	
 		}
-		return undefined;
-	} // HtmlUtils.GetField()
-	
+		return "Null_String";
+	} // HtmlUtils.GetField()	
+
 	static SetField( elt_id, value_str ) {
 		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetField() " + _END_ + elt_id);
 		//log2Main(" elt_id: " + elt_id);
 		let elt = document.getElementById( elt_id );
-		if (elt != undefined) {
+		if ( elt != undefined ) {
             //log2Main(" elt.nodeName: " + elt.nodeName);			
-			if ( elt.nodeName == "TD" || elt.nodeName == "SPAN" || elt.nodeName == "BUTTON" ) {
+			if (   elt.nodeName == "TD" 
+			    || elt.nodeName == "SPAN" || elt.nodeName == "BUTTON" ) {
 				elt.textContent = value_str;
+			}
+			else if ( elt.nodeName == "TEXTAREA" ) {
+                // **PB** value change seems asynchronous 
+                // https://stackoverflow.com/questions/47240315/how-to-update-input-from-a-programmatically-set-textarea 				
+                // https://www.geeksforgeeks.org/jquery-set-the-value-of-an-input-text-field/
+				// ** Fix **: set value via JQuery and NOT with 'elt.value = value_str'
+				// => $('#' + elt_id).prop("value", value_str);
+				$('#' + elt_id).prop("value", value_str);
 			}
 			else {
 				elt.value = value_str;
 			}	
 		}
-	} // // HtmlUtils.SetField()
+	} // HtmlUtils.SetField()
 } // HtmlUtils class

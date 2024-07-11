@@ -90,7 +90,7 @@ const { NULL_HEX,
 	  
 const { WORD_COUNT,
         ACCOUNT_INDEX, ADDRESS_INDEX
-	  }                      = require('./const_options.js');
+	  }                      = require('../const_options.js');
 		
 const { hexToBinary, binaryToHex, 
         hexWithPrefix, hexWithoutPrefix, isHexString,
@@ -146,8 +146,8 @@ class Bip32Utils {
 		let account_index = options[ACCOUNT_INDEX];
 		let address_index = options[ADDRESS_INDEX];
 		
-		console.log(   "   account_index: " + account_index + "   " 
-		             + "   address_index: " + address_index );
+		//console.log(   "   account_index: " + account_index + "   " 
+		//             + "   address_index: " + address_index );
 		//console.log("   address_index typeof: " + typeof address_index );
 		
 		let hdwallet_info = {};
@@ -157,8 +157,7 @@ class Bip32Utils {
 		hdwallet_info[COIN_TYPE]    = coin_type;		
 		
 		//console.log("   coin_type:                  " + coin_type);		
-		
-		console.log("   " + _YELLOW_ + "blockchain:             " + _END_ + blockchain);
+		//console.log("   " + _YELLOW_ + "blockchain:             " + _END_ + blockchain);
 		
 		if ( mnemonics == undefined ) {
 			mnemonics = "much bottom such hurt hunt welcome cushion erosion pulse admit name deer";
@@ -223,14 +222,14 @@ class Bip32Utils {
 		// seed (64 bytes/512 bits) = LeftSide(32 bytes/256 bits) + RightSide(32 bytes/256 bits) 
 		let master_pk_key_hex = uint8ArrayToHex( master_seed ).substring( 0, 64 ); // LeftSide: 256 first bits  
 	    let master_pk_bytes   = master_pk_key_hex.length / 2;
-	    console.log(  "   " + _YELLOW_
-		            + Bip39Utils.LabelWithSize("master_private_key", master_pk_bytes) 
-	                + " " + _END_ + master_pk_key_hex);
+	    //console.log(  "   " + _YELLOW_
+		//            + Bip39Utils.LabelWithSize("master_private_key", master_pk_bytes) 
+	    //            + " " + _END_ + master_pk_key_hex);
 		hdwallet_info[MASTER_PK_HEX] = master_pk_key_hex;
 		
 		let master_pk_to_mnemonics = Bip39Utils.PrivateKeyToMnemonics( master_pk_key_hex );
-		console.log(   "   " + _YELLOW_ 
-		             + "master_pk_to_mnemonics:  " + _END_ + master_pk_to_mnemonics);
+		//console.log(   "   " + _YELLOW_ 
+		//             + "master_pk_to_mnemonics:  " + _END_ + master_pk_to_mnemonics);
 		//-------------------- Master Private Key
 		
 		//------------------------ Chaincode ------------------------
@@ -287,8 +286,8 @@ class Bip32Utils {
 		
 		let child_private_key = hexWithoutPrefix(addresses[0]["privKey"]);
 		let child_private_key_hex = child_private_key;
-		console.log(   "   " + _YELLOW_ 
-		             + "child_private_key:      " + _END_ + child_private_key);
+		//console.log(   "   " + _YELLOW_ 
+		//             + "child_private_key:      " + _END_ + child_private_key);
 					 
 		if ( blockchain == BITCOIN_CASH ) {
 			hdwallet_info[PRIVATE_KEY_HEX] = child_private_key;
@@ -304,8 +303,8 @@ class Bip32Utils {
 		}	
 		
 		let child_pk_to_mnemonics = Bip39Utils.PrivateKeyToMnemonics( child_private_key_hex );
-		console.log(   "   " + _YELLOW_ 
-		             + "child_pk_to_mnemonics:  " + _END_ + child_pk_to_mnemonics);
+		//console.log(   "   " + _YELLOW_ 
+		//             + "child_pk_to_mnemonics:  " + _END_ + child_pk_to_mnemonics);
 		//hdwallet_info["private_key_B58"] = private_key_B58;	
 		
 		//-ok-------------------- Extended Private key -----------------------
@@ -341,8 +340,8 @@ class Bip32Utils {
 					 
 		//--------------------------- First WIF ---------------------------
 		let wif = child_key.toWIF();
-		console.log(   "   " + _YELLOW_ 
-		             + "WIF:                    " + _END_ + wif);
+		//console.log(   "   " + _YELLOW_ 
+		//             + "WIF:                    " + _END_ + wif);
 		hdwallet_info[WIF] = wif;
 		//--------------------------- First WIF	
 

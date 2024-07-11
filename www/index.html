@@ -6,22 +6,28 @@
 		<!-- ----------------- prerequisite libraries ----------------- -->	
 		<script type="text/javascript" src="./js/lib/iziToast.min.js"></script>
 		<link   rel="stylesheet" type="text/css" href="css/iziToast.css">
+		
+		<script type="text/javascript" src="./js/lib/jquery-3.6.3.min.js"></script>
+	    <script type="text/javascript" src="./js/lib/jquery-ui-1.13.2.min.js"></script>
+		
+		<link   rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
+		<link   rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
 		<!-- ----------------- prerequisite libraries -->
 		
 		<!-- ----------------- Renderer prerequisite modules ----------------- -->
+		<script type="text/javascript" src="./js/const_options.js"></script>
+		<script type="text/javascript" src="./js/util/values/string_utils.js"></script>
 		<script type="text/javascript" src="./js/util/html/w3.js"></script>
 		<script type="text/javascript" src="./js/util/html/html_utils.js"></script>
-		<script type="text/javascript" src="./js/util/system/trace_utils.js"></script>
 		
 		<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
 		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
 		
 		<script type="text/javascript" src="./js/crypto/const_blockchains.js"></script>
-		<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>
-		<script type="text/javascript" src="./js/crypto/const_options.js"></script>
+		<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>		
 		
 		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
-		<script type="text/javascript" src="./js/_renderer/const_events.js"></script>
+		<script type="text/javascript" src="./js/const_events.js"></script>
 		
 		<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
 		<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
@@ -59,7 +65,7 @@
 				<tr id="entropy_src_row">
 					<td class="LabelColumn">
 					    <span id="entropy_src_label_id" class="LabelColumn">Entropy Source</span>
-						<select id="entropy_src_selector_id" 
+						<select id="entropy_src_type_selector_id" 
 						        class="InputField EntropySelector"> 
 							<option value="Image" selected>Image</option>	
 							<option value="Fortunes">Fortunes</option>			
@@ -69,14 +75,12 @@
 						<table width="100%">
 							<tr><td class="TextArea">
 									<textarea class="RawDataField WithoutFocus" 
-											  rows="6" spellcheck="false"
-											  id="entropy_src_fortunes_id" hidden>
+									          id="entropy_src_fortunes_id" 
+											  rows="6" spellcheck="false" hidden>
 									</textarea>									
 												
 									<table id="entropy_src_img_container_id">
-										<tr>
-											<td>
-												<div id="entropy_src_img_div_id" ondrop="drop(event)" 
+										<tr><td><div id="entropy_src_img_div_id" ondrop="drop(event)" 
 													 ondragover="allowDrop(evt)">
 													 <img id="entropy_src_img_id" style="object-fit: none;"
 														  src="img/MazePattern.png"	draggable="true">
@@ -248,7 +252,7 @@
 							<option value="LiteCoin">LiteCoin</option>
 							<option value="Firo">Firo</option>
 						</select>&nbsp;
-						<span id="wallet_coin_id">BTC						
+						<span id="wallet_coin_id">XX						
 						</span>
 					</td>
 				</tr>
@@ -375,8 +379,11 @@
 		<!-- ========================================================================================= -->
 		<!-- ==================================== Tools Options dialog ====================================== -->
 		<!-- ========================================================================================= -->
-		<div w3-include-html="./html_components/tools_options_dialog/tools_options_dialog.html"></div>
+		<div class="DialogBox" id="tools_options_dialog_id" 
+			 w3-include-html="./html_components/tools_options_dialog/tools_options_dialog.html"
+			 title="Tools / Options..." hidden></div>
 		<link rel="stylesheet" type="text/css" href="./html_components/tools_options_dialog/tools_options_dialog.css">
+		<script src="./html_components/tools_options_dialog/tools_options_dialog.js"></script>
 		<!-- ==================================== Tools Options dialog -->
 		
 		<!-- ========================================================================================= -->

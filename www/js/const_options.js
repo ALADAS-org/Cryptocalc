@@ -8,6 +8,9 @@ const ACCOUNT_INDEX = "account_index";
 const ADDRESS_INDEX = "address_index"; 
 const MSG_ID        = "msg_id"; 
 
+const IMAGE_ENTROPY_SRC_TYPE    = "Image";
+const FORTUNES_ENTROPY_SRC_TYPE = "Fortunes"; 
+
 if (typeof exports === 'object') {
 	exports.WORD_COUNT      = WORD_COUNT
 	exports.ACCOUNT_INDEX   = ACCOUNT_INDEX

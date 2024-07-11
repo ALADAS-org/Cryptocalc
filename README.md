@@ -1,4 +1,4 @@
-## Cryptocalc 0.1.12
+## Cryptocalc 0.1.14
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_6_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -29,7 +29,12 @@
         * Type `npm install`	
 
 4. Release notes
-    + 4.1. Features in `0.1.12`    
+    + 4.1. Features in `0.1.14`    
+        * Added `Tools/Options` menu item: allows to set _Options_ values for
+		`Default Blockchain` and `Entropy Size`. These values are defined
+        in `www/config/options.json` file. 		
+		* Bug Fix: when switching to `Fortunes`, `Entropy Source` was `undefined`
+    + 4.2. Features in `0.1.12`    
         * Added Border to generated _QR codes_		
 		* Added `svg` version of the `QR code` for `WIF` (if applicable, only `Bitcoin` ATM)
 		* Rename of `mnemonics` field of `wallet_info.txt` to `Seedphrase`
@@ -38,24 +43,15 @@
 		* Experimental generation of `Ultracode` for `Entropy` (2D color Barcode, 
 		46% less space than regular B&W `QR code`). Didn't found yet a compatible 
 		Android app reader yet.   
-    + 4.2. Features in `0.1.11`    
+    + 4.3. Features in `0.1.11`    
         * Simplification of `Rectangular Micro QR code` for _Entropy_: _Entropy_ now
         in `Hexadecimal` (no more conversion from `Base64` to `Hexadecimal` required)
         * `Entropy Size` field added in `wallet_info.txt`		
-    + 4.3. Features in `0.1.10`    
+    + 4.4. Features in `0.1.10`    
         * Bug Fixes in the generated `QRCodes` of `wallet information` folder (`www/_output`).	
 		* Subfolder renamed from `xtras` to `svg`
 		* Replaced `PrivateKeyMicro.svg` by `Entropy_MicroQR.png` and `Entropy_MicroQR.svg`
 		* Update of this `README` (cf. 5.1.9) 
-    + 4.4. Features in `0.1.8`    
-        * Added _QR Code_ images (PNG) in the generated _Wallet Informations_
-		folder (`www/_output`).	
-	+ 4.5. Features in `0.1.6`
-	    * 4.5.1. Added _Image_ as _Entropy Source_. _Entropy Source_ can
-		be switched between `Image` (Default) and `Fortunes` (_Fortune Cookies_).    
-		* 4.5.2. Default Cryptocurrency changed from `ETH` to `BTC`.
-		* 4.5.3. Fixed missing `Private Key` field missing from `wallet_info.txt` for `ETH`.
-	    * 4.5.4. Fixed unused dependencies in `package.json`. 
 5. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
     + 5.1. Features  
@@ -157,7 +153,12 @@
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
 		_Seedphrase_ (also called the _Secret Recovery Passphrase_).
-        * 5.1.13. Support of _Localization_    
+		* 5.1.13. Change/Reset of _Options_ (`Tools/Options`)    
+		Currently it allows to set default values for `Default Blockchain` and `Entropy Size`.
+		These values are defined in `www/config/options.json` file.    
+		It is also possible to reset _Options_ to _Default Options_
+		(defined in `www/config/defaults/options.json`)
+        * 5.1.14. Support of _Localization_    
         In _Cryptocalc_, the _Localization_ (`l10n`) feature is the translation of 
 		_GUI Labels_ to adapt to the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use, 

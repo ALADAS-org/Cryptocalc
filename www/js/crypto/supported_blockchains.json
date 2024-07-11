@@ -1,0 +1,11 @@
+{
+	"Bitcoin":      { "HDWallet": true },
+	"Ethereum":     { "HDWallet": true },
+	"Solana":       { "HDWallet": true },
+	"Ripple":       { "HDWallet": true },
+	"DogeCoin":     { "HDWallet": true },
+	"TRON":         { "HDWallet": true },
+	"Bitcoin Cash": { "HDWallet": true },
+	"LiteCoin":     { "HDWallet": true },
+	"Firo":         { "HDWallet": true }
+}
