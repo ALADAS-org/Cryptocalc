@@ -58,23 +58,32 @@ class HtmlUtils {
 	} // HtmlUtils.RemoveClass()
 	
 	static HideElement( elt_id ) {
-		//log2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
-		let elt = document.getElementById(elt_id);
+		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
+		//  log2Main(">> HtmlUtils.HideElement elt_id: " + elt_id);
+	  
+		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
+		    log2Main(">> " + _RED_ + "elt_id NOT DEFINED");
 		    return;
 		}
 		
-		elt.hidden = true; 
+		// elt.hidden = true;
+        $("#" + elt_id).hide();	
+        	
+        //$('#' + elt_id).prop("style", "display:none");		
 	} // HtmlUtils.HideElement()
 	
 	static ShowElement( elt_id ) {
-		//log2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
-		let elt = document.getElementById(elt_id);
+		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
+		//	log2Main(">> HtmlUtils.ShowElement elt_id: " + elt_id);
+		
+		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
 		    return;
 		}
 		
-		elt.hidden = false; 
+		//elt.hidden = false; 
+		$("#" + elt_id).show();	
 	} // HtmlUtils.ShowElement()
 	
 	static GetElement( elt_id ) {

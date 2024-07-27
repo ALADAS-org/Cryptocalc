@@ -1,1 +1,5 @@
-{"Default Blockchain":"Bitcoin","Wallet Mode":"HD Wallet","Entropy Size":"128"}
+{
+	"Default Blockchain":"Bitcoin",
+	"Wallet Mode":"HD Wallet",
+	"Entropy Size": { "HD Wallet": "128", "Simple Wallet": "256" }
+}

@@ -4,12 +4,12 @@
 // https://digitalbazaar.github.io/base58-spec/
 "use strict";
 
-const bs58 = require('bs58');
+const bs58         = require('bs58');
 const B58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
-const b58ToHex = (b58_str) => {
+const b58ToHex = ( b58_str ) => {
 	//const address = '16UjcYNBG9GTK4uq2f7yYEbuifqCzoLMGS'
-	const bytes = bs58.decode(b58_str)
+	const bytes = bs58.decode( b58_str );
 	// See uint8array-tools package for helpful hex encoding/decoding/compare tools
 	return (Buffer.from(bytes).toString('hex'));
 	// => 003c176e659bea0f29a3e9bf7880c112b1b31b4dc826268187

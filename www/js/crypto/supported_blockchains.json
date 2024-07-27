@@ -1,11 +1,11 @@
 {
-	"Bitcoin":      { "HDWallet": true },
-	"Ethereum":     { "HDWallet": true },
-	"Solana":       { "HDWallet": true },
-	"Ripple":       { "HDWallet": true },
-	"DogeCoin":     { "HDWallet": true },
-	"TRON":         { "HDWallet": true },
-	"Bitcoin Cash": { "HDWallet": true },
-	"LiteCoin":     { "HDWallet": true },
-	"Firo":         { "HDWallet": true }
+	"Bitcoin":      { "Wallet Types" : [ "HD Wallet", "Simple Wallet" ] },	
+	"LiteCoin":     { "Wallet Types" : [ "HD Wallet", "Simple Wallet" ] },
+	"DogeCoin":     { "Wallet Types" : [ "HD Wallet", "Simple Wallet" ] },
+	"Ethereum":     { "Wallet Types" : [ "HD Wallet", "Simple Wallet" ] },
+	"Solana":       { "Wallet Types" : [ "HD Wallet" ] },
+	"Ripple":       { "Wallet Types" : [ "HD Wallet" ] },	
+	"TRON":         { "Wallet Types" : [ "HD Wallet" ] },
+	"Bitcoin Cash": { "Wallet Types" : [ "HD Wallet" ] },	
+	"Firo":         { "Wallet Types" : [ "HD Wallet" ] }
 }

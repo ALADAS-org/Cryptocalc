@@ -10,6 +10,7 @@ const TOOLS_OPTIONS_DIALOG_ID      = "tools_options_dialog_id";
 const SEED_TAB_LINK_ID             = "seed_tab_link_id";
 const WALLET_TAB_LINK_ID           = "wallet_tab_link_id";
 
+const ENTROPY_SRC_ROW              = "entropy_src_row";
 const ENTROPY_SRC_LABEL_ID         = "entropy_src_label_id";
 
 const ENTROPY_SRC_FORTUNES_ID      = "entropy_src_fortunes_id";
@@ -22,7 +23,11 @@ const ENTROPY_SRC_TYPE_SELECTOR_ID = "entropy_src_type_selector_id";
 const ENTROPY_LABEL_ID             = "entropy_label_id";
 const ENTROPY_ID                   = "entropy_id";
 const ENTROPY_COPY_BTN_ID          = "entropy_copy_btn_id";
+
 const ENTROPY_SIZE_SELECT_ID       = "entropy_bits_select_id";
+const SW_ENTROPY_SIZE_ID           = "sw_entropy_size_id";
+const SW_WORD_COUNT_ID             = "sw_word_count_id";
+
 const CHECKSUM_ID                  = "checksum_id";
 
 const FILE_IMPORT_BTN_ID           = "file_import_btn_id";
@@ -40,6 +45,7 @@ const WORD_INDEXES_BASE_ID         = "word_indexes_base_id";
 const SALT_ID                      = "salt_id";
 const USE_SALT_ID                  = "use_salt_id";
 
+const WALLET_MODE_SELECT_ID        = "wallet_mode_select_id";
 const WALLET_BLOCKCHAIN_LABEL_ID   = "wallet_blockchain_label_id";
 const WALLET_BLOCKCHAIN_ID         = "wallet_blockchain_id"; 
 
@@ -47,6 +53,7 @@ const COIN_TYPE_ID                 = "coin_type_id";
 const ACCOUNT_ID                   = "account_id";
 const ADDRESS_INDEX_ID             = "address_index_id";
 
+const DERIVATION_PATH_ROW          = "derivation_path_row";
 const DERIVATION_PATH_ID           = "derivation_path_id";
 
 const ADDRESS_ID                   = "address_id";

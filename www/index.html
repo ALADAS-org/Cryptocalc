@@ -15,18 +15,20 @@
 		<!-- ----------------- prerequisite libraries -->
 		
 		<!-- ----------------- Renderer prerequisite modules ----------------- -->
-		<script type="text/javascript" src="./js/const_options.js"></script>
+		<script type="text/javascript" src="./js/const_keywords.js"></script>
+		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
 		<script type="text/javascript" src="./js/util/values/string_utils.js"></script>
 		<script type="text/javascript" src="./js/util/html/w3.js"></script>
 		<script type="text/javascript" src="./js/util/html/html_utils.js"></script>
 		
 		<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
+		<script type="text/javascript" src="./js/gui/gui_utils.js"></script>
+		
 		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
-		
+		<script type="text/javascript" src="./js/crypto/entropy_size.js"></script>
 		<script type="text/javascript" src="./js/crypto/const_blockchains.js"></script>
-		<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>		
+		<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>	
 		
-		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
 		<script type="text/javascript" src="./js/const_events.js"></script>
 		
 		<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
@@ -80,13 +82,18 @@
 									</textarea>									
 												
 									<table id="entropy_src_img_container_id">
-										<tr><td><div id="entropy_src_img_div_id" ondrop="drop(event)" 
+										<tr><td><div id="entropy_src_img_div_id" 
+										             ondrop="drop(evt)" 
+													 ondrag="drag(evt)"
 													 ondragover="allowDrop(evt)">
 													 <img id="entropy_src_img_id" style="object-fit: none;"
 														  src="img/MazePattern.png"	draggable="true">
 													  <script>function allowDrop(evt) { 
-															     ev.preventDefault(); 
-														      }        
+															     evt.preventDefault(); 
+														      }
+                                                              function drag(evt) { 
+															     evt.preventDefault(); 
+														      } 															  
 													  </script>
 												</div>
 											</td>
@@ -123,13 +130,16 @@
 				<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
 				<tr><td class="LabelColumn">
 						<span id="entropy_label_id">Entropy</span>                              <!-- ---- Entropy Label ---- -->
-						<select id="entropy_bits_select_id" class="InputField EntropySelector"> <!-- ----  Entropy Size ---- -->
+						<select class="InputField LabelValueSelector"
+						        id="entropy_bits_select_id" hidden>
 							<option value="128" selected>128 bits</option>	
 							<option value="160">160 bits</option>
 							<option value="192">192 bits</option>
 							<option value="224">224 bits</option>							
 							<option value="256">256 bits</option>	
 						</select>
+						<div class="SimpleWalletLabel" 
+						     id="sw_entropy_size_id">&nbsp;256 bits</div> 
 					</td>
 					<td colspan="2" class="FieldColumn">
 					    <!-- ---------- Entropy value ---------- -->
@@ -149,9 +159,7 @@
 				</tr>
 				<!-- ----------------------- Entropy (128/256 bits) -->
 				
-				<!-- ---------------------------------------------------------- -->
-				<!-- ------------------------ Checksum ------------------------ -->
-				<!-- ---------------------------------------------------------- -->
+				<!-- -----------------------  Checksum  ----------------------- -->
 				<!-- <tr><td class="HorizontalBar" colspan="4"></td></tr> -->
 				<tr><td class="LabelColumn">
 						<span id="checksum_label_id">Checksum</span>
@@ -163,14 +171,12 @@
 				<!-- ----------------------- Checksum -->
 				
 				
-				<!-- ----------------------------------------------------------- -->
 				<!-- ----------------------- Seedphrase ------------------------ -->
-				<!-- ----------------------------------------------------------- -->
-				<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
 				<tr><td class="LabelColumn">
 						<span>Seedphrase</span>
 						<!-- https://www.andiamo.co.uk/resources/iso-lang_xuage-codes/ -->
-						<select id="LANG_SELECT_ID" class="InputField MnemonicsSelector">
+						<select class="InputField LabelValueSelector"
+						        id="LANG_SELECT_ID">
 							<option value="EN" selected>English</option>							
 							<option value="DE">Deutsch</option>
 							<option value="FR">French</option>
@@ -179,13 +185,16 @@
 							<option value="IT">Italian</option>
 							<option value="CS">Czech</option>			
 						</select>
-						<select id="word_count_select_id" class="InputField MnemonicsSelector">
+						<select id="word_count_select_id" 
+						        class="InputField LabelValueSelector">
 							<option value="12" selected>12 words</option>
 							<option value="15">15 words</option>
 							<option value="18">18 words</option>
 							<option value="21">21 words</option>							
 							<option value="24">24 words</option>	
 						</select>
+						<div class="SimpleWalletLabel" 
+       						 id="sw_word_count_id">&nbsp;24 words</div> 
 					</td>
 					<td class="FieldColumn" colspan="2">
 					    <div class="DataFieldWithButton_Container" 
@@ -206,19 +215,18 @@
 				</tr>
 				<!-- ----------------------- Seedphrase -->
 				
-				<!-- ----------------------------------------------------------- -->
 				<!-- ---------------------- Word Indexes ----------------------- -->
-				<!-- ----------------------------------------------------------- -->
-				<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
 				<tr><td class="LabelColumn">
 						<span id="word_indexes_label_id">Word Indexes</span>
-						<select id="word_indexes_base_id" class="InputField MnemonicsSelector">
+						<select class="InputField LabelValueSelector"
+						        id="word_indexes_base_id">
 							<option value="Decimal" selected>Decimal</option>
-							<option value="Binary" >Binary</option>								
+							<option value="Binary">Binary</option>								
 						</select>
 					</td>
 					<td class="FieldColumn" colspan="2">
-						<textarea class="RawDataField WithoutFocus" rows="3" spellcheck="false"
+						<textarea class="RawDataField WithoutFocus" 
+						          rows="3" spellcheck="false"
 							      id="word_indexes_id">XX								  
 						</textarea>
 					</td>
@@ -234,14 +242,25 @@
 		<!-- =================================== 'Wallet' Tab page =================================== -->
 		<!-- ========================================================================================= -->
 		<div id="Wallet" class="tabcontent">
-			<table> 
-			    <!-- ---------------------------------------------------------- -->
-				<!-- ----------------------- Blockchain ----------------------- -->
-				<!-- ---------------------------------------------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"><br></td></tr>
+			<table>
+			    <tr><td class="HorizontalBar" colspan="4"><br></td></tr>
+                <!-- ---------------------- Wallet Mode ---------------------- -->	
+                <tr><td class="LabelColumn">Wallet Mode</td>	
+                    <td colspan="2" class="FieldColumn">				
+						<select class="InputField ValueSelector"
+						        id="wallet_mode_select_id">
+							<!-- <option value="Simple Wallet" selected>Simple Wallet</option> -->	 
+							<option value="HD Wallet" selected>HD Wallet</option>
+						</select>
+					</td>
+				</tr>
+				<!-- ---------------------- Wallet Mode -->
+				
+			    <!-- ----------------------- Blockchain ----------------------- -->				
 				<tr><td class="LabelColumn" id="wallet_blockchain_label_id">Blockchain</td>
 					<td colspan="2" class="FieldColumn">
-						<select id="wallet_blockchain_id" class="InputField">
+						<select class="InputField ValueSelector" 
+						        id="wallet_blockchain_id" >
 							<option value="Bitcoin" selected>Bitcoin</option>
 							<option value="Ethereum">Ethereum</option>		
 							<option value="Solana">Solana</option>
@@ -258,10 +277,8 @@
 				</tr>
 				<!-- ----------------------- Blockchain -->
 				
-				<!-- ----------------------------------------------------------- -->
 				<!-- -------------------- Derivation Path  --------------------- -->
-				<!-- ----------------------------------------------------------- -->
-				<tr><td class="LabelColumn">
+				<tr id="derivation_path_row"><td class="LabelColumn">
 						<span id="derivation_path_label_id">Derivation Path</span>
 					</td>
 					<td class="FieldColumn" colspan="2">
@@ -295,9 +312,7 @@
 				</tr>
 				<!-- -------------------- Derivation Path -->				
 				
-				<!-- ---------------------------------------------------------- -->
-				<!-- ------------------------- Address ------------------------ -->
-				<!-- ---------------------------------------------------------- -->				
+				<!-- ------------------------- Address ------------------------ -->	
 				<tr><td class="LabelColumn" id="address_label_id">Address</td>
 					<td colspan="2" class="FieldColumn">
 						<span id="address_id">FF						
@@ -311,9 +326,7 @@
 				</tr>
 				<!-- ----------------------- Address -->
 				
-				<!-- ----------------------------------------------------------- -->
 				<!-- ----------------------- Private Key ----------------------- -->
-				<!-- ----------------------------------------------------------- -->
 				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
 				<tr><td class="LabelColumn" id="wallet_PK_label_id">Private Key</td>
 					<td colspan="2" class="FieldColumn">
@@ -324,10 +337,7 @@
 				<!-- ----------------------- Private Key -->
 				
 				
-				<!-- ---------------------------------------------------------- -->
 				<!-- -------------------------- WIF --------------------------- -->
-				<!-- ---------------------------------------------------------- -->
-				<!-- <tr><td class="HorizontalBar" colspan="4"></td></tr> -->
 				<tr id="WIF_field_line_id"><td class="LabelColumn" id="WIF_label_id">WIF</td>
 					<td colspan="2" class="FieldColumn">
 						<span id="WIF_id">						
@@ -337,9 +347,7 @@
 				<!-- ----------------------- WIF -->
 				
 				
-				<!-- ---------------------------------------------------------- -->
-				<!-- ------------------------- PRIV_KEY -------------------------- -->
-				<!-- ---------------------------------------------------------- -->
+				<!-- ----------------------- PRIV_KEY ------------------------- -->
 				<tr id="PRIV_KEY_field_line_id"><td class="LabelColumn" id="PRIV_KEY_label_id">PRIV_KEY</td>
 					<td colspan="2" class="FieldColumn">
 						<span id="PRIV_KEY_id">						
@@ -352,9 +360,7 @@
 		</div>
 		<!-- =================================== 'Wallet' Tab page -->
 		
-		<!-- ----------------------------------------------------------- -->
 		<!-- ----------------------- Buttons Bar ----------------------- -->
-		<!-- ----------------------------------------------------------- -->
 		<table class="ButtonsBar" id="buttons_bar_container" width="100%">
 		    <tr><td class="HorizontalBar" colspan="3"><hr></td></tr>
 			<tr id="buttons_bar">

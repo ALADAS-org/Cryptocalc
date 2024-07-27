@@ -8,32 +8,6 @@
 // https://mdrza.medium.com/how-to-convert-mnemonic-12-word-to-private-key-address-wallet-bitcoin-and-ethereum-81aa9ca91a57
 // https://bitcointalk.org/index.php?topic=5288888.0
 // BIP32: https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki
-//
-// ---------- 'Guarda.com': Wallet Import Tests ----------
-// 2024/04/22..2024/04/25
-// * _Bitcoin_  
-// 12 words: Validated for 'private key', WIF, PRIV_KEY ('BIP32 Root Key'), Seedphrase  
-// 18 words: Validated for 'private key', WIF, PRIV_KEY ('BIP32 Root Key'), Seedphrase  
-// 24 words: Validated for 'private key', WIF, PRIV_KEY ('BIP32 Root Key'), Seedphrase  
-//
-// * _Ethereum_  
-// 12 words: Validated for 'private key', Seedphrase  
-// 18 words: Validated for 'private key', Seedphrase  
-// 24 words: Validated for 'private key', Seedphrase 
-//
-// * _Solana_  
-// 12 words: Validated for 'private key', Seedphrase
-// 24 words: Validated for 'private key', Seedphrase
-//			
-// * _DogeCoin_  
-// 12 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key') 
-// 24 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key') 
-//
-// * _LiteCoin_  
-// 12 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key')
-// 24 words: Validated for 'private key', PRIV_KEY ('Wallet Private Key')
-// ---------- 'Guarda.com': Wallet Import Tests
-//
 // https://support.ledger.com/hc/fr-fr/articles/4415198323089-Comment-un-appareil-Ledger-g%C3%A9n%C3%A8re-une-phrase-de-r%C3%A9cup%C3%A9ration-de-24-mots&language-suggestion?docs=true
 const sha256         = require('js-sha256');
 const { sha512 }     = require('js-sha512');
@@ -80,8 +54,8 @@ const { BLOCKCHAIN, NULL_BLOCKCHAIN,
 	  
 const { NULL_HEX,
         ADDRESS, UUID, CRYPTO_NET, MNEMONICS,
-		MASTER_SEED, DERIVATION_PATH,
-		MASTER_PK_HEX, CHAINCODE, ROOT_PK_HEX, WIF,
+		MASTER_SEED,
+		MASTER_PK_HEX, CHAINCODE, ROOT_PK_HEX, 
 		BIP32_ROOT_KEY,		
 		PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,
 		PRIV_KEY, XPUB,
@@ -89,8 +63,9 @@ const { NULL_HEX,
 	  }                      = require('./const_wallet.js');
 	  
 const { WORD_COUNT,
-        ACCOUNT_INDEX, ADDRESS_INDEX
-	  }                      = require('../const_options.js');
+        ACCOUNT_INDEX, ADDRESS_INDEX,
+		DERIVATION_PATH, WIF
+	  }                      = require('../const_keywords.js');
 		
 const { hexToBinary, binaryToHex, 
         hexWithPrefix, hexWithoutPrefix, isHexString,
@@ -126,25 +101,23 @@ const bchaddr = require('bchaddrjs');
 // ============================================================================================
 // static Methods: 
 // * async MnemonicsToHDWalletInfo( mnemonics, options ) 
-// 
-// * GetOptions( options )
-//
+
 class Bip32Utils {
 	// Check with: 
 	// * https://bitcointalk.org/index.php?topic=5288888.0
 	// * https://ethereum.stackexchange.com/questions/40821/difference-between-account-extended-private-key-and-bip32-extended-private-key
 	// https://github.com/bitcoinjs/bip38/issues/63
-	static async MnemonicsToHDWalletInfo( mnemonics, options ) {
-		options = Bip39Utils.GetOptions( options );
-		let blockchain    = options["blockchain"];
+	static async MnemonicsToHDWalletInfo( mnemonics, args ) {
+		args = Bip39Utils.GetArgs( args );
+		let blockchain    = args["blockchain"];
 		
 		let coin          = COIN_ABBREVIATIONS[blockchain];
 		console.log(">> " + _CYAN_ + "Bip32Utils.MnemonicsToHDWalletInfo " + _YELLOW_ + coin + _END_);
 		
 		let coin_type     = COIN_TYPES[blockchain];
 		
-		let account_index = options[ACCOUNT_INDEX];
-		let address_index = options[ADDRESS_INDEX];
+		let account_index = args[ACCOUNT_INDEX];
+		let address_index = args[ADDRESS_INDEX];
 		
 		//console.log(   "   account_index: " + account_index + "   " 
 		//             + "   address_index: " + address_index );

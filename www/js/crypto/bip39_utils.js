@@ -27,7 +27,7 @@
 // * MnemonicsAs4letter( mnemonics )
 // * MnemonicsAsTwoParts( mnemonics )
 // * GetBIP39Dictionary( lang )
-// * GetOptions( options )
+// * GetArgs( args )
 
 const sha256         = require('js-sha256');
 const { sha512 }     = require('js-sha512');
@@ -89,7 +89,7 @@ const { NULL_HEX,
 	  
 const { WORD_COUNT, 
         ACCOUNT_INDEX, ADDRESS_INDEX
-	  }                      = require('../const_options.js');
+	  }                      = require('../const_keywords.js');
 		
 const { hexToBinary, binaryToHex,
         hexWithPrefix, hexWithoutPrefix, isHexString,
@@ -167,7 +167,7 @@ class Bip39Utils {
 	static EntropySourceToEntropy( entropy_src_str, options ) {	
 		console.log(">> " + _CYAN_ + "Bip39Utils.EntropySourceToEntropy" + _END_);
 		
-		options = Bip39Utils.GetOptions( options );
+		options = Bip39Utils.GetArgs( options );
 		let word_count = options[WORD_COUNT];	
 
         console.log("   entropy_src_str:        " + getShortenedString( entropy_src_str ));		
@@ -225,13 +225,13 @@ class Bip39Utils {
 		return mnemonics;
 	} // Bip39Utils.EntropySourceToMnemonics()
 	
-	static EntropyToMnemonics( entropy_hex, options ) {
+	static EntropyToMnemonics( entropy_hex, args ) {
 		console.log(">> " + _CYAN_ + "Bip39Utils.EntropyToMnemonics" + _END_);
 		//console.log("   entropy_hex:            " + entropy_hex);
 		
-		options = Bip39Utils.GetOptions( options );
-		let lang          = options["lang"];
-		let word_count    = options["word_count"];
+		args = Bip39Utils.GetArgs( args );
+		let lang          = args["lang"];
+		let word_count    = args["word_count"];
 		let checksum_size = 4;
         //console.log("   lang: " + lang);		
 		
@@ -298,11 +298,11 @@ class Bip39Utils {
 		return mnemonics;
 	} // Bip39Utils.EntropyToMnemonics()
 	
-	static EntropyToChecksum( entropy_hex, options ) {
+	static EntropyToChecksum( entropy_hex, args ) {
 		//console.log(">> " + _CYAN_ + "Bip39Utils.EntropyToChecksum" + _END_);
 		
-		options = Bip39Utils.GetOptions( options );
-		let word_count    		= options["word_count"];
+		args = Bip39Utils.GetArgs( args );
+		let word_count    		= args["word_count"];
 		let checksum_size 		= 4;
 		let entropy_bytes_count = entropy_hex.length / 2;
 		
@@ -433,13 +433,13 @@ class Bip39Utils {
 		return checksum_bit_count;
 	} // Bip39Utils.GetChecksumBitCount()
 	
-	static GetWordIndexes( mnemonics, options ) {
+	static GetWordIndexes( mnemonics, args ) {
 		//console.log(">> " + _CYAN_ + "Bip39Utils.GetWordIndexes " + _END_);
 		//console.log("   mnemonics: " + mnemonics);
 		
-		options = Bip39Utils.GetOptions( options );
-		let lang            = (options["lang"] != undefined) ? options["lang"] : "EN";
-		let word_index_base = (options["word_index_base"] != undefined) ? options["word_index_base"] : "Decimal";
+		args = Bip39Utils.GetArgs( args );
+		let lang            = (args["lang"] != undefined) ? args["lang"] : "EN";
+		let word_index_base = (args["word_index_base"] != undefined) ? args["word_index_base"] : "Decimal";
 		//console.log("   lang: " + lang);
 		
 		let words = mnemonics.split(' ');
@@ -545,12 +545,12 @@ class Bip39Utils {
 		return lang;
 	} // Bip39Utils.GuessMnemonicsLang()
 	
-	static CheckMnemonics( mnemonics, options ) {
+	static CheckMnemonics( mnemonics, args ) {
 		console.log(">> " + _CYAN_ + "Bip39Utils.CheckMnemonics" + _END_);		
 		
-		options = Bip39Utils.GetOptions( options );
-		let lang       = options["lang"];
-		let word_count = options["word_count"];
+		args = Bip39Utils.GetArgs( args );
+		let lang       = args["lang"];
+		let word_count = args["word_count"];
 
 		let words = mnemonics.split(' ');
 		//console.log("   words.length: " + words.length);
@@ -638,34 +638,34 @@ class Bip39Utils {
 		return msg;
 	} // Bip39Utils.LabelWithSize()
 	
-	static GetOptions( options ) {		
-		const getOptionValue = ( options_arg, key, default_value ) => {
-			let option_value = default_value;
-			if ( options_arg[key] != undefined ) {
-				option_value = options_arg[key];
+	static GetArgs( args ) {		
+		const getArgValue = ( args, key, default_value ) => {
+			let arg_value = default_value;
+			if ( args[key] != undefined ) {
+				arg_value = args[key];
 			}
-			return option_value; 
-		}; // getOptionValue()
+			return arg_value; 
+		}; // getArgValue()
 		
-		//console.log(">> " + _CYAN_ + "Bip39Utils.GetOptions" + _END_);
-		//console.log("   options 1: " + JSON.stringify(options));
+		//console.log(">> " + _CYAN_ + "Bip39Utils.GetArgs" + _END_);
+		//console.log("   args 1: " + JSON.stringify(args));
 		
-		if ( options == undefined ) {
-			 options = {};
+		if ( args == undefined ) {
+			 args = {};
 		}
 		
-		options["lang"]        = getOptionValue( options, "lang",        "EN" ); 
-		options[WORD_COUNT]    = getOptionValue( options, WORD_COUNT,    12 ); 
-		options[BLOCKCHAIN]    = getOptionValue( options, BLOCKCHAIN,    BITCOIN ); 
-		options[CRYPTO_NET]    = getOptionValue( options, CRYPTO_NET,    MAINNET );
-		options[UUID]          = getOptionValue( options, UUID,          uuidv4() );
-        options[ADDRESS_INDEX] = getOptionValue( options, ADDRESS_INDEX, 0 );	
-		options[ACCOUNT_INDEX] = getOptionValue( options, ACCOUNT_INDEX, 0 );		
+		args["lang"]        = getArgValue( args, "lang",        "EN" ); 
+		args[WORD_COUNT]    = getArgValue( args, WORD_COUNT,    12 ); 
+		args[BLOCKCHAIN]    = getArgValue( args, BLOCKCHAIN,    BITCOIN ); 
+		args[CRYPTO_NET]    = getArgValue( args, CRYPTO_NET,    MAINNET );
+		args[UUID]          = getArgValue( args, UUID,          uuidv4() );
+        args[ADDRESS_INDEX] = getArgValue( args, ADDRESS_INDEX, 0 );	
+		args[ACCOUNT_INDEX] = getArgValue( args, ACCOUNT_INDEX, 0 );		
 		
-		//console.log("   options 2: " + JSON.stringify(options));
+		//console.log("   args 2: " + JSON.stringify(args));
 		
-		return options; 
-	} // Bip39Utils.GetOptions()
+		return args; 
+	} // Bip39Utils.GetArgs()
 } // Bip39Utils class
 
 const test_Bip39Utils = async () => {

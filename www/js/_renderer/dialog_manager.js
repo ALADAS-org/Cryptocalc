@@ -5,7 +5,7 @@
 
 class DialogManager {
 	static Clean(trigger_event) {
-		console.log('DialogManager.Clean ');
+		//console.log('DialogManager.Clean ');
 		iziToast.destroy();
 		//DialogManager.CloseDialog(FILE_DIALOG_ID);
 		//DialogManager.CloseDialog(SEEDPHRASE_TO_PK_DIALOG_ID);

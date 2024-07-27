@@ -86,11 +86,50 @@ const stringToHex = (in_str) => {
   return hex_str;
 }; // stringToHex()
 
-//module.exports = { stringify }
+const asTwoParts = ( seedphrase, word_count_per_line ) => {
+		//console.log(">> " + _CYAN_ + "string_utils: asTwoParts" + _END_);
+		//console.log("\seedphrase:\n    " + seedphrase);
+		
+		// https://stackoverflow.com/questions/35499498/replace-nth-occurrence-of-string
+		
+		if ( seedphrase == undefined ) {
+			return "Null-SEEDPHRASE";
+		}
+		
+		let words            = seedphrase.split(' ');
+		let word_count       = words.length;
+        let seedphrase_lines =	[];	
+		
+		// NB: No need to cut in 2 parts less than 'word_count_per_line'	
+		if ( word_count <= word_count_per_line ) {
+			seedphrase_lines.push( seedphrase );
+		}
+		else {			
+			// Replace ('word_count'/2)th occurence of space to cut seedphrase
+			// ('word_count') words in two parts of ('word_count'/2) words
+			let nThIndex   = 0;
+		    let needle     = ' ';
+			let counter    = word_count / 2; // zero-based index
+			
+			if ( counter > 0 ) {
+				while ( counter-- ) {
+					// Get the index of the next occurence
+					nThIndex = seedphrase.indexOf( needle, nThIndex + needle.length );
+				}
+			}
+			seedphrase_lines.push( seedphrase.substring( 0, nThIndex ) );
+			seedphrase_lines.push( seedphrase.substring( nThIndex + needle.length ) );
+			//---------- Replace ('word_count'/2)th occurence of space				   
+		}  
+		
+		return seedphrase_lines;
+} // asTwoParts()
+
 if (typeof exports === 'object') {
 	exports.isString           = isString
 	exports.stringify          = stringify
 	exports.insertAfterEveryN  = insertAfterEveryN
 	exports.stringToHex        = stringToHex
 	exports.getShortenedString = getShortenedString
+	exports.asTwoParts         = asTwoParts
 } // exports of 'string_utils.js' 

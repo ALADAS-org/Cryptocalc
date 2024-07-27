@@ -5,46 +5,48 @@
 "use strict";
 
 // ===============================  RendererGUI class  ===============================
-// static
-// * GetInstance( entropy_hex, options )
+// NB: "Singleton" class
+// * static GetInstance()
 // ------------------------------------------------------
-// *       initWallet()
-// * async onGUIEvent( data )
-// * async didFinishLoadInit()
-// * async localizeHtmlNodes()
-// *       registerCallbacks()
-// * async updateFields()
-// * async getSaltedEntropySource()
-// * async propagateFields( entropy, wif )
-// * async updateEntropy( entropy )
-// *       updateBlockchain( blockchain )
-// * async generateWalletAddress( blockchain, entropy )
-// *       updateWalletURL( blockchain, wallet_address )
-// *       updateWIF( blockchain, wif )
-// *       updatePrivateKey( blockchain, PRIV_KEY )
-// * async updateChecksum( entropy )
-// * async updateMnemonics( entropy )
-// * async updateWordIndexes()
-// * async generateSalt()
-// * async generateRandomFields()
-// * async getCryptoInfo()
-// * 	   clearFields( field_ids )
-// * async onChangeEntropySize( evt )
-// * async onChangeWordCount( evt )
-// * async updateEntropySize( entropy_bit_count )
-// * async onChangeBip39Lang( evt )
-// * async onChangeBlockchain( evt )
-// *       openTabPage( pageName, elt, color )
-// * async onKeyDown( evt )
-// * async onInput( evt )
-// *       setFocus( elt_id )
-// *       onFocus( evt )
-// *       getLang() 
-// * async importRawData()
-// *       getElement( elt_id )
-// *       getField( elt_id )
-// *       setField( elt_id, value_str )
-// *       setEventHandler( elt_id, event_name, handler_function )
+// *        initWallet()
+// * async  updateOptionsFields( json_data )
+// * async  setSupportedBlockchains( supported_blockchains )
+// * async  updateEntropySize( entropy_size )
+// * async  updateWalletMode( wallet_mode )
+// * async  onGUIEvent( data )
+// * async  didFinishLoadInit()
+// * async  localizeHtmlNodes()
+// *        registerCallbacks()
+// * async  updateFields()
+// * async  getSaltedEntropySource()
+// * async  propagateFields( entropy, wif )
+// * async  updateEntropy( entropy )
+// *        updateBlockchain( blockchain )
+// * async  generateHDWalletAddress( blockchain, entropy )
+// * async  generateSimpleWalletAddress( blockchain, entropy )
+// *        updateWalletURL( blockchain, wallet_address )
+// *        updateWIF( blockchain, wif )
+// *        updatePrivateKey( blockchain, PRIV_KEY )
+// * async  updateChecksum( entropy )
+// * async  updateMnemonics( entropy )
+// * async  updateWordIndexes()
+// * async  generateSalt()
+// * async  generateRandomFields()
+// * async  getCryptoInfo()
+// * 	    clearFields( field_ids )
+// * async  onChangeEntropySize( evt )
+// * async  onChangeWordCount( evt )
+// * async  onChangeBip39Lang( evt )
+// * async  onChangeWalletMode( evt )
+// * async  onChangeBlockchain( evt )
+// *        openTabPage( pageName, elt, color )
+// * async  onKeyDown( evt )
+// * async  onInput( evt )
+// *        setFocus( elt_id )
+// *        onFocus( evt )
+// *        getLang() 
+// * async  importRawData()
+// *        setEventHandler( elt_id, event_name, handler_function )
 
 const ALLOWED_ALPHABETS       = { [ENTROPY_ID]: HEX_ALPHABET };
 const FIELD_IDS               = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
@@ -55,34 +57,6 @@ const EDITABLE_FIELD_IDS      = [ ENTROPY_SRC_FORTUNES_ID, ENTROPY_ID, MNEMONICS
 const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "RendererGUI.onGUIEvent: ";
 
 const trigger_event = ( elt, event_type ) => elt.dispatchEvent( new CustomEvent( event_type, {} ) );
-
-const getChecksumBitCount = ( word_count ) => {
-	if ( word_count == undefined ) {
-		 word_count = 12;
-	}
-	let checksum_bit_count = 4; // default case is 12 words / 4 bits
-	switch ( word_count ) {
-		case 12:	checksum_bit_count = 4;
-					break;
-					
-		case 15:	checksum_bit_count = 5;
-					break;
-					
-		case 18:	checksum_bit_count = 6;
-					break;
-					
-		case 21:	checksum_bit_count = 7;
-					break;
-					
-		case 24:	checksum_bit_count = 8;
-					break;
-					
-		default:	checksum_bit_count = 4;
-					break;
-	}		
-	return checksum_bit_count;
-}; // getChecksumBitCount()	
-
 
 class RendererGUI {	
 	static #key = {};
@@ -103,7 +77,8 @@ class RendererGUI {
 		
 		this.initWallet();
 		
-		this.Options = {};
+		this.Options                      = {};
+		this.SupportedBlockchains         = {};
 		
 		this.entropy_source_type          = IMAGE_ENTROPY_SRC_TYPE;
 		
@@ -130,22 +105,128 @@ class RendererGUI {
 		this.wallet[BLOCKCHAIN] = ETHEREUM;
 	} // initWallet();
 	
-	async updateOptionsFields( json_data ) {
+	async updateOptionsFields( options_data ) {
 		let log_msg = ">> " + _CYAN_ + "RendererGUI.updateOptionsFields" + _END_;
 		log2Main(log_msg);
+		if ( options_data == undefined ) {
+			log2Main("   " + _RED_ + "**ERROR** options_data: " + options_data + _END_);
+			await window.ipcMain.QuitApp();
+		}
 		
-		let default_blockchain = json_data['Default Blockchain'];
+		log2Main("   *!!* options_data: " + JSON.stringify(options_data));		
+		
+		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN];
 		//log2Main( "   default_blockchain: " + default_blockchain );
 		HtmlUtils.SetField( WALLET_BLOCKCHAIN_ID, default_blockchain );		
 		HtmlUtils.SetField( WALLET_COIN_ID, COIN_ABBREVIATIONS[default_blockchain] );
 
-		//let wallet_mode = json_data['Wallet Mode'];
-		//log2Main( "   wallet_mode: " + wallet_mode );
-		//HtmlUtils.SetField( WALLET_MODE_SELECT_ID, wallet_mode );
+		let wallet_mode = options_data[WALLET_MODE];
+		log2Main( "   wallet_mode: " + wallet_mode );
+		await this.updateWalletMode( wallet_mode );
 
-		let entropy_size = json_data['Entropy Size'];
+		let entropy_size = options_data[ENTROPY_SIZE][wallet_mode];
+		log2Main( "   entropy_size: " + entropy_size );
         await this.updateEntropySize( entropy_size );		
-	} // updateOptionsFields()
+	} // async updateOptionsFields()
+	
+	async setSupportedBlockchains( supported_blockchains ) {
+		let log_msg = ">> " + _CYAN_ + "RendererGUI.setSupportedBlockchains" + _END_;
+		log2Main(log_msg);		
+		
+		await this.updateWalletMode();
+	} // setSupportedBlockchains()
+	
+	async onChangeWalletMode( evt ) {		
+		let elt = evt.target || evt.srcElement;		
+		if (elt.id == WALLET_MODE_SELECT_ID) {
+			let wallet_mode = elt.value;
+			log2Main(">> " + _RED_ + "RendererGUI.onChangeWalletMode() " + _END_ + wallet_mode);
+			log2Main("   ++ 0 wallet_mode: " + wallet_mode);
+			log2Main("   ++ 1 this.Options: " + this.Options);
+			await this.updateWalletMode( wallet_mode );
+			log2Main("   ++ 2 this.Options: " + this.Options);			
+
+            await window.ipcMain.UpdateOptions( this.Options );				  
+	    }
+	} // onChangeWalletMode()	
+	
+	async updateWalletMode( wallet_mode ) {
+		let log_msg = ">> " + _GREEN_ + "RendererGUI.updateWalletMode" + _END_;
+		log2Main(log_msg);
+		log2Main("   1 this.Options: " + JSON.stringify(this.Options) );
+		log2Main("   1 wallet_mode: " + wallet_mode );
+		
+		if ( wallet_mode != undefined ) {			
+			this.Options[WALLET_MODE] = wallet_mode;
+		}
+		else {
+			wallet_mode = this.Options[WALLET_MODE];
+		}		
+
+	    if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
+			HtmlUtils.SetField( WALLET_MODE_SELECT_ID, SIMPLE_WALLET_TYPE );
+			HtmlUtils.ShowElement( SW_ENTROPY_SIZE_ID );
+			HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
+			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.HideElement( DERIVATION_PATH_ROW );
+ 
+            this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;	
+		}
+		else if ( wallet_mode == HD_WALLET_TYPE ) {
+			HtmlUtils.SetField( WALLET_MODE_SELECT_ID, HD_WALLET_TYPE );
+			HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowElement( DERIVATION_PATH_ROW );
+			HtmlUtils.HideElement( SW_ENTROPY_SIZE_ID);
+			HtmlUtils.HideElement( SW_WORD_COUNT_ID );			
+		}
+				
+		//await ipcMain.UpdateOptions( this.Options ); 
+	} // async updateWalletMode()
+	
+	async updateEntropySize( entropy_size ) {		
+		log2Main(">> " + _YELLOW_ + "RendererGUI.updateEntropySize() " + _END_ + entropy_size);
+		this.expected_entropy_bytes  = 16;
+		this.expected_entropy_digits = 32;
+		this.expected_word_count     = 12;
+		
+		if ( isString( entropy_size ) ) {
+			entropy_size = parseInt( entropy_size );
+		}
+		
+		log2Main("   ++ entropy_size: " + entropy_size);
+		
+		this.expected_entropy_bytes  = EntropySize.GetExpectedByteCount( entropy_size );
+		this.expected_word_count     = EntropySize.GetExpectedWordCount( entropy_size );
+		this.expected_entropy_digits = this.expected_entropy_bytes * 2;
+		
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		entropy_elt.setAttribute("minlength", this.expected_entropy_digits);
+		entropy_elt.setAttribute("maxlength", this.expected_entropy_digits);
+		
+		//log2Main("   this.expected_word_count: " + this.expected_word_count);
+			
+		HtmlUtils.SetField( ENTROPY_SIZE_SELECT_ID, entropy_size );
+		HtmlUtils.SetField( WORD_COUNT_SELECT_ID,   this.expected_word_count );
+		
+		await this.updateFields();
+		
+		let wallet_mode = this.Options[WALLET_MODE];
+		
+		log2Main("   0 %% this.Options:   " + JSON.stringify(this.Options));
+		log2Main("   1 %% entropy_size:   " + entropy_size);
+		
+		this.Options[ENTROPY_SIZE][wallet_mode] = entropy_size;
+		log2Main("   2 %% ENTROPY_SIZE:   " + this.Options[ENTROPY_SIZE][wallet_mode]);		
+        
+		log2Main("   3 %% Default Blockchain: " + this.Options[DEFAULT_BLOCKCHAIN]);		
+		
+		//HtmlUtils.SetField( WALLET_BLOCKCHAIN_ID, default_blockchain );
+        log2Main("   4 %% this.Options: " + JSON.stringify(this.Options));	
+
+        // ** recursive **		
+		//await window.ipcMain.UpdateOptions( this.Options );
+	} // async updateEntropySize()
 	
 	//**********************************************************************************
 	//*****************************   onGUIEvent( data )   *****************************
@@ -153,7 +234,8 @@ class RendererGUI {
 	async onGUIEvent( data ) {
 		//log2Main(">> " + _CYAN_ + "RendererGUI.OnGUIEvent()" + _END_);
 
-		let event_name = data[0];
+		let event_name       = data[0];		
+		let description_data = "";
 				
 		switch ( event_name ) {
 			case FromMain_DID_FINISH_LOAD:
@@ -171,14 +253,22 @@ class RendererGUI {
 			case FromMain_FILE_SAVE:
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_FILE_SAVE + _END_ );	
 				let crypto_info = await this.getCryptoInfo();
-                window.ipcMain.SaveWalletInfo( crypto_info );				
+                window.ipcMain.SaveWalletInfo( crypto_info );
+				this.showSaveWalletInfoDialog();				
 				break;
 				
 			case FromMain_UPDATE_OPTIONS:
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_UPDATE_OPTIONS + _END_ );	
 				this.Options = data[1];	
-                log2Main("   this.Options: " + JSON.stringify(this.Options));
+                log2Main("   >> this.Options: " + JSON.stringify(this.Options));
                 await this.updateOptionsFields( this.Options );				
+				break;				
+				
+			case FromMain_SET_SUPPORTED_BLOCKCHAINS:
+			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SET_SUPPORTED_BLOCKCHAINS + _END_ );	
+				this.SupportedBlockchains = data[1];	
+                //log2Main("   this.SupportedBlockchains: " + JSON.stringify(this.SupportedBlockchains));
+                await this.setSupportedBlockchains( this.SupportedBlockchains );				
 				break;
 				
 			case FromMain_SEND_IMG_URL:
@@ -221,11 +311,10 @@ class RendererGUI {
 				if (expected_entropy_digits < 64) {
 					entropy_data = entropy_data.substring(0,expected_entropy_digits);
 				}	
-				log2Main("   entropy_data: " + entropy_data);
+				log2Main("   entropy_data:           " + entropy_data);
 				//log2Main("   2 entropy_data length: " + entropy_data.length);
 				this.entropy_source_is_user_input = false; // forces Salt/uuid update
-				this.updateEntropy( entropy_data );								
-
+				this.updateEntropy( entropy_data );	
 				break;
 			
             // File/Import/From file...			
@@ -234,7 +323,7 @@ class RendererGUI {
 				let raw_data_str = data[1];
 				//log2Main("   FromMain_SET_SEED_FIELD_VALUE:\n" + raw_data_str);
                 HtmlUtils.SetField( ENTROPY_ID, raw_data_str );	
-				this.updateFields();				
+				await this.updateFields();				
 				break;
 			
             // File/Import/Random Fortune Cookie			
@@ -244,7 +333,7 @@ class RendererGUI {
 				log2Main("   fortune_cookie: " + getShortenedString( fortune_cookie ));
 				// HtmlUtils.SetField( ENTROPY_ID, fortune_cookie );	
 				HtmlUtils.SetField( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
-				this.updateFields();
+				await this.updateFields();
 				break;
 				
 			case FromMain_SHOW_ERROR_DIALOG:
@@ -252,8 +341,9 @@ class RendererGUI {
 				break;
 				
 			case FromMain_TOOLS_OPTIONS_DIALOG:
-				log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_TOOLS_OPTIONS_DIALOG + _END_ );
+				log2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_OPTIONS_DIALOG + _END_ );
 				let options_data = data[1];
+				log2Main("   $$ options_data: " + JSON.stringify(options_data)); 
 				ToolsOptionsDialog.ShowDialog( options_data );
 				break;
 				
@@ -261,21 +351,22 @@ class RendererGUI {
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_HELP_ABOUT + _END_ );
 				let crypto_calc_version = RendererSession.GetValue(CRYPTO_CALC_VERSION);
 				let i18n_msg = await window.ipcMain.GetLocalizedMsg("HelpAboutMsg");
-				let description_data =   
+				description_data =   
 						  "<center><b>Cryptocalc " + crypto_calc_version + "</b></center><br>" 
 						+ "&nbsp;" + i18n_msg;
 			    //log2Main("   " + FromMain_HELP_ABOUT + " " + description_data);
 
 				// https://izitoast.marcelodolza.com/
 				DialogManager.Clean();
-				iziToast.info({
-				//	iconUrl:         './icons/ZCash_rev_icn.png',
-					position:        'center',
-					backgroundColor: 'lightblue',
-					message:         description_data,
-					maxWidth:        450, layout: 2,
-					timeout:         false, progressBar: false
-				});
+				GuiUtils.ShowInfoDialog( description_data );
+				//iziToast.info({
+				////	iconUrl:         './icons/ZCash_rev_icn.png',
+				//	position:        'center',
+				//	backgroundColor: 'lightblue',
+				//	message:         description_data,
+				//	maxWidth:        450, layout: 2,
+				//	timeout:         false, progressBar: false
+				//});
 				break;	
 				
 			default:
@@ -351,6 +442,8 @@ class RendererGUI {
 		this.setEventHandler( ENTROPY_SIZE_SELECT_ID,'change',   async (evt) => { await this.onChangeEntropySize(evt); } );
         this.setEventHandler( WORD_COUNT_SELECT_ID,  'change',   async (evt) => { await this.onChangeWordCount(evt); } );
 		this.setEventHandler( LANG_SELECT_ID,        'change',   async (evt) => { await this.onChangeBip39Lang(evt); } );		
+		
+		this.setEventHandler( WALLET_MODE_SELECT_ID, 'change',   async (evt) => { await this.onChangeWalletMode(evt); } );
 		this.setEventHandler( WALLET_BLOCKCHAIN_ID,  'change',   async (evt) => { await this.onChangeBlockchain(evt); } );
 		this.setEventHandler( MNEMONICS_COPY_BTN_ID, 'click',    (evt) => { this.onCopyButton(MNEMONICS_COPY_BTN_ID); } );
 		
@@ -371,7 +464,7 @@ class RendererGUI {
 	async updateFields( entropy ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.updateFields()" + _END_);
 		
-		log2Main("   this.entropy_source_type: " + this.entropy_source_type);
+		//log2Main("   this.entropy_source_type: " + this.entropy_source_type);
 		
 		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID ); 
 		
@@ -381,7 +474,7 @@ class RendererGUI {
 			await this.propagateFields( entropy );
 		}
 		else {	
-            log2Main("   " + _YELLOW_ + "Entropy is NOT User input" + _END_);		
+            //log2Main("   " + _YELLOW_ + "Entropy is NOT User input" + _END_);		
 			let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID ); 
 			
 			//log2Main("   expected_entropy_bytes:  " + this.expected_entropy_bytes);
@@ -432,7 +525,7 @@ class RendererGUI {
 	
 	async getSaltedEntropySource() {
 		let entropy_source = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
-		log2Main(  ">> " + _RED_ + "RendererGUI.getSaltedEntropySource()" 
+		log2Main(  ">> " + _CYAN_ + "RendererGUI.getSaltedEntropySource()" 
 		         + "  " + _YELLOW_ + entropy_source + _END_ );		 
 		
 		let new_uuid = await window.ipcMain.GetUUID();
@@ -467,7 +560,7 @@ class RendererGUI {
         await this.updateMnemonics( entropy_hex ); 
 		await this.updateChecksum( entropy_hex );
 
-		let wallet = await this.generateWalletAddress( blockchain, entropy_hex );
+		let wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
     } // updateEntropy()
 	
 	async updateBlockchain( blockchain ) {
@@ -476,7 +569,7 @@ class RendererGUI {
 		
 		let entropy_hex = HtmlUtils.GetField( ENTROPY_ID );
 		let mnemonics   = HtmlUtils.GetField( MNEMONICS_ID );
-		let wallet = await this.generateWalletAddress( blockchain, entropy_hex );
+		let wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
 		
 		this.bip32_account_index = 0;
 		this.bip32_address_index = 0;
@@ -491,8 +584,8 @@ class RendererGUI {
         this.updateWalletURL( blockchain, wallet_address );
 	} // updateBlockchain()
 	
-	async generateWalletAddress( blockchain, entropy ) {
-		log2Main(  ">> " + _CYAN_ + "RendererGUI.generateWalletAddress() " 
+	async generateHDWalletAddress( blockchain, entropy ) {
+		log2Main(  ">> " + _CYAN_ + "RendererGUI.generateHDWalletAddress() " 
 		         + _YELLOW_ + blockchain + " " + this.entropy_source_type + _END_);		
 		log2Main("   " + _YELLOW_ + "entropy:                " + _END_ + entropy);
 		
@@ -516,11 +609,14 @@ class RendererGUI {
 		let data           = undefined;
 		
 		let mnemonics      = HtmlUtils.GetField( MNEMONICS_ID );
-		let words          = mnemonics.split(' ');
-		
-		let separator      = '\n';
-		if ( words.length == 12 ) separator = '              '; 
-		log2Main("   mnemonics:" + separator + mnemonics);
+		let words          = mnemonics.split(' ');		
+		let separator      = '\n';		
+
+        let mnemonics_as_2parts = asTwoParts( mnemonics, 15 );
+        log2Main("   mnemonics:              " + mnemonics_as_2parts[0]);		
+        if ( mnemonics_as_2parts.length > 1 ) { 
+			log2Main("                           " + mnemonics_as_2parts[1]);			
+		}
 		
 		let wif            	    = "";
 		let PRIV_KEY            = "";
@@ -546,7 +642,7 @@ class RendererGUI {
 			//}
 			if ( blockchain == BITCOIN ) {				
 				PRIV_KEY = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
-				wif   = "";
+				wif = "";
 			}
 			else if (    blockchain == DOGECOIN || blockchain == LITECOIN
                       || blockchain == FIRO	|| blockchain == BITCOIN_CASH ) {				
@@ -569,9 +665,11 @@ class RendererGUI {
 		this.updatePrivateKey( blockchain, PRIV_KEY );
 		
 		//---------- Update 'Derivation Path' in "Wallet" Tab ----------
+		//log2Main(  "   " + _YELLOW_ 
+		//         + "new_wallet keys: " + _END_ + JSON.stringify(Object.keys(new_wallet)));
 		new_derivation_path = new_wallet[DERIVATION_PATH];
 		//log2Main(  "   " + _YELLOW_ 
-		//         + "new_derivation_path:    " + _END_ + new_derivation_path);
+		//         + "new_wallet:\n" + _END_ + JSON.stringify(new_wallet));
 				 
 		let derivation_path_nodes = new_derivation_path.split("/");
         HtmlUtils.SetField( COIN_TYPE_ID,     derivation_path_nodes[2] + "/" );
@@ -605,7 +703,7 @@ class RendererGUI {
 		this.updateWalletURL( blockchain, new_wallet_address );
 		
 		return new_wallet;
-	} // generateWalletAddress()
+	} // generateHDWalletAddress()
 	
 	updateWalletURL( blockchain, wallet_address ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.updateWalletURL() " + _YELLOW_ + blockchain + _END_);
@@ -765,10 +863,11 @@ class RendererGUI {
 	
 	async onChangeEntropySize( evt ) {		
 		let elt = evt.target || evt.srcElement;		
-		if (elt.id == ENTROPY_SIZE_SELECT_ID) {
-			let entropy_bit_count = parseInt( elt.value );
-			log2Main(">> " + _CYAN_ + "RendererGUI.onChangeEntropySize() " + _END_ + entropy_bit_count);
-			await this.updateEntropySize( entropy_bit_count );
+		if ( elt.id == ENTROPY_SIZE_SELECT_ID ) {
+			let entropy_size = parseInt( elt.value );
+			log2Main(">> " + _GREEN_ + "RendererGUI.onChangeEntropySize() " + _END_ + entropy_size);
+			log2Main("   entropy_size: " + entropy_size);
+			await this.updateEntropySize( entropy_size );
 	    }	
 	} // onChangeEntropySize()	
 	
@@ -778,55 +877,11 @@ class RendererGUI {
 		if (elt.id == WORD_COUNT_SELECT_ID) {
 			let word_count = parseInt( elt.value );
 			log2Main(">> " + _CYAN_ + "RendererGUI.onChangeWordCount() " + _END_ + word_count);
-			let entropy_bit_count = ( word_count * 11 ) - getChecksumBitCount( word_count );
-			await this.updateEntropySize( entropy_bit_count );
+			let entropy_size = 
+			    ( word_count * 11 ) - EntropySize.GetChecksumBitCount( word_count );
+			await this.updateEntropySize( entropy_size );
 	    }	
-	} // onChangeWordCount()
-	
-	async updateEntropySize( entropy_bit_count ) {		
-		log2Main(">> " + _CYAN_ + "RendererGUI.updateEntropySize() " + _END_ + entropy_bit_count);
-		this.expected_entropy_bytes  = 16;
-		this.expected_entropy_digits = 32;
-		this.expected_word_count     = 12;
-		//log2Main(" typeof entropy_bit_count: " + typeof entropy_bit_count);
-		if ( isString( entropy_bit_count ) ) {
-			entropy_bit_count = parseInt( entropy_bit_count );
-		}
-		switch ( entropy_bit_count ) { 
-			case 128: 	this.expected_entropy_bytes = 16; // 32 hexadecimal digits
-						this.expected_word_count    = 12;
-						break;
-						
-			case 160: 	this.expected_entropy_bytes = 20; // 40 hexadecimal digits
-						this.expected_word_count    = 15;
-						break;
-						
-			case 192: 	this.expected_entropy_bytes = 24; // 48 hexadecimal digits
-						this.expected_word_count    = 18;
-						break;
-						
-			case 224: 	this.expected_entropy_bytes = 28; // 56 hexadecimal digits
-						this.expected_word_count    = 21;
-						break;
-						
-			case 256: 	this.expected_entropy_bytes = 32; // 64 hexadecimal digits
-						this.expected_word_count    = 24;
-						break;
-		} // entropy_bit_count
-		
-		this.expected_entropy_digits = this.expected_entropy_bytes * 2;
-		
-		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
-		entropy_elt.setAttribute("minlength", this.expected_entropy_digits);
-		entropy_elt.setAttribute("maxlength", this.expected_entropy_digits);
-		
-		//log2Main("   this.expected_word_count: " + this.expected_word_count);
-			
-		HtmlUtils.SetField( ENTROPY_SIZE_SELECT_ID, entropy_bit_count );
-		HtmlUtils.SetField( WORD_COUNT_SELECT_ID,   this.expected_word_count );
-		
-		await this.updateFields();
-	} // updateEntropySize()
+	} // async onChangeWordCount()
 	
 	async onSwitchEntropySourceType() {
 		log2Main(">> " + _CYAN_ + "RendererGUI.onSwitchEntropySource() " + _END_);
@@ -843,7 +898,7 @@ class RendererGUI {
 		}
 		
         await this.getNewEntropySource();		
-    } // onSwitchEntropySourceType()
+    } // async onSwitchEntropySourceType()
 	
 	async onChangeBip39Lang( evt ) {
 		let elt = evt.target || evt.srcElement;		
@@ -856,7 +911,7 @@ class RendererGUI {
 		else {
 			log2Main(">> " + _CYAN_ + "RendererGUI.onChangeBip39Lang() " + _END_);	
 		}
-	} // onChangeBip39Lang()
+	} // async onChangeBip39Lang()
 
 	async onChangeBlockchain( evt ) {
 		let elt = evt.target || evt.srcElement;		
@@ -865,13 +920,21 @@ class RendererGUI {
 			log2Main(">> " + _CYAN_ + "RendererGUI.onChangeBlockchain() " + _END_ + blockchain);
 			await this.updateBlockchain( blockchain );
 	    }
-	} // onChangeBlockchain()
+	} // async onChangeBlockchain()
 	
 	async onSaveWalletInfo( evt ) {
 		log2Main( ">> " + _CYAN_ + "RendererGUI.onSaveWalletInfo() " + _END_ );
 		let crypto_info = await this.getCryptoInfo();
-        window.ipcMain.SaveWalletInfo( crypto_info );		
-	} // onSaveWalletInfo()
+        window.ipcMain.SaveWalletInfo( crypto_info );
+		this.showSaveWalletInfoDialog();		
+	} // async onSaveWalletInfo()
+	
+	showSaveWalletInfoDialog() {
+		log2Main( ">> " + _CYAN_ + "RendererGUI.showSaveWalletInfoDialog() " + _END_ );
+        DialogManager.Clean();
+		let description_data = "<center>Wallet Informations saved</center>";
+		GuiUtils.ShowInfoDialog( description_data );		
+	} // showSaveWalletInfoDialog()
 	
 	onToggleDebug( evt ) {
 		log2Main( ">> " + _CYAN_ + "RendererGUI.onToggleDebug() " + _END_ );
@@ -1241,21 +1304,24 @@ class RendererGUI {
 		this.entropy_source_is_user_input = is_user_input;
 		this.updateStatusbarInfo( is_user_input );
 		if ( is_user_input ) {
-			HtmlUtils.HideElement("entropy_src_row");
+			HtmlUtils.HideElement( ENTROPY_SRC_ROW );
 			HtmlUtils.HideElement("salt_row");	
-			HtmlUtils.HideElement("entropy_bits_select_id");
-			HtmlUtils.HideElement("word_count_select_id");
+			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
 			
-			HtmlUtils.SetField(CHECKSUM_ID,          "");
-            HtmlUtils.SetField(MNEMONICS_ID,         "");	
-            HtmlUtils.SetField(MNEMONICS_4LETTER_ID, "");
-			HtmlUtils.SetField(WORD_INDEXES_ID,      "");			
+			HtmlUtils.SetField( CHECKSUM_ID,          "" );
+            HtmlUtils.SetField( MNEMONICS_ID,         "" );	
+            HtmlUtils.SetField( MNEMONICS_4LETTER_ID, "" );
+			HtmlUtils.SetField( WORD_INDEXES_ID,      "" );			
 		}
 		else {
-			HtmlUtils.ShowElement("entropy_src_row");
-			HtmlUtils.ShowElement("salt_row");		
-            HtmlUtils.ShowElement("entropy_bits_select_id");
-			HtmlUtils.ShowElement("word_count_select_id");
+			HtmlUtils.ShowElement( ENTROPY_SRC_ROW );
+			HtmlUtils.ShowElement("salt_row");	
+			
+            if ( this.Options[WALLET_MODE] == HD_WALLET_TYPE ) {			
+				HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
+				HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
+			}			
 		}
 	} // setEntropySourceIsUserInput()
 	
@@ -1406,15 +1472,15 @@ class RendererGUI {
 		
 		//log2Main(">> " + _CYAN_ + "RendererGUI.getCryptoInfo() " + _END_);
 		
-		crypto_info['Derivation Path'] =  "m/44'/" + COIN_TYPES[blockchain] + "'/"
-		                                + HtmlUtils.GetField( ACCOUNT_ID ) + "'/0/"
-										+ HtmlUtils.GetField( ADDRESS_INDEX_ID );
+		crypto_info[DERIVATION_PATH] =  "m/44'/" + COIN_TYPES[blockchain] + "'/"
+		                              + HtmlUtils.GetField( ACCOUNT_ID ) + "'/0/"
+									  + HtmlUtils.GetField( ADDRESS_INDEX_ID );
 		
 		let entropy_value = HtmlUtils.GetField( ENTROPY_ID ); 
 		crypto_info['Entropy'] = entropy_value;
 		
 		let entropy_size = (entropy_value.length / 2) * 8;
-		crypto_info['Entropy Size'] = entropy_size + " bits";
+		crypto_info[ENTROPY_SIZE] = entropy_size + " bits";
 		
 		crypto_info['lang'] = lang;
 		

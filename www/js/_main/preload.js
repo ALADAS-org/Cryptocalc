@@ -9,12 +9,13 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld(
 	"ipcMain", {
+		QuitApp:                   ()     => ipcRenderer.invoke("request:quit_app"),
 		log2Main:                  (data) => ipcRenderer.send("request:log2main", data),
 		
 		ToggleDebugPanel:          (data) => ipcRenderer.send("request:toggle_debug_panel", data),
 		SaveOptions:               (data) => ipcRenderer.invoke("request:save_options", data),
 		ResetOptions:              (data) => ipcRenderer.invoke("request:reset_options", data),
-		UpdateOptions:             (data) => ipcRenderer.send("request:update_options", data),
+		UpdateOptions:             (data) => ipcRenderer.invoke("request:update_options", data),
 		
 		EntropySourceToEntropy:    (data) => ipcRenderer.invoke("request:entropy_src_to_entropy", data),
 		MnemonicsToEntropyInfo:    (data) => ipcRenderer.invoke("request:mnemonics_to_entropy_info", data),

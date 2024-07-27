@@ -1,9 +1,30 @@
-// =====================================================================================
-// ================================   electron_main.js   ===============================
-// =====================================================================================
+// ====================================================================================
+// ===============================   electron_main.js   ===============================
+// ====================================================================================
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
 "use strict";
 
+// ===============================  ElectronMain class  ===============================
+// NB: "Singleton" class
+// * static GetInstance()
+//          createBrowserWindow( url )
+// * async  updateOptions( options_data )
+// *        getMainWindow()
+// *        getMenuTemplate()
+// *        createWindow()
+// *        doFileSave()
+// *        getNewFortuneCookie()
+// *        toggleDebugPanel()
+// *        getUserSelectedFile()
+// * async  loadSupportedBlockchains()
+// * async  loadOptions()
+// * async  setDefaultOptions()
+// * async  updateOptions( options_data )
+// * async  saveOptions( options_data )
+// * async  resetOptions()
+// *        setCallbacks()
+// * async  getAppVersion()
+// ------------------------------------------------------
 const MAIN_WINDOW_WIDTH  = 975;
 const MAIN_WINDOW_HEIGHT = 630; 
 
@@ -11,19 +32,25 @@ const { app, Menu, BrowserWindow, ipcMain,
         shell, remote, dialog } = require('electron');	
 		// https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron
 
-const fs             = require('fs');
-const path           = require('path');
-const sha256         = require('js-sha256');
-const wif            = require('wif');
-const { v4: uuidv4 } = require('uuid');
+require('v8-compile-cache');
 
-const bwipjs         = require('bwip-js');
+const fs               = require('fs');
+const firstline        = require('firstline');
+const path             = require('path');
+const sha256           = require('js-sha256');
+const { v4: uuidv4 }   = require('uuid');
+const bwipjs           = require('bwip-js');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_ 
-	  } = require('../util/color/color_console_codes.js');
+	  }                = require('../util/color/color_console_codes.js');
+	  
+const { APP_VERSION,
+        DEFAULT_BLOCKCHAIN, GUI_THEME, 
+        WALLET_MODE, 
+		ENTROPY_SIZE } = require('../const_keywords.js');
 
 const { VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
-        REQUEST_LOG_2_MAIN, 
+        REQUEST_QUIT_APP, REQUEST_LOG_2_MAIN, 
 		REQUEST_TOGGLE_DEBUG_PANEL,
 		REQUEST_OPEN_URL, REQUEST_LOAD_IMG_FROM_FILE, REQUEST_DRAW_RND_CRYPTO_LOGO,
 		
@@ -52,7 +79,8 @@ const { VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
 		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_UPDATE_OPTIONS, 
 		FromMain_SEND_IMG_URL,
 		FromMain_SET_FORTUNE_COOKIE, 
-        FromMain_SET_RENDERER_VALUE, FromMain_SET_SEED_FIELD_VALUE 		
+        FromMain_SET_RENDERER_VALUE, FromMain_SET_SEED_FIELD_VALUE,
+        FromMain_SET_SUPPORTED_BLOCKCHAINS 		
 	  }                                 = require('../const_events.js');
 	  
 const { ENTROPY_SOURCE_IMG_ID
@@ -85,12 +113,12 @@ const { L10nUtils }                     = require('../L10n/L10n_utils.js');
 
 const { Solana_API }                    = require('../crypto/solana_api.js');
 
-const default_options = {
-	"Default Blockchain": "Bitcoin",
-	"Wallet Mode":        "HD Wallet",  
-	"Entropy Size":       "128",
-	"Theme":              "Default"
-};
+const DEFAULT_OPTIONS = {
+	[DEFAULT_BLOCKCHAIN]: "Bitcoin",
+	[WALLET_MODE]:        "HD Wallet",  
+	[ENTROPY_SIZE]:       { ["HD Wallet"]:"128", ["Simple Wallet"]: "256" },
+	[GUI_THEME]:          "Default"
+}; // DEFAULT_OPTIONS
 		
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -102,10 +130,15 @@ const error_handler = (err) => {
 class ElectronMain {
 	static #key = {};
 	static #_Singleton = new ElectronMain( this.#key );
+	static #_InstanceCount = 0;
 	
 	static GetInstance() {
-		if( ElectronMain.#_Singleton == undefined ){
+		if( ElectronMain.#_Singleton == undefined ) {
 			ElectronMain.#_Singleton = new ElectronMain();
+			if (ElectronMain.#_Singleton > 0) {
+				throw new TypeError("ElectronMain constructor called more than once.");
+			}
+			ElectronMain.#_Singleton++;
         }
         return ElectronMain.#_Singleton;
     } // ElectronMain.GetInstance() 
@@ -120,7 +153,8 @@ class ElectronMain {
 		this.Show_DebugPanel           = false;
 		
 		this.MainWindow                = null;
-	    this.Options                   = {};	
+	    this.Options                   = {};
+        this.SupportedBlockchains      = {};		
 	    this.FirstImageAsEntropySource = true;
 	} // ** Private constructor **
 	
@@ -216,7 +250,7 @@ class ElectronMain {
 		this.MainWindow = new BrowserWindow(
 			{ width:  MAIN_WINDOW_WIDTH, 
 			  height: MAIN_WINDOW_HEIGHT,
-			  //icon:   path.join(__dirname, "../../icons/ZCash_rev_icn.png"),
+			  icon:   path.join(__dirname, "../../icons/Cryptocalc_Icon.png"),
 			  webPreferences: {
 				contextIsolation: true, // NB: 'true' is default value but keep it there anyway
 				preload:          path.join(__dirname, "./preload.js")
@@ -243,6 +277,10 @@ class ElectronMain {
 					
 					//---------- Set 'Cryptocalc_version' in Renderer GUI ----------
 					let Cryptocalc_version = process.env.npm_package_version;
+					if (   Cryptocalc_version == undefined 
+					    || Cryptocalc_version == "undefined")  {
+						Cryptocalc_version = await this.getAppVersion();						
+					}
 					//console.log("   Cryptocalc: " + Cryptocalc_version);				
 					this.MainWindow.setTitle('Cryptocalc ' + Cryptocalc_version); 
 					//---------- Set 'Cryptocalc_version' in Renderer GUI
@@ -261,6 +299,7 @@ class ElectronMain {
 					});
 					
 					await this.loadOptions();
+					await this.loadSupportedBlockchains();
 					
 					this.setCallbacks();
 				}
@@ -318,6 +357,20 @@ class ElectronMain {
 		});
 	} // getUserSelectedFile()
 	
+	async loadSupportedBlockchains() {
+		console.log(">> " + _CYAN_ + "ElectronMain.loadSupportedBlockchains" + _END_);
+		let supported_blockchains_path = app.getAppPath() 
+		                                 + '/www/js/crypto/supported_blockchains.json';
+		const supported_blockchains_str = fs.readFileSync( supported_blockchains_path );
+		this.SupportedBlockchains = JSON.parse( supported_blockchains_str );
+		
+		await this.MainWindow.webContents
+			.send('fromMain', [ FromMain_SET_SUPPORTED_BLOCKCHAINS, 
+				                this.SupportedBlockchains 
+				              ]
+				 );		
+	} // async loadSupportedBlockchains()
+	
 	async loadOptions() {
 		console.log(">> " + _CYAN_ + "ElectronMain.loadOptions" + _END_);
 		let config_path = app.getAppPath() + '/www/config';
@@ -327,8 +380,9 @@ class ElectronMain {
 		if ( ! fs.existsSync( options_path ) ) { 
 			await this.setDefaultOptions();
 		}
+		
 		const options_str = fs.readFileSync( options_path );
-		//console.log("   options_str: " + options_str);
+		console.log("   options_str: " + options_str);
 		
 		if ( options_str == "[]"  ||  options_str == "{}" ) { 
 			await this.setDefaultOptions();			
@@ -337,27 +391,35 @@ class ElectronMain {
 			this.Options = JSON.parse( options_str );		
         }
 		
+		console.log(" A this.Options: " + JSON.stringify( this.Options ));
 		await this.MainWindow.webContents
 			.send('fromMain', [ FromMain_UPDATE_OPTIONS, this.Options ]);
 		
-		console.log("ElectronMain.Options: " + JSON.stringify( this.Options ));
+		
 	} // async loadOptions()
 	
 	async setDefaultOptions() {
 		console.log(">> " + _CYAN_ + "ElectronMain.resetOptions" + _END_);
-		this.Options = default_options;
+		this.Options = DEFAULT_OPTIONS;
 		await this.saveOptions( this.Options );
 	} // async setDefaultOptions()
 	
-	async saveOptions( json_data ) {
+	async updateOptions( options_data ) {
+		console.log(">> " + _CYAN_ + "ElectronMain.updateOptions" + _END_);
+		this.Options = options_data;
+		console.log("   this.Options: " + JSON.stringify( this.Options ));
+	} // async updateOptions()
+	
+	async saveOptions( options_data ) {
 		console.log(">> " + _CYAN_ + "ElectronMain.saveOptions" + _END_);
-		this.Options = json_data;
+		this.Options = options_data;
 		let config_path  = app.getAppPath() + '/www/config';		
 		let options_path = config_path + '/options.json';
-		fs.writeFileSync( options_path, JSON.stringify( json_data ) );
+		fs.writeFileSync( options_path, JSON.stringify( this.Options ) );
 		
+		console.log(" B this.Options: " + JSON.stringify( this.Options ));
 		await this.MainWindow.webContents
-			      .send('fromMain', [ FromMain_UPDATE_OPTIONS, json_data ]);
+			      .send('fromMain', [ FromMain_UPDATE_OPTIONS, options_data ]);
 	} // async saveOptions()
 	
 	async resetOptions() {
@@ -366,12 +428,20 @@ class ElectronMain {
 		let default_options_path = config_path + '/defaults/options.json';
 		let default_options_str  = fs.readFileSync( default_options_path ).toString();
 		console.log("   default_options_str: " + default_options_str);
-		this.Options = JSON.parse(default_options_str);
+		this.Options = JSON.parse( default_options_str );
 		await this.saveOptions( this.Options );
 	} // async resetOptions()
 	
 	setCallbacks() {
 		console.log(">> " + _CYAN_ + "ElectronMain.setCallbacks" + _END_);
+		
+		// ====================== REQUEST_QUIT_APP ======================
+		// called like this by Renderer: window.ipcMain.QuitApp(data)
+		ipcMain.handle( REQUEST_QUIT_APP, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_QUIT_APP + _END_);
+			app.quit();
+		}); // "request:quit_app" event handler
+		
 
 		// ====================== REQUEST_LOG_2_MAIN ======================
 		// called like this by Renderer: window.ipcMain.log2Main(data)
@@ -540,28 +610,37 @@ class ElectronMain {
 			ElectronMain.GetInstance().resetOptions();
 		}); // "request:reset_options" event handler
 		
+		// ====================== REQUEST_UPDATE_OPTIONS ======================
+		// called like this by Renderer: await window.ipcMain.UpdateOptions( options_data )
+		ipcMain.handle( REQUEST_UPDATE_OPTIONS, (event, options_data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_UPDATE_OPTIONS + _END_);
+			
+			if ( options_data == undefined ) {
+				console.log(">> " + _RED_ + REQUEST_QUIT_APP + _END_);
+			    app.quit();
+			}
+			
+			console.log("   options_data: " + JSON.stringify(options_data));
+			this.Options = options_data;
+			console.log(" C this.Options: " + JSON.stringify( this.Options ));
+			this.MainWindow.webContents
+			            .send('fromMain', [ FromMain_UPDATE_OPTIONS, this.Options ]);
+		}); // "request:update_options" event handler
+		
 		// ====================== REQUEST_SAVE_OPTIONS ======================
-		// called like this by Renderer: window.ipcMain.SaveOptions( data )
+		// called like this by Renderer: await window.ipcMain.SaveOptions( options_data )
 		ipcMain.handle( REQUEST_SAVE_OPTIONS, async (event, data) => {
 			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SAVE_OPTIONS + _END_);
 			
-			let json_data = data;
-			console.log("   json_data: " + JSON.stringify(json_data)); 
-			ElectronMain.GetInstance().saveOptions( json_data );
+			let options_data = data;
+			console.log(" D  options_data: " + JSON.stringify(options_data)); 
+			ElectronMain.GetInstance().saveOptions( options_data );
 			
+			console.log(" D this.Options: " + JSON.stringify( this.Options ));
 			await this.MainWindow.webContents
-			          .send('fromMain', [ FromMain_UPDATE_OPTIONS, json_data ]);
+			          .send('fromMain', [ FromMain_UPDATE_OPTIONS, options_data ]);
 		}); // "request:save_options" event handler
-		
-		// ====================== REQUEST_UPDATE_OPTIONS ======================
-		// called like this by Renderer: window.ipcMain.UpdateOptions( json_data )
-		ipcMain.on( REQUEST_UPDATE_OPTIONS, (event, json_data) => {
-			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_UPDATE_OPTIONS + _END_);
 			
-			this.MainWindow.webContents
-			            .send('fromMain', [ FromMain_UPDATE_OPTIONS, json_data ]);
-		}); // "request:update_options" event handler
-				
 		// ====================== REQUEST_IMPORT_RAW_DATA ======================
 		// called like this by Renderer: window.ipcMain.ImportRawData(data)
 		ipcMain.on( REQUEST_IMPORT_RAW_DATA, ( event, crypto_info ) => {
@@ -769,7 +848,21 @@ class ElectronMain {
 			return L10n_msg;
 		}); // "request:get_L10n_Msg" event handler	
 		
-	} // ElectronMain.SetCallbacks()
+	} // setCallbacks()
+	
+	async getAppVersion() { 
+	    console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + "getAppVersion" + _END_);
+		let input_path = process.cwd();
+		console.log("   input_path: " + input_path);
+	    let readme_1stline = await firstline( input_path + '/resources/app/README.md' );
+		console.log("   readme_str_1stline: " + readme_1stline);
+		let app_version = readme_1stline.toLowerCase()
+		                  .replaceAll('cryptocalc','')
+		                  .replaceAll('#','').replaceAll(' ','')
+						  .replaceAll('\n','').replaceAll('\r','');
+		console.log("   app_version: '" + app_version + "'");
+		return app_version;
+	} // getAppVersion()
 } // ElectronMain class
 
 

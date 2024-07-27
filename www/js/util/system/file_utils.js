@@ -2,7 +2,9 @@
 // =================================   file_utils.js   =================================
 // ====================================================================================
 "use strict";
-const fs = require('fs');
+const os      = require('os');
+const fs      = require('fs');
+const appRoot = require('app-root-path');
 
 // https://stackoverflow.com/questions/33775113/count-the-number-of-files-in-a-directory-using-javascript-nodejs
 const FileUtils = class {
@@ -30,7 +32,7 @@ const FileUtils = class {
 			}
 		}
 		return filtered_files;
-	} // GetFilesInFolder()
+	} // FileUtils.GetFilesInFolder()
 	
 	static CreateSubfolder( parent_path, subfolder_name ) {
 		//console.log("> evt handler: folder:create: " + folderName);
@@ -39,8 +41,24 @@ const FileUtils = class {
 			fs.mkdirSync( output_path, { recursive: true } );
 		}
 		return output_path;
-   }; // CreateSubfolder()
+   } // FileUtils.CreateSubfolder()
+   
+   static GetApplicationPath() {
+	   return appRoot;
+   } // FileUtils.GetApplicationPath()
+   
+   static AppPathHasAdminAccessRights () {
+	   let app_path = FileUtils.GetApplicationPath();
+	   console.log("   app_path: " + app_path);
+	   return false;
+   } // FileUtils.AppPathHasAdminAccessRights()
+   
+   // https://stackoverflow.com/questions/9080085/node-js-find-home-directory-in-platform-agnostic-way
+   static GetOutputPath() {
+   } // FileUtils.GetOutputPath()
 }; // FileUtils class
+
+FileUtils.AppPathHasAdminAccessRights();
 
 if (typeof exports === 'object') {
 	exports.FileUtils = FileUtils	

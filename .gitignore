@@ -1,2 +1,4 @@
 node_modules
 _output/*/
+_inno_setup/**
+releases/**

@@ -8,6 +8,9 @@
   --TabLinkHover_color:  #C0FEC0; /*#C0FEC0;*/
 }
 
+.Hidden { visibility: hidden;  display: none; }
+.Shown  { visibility: visible; display: block; }
+
 html, .outer, .inner {
 	height:           100%;
 	width:            100%;
@@ -58,9 +61,13 @@ hr {
     background-color: #333;  /* Modern Browsers */
 }
 
+.SimpleWalletLabel {
+	font-size:     13px;
+}
+
 .HorizontalBar {
-	border:           none;
-	height:           1px;
+	border:        none;
+	height:        1px;
 }
 
 .SaveButton {
@@ -94,6 +101,21 @@ hr {
   padding-top:     3px;
   padding-left:    20px;
   padding-right:   20px;
+}
+
+.ValueSelector {
+	width:         120px;
+}
+
+.LabelValueSelector
+.EntropySelector {
+	width:         80px;
+}
+
+.MnemonicsSelector {
+	background-color:  lightred;	
+	width:         80px;
+	font-size:     14px;
 }
 
 /* ================================= Tab pages ================================= */
@@ -250,16 +272,6 @@ hr {
 
 .EntropyInput:invalid {
 	color:  red;
-}
-
-.EntropySelector {
-	width:             80px;
-}
-
-.MnemonicsSelector {
-	background-color:  lightred;	
-	width:             80px;
-	font-size:         14px;
 }
 
 #entropy_src_img_div_id {
