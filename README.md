@@ -1,5 +1,5 @@
-## Cryptocalc 0.1.15
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_6_EN.gif)
+## Cryptocalc 0.1.16
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_16_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
    with the _Hierarchical Deterministic_ (`BIP32`) paradigm.
@@ -36,10 +36,14 @@
 	      * In the _command line interpreter_, type `git clone ` followed by the `.git` URL\
 	      e.g. `git clone https://github.com/ALADAS-org/Cryptocalc.git`
           * Type `cd Cryptocalc`	
-          * Type `npm install`	
+          * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.1.15`    
+    + 3.1. Features in `0.1.16`
+	    * When saving a wallet the Popup dialog allows to show where it is saved
+		* Bug fix in the behavior of [Save...] button in `Tools/Options` dialog
+		* Update of Screenshots
+    + 3.2. Features in `0.1.15`    
         * _Cryptocalc Standalone installer_ (see 4.1.1)
 		* Bigger icons in the main toolbar (`16x16px` > `24x24px`)
 		* Logo in desktop shortcut and .exe (Standalone installer) and in the
@@ -49,12 +53,12 @@
 		both the _Private Key_ (in hexadecimal) and _Seedphrase_ (when converted 
 		to _Mnemonics_) 
 		* Update of `README.md`
-    + 3.2. Features in `0.1.14`    
+    + 3.3. Features in `0.1.14`    
         * Added `Tools/Options` menu item: allows to set _Options_ values for
 		`Default Blockchain` and `Entropy Size`. These values are defined
         in `www/config/options.json` file. 		
 		* Bug Fix: when switching to `Fortunes`, `Entropy Source` was `undefined`
-    + 3.3. Features in `0.1.12`    
+    + 3.4. Features in `0.1.12`    
         * Added Border to generated _QR codes_		
 		* Added `svg` version of the `QR code` for `WIF` (if applicable, only `Bitcoin` ATM)
 		* Rename of `mnemonics` field of `wallet_info.txt` to `Seedphrase`
@@ -66,7 +70,7 @@
     + 3.4. Features in `0.1.11`    
         * Simplification of `Rectangular Micro QR code` for _Entropy_: _Entropy_ now
         in `Hexadecimal` (no more conversion from `Base64` to `Hexadecimal` required)
-        * `Entropy Size` field added in `wallet_info.txt`
+        * `Entropy Size` field added in `wallet_info.txt`    
 		
 4. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
@@ -135,9 +139,12 @@
 		* 4.1.10. Save _Wallet Informations_    
 		With `File/Save` (or the _Save_ icon in the main toolbar), you can save 
 		the _Wallet Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
-		under `_output` folder. This subfolder contains `wallet_info.txt` and a `wallet.json` 
-		with the informations displayed in _Seed_ and _Wallet_ tab pages.    
-        _QR Code_ (`png` images) are generated for `Address`, `Private Key`, `Seedphrase`,
+		under `_output` folder.    
+		This subfolder contains `wallet_info.txt` and a `wallet.json` 
+		with the informations displayed in _Seed_ and _Wallet_ tab pages. 
+        A popup dialog confirms the saving and allows to show where 
+		this subfolder is located.    
+        The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Seedphrase`,
 		`Entropy`, `Entropy_rMQR` (a _Rectangular Micro QRCode_ of _Entropy_)
 		and `WIF` (if applicable, `BTC` only ATM).    
         Notice that there is a `svg` subfolder where these _QR codes_ are provided
@@ -205,7 +212,7 @@
         This is similar to the previous case, but the _Shortened Seedphrase_ 
 		can be used as a _Master password_ for a _Password Manager_ or for tools like
 		[_PGP Tool_](https://pgptool.github.io) which provide encryption/decryption
-	    of your documents.
+	    of your documents.    
 		
 5. Appendix  
     + 5.1. `BIP39`: a _Dictionary_ of 2048 words    

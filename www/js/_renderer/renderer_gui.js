@@ -933,7 +933,14 @@ class RendererGUI {
 		log2Main( ">> " + _CYAN_ + "RendererGUI.showSaveWalletInfoDialog() " + _END_ );
         DialogManager.Clean();
 		let description_data = "<center>Wallet Informations saved</center>";
-		GuiUtils.ShowInfoDialog( description_data );		
+		
+		const feature_button_handler = () => {
+			window.ipcMain.ShowOutputFolderInExplorer();
+		};
+		GuiUtils.ShowQuestionDialog( description_data, 
+		                             { "CloseButtonLabel":   "Close",
+									   "FeatureButtonlabel": "Show", 
+									   "feature handler": feature_button_handler } );
 	} // showSaveWalletInfoDialog()
 	
 	onToggleDebug( evt ) {

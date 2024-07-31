@@ -46,13 +46,14 @@ const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_
 	  
 const { APP_VERSION,
         DEFAULT_BLOCKCHAIN, GUI_THEME, 
-        WALLET_MODE, 
+        WALLET_MODE, WALLET_SAVE_PATH, 
 		ENTROPY_SIZE } = require('../const_keywords.js');
 
 const { VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
         REQUEST_QUIT_APP, REQUEST_LOG_2_MAIN, 
 		REQUEST_TOGGLE_DEBUG_PANEL,
-		REQUEST_OPEN_URL, REQUEST_LOAD_IMG_FROM_FILE, REQUEST_DRAW_RND_CRYPTO_LOGO,
+		REQUEST_OPEN_URL, REQUEST_SHOW_OUTPUT_FOLDER_IN_EXPLORER,
+		REQUEST_LOAD_IMG_FROM_FILE, REQUEST_DRAW_RND_CRYPTO_LOGO,
 		
 		REQUEST_MNEMONICS_TO_ENTROPY_INFO, 
 		REQUEST_MNEMONICS_TO_HDWALLET_INFO,
@@ -117,6 +118,7 @@ const DEFAULT_OPTIONS = {
 	[DEFAULT_BLOCKCHAIN]: "Bitcoin",
 	[WALLET_MODE]:        "HD Wallet",  
 	[ENTROPY_SIZE]:       { ["HD Wallet"]:"128", ["Simple Wallet"]: "256" },
+	[WALLET_SAVE_PATH]:   "$CRYPTOCALC/_output",
 	[GUI_THEME]:          "Default"
 }; // DEFAULT_OPTIONS
 		
@@ -314,6 +316,12 @@ class ElectronMain {
 		this.MainWindow.webContents.send( "fromMain", [ FromMain_FILE_SAVE ] );
 	} // doFileSave()
 	
+	// https://stackoverflow.com/questions/43991267/electron-open-file-directory-in-specific-application
+	showFolderInExplorer( folder_path) {
+		console.log(">> " + _CYAN_ + "ElectronMain.showFolderInExplorer" + _END_);	
+		shell.openPath( folder_path );
+    } // showFolderInExplorer()
+	
 	// File/Import/Random Fortune Cookie
 	getNewFortuneCookie() {
 		console.log(">> " + _CYAN_ + "ElectronMain.getNewFortuneCookie" + _END_);
@@ -454,6 +462,14 @@ class ElectronMain {
 		ipcMain.on( REQUEST_TOGGLE_DEBUG_PANEL, (event, data) => {
 			this.toggleDebugPanel();
 		}); // "request:toggle_debug_panel" event handler
+		
+		// ==================== REQUEST_SHOW_OUTPUT_FOLDER_IN_EXPLORER ====================
+		// called like this by Renderer: window.ipcMain.ShowOutputFolderInExplorer()
+		ipcMain.on( REQUEST_SHOW_OUTPUT_FOLDER_IN_EXPLORER, (event, data) => {
+			console.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + REQUEST_SHOW_OUTPUT_FOLDER_IN_EXPLORER + _END_);
+      	    let output_path = app.getAppPath() + "\\_output";
+			this.showFolderInExplorer( output_path );
+		}); // "request:show_output_folder_in_explorer" event handler										  
 		
 		// ====================== REQUEST_OPEN_URL ======================
 		// called like this by Renderer: window.ipcMain.OpenURL(url)

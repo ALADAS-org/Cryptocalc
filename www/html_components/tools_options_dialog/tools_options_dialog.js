@@ -33,7 +33,7 @@ class ToolsOptionsDialog {
 							  
 					        ToolsOptionsDialog.AddCallback( TOD_SAVE_BUTTON_ID,    
 							    'click', 
-								async () => { await ToolsOptionsDialog.OnApply() } );
+								async () => { await ToolsOptionsDialog.OnSave() } );
 							  
 							ToolsOptionsDialog.AddCallback( TOD_RESTORE_BUTTON_ID, 
 							    'click', ToolsOptionsDialog.OnReset );
@@ -58,7 +58,7 @@ class ToolsOptionsDialog {
 								
 				            ToolsOptionsDialog.RemoveCallback( TOD_SAVE_BUTTON_ID,    
 							    'click', 
-								async () => { await ToolsOptionsDialog.OnApply() } );
+								async () => { await ToolsOptionsDialog.OnSave() } );
 							  
 							ToolsOptionsDialog.RemoveCallback( TOD_RESTORE_BUTTON_ID, 
 							    'click', ToolsOptionsDialog.OnReset );
@@ -178,8 +178,8 @@ class ToolsOptionsDialog {
 	} // ToolsOptionsDialog.UpdateFields()
 	
 	static async RequireConfirmationFromUser( message, json_data, ok_handler ) {
-			iziToast.question({			
-			timeout:     false, progressBar: false, overlay: true, close: false,
+		iziToast.question({			
+			timeout: false, progressBar: false, overlay: true, close: false,
 			backgroundColor: 'lightblue',
 			displayMode:     'once',
 			id:              'question',
@@ -187,18 +187,20 @@ class ToolsOptionsDialog {
 			message:         message,
 			position:        'center',
 			buttons: [
-				['<button>OK</button>', async (instance, toast) => {
-					//log2Main( ">> " + _YELLOW_ + "<OK> pressed" + _END_ );
-					// await window.ipcMain.SaveOptions( json_data );
-					await ok_handler( json_data );
-					instance.hide( { transitionOut: 'fadeOutUp'	}, toast, 'OK');
-					ToolsOptionsDialog.Close();
-				}, true], // true to focus
-				['<button>Cancel</button>', function (instance, toast) {
-					//log2Main( ">> " + _YELLOW_ + "<Cancel> pressed" + _END_);
-					instance.hide( { transitionOut: 'fadeOutUp' }, toast, 'Cancel');
-					ToolsOptionsDialog.Close();
-				}]
+				[ '<button>OK</button>', 
+				  async (instance, toast) => {
+					 await ok_handler( json_data );
+					 instance.hide( { transitionOut: 'fadeOutUp'	}, toast, 'OK');
+					 ToolsOptionsDialog.Close();
+				  },
+				  true // true to focus
+				], 
+				[ '<button>Cancel</button>', 
+				  (instance, toast) => {
+					 instance.hide( { transitionOut: 'fadeOutUp' }, toast, 'Cancel');
+					 ToolsOptionsDialog.Close();
+				  }
+				]
 			]
 		});	
 	} // ToolsOptionsDialog.RequireConfirmationFromUser()
@@ -222,7 +224,10 @@ class ToolsOptionsDialog {
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
 			entropy_size = 256;
 		}
-		options_data[ENTROPY_SIZE][WALLET_MODE] = entropy_size;
+
+        options_data[ENTROPY_SIZE] = { [HD_WALLET_TYPE]:"128", [SIMPLE_WALLET_TYPE]:"256" };
+		log2Main( "   options_data:       " + JSON.stringify(options_data) );
+		options_data[ENTROPY_SIZE][wallet_mode] = entropy_size;
 		
 		return options_data;		
 	} // ToolsOptionsDialog.ReadFields()

@@ -18,6 +18,8 @@ const SIMPLE_WALLET_TYPE        = 'Simple Wallet';
 
 const DEFAULT_BLOCKCHAIN        = 'Default Blockchain';
 
+const WALLET_SAVE_PATH          = 'Wallet Save Path';
+
 const IMAGE_ENTROPY_SRC_TYPE    = 'Image';
 const FORTUNES_ENTROPY_SRC_TYPE = 'Fortunes'; 
 
@@ -38,6 +40,7 @@ if (typeof exports === 'object') {
 	exports.WALLET_MODE         = WALLET_MODE
 	exports.HD_WALLET_TYPE      = HD_WALLET_TYPE
 	exports.SIMPLE_WALLET_TYPE  = SIMPLE_WALLET_TYPE
+	exports.WALLET_SAVE_PATH    = WALLET_SAVE_PATH
 	exports.DERIVATION_PATH     = DERIVATION_PATH
 	exports.WIF                 = WIF
 } // 'const_keywords.js' exports
