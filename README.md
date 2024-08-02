@@ -1,4 +1,4 @@
-## Cryptocalc 0.1.16
+## Cryptocalc 0.1.17
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_16_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -39,11 +39,13 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.1.16`
+    + 3.1. Features in `0.1.17`
+	    * Picture at last step of setup with _Cryptocalc Standalone installer_
+    + 3.2. Features in `0.1.16`
 	    * When saving a wallet the Popup dialog allows to show where it is saved
 		* Bug fix in the behavior of [Save...] button in `Tools/Options` dialog
 		* Update of Screenshots
-    + 3.2. Features in `0.1.15`    
+    + 3.3. Features in `0.1.15`    
         * _Cryptocalc Standalone installer_ (see 4.1.1)
 		* Bigger icons in the main toolbar (`16x16px` > `24x24px`)
 		* Logo in desktop shortcut and .exe (Standalone installer) and in the
@@ -53,12 +55,12 @@
 		both the _Private Key_ (in hexadecimal) and _Seedphrase_ (when converted 
 		to _Mnemonics_) 
 		* Update of `README.md`
-    + 3.3. Features in `0.1.14`    
+    + 3.4. Features in `0.1.14`    
         * Added `Tools/Options` menu item: allows to set _Options_ values for
 		`Default Blockchain` and `Entropy Size`. These values are defined
         in `www/config/options.json` file. 		
 		* Bug Fix: when switching to `Fortunes`, `Entropy Source` was `undefined`
-    + 3.4. Features in `0.1.12`    
+    + 3.5. Features in `0.1.12`    
         * Added Border to generated _QR codes_		
 		* Added `svg` version of the `QR code` for `WIF` (if applicable, only `Bitcoin` ATM)
 		* Rename of `mnemonics` field of `wallet_info.txt` to `Seedphrase`
@@ -66,12 +68,8 @@
 		* Optimized `rMQR` (_Rectangular Micro QR code_) variant depending on `Entropy Size`
 		* Experimental generation of `Ultracode` for `Entropy` (2D color Barcode, 
 		46% less space than regular B&W `QR code`). Didn't found yet a compatible 
-		Android app reader yet.   
-    + 3.4. Features in `0.1.11`    
-        * Simplification of `Rectangular Micro QR code` for _Entropy_: _Entropy_ now
-        in `Hexadecimal` (no more conversion from `Base64` to `Hexadecimal` required)
-        * `Entropy Size` field added in `wallet_info.txt`    
-		
+		Android app reader yet.    
+ 	
 4. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
     + 4.1. Features 
