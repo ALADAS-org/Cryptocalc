@@ -1,4 +1,4 @@
-## Cryptocalc 0.2.0
+## Cryptocalc 0.2.1
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_2_0_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
