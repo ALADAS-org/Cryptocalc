@@ -1,5 +1,5 @@
 // ====================================================================================
-// ================================= avalanche_api.js =================================
+// ==============================    avalanche_api.js    ==============================
 // ====================================================================================
 "use strict";
 
@@ -8,32 +8,31 @@
 // -------- 2024/02/29: Test import avec Avalanche/AVAX dans Guarda.com --------
 //  OK : avec Private Key (Hex)
 //  OK : avec Seedphrase
-
-const { HD_Wallet_API }      = require('./hd_wallet_api.js');
-
 const { _RED_, _CYAN_, _PURPLE_, 
         _YELLOW_, _END_ }     = require('../util/color/color_console_codes.js');
 		
 const { NULL_COIN, 
 	    ETHEREUM, AVALANCHE,  
 		MAINNET, TESTNET,
-		COIN_ABBREVIATIONS,
-		BLOCKCHAIN
+		COIN_ABBREVIATIONS
       }                    = require('./const_blockchains.js');
 	  
 const { PRIVATE_KEY_HEX, ADDRESS
-	  }                    = require('./const_wallet.js'); 
+	  }                    = require('./const_wallet.js');
+	  
+const { BLOCKCHAIN, NULL_BLOCKCHAIN
+	  }                    = require('../const_keywords.js');
 	  
 const { hexWithoutPrefix 
 	  }                    = require('./hex_utils.js');
 
 class Avalanche_API {
-    static async GetWallet(seed_SHA256_hex, salt_uuid, crypto_net) {
+    static async GetWallet( entropy_hex, salt_uuid, crypto_net ) {
 		let coin = COIN_ABBREVIATIONS[AVALANCHE];
 		console.log(  ">> " + _CYAN_ + "Avalanche_API.GetWallet " + _END_ + AVALANCHE + " " + coin + " " + crypto_net);
-		console.log("   seed_SHA256_hex: " + seed_SHA256_hex);
+		console.log("   entropy_hex: " + entropy_hex);
 		
-		let new_wallet = await HD_Wallet_API.GetWallet(seed_SHA256_hex, salt_uuid, ETHEREUM, crypto_net);			
+		let new_wallet = await HD_Wallet_API.GetWallet( entropy_hex, salt_uuid, ETHEREUM, crypto_net);			
 	    new_wallet[BLOCKCHAIN]      = AVALANCHE;
 		new_wallet[ADDRESS]         = new_wallet[ADDRESS].toLowerCase();
 		new_wallet[PRIVATE_KEY_HEX] = hexWithoutPrefix(new_wallet[PRIVATE_KEY_HEX]);

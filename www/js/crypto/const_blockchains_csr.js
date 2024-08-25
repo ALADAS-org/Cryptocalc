@@ -1,14 +1,11 @@
 // =========================================================================================
-// ================================ const_blockchain_csr.js ================================
+// ===============================  const_blockchain_csr.js  ===============================
 // =========================================================================================
 "use strict";
 
 // cf. capitalization order on https://coinmarketcap.com/
 // BUT Ethereum in First place because of the "ecosystem popularity"l
 const NULL_COIN       = "Null-COIN";
-
-const BLOCKCHAIN      = "blockchain";
-const NULL_BLOCKCHAIN = "Null-BLOCKCHAIN";
 
 const CRYPTO_NET      = "crypto_net";
 const MAINNET         = "mainnet";
@@ -18,7 +15,10 @@ const ETHEREUM        = "Ethereum";
 const BITCOIN         = "Bitcoin";
 //const BINANCE         = "Binance";
 const SOLANA          = "Solana";
+
 const CARDANO         = "Cardano";
+const ADA_PURPOSE     = "1852";
+
 const RIPPLE          = "Ripple";
 const AVALANCHE       = "Avalanche";
 const DOGECOIN        = "DogeCoin";
@@ -26,6 +26,8 @@ const TRON            = "TRON";
 const BITCOIN_CASH    = "Bitcoin Cash"; 
 const LITECOIN        = "LiteCoin";
 const DASH            = "Dash";
+const EOS             = "EOS";
+const FIRO            = "Firo";
 
 // NB: [NULL_COIN] syntax means NULL_COIN const is interpreted as its value ("None")
 //     else it would be interpreted a the const name "NULL_COIN" 8((
@@ -42,17 +44,16 @@ const COIN_ABBREVIATIONS = {
 	[TRON]         : "TRX",
 	[BITCOIN_CASH] : "BCH",
 	[LITECOIN]     : "LTC",
-	[DASH]         : "DASH"
+	[DASH]         : "DASH",
+	[EOS]          : "EOS",
+	[FIRO]         : "FIRO"
 }; // COIN_ABBREVIATIONS
 
 // coin_types: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 const COIN_TYPES = {
-	[NULL_COIN]    :   -1,
-	
-	[BITCOIN]      :    0,
-	
-	[TESTNET_COIN] :    1,
-	
+	[NULL_COIN]    :   -1,	
+	[BITCOIN]      :    0,	
+	[TESTNET_COIN] :    1,	
 	[LITECOIN]     :    2,
 	[DOGECOIN]     :    3,
 	[DASH]         :    5,
@@ -63,6 +64,7 @@ const COIN_TYPES = {
 	[FIRO]         :  136,
 	[RIPPLE]       :  144,
 	[BITCOIN_CASH] :  145,
+	[EOS]          :  194,
 	[TRON]         :  195,
 	[ZILLIQA]      :  313,
 	[KUSAMA]       :  434,

@@ -1,11 +1,14 @@
-## Cryptocalc 0.1.17
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_1_16_EN.gif)
+## Cryptocalc 0.2.0
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_2_0_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
    with the _Hierarchical Deterministic_ (`BIP32`) paradigm.
    Even though there is already a similar tools online, the purpose is to use these features
    locally on your computer in order to reduce the risk of your _Private Key_ / _WIF_ 
-   or _Seedphrase_ informations being stolen.     
+   or _Seedphrase_ informations being stolen.    
+   _Supported Blockchains_: _Bitcoins_ (`BTC`), _Ethereum_ (`ETH`), _Solana_ (`SOL`),
+   _Ripple_ (`XRP`), _DogeCoin_ (`DOGE`), _Cardano_ (`ADA`), _TRON_ (`TRON`), 
+   _Avalanche_ (`AVX`), _Bitcoin Cash_ (`BCH`), _LiteCoin_ (`LTC`) and _Firo_ (`FIRO`)  
    NB: _Cryptocalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron)
    
@@ -39,13 +42,19 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.1.17`
+	+ 3.1. Features in `0.2.0`
+	    * Choice between _Simple Wallet_ and _HD Wallet_		
+		* New cryptocurrencies supported: `Cardano` (_HD Wallet_ only) and `Avalanche` 
+		* GUI enhancements esp. `Copy to Clipboard` button for _Address_, _Seedphrase_, _Private Key_ and _WIF_ 
+		* Enhancement in log feature
+		* Update of Screenshots
+    + 3.2. Features in `0.1.17`
 	    * Picture at last step of setup with _Cryptocalc Standalone installer_
-    + 3.2. Features in `0.1.16`
+    + 3.3. Features in `0.1.16`
 	    * When saving a wallet the Popup dialog allows to show where it is saved
 		* Bug fix in the behavior of [Save...] button in `Tools/Options` dialog
 		* Update of Screenshots
-    + 3.3. Features in `0.1.15`    
+    + 3.4. Features in `0.1.15`    
         * _Cryptocalc Standalone installer_ (see 4.1.1)
 		* Bigger icons in the main toolbar (`16x16px` > `24x24px`)
 		* Logo in desktop shortcut and .exe (Standalone installer) and in the
@@ -55,20 +64,11 @@
 		both the _Private Key_ (in hexadecimal) and _Seedphrase_ (when converted 
 		to _Mnemonics_) 
 		* Update of `README.md`
-    + 3.4. Features in `0.1.14`    
+    + 3.5. Features in `0.1.14`    
         * Added `Tools/Options` menu item: allows to set _Options_ values for
 		`Default Blockchain` and `Entropy Size`. These values are defined
         in `www/config/options.json` file. 		
-		* Bug Fix: when switching to `Fortunes`, `Entropy Source` was `undefined`
-    + 3.5. Features in `0.1.12`    
-        * Added Border to generated _QR codes_		
-		* Added `svg` version of the `QR code` for `WIF` (if applicable, only `Bitcoin` ATM)
-		* Rename of `mnemonics` field of `wallet_info.txt` to `Seedphrase`
-		* Rename of `Entropy_MicroQR.svg` (or `.png`)  to `Entropy_rMQR.svg` (or `.png`)
-		* Optimized `rMQR` (_Rectangular Micro QR code_) variant depending on `Entropy Size`
-		* Experimental generation of `Ultracode` for `Entropy` (2D color Barcode, 
-		46% less space than regular B&W `QR code`). Didn't found yet a compatible 
-		Android app reader yet.    
+		* Bug Fix: when switching to `Fortunes`, `Entropy Source` was `undefined`   
  	
 4. _Cryptocalc_ User Guide  
     Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
@@ -93,9 +93,8 @@
         _Shortened Seedphrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos    
         NB: Please notice that the _Shortened Seedphrase_ is not meant to be used
-        to import a wallet in a _Wallet Manager_, it's only a trick to _compress_
-        the _Seedphrase_ and make it easier to store on a device with limited memory
-        like a `NTAG213 NFC` (see 4.2.3). 	
+        to import a wallet in a _Wallet Manager_, it's only a trick to _compress_ the _Seedphrase_ and make it easier
+		to store on a device with limited memory like a `NTAG213 NFC` (see 4.2.3). 	
 	    * 4.1.3. _Entropy Source_ : `Image` or `Fortunes`    
 		_Entropy Source_ may be switched between `Image` (Default source) 
 		and `Fortunes` (drawn from a compilation of 12803 _Fortune Cookies_). 
@@ -106,60 +105,69 @@
             * 4.1.3.b: Image samples are provided in `www/js/img` folder.  		
             * 4.1.3.c: When using [Generate], _Cryptocurrency logos_ are drawn 
 			from the `www/js/img/CryptoCurrency` folder and the first image 
-			is always our logo (`Zilver_64px.svg`).						
-		* 4.1.4. Several wallets in the same _BIP32 HD wallet tree_    
-        The `BIP32` HD wallet tree_ is determined by the _Entropy_ or _Seedphrase_. 
-		These are 2 isomorphic representations of the _SRP_ (_Secret Recovery Passphrase_).		
-		So you can generate new wallets (_Address_ + _Private Key_ or _WIF_)
-		by Pasting a previous _Entropy_ or _Seedphrase_. 
-		This will hide the _Entropy Source_ and _Salt_ fields which are meaningless in
-        this situation. You can then change either the _Account_ or _Address Index_
-        fields in the _Wallet_ tab page. This will show a new [Refresh] button
-        to recompute the wallet once you gave finished editing these fields 
-		(you can input a decimal value between 0 and 9999).		
-		Pushing the [Refresh] button (or hitting either [ Return ] or [ Enter ] keys) 
-		will recompute the wallet accordingly.
-		* 4.1.5. Check generated wallets against _Ian Coleman BIP39_    
-		an item in the menu (Help/Resources/Ian Coleman BIP39) eases the checking 
-		by opening [_Ian Coleman BIP39_](https://iancoleman.io/bip39/).
-		* 4.1.6. Import a wallet in Guarda    
-		an item in the menu (Help/Resources/Guarda) eases importing a wallet in a
-		_Wallet Manager_ application by opening [_Guarda_](https://guarda.com/).	
-		* 4.1.7. _Salted Entropy_    
-		The _Salting_ is adding a unique information (e.g. a _UUID_) so that
-        even if the _Entropy Source_ is the same, the _Entropy_ will be unique 		
-		at each press of [Generate] button.
-		* 4.1.8. Choose _Entropy Size_    
-		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). 
-		This is equivalent to a _Seedphrase size_ between 12 and 24 words. 
-		Changing _Entropy Size_ impacts the _Seedphrase size_ and conversely.
-		* 4.1.9. Display of the _Checksum bits_ (see explanations in 4.1.12)
-		* 4.1.10. Save _Wallet Informations_    
-		With `File/Save` (or the _Save_ icon in the main toolbar), you can save 
-		the _Wallet Informations_ in a timestamped subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`)
-		under `_output` folder.    
-		This subfolder contains `wallet_info.txt` and a `wallet.json` 
-		with the informations displayed in _Seed_ and _Wallet_ tab pages. 
-        A popup dialog confirms the saving and allows to show where 
-		this subfolder is located.    
-        The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Seedphrase`,
-		`Entropy`, `Entropy_rMQR` (a _Rectangular Micro QRCode_ of _Entropy_)
-		and `WIF` (if applicable, `BTC` only ATM).    
-        Notice that there is a `svg` subfolder where these _QR codes_ are provided
-        in the `svg` format and there is also a _Rectangular Micro QR code_ (`rMQR`) of the 
-		`Entropy` (_Rectangular Micro QR Code_, `R15x59` or `R15x77` version depending on		
-		`Entropy size`).
-		    * 4.1.10.a: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
-		        * 4.1.10.a.I: Notice that most Android _QR Code reader_ apps will 
+			is always our logo (`Zilver_64px.svg`).
+        * 4.1.4. Choose _Wallet_Mode_ : _Simple Wallet_ or _HD Wallet_ (this field  is in the `Wallet` tab page)  	
+            * 4.1.4.a. _Simple Wallet_
+            In this _Wallet Mode_, each wallet is separated. It is simpler to use (because there is no need to 
+            understand the meaning of the `Derivation Path` used by _HD Wallets_ ) so a good it's a good fit to 
+			_Give it a Try_ and start creating your cryptocurrency wallets with minimum knowledge.    
+			On the other hand it's less secure than _HD Wallets_ and becomes clumsy if you need to manage 
+            multiple wallets (for example to secure your assets by splitting them among a set of wallets). 			
+			* 4.1.4.b. _HD Wallet_    
+			This _Wallet Mode_ allows to create/manage a while hierarchy (_HD_ ist he acronym for _Hierarchical Deterministic_)
+			of wallets in the same _BIP32 tree_
+            this hierarchy is generated from the _Entropy_ (and optionnaly a _password_, not yet supported).    
+			The `BIP32` HD wallet tree_ is fully by the _Entropy_ or _Seedphrase_. 
+			The _Entropy_ is isomorphic with the _Mnemonics Sequence_ which may be called either a _Seedphrase_, _Mnemonics_
+            or 	even _SRP_ (_Secret Recovery Passphrase_).    
+			You can generate new wallets (_Address_ + _Private Key_ / _WIF_) 
+			by Pasting a previous _Entropy_ or _Seedphrase_ (within the `Seed` wallet tab). 
+			This will hide the _Entropy Source_ and _Salt_ fields which are meaningless in
+			this situation. You can then change either the _Account_ or _Address Index_
+			fields in the _Wallet_ tab page. This will show a new [Refresh] button
+			to recompute the wallet once you gave finished editing these fields 
+			(you can input a decimal value between 0 and 9999).		
+			Pushing the [Refresh] button (or hitting either [ Return ] or [ Enter ] keys) 
+			will recompute the wallet accordingly.
+			* 4.1.4.c. You can check generated _HD Wallets_ by using _Ian Coleman BIP39_ homepage.   
+			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (Help / Resources / Ian Coleman BIP39)
+		* 4.1.5. _Salted Entropy_    
+		_Entropy_ is generated from _Entropy Source_ (either _Image_ or _Fortune Cookie_ ATM) and adding
+		a _Salt_ (`UUID`) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ 
+		is the same. Thus the _Entropy_ will be unique at each press of [Generate] button.
+		* 4.1.6. Choose _Entropy Size_    
+		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). This is equivalent to a _Seedphrase size_ 
+		between 12 and 24 words. Changing _Entropy Size_ impacts the _Seedphrase size_ and conversely.
+		* 4.1.7. Display of the _Checksum bits_ (see explanations in 4.1.12)
+		* 4.1.8. _Wallet Address_
+		_Wallet Address_ is displayed in the `Wallet` tab page. There's also an [Explorer...] button which allows to check
+		the generated address in the appropriate _Blockchain Explorer_.
+		* 4.1.9. Save _Wallet Informations_    
+		With `File/Save` (or the _Save_ icon in the main toolbar), you can save the _Wallet Informations_ in a timestamped 
+		subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`) under `_output` folder.	
+		This subfolder contains `wallet_info.txt` and a `wallet.json` with the informations displayed in _Seed_ and _Wallet_ tab pages. 
+			* 4.1.9.a. When you save the current generated wallet a Popup dialog confirms the saving and allows to show where it is saved.    
+            * 4.1.9.b. The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Seedphrase`,
+			`Entropy`, `Entropy_rMQR` (a _Rectangular Micro QRCode_ of _Entropy_)
+			and `WIF` (if applicable).    
+			Notice that there is a `svg` subfolder where these _QR codes_ are provided
+			in the `svg` format and there is also a _Rectangular Micro QR code_ (`rMQR`) of the 
+			`Entropy` (_Rectangular Micro QR Code_, `R15x59` or `R15x77` version depending on		
+			`Entropy size`).
+		    * 4.1.9.c: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
+		        * 4.1.9.c.I: Notice that most Android _QR Code reader_ apps will 
 			    not be compatible with _Rectangular Micro QR Code_ but it works with 
 			    [`QRQR`](https://play.google.com/store/apps/details?id=com.arara.q&hl=en)	 
 			    an Android _QR Code reader_ published by _Arara_ on the _Google Play Store_.              
-                * 4.1.10.a.II: Then convert the _Entropy_ to the matching _Seedphrase_ 
+                * 4.1.9.c.II: Then convert the _Entropy_ to the matching _Seedphrase_ 
 			    by doing a copy/paste in the `Entropy` field of _Cryptocalc_.    
 				**Caution**: Take care to set _Cryptocalc_ with the same `Entropy Size` and 
 				`Derivation path` (if applicable, don't forget to use the [Refresh] button)
 				than those used when the wallet was created (these informations 
-				are provided in the `wallet_info.txt` file).	  				
+				are provided in the `wallet_info.txt` file).
+		* 4.1.10. Import a wallet in Guarda    
+		An item in the menu (Help / Resources / Guarda) eases importing a wallet in a
+		_Wallet Manager_ application by opening [_Guarda_](https://guarda.com/).				
         * 4.1.11. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
@@ -197,9 +205,10 @@
     + 4.2. Use cases
         * 4.2.1. Generate a new _Wallet_ and import it in a _Wallet manager_  
 	    With a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) you can import
-		a wallet generated by _Cryptocalc_:   
-            * 4.2.1.a. Choose a coin (e.g. `BTC`,`ETH`,`DOGE`,`LTC,``SOL`) 
-		    * 4.2.1.b. Enter _Private Key_  (NB: or _WIF_ for `BTC` wallets)    
+		a wallet generated by _Cryptocalc_:
+            * 4.2.1.a. Choose _Wallet Mode_: _Simple Wallet_ or _HD Wallet_ 		
+            * 4.2.1.b. Choose a coin: `BTC`,`ETH`,`XRP`,`ADA`,`DOGE`,`LTC,``SOL`,`AVX`,`BCH`,`Firo` 
+		    * 4.2.1.c. Enter _Private Key_  (NB: or _WIF_ for `BTC` wallets)    
         * 4.2.3. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
         The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 
 		144 bytes useable capacity. This is enough to store the _Shortened Seedphrase_, 
@@ -243,9 +252,8 @@
 	+ 5.2. `BIP32`: Hierarchic Deterministic wallets
 	`BIP32` specifies how to generate wallets with are all derived from the same _Entropy_
 	or _Seedphrase_ (also called the _Secret Recovery Passphrase_).
-    A _Seedphrase_ of only 12 words is enough is most _Wallet Managers_ but 
-	it is more secure to use a 24 words _Seedphrase_ if possible 
-	(e.g. _Ledger_ hardware wallet manager).    
+    A _Seedphrase_ of only 12 words is enough is most _Wallet Managers_ but it is more secure to use a 24 words 
+	_Seedphrase_ if possible (e.g. _Ledger_ hardware wallet manager).    
 	    Example: meaning of each part for `m/44'/60'/0'/0/0`:    
 	    * Start at the master key                                      (m)    
         * Follow the `BIP44` specification                             (44′)    

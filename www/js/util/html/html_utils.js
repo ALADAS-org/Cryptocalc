@@ -57,13 +57,13 @@ class HtmlUtils {
 		return elt;
 	} // HtmlUtils.RemoveClass()
 	
-	static HideElement( elt_id ) {
+	static HideNode( elt_id ) {
 		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
-		//  log2Main(">> HtmlUtils.HideElement elt_id: " + elt_id);
+		//log2Main(">> HtmlUtils.HideNode elt_id: " + elt_id);
 	  
 		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
-		    log2Main(">> " + _RED_ + "elt_id NOT DEFINED");
+		    log2Main(">> " + _RED_ + elt_id + " NOT DEFINED");
 		    return;
 		}
 		
@@ -71,11 +71,11 @@ class HtmlUtils {
         $("#" + elt_id).hide();	
         	
         //$('#' + elt_id).prop("style", "display:none");		
-	} // HtmlUtils.HideElement()
+	} // HtmlUtils.HideNode()
 	
-	static ShowElement( elt_id ) {
+	static ShowNode( elt_id ) {
 		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
-		//	log2Main(">> HtmlUtils.ShowElement elt_id: " + elt_id);
+		//	log2Main(">> HtmlUtils.ShowNode elt_id: " + elt_id);
 		
 		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
@@ -84,20 +84,41 @@ class HtmlUtils {
 		
 		//elt.hidden = false; 
 		$("#" + elt_id).show();	
-	} // HtmlUtils.ShowElement()
+	} // HtmlUtils.ShowNode()
 	
-	static GetElement( elt_id ) {
+	static GetNode( elt_id ) {
 		let elt = document.getElementById(elt_id);
 		if (elt != undefined) { return elt; }
 		return undefined;
-	} // HtmlUtils.GetElement)
+	} // HtmlUtils.GetNode()
 	
-	static GetField( elt_id ) {
-		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetField() " + _YELLOW_ + elt_id + _END_);
+	static InitializeNode( elt_id, values, labels ) {
+		//log2Main(  ">> " + _CYAN_ + "HtmlUtils.InitializeNode" + _END_
+		//         + " elt_id: " + elt_id);
+		let elt = document.getElementById(elt_id);
+		if (elt != undefined) { 
+		    //log2Main("   elt.nodeName: " + elt.nodeName);
+			if ( elt.nodeName == "SELECT" ) {	
+				if (   Array.isArray(values) 
+					&& Array.isArray(labels)
+                    && values.length == labels.length	) {
+						$("#" + elt_id).empty();
+						for ( let i=0; i < values.length; i++ ) {
+							//log2Main("   values[" + i +"]: " + values[i]);							
+							elt.add(new Option(values[i], values[i]));
+						}
+				}					
+			}
+		}
+		return;
+	} // HtmlUtils.InitializeNode()
+	
+	static GetNodeValue( elt_id ) {
+		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetNodeValue() " + _YELLOW_ + elt_id + _END_);
 		let elt = document.getElementById( elt_id );	
         		
 		if ( elt != undefined ) { 
-			if ( elt.nodeName == "TD" || elt.nodeName == "SPAN" ) {
+			if ( elt.nodeName == "TD" || elt.nodeName == "SPAN" || elt.nodeName == "DIV" ) {
 				return elt.textContent;
 			}
 			else {
@@ -105,19 +126,20 @@ class HtmlUtils {
 			}	
 		}
 		return "Null_String";
-	} // HtmlUtils.GetField()	
+	} // HtmlUtils.GetNodeValue()	
 
-	static SetField( elt_id, value_str ) {
-		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetField() " + _END_ + elt_id);
+	static SetNodeValue( elt_id, value_str ) {
+		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetNodeValue() " + _END_ + elt_id);
 		//log2Main(" elt_id: " + elt_id);
 		let elt = document.getElementById( elt_id );
 		if ( elt != undefined ) {
             //log2Main(" elt.nodeName: " + elt.nodeName);			
 			if (   elt.nodeName == "TD" 
-			    || elt.nodeName == "SPAN" || elt.nodeName == "BUTTON" ) {
+			    || elt.nodeName == "SPAN" || elt.nodeName == "DIV" 
+				|| elt.nodeName == "BUTTON" ) {
 				elt.textContent = value_str;
 			}
-			else if ( elt.nodeName == "TEXTAREA" ) {
+			else if (   elt.nodeName == "TEXTAREA" ) {
                 // **PB** value change seems asynchronous 
                 // https://stackoverflow.com/questions/47240315/how-to-update-input-from-a-programmatically-set-textarea 				
                 // https://www.geeksforgeeks.org/jquery-set-the-value-of-an-input-text-field/
@@ -126,8 +148,9 @@ class HtmlUtils {
 				$('#' + elt_id).prop("value", value_str);
 			}
 			else {
+				//log2Main(" elt.value: '" + value_str + "'");
 				elt.value = value_str;
 			}	
 		}
-	} // HtmlUtils.SetField()
+	} // HtmlUtils.SetNodeValue()
 } // HtmlUtils class

@@ -21,6 +21,8 @@ const HdAddGen       = require('hdaddressgenerator');
 // https://www.npmjs.com/package/hdkey
 const HDKey          = require('hdkey');
 
+const bchaddr        = require('bchaddrjs');
+
 // **KO 'ES module..'** const hdAddress = require('hd-address');  
 // **KO 'ES module..'** const HDWallet = require('hd-address-cli');
 
@@ -36,10 +38,12 @@ const bip32            = BIP32Factory(ecc);
 
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, 
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
-		_END_ }              = require('../util/color/color_console_codes.js');
+		_END_ }            = require('../../util/color/color_console_codes.js');
 		
-const { BLOCKCHAIN, NULL_BLOCKCHAIN,
-		MAINNET, TESTNET,
+const { getFunctionCallerName, pretty_func_header_log, 
+        pretty_log,  }     = require('../../util/log/log_utils.js');
+		
+const { MAINNET, TESTNET,
 		
 		COIN, NULL_COIN, COIN_ABBREVIATIONS, 
 		COIN_TYPE, COIN_TYPES,				
@@ -48,37 +52,36 @@ const { BLOCKCHAIN, NULL_BLOCKCHAIN,
 		//BINANCE,
 		CARDANO,  RIPPLE, 
 		DOGECOIN, TRON, BITCOIN_CASH,
-		LITECOIN, DASH
-		//AVALANCHE,				
-      }                      = require('./const_blockchains.js');
+		LITECOIN, DASH,
+		AVALANCHE, EOS, FIRO				
+      }                    = require('../const_blockchains.js');
 	  
 const { NULL_HEX,
-        ADDRESS, UUID, CRYPTO_NET, MNEMONICS,
-		MASTER_SEED,
+        ADDRESS, UUID, CRYPTO_NET, MASTER_SEED,
 		MASTER_PK_HEX, CHAINCODE, ROOT_PK_HEX, 
 		BIP32_ROOT_KEY,		
 		PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,
 		PRIV_KEY, XPUB,
 		ACCOUNT_XPRIV, ACCOUNT_XPUB		
-	  }                      = require('./const_wallet.js');
+	  }                    = require('../const_wallet.js');
 	  
-const { WORD_COUNT,
-        ACCOUNT_INDEX, ADDRESS_INDEX,
+const { BLOCKCHAIN, NULL_BLOCKCHAIN, 
+        WORD_COUNT, MNEMONICS,
+        ACCOUNT, ADDRESS_INDEX,
 		DERIVATION_PATH, WIF
-	  }                      = require('../const_keywords.js');
+	  }                    = require('../../const_keywords.js');
 		
 const { hexToBinary, binaryToHex, 
         hexWithPrefix, hexWithoutPrefix, isHexString,
         uint8ArrayToHex, hexToUint8Array 
-	  }                      = require('./hex_utils.js');
+	  }                    = require('../hex_utils.js');
 	  
 const { b58ToHex,
         isBase58String 
-	  }                      = require('./base58_utils.js');
+	  }                    = require('../base58_utils.js');
 
-const { Bip39Utils  }        = require('./bip39_utils.js');
+const { Bip39Utils  }      = require('../bip39_utils.js');
 
-const bchaddr = require('bchaddrjs');
 
 /*
 - Génération d'un hash SHA256 (24 mots) ou SHA-1 (128 bits, 12 mots)
@@ -109,15 +112,22 @@ class Bip32Utils {
 	// https://github.com/bitcoinjs/bip38/issues/63
 	static async MnemonicsToHDWalletInfo( mnemonics, args ) {
 		args = Bip39Utils.GetArgs( args );
-		let blockchain    = args["blockchain"];
-		
+		let blockchain    = args[BLOCKCHAIN];		
 		let coin          = COIN_ABBREVIATIONS[blockchain];
-		console.log(">> " + _CYAN_ + "Bip32Utils.MnemonicsToHDWalletInfo " + _YELLOW_ + coin + _END_);
+		
+		pretty_func_header_log( getFunctionCallerName(), coin );
 		
 		let coin_type     = COIN_TYPES[blockchain];
 		
-		let account_index = args[ACCOUNT_INDEX];
-		let address_index = args[ADDRESS_INDEX];
+		let account = 0;
+		if ( args[ACCOUNT] != undefined ) { 
+			account = args[ACCOUNT];
+		}
+		
+		let address_index = 0;
+		if ( args[ADDRESS_INDEX] != undefined ) { 
+			address_index = args[ADDRESS_INDEX];
+		}
 		
 		//console.log(   "   account_index: " + account_index + "   " 
 		//             + "   address_index: " + address_index );
@@ -152,9 +162,9 @@ class Bip32Utils {
 		//let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
 		//let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
 		
-		let path_options = { "account_index": account_index, "address_index": address_index };
-		let master_derivation_path = Bip32Utils.GetDerivationPath(coin_type, path_options);
-		console.log("   " + _YELLOW_ + "master_derivation_path: " + _END_ + master_derivation_path);
+		let path_options = { [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
+		let master_derivation_path = Bip32Utils.GetDerivationPath( coin_type, path_options );
+		pretty_log( "master_derivation_path", master_derivation_path );
 		hdwallet_info[DERIVATION_PATH] = master_derivation_path;
 		//-------------------- Derivation Path --------------------
 		
@@ -228,12 +238,11 @@ class Bip32Utils {
 		//-------------------- BIP32 root key
 		
 		//-------------------- First Private Key --------------------
-		let child_key = master_node.derivePath( master_derivation_path );
-		let private_key_hex = uint8ArrayToHex( child_key["__D"] );
-		console.log(   "   " + _YELLOW_ 
-		             + "private_key_hex:        " + _END_ + private_key_hex);
-		hdwallet_info[PRIVATE_KEY_HEX] = private_key_hex;
-		hdwallet_info[PRIV_KEY]           = private_key_hex;
+		let child_key   = master_node.derivePath( master_derivation_path );
+		let private_key = uint8ArrayToHex( child_key["__D"] );
+		pretty_log( "private key", private_key );
+		hdwallet_info[PRIVATE_KEY_HEX] = private_key;
+		hdwallet_info[PRIV_KEY]        = private_key;
 		//-------------------- First Private Key
 
 		
@@ -243,8 +252,8 @@ class Bip32Utils {
 		// https://www.npmjs.com/package/hdaddressgenerator
 		//let bip44 = HdAddGen.withMnemonic( mnemonics, false, coin );
 		let bip44 = HdAddGen.withMnemonic
-					(mnemonics, false,     coin, false,   44,  account_index);
-        //                      passphrase       hardened bip  account        
+					( mnemonics,  false,     coin, false,   44,  account );
+        //                      passphrase       hardened   bip  account        
 		//*** BIP44 *********************************************************
 
 		// Generates 'expected_address_count' addresse from index 'address_index'
@@ -257,31 +266,25 @@ class Bip32Utils {
 			hdwallet_info[ADDRESS] = bchaddr.toCashAddress( hdwallet_info[ADDRESS] );
 		}
 		
-		let child_private_key = hexWithoutPrefix(addresses[0]["privKey"]);
-		let child_private_key_hex = child_private_key;
-		//console.log(   "   " + _YELLOW_ 
-		//             + "child_private_key:      " + _END_ + child_private_key);
+		let child_private_key = hexWithoutPrefix( addresses[0]["privKey"] );
 					 
 		if ( blockchain == BITCOIN_CASH ) {
 			hdwallet_info[PRIVATE_KEY_HEX] = child_private_key;
-			hdwallet_info[PRIV_KEY]          = child_private_key;
+			hdwallet_info[PRIV_KEY]        = child_private_key;
 		}
-		else if ( ! isHexString(child_private_key) ) { 
-			if ( isBase58String(child_private_key) ) {
+		else if ( ! isHexString( child_private_key ) ) { 
+			if ( isBase58String( child_private_key ) ) {
 				hdwallet_info[PRIV_KEY] = child_private_key;
-				child_private_key_hex = b58ToHex( child_private_key );
-				console.log(   "   " + _YELLOW_ 
-		             + "child_private_key_hex:  " + _END_ + child_private_key_hex);
+				child_private_key = b58ToHex( child_private_key );
 			}				
-		}	
+		}
 		
-		let child_pk_to_mnemonics = Bip39Utils.PrivateKeyToMnemonics( child_private_key_hex );
-		//console.log(   "   " + _YELLOW_ 
-		//             + "child_pk_to_mnemonics:  " + _END_ + child_pk_to_mnemonics);
-		//hdwallet_info["private_key_B58"] = private_key_B58;	
+        pretty_log( "child_private_key", child_private_key );		
+		
+		let child_pk_to_mnemonics = Bip39Utils.PrivateKeyToMnemonics( child_private_key );
 		
 		//-ok-------------------- Extended Private key -----------------------
-		let account_derivation_path = "m/44'/" + coin_type + "'" + "/" + account_index + "'";
+		let account_derivation_path = "m/44'/" + coin_type + "'" + "/" + account + "'";
 		let ACCOUNT_XPRIV = master_node.derivePath( account_derivation_path ).toBase58();
 		//console.log(   "   " + _YELLOW_ 
 		//             + "Account PRIV_KEY:          " + _END_ + ACCOUNT_XPRIV);
@@ -290,14 +293,14 @@ class Bip32Utils {
 		
 		//----------------------- Extended Public key ------------------------
 		// https://github.com/elastos/Elastos.SDK.Keypair.Javascript/blob/master/src/Api.js	
-		const getMasterPublicKey = ( seed, coinType, account_index ) => {
+		const getMasterPublicKey = ( seed, coinType, account ) => {
 			const prvKey = HDPrivateKey.fromSeed( seed );
-			const parent = new HDPrivateKey( prvKey.PRIV_KEYkey );
+			const parent = new HDPrivateKey( prvKey.xprivkey );
 			
 			const multiWallet = parent
 				.deriveChild( 44, true )
 				.deriveChild( coinType, true )
-				.deriveChild( account_index, true );
+				.deriveChild( account,  true );
 
 			return multiWallet.xpubkey;
 		}; // getMasterPublicKey()
@@ -305,16 +308,15 @@ class Bip32Utils {
 		//console.log(  "   " + _YELLOW_
 		//            + "account_index type: " + _END_ + typeof account_index);
 		
-		let account_xpub = getMasterPublicKey( master_seed, coin_type, account_index );
+		let account_xpub = getMasterPublicKey( master_seed, coin_type, account );
 		//console.log(  "   " + _YELLOW_
 		//            + "Account XPUB:           " + _END_ + account_xpub);
 		hdwallet_info[ACCOUNT_XPUB] = account_xpub;
 		//----------------------- Extended Public key
 					 
 		//--------------------------- First WIF ---------------------------
-		let wif = child_key.toWIF();
-		//console.log(   "   " + _YELLOW_ 
-		//             + "WIF:                    " + _END_ + wif);
+		let wif = bs58.encode( Buffer.from( child_private_key, 'hex' ) );
+		pretty_log( "WIF", wif );			 
 		hdwallet_info[WIF] = wif;
 		//--------------------------- First WIF	
 
@@ -323,21 +325,18 @@ class Bip32Utils {
 	
 	// https://www.ledger.com/blog/understanding-crypto-addresses-and-derivation-paths
 	static GetDerivationPath( coin_type, path_options ) {
-		let address_index = 0;
-        let account_index = 0; 		
+		let account       = "0"; 
+		let address_index = "0";
+		
 		if ( path_options != undefined ) {
-			account_index = (path_options[ACCOUNT_INDEX] != undefined) ? 
-								path_options[ACCOUNT_INDEX] : 0;
-								
-			address_index =	(path_options[ADDRESS_INDEX] != undefined) ? 
-								path_options[ADDRESS_INDEX] : 0;
+			account       = ( path_options[ACCOUNT] != undefined ) ?       path_options[ACCOUNT].toString() :       "0";								
+			address_index =	( path_options[ADDRESS_INDEX] != undefined ) ? path_options[ADDRESS_INDEX].toString() : "0";
 		} 
 		
-		let derivation_path =   "m/44'" 
-		                      + "/" + coin_type + "'" 
-							  + "/" + account_index + "'"
-							  + "/0"
-							  + "/" + address_index;
+		let derivation_path =   "m/44'/" 
+		                      + coin_type + "'/" 
+							  + account + "'/0/"
+							  + address_index;
 		return derivation_path;
 	} // Bip32Utils.GetDerivationPath()
 } // Bip32Utils class

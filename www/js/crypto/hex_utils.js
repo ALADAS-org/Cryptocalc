@@ -61,19 +61,19 @@ const hexWithoutPrefix = (hex_str) => {
 	return hex_str;
 }; // hexWithoutPrefix	
 
-const hexWithPrefix = (hex_str) => {
+const hexWithPrefix = ( hex_str ) => {
 	if (! hex_str.startsWith('0x')) {
 		hex_str = '0x' + hex_str;
 	}
 	return hex_str;
 }; // hexWithPrefix	
 
-const isHexString = (in_str) => {
+const isHexString = ( in_str ) => {
 	in_str = hexWithoutPrefix(in_str.toLowerCase());
 	let is_hex = true;
-	for (let i=0; i < in_str.length; i++) {	
+	for ( let i=0; i < in_str.length; i++ ) {	
 		let c = in_str[i];
-		if (HEX_ALPHABET.indexOf(c) == -1) {
+		if ( HEX_ALPHABET.indexOf(c) == -1 ) {
 			return false;
 		}
 	}

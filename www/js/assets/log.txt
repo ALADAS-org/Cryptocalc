@@ -1,0 +1,1 @@
+[2024-08-03 04:40:47.856] [info]  >> [0;96mElectronMain.createWindow[0m

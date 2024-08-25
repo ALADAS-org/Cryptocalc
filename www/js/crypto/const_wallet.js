@@ -5,6 +5,7 @@
 
 const NULL_HEX        = "Null-HEX";
 const NULL_BECH32     = "Null-Bech32";
+const NULL_WORD_COUNT = "Null-WORD_COUNT";
 const NULL_UUID       = "Null-UUID";
 const NULL_NET        = "Null-NET";
 const NULL_ADDRESS    = "Null-ADDRESS";
@@ -12,7 +13,6 @@ const NULL_MNEMONICS  = "Null-MNEMONICS";
 
 const MASTER_SEED     = 'master_seed';
 const HD_WALLET       = 'hd_wallet';
-const UUID            = 'uuid';
 const CHECKSUM        = 'checksum';
 const CRYPTO_NET      = 'crypto_net';
 
@@ -33,12 +33,12 @@ const PRIVATE_KEY_HEX = 'private_key_hex';
 const PUBLIC_KEY_HEX  = 'public_key_hex';
 
 const ADDRESS         = 'address';
-const MNEMONICS       = 'mnemonics';
 
 const BALANCE_URL     = 'balance_URL';
 
 if (typeof exports === 'object') {
 	exports.NULL_HEX        = NULL_HEX
+	exports.NULL_WORD_COUNT = NULL_WORD_COUNT
 	exports.NULL_BECH32     = NULL_BECH32	
 	exports.NULL_UUID       = NULL_UUID
 	exports.NULL_NET        = NULL_NET
@@ -56,19 +56,17 @@ if (typeof exports === 'object') {
 	exports.CHAINCODE       = CHAINCODE
 	
 	exports.BIP32_ROOT_KEY  = BIP32_ROOT_KEY
-	exports.PRIV_KEY           = PRIV_KEY
+	exports.PRIV_KEY        = PRIV_KEY
 	exports.XPUB            = XPUB
 	exports.ACCOUNT_XPRIV   = ACCOUNT_XPRIV
 	exports.ACCOUNT_XPUB    = ACCOUNT_XPUB
 	
-	exports.UUID            = UUID
 	exports.CHECKSUM        = CHECKSUM
 	
 	exports.PRIVATE_KEY_HEX = PRIVATE_KEY_HEX	
 	exports.PUBLIC_KEY_HEX  = PUBLIC_KEY_HEX
 	
 	exports.ADDRESS         = ADDRESS
-	exports.MNEMONICS       = MNEMONICS
 	
 	exports.BALANCE_URL     = BALANCE_URL 
 } // 'const_wallet.js' exports

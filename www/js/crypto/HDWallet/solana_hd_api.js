@@ -1,7 +1,7 @@
 // =====================================================================================
-// ====================================  solana.js  ====================================
+// =================================  solana_hd_api.js  ================================
 // =====================================================================================
-// Solana_API.js (Solana API wrapper)
+// SolanaHD_API.js (Solana API wrapper)
 // https://www.quicknode.com/guides/solana-development/getting-started/how-to-create-an-address-in-solana-using-javascript&
 // https://docs.solana.com/developing/clients/javascript-api
 "use strict";
@@ -28,138 +28,140 @@ const ecc              = require('tiny-secp256k1');
 const bip32            = require('@scure/bip32');
 
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_ 
-	  }                             = require('../util/color/color_console_codes.js');
+	  }                             = require('../../util/color/color_console_codes.js');
 	  
-const { NULL_COIN, 
-        BLOCKCHAIN, NULL_BLOCKCHAIN,
+const { getFunctionCallerName,
+        pretty_func_header_log,
+        pretty_log }                = require('../../util/log/log_utils.js');
+	  
+const { COIN, NULL_COIN,        
         MAINNET, TESTNET,
         SOLANA,
 		COIN_ABBREVIATIONS		
-	  }                             = require('./const_blockchains.js');
+	  }                             = require('../const_blockchains.js');
 	  
-const { PRIVATE_KEY_HEX, 
-        CRYPTO_NET, MNEMONICS,
+const { NULL_HEX, 
+        PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,
+        CRYPTO_NET, 
 		MASTER_SEED, ADDRESS,
-		CHAINCODE, DERIVATION_PATH,
+		CHAINCODE,
 		MASTER_PK_HEX,
 		ACCOUNT_XPRIV, ACCOUNT_XPUB,
 		UUID, WIF
-      }                             = require('./const_wallet.js');
+      }                             = require('../const_wallet.js');
+	  
+const { BLOCKCHAIN, NULL_BLOCKCHAIN,
+        MNEMONICS, WORD_COUNT,
+        DERIVATION_PATH }           = require('../../const_keywords.js');
+
 
 const { hexWithPrefix, hexToBytes,
-        hexToB64, uint8ArrayToHex } = require('./hex_utils.js');	
-const { b58ToHex }                  = require('./base58_utils.js');		
-const { Bip39Utils }                = require('./bip39_utils.js');
+        hexToB64, uint8ArrayToHex } = require('../hex_utils.js');	
+const { b58ToHex }                  = require('../base58_utils.js');		
+const { Bip39Utils }                = require('../bip39_utils.js');
+const { EntropySize }               = require('../entropy_size.js');
 
 // -------------------------------------------------------------------------------------------------
 // -----------------------------------------   SolanaAPI   -----------------------------------------
 // -------------------------------------------------------------------------------------------------
 // Create HD (multiple) Solana wallets.
+
+// https://nick.af/articles/derive-solana-addresses
+
 // https://www.abiraja.com/blog/from-seed-phrase-to-solana-address
 // https://stackoverflow.com/questions/72658589/how-do-i-create-an-hd-wallet-and-child-wallets-in-solana
-class Solana_API { 
-	static async GetWallet( mnemonics, options ) {
-		console.log(">> " + _CYAN_ + "[Solana_API.GetWallet]");
+class SolanaHD_API { 
+	static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index  ) {
+		if ( crypto_net == undefined ) {
+			crypto_net = MAINNET;
+		}
 		
-		let salt_uuid  = options[UUID];		
-		let	crypto_net = MAINNET;		
+		blockchain = SOLANA;
+		let coin   = COIN_ABBREVIATIONS[blockchain];
+		
+		pretty_func_header_log( getFunctionCallerName(), blockchain + " " + coin + " " + crypto_net );
+		pretty_log( "entropy_hex", entropy_hex );
+		
+		if ( account == undefined ) 		account       = 0;	
+		if ( address_index == undefined ) 	address_index = 0;
 
+		let word_count = EntropySize.GetWordCount( entropy_hex );
+		let args = { [WORD_COUNT]: word_count }; 
+		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex, args );
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		console.log(  "   " + _YELLOW_ 
-		            + "mnemonics:              " + _END_ + mnemonics_items[0]);
+		pretty_log( "mnemonics" + mnemonics_items[0] );
 		if ( mnemonics_items[1].length > 0 ) {	
-			console.log(  "   " + _YELLOW_ 
-		                + "                        " + _END_ + mnemonics_items[1]);		
+			pretty_log( "mnemonics" + mnemonics_items[1] );			
 		}
 		
-		let solana_seed_64 = bip39.mnemonicToSeedSync( mnemonics );
-		let solana_seed_32 = solana_seed_64.slice(0, 32);
+		let new_wallet = SolanaHD_API.InitializeWallet();
 		
-		let keypair = solanaWeb3.Keypair.fromSeed( Uint8Array.from( solana_seed_32 ) );
-		//console.log(  "   " + _YELLOW_ 
-		//            + "keypair >> :    " + _END_ + JSON.stringify(keypair));
+		new_wallet[BLOCKCHAIN] = SOLANA;
+		new_wallet[CRYPTO_NET] = crypto_net;
+		new_wallet[UUID]       = salt_uuid;
+        new_wallet[MNEMONICS]  = mnemonics;	
 
-		let wallet = {};
-		
-		wallet[BLOCKCHAIN]          = SOLANA;
-		wallet[CRYPTO_NET]          = crypto_net;		
-		
-		wallet[ADDRESS]             = keypair.publicKey.toString();		
-		console.log(  "   " + _YELLOW_ 
-		            + "wallet[ADDRESS] >> :    " + _END_ + wallet[ADDRESS]);
-		
-		wallet['private_key_bytes'] = keypair.secretKey;
-		wallet['secret_key']        = bs58.encode( keypair.secretKey );
-		
-		console.log(  "   " + _YELLOW_ 
-		            + "wallet[secret_key] >> : " + _END_ + wallet['secret_key']);
+        let hd_wallet_info = await SolanaHD_API.MnemonicsToHDWalletInfo( mnemonics, account, address_index );
+		pretty_log( "private_key", new_wallet[PRIVATE_KEY_HEX] );		
 					
-		//******
 		// https://stackoverflow.com/questions/72658589/how-do-i-create-an-hd-wallet-and-child-wallets-in-solana
-		let solana_path = "m/44'/501'/0'/0'";
-		wallet[DERIVATION_PATH] = solana_path;
-		
 		// https://yihau.github.io/solana-web3-demo/tour/create-keypair.html
-		const solana_seed = bip39.mnemonicToSeedSync( mnemonics, "" ); // (mnemonic, password)
-		for (let i = 0; i < 1; i++) {
-			const keypair = solanaWeb3.Keypair.fromSeed
-							( derivePath( solana_path, solana_seed.toString("hex")).key );
-			console.log(keypair.publicKey.toBase58());
-		}
+		const solana_seed     = bip39.mnemonicToSeedSync( mnemonics, "" ); // (mnemonic, password)
+		//const derivation_path = "m/44'/501'/" + account + "'/0/" + address_index;
+		const derivation_path = "m/44'/501'/" + account + "'/0'/" + address_index + "'";
+		pretty_log( "derivation_path", derivation_path );
+		new_wallet[DERIVATION_PATH] = derivation_path;		
+		
+		const keypair = solanaWeb3.Keypair.fromSeed
+						( derivePath( derivation_path, solana_seed.toString("hex")).key );
+		new_wallet[ADDRESS] = keypair.publicKey.toBase58();	
+		pretty_log( "address", new_wallet[ADDRESS]);
+		
+		new_wallet[PRIVATE_KEY_HEX] = bs58.encode( keypair.secretKey );
+		pretty_log( "private_key", new_wallet[PRIVATE_KEY_HEX] );
 	
 		// props
 		//[hdkey1.depth, hdkey1.index, hdkey1.chainCode];
 		//console.log(hdkey2.privateKey, hdkey2.publicKey);
 		//console.log(hdkey3.derive("m/0/2147483647'/1'"));
-		//**********************	
-		
-		let hd_wallet_info = await Solana_API.MnemonicsToHDWalletInfo( mnemonics );
-		
-		let secret_key_b58_to_hex   = b58ToHex(wallet.secret_key);
-		wallet[PRIVATE_KEY_HEX]     = secret_key_b58_to_hex;
-		console.log(  "   " + _YELLOW_ 
-		            + "wallet[private_key] >>: " + _END_ + wallet[PRIVATE_KEY_HEX]);
-		
-		wallet[MNEMONICS]           = mnemonics;		
-		
-		wallet[UUID]                = salt_uuid;
+		//**********************		
+
+		return new_wallet;
+	} // SolanaHD_API.GetWallet()
 	
-		return wallet;
-	} // static GetWallet()
-	
-	static async MnemonicsToHDWalletInfo( mnemonics ) {
+	static async MnemonicsToHDWalletInfo( mnemonics, account, address_index ) {
 		let blockchain    = SOLANA;
 		let coin          = COIN_ABBREVIATIONS[blockchain];
 		let coin_type     = 501;
-		let address_index = 0;
 		
-		let hdwallet_info = {};
-		hdwallet_info[BLOCKCHAIN]     = SOLANA;
-		hdwallet_info["coin"]         = coin;
-		hdwallet_info["coin_type"]    = coin_type;		
+		let new_wallet = SolanaHD_API.InitializeWallet();
+		new_wallet[BLOCKCHAIN]     = SOLANA;
+		new_wallet["coin"]         = coin;
+		new_wallet["coin_type"]    = coin_type;		
 		
 		//console.log("   coin_type:                  " + coin_type);
-		console.log(">> " + _CYAN_ + "Solana_API.MnemonicsToHDWalletInfo " + _YELLOW_ + coin + _END_);
+		console.log(">> " + _CYAN_ + "SolanaHD_API.MnemonicsToHDWalletInfo " + _YELLOW_ + coin + _END_);
 		
 		console.log("   " + _YELLOW_ + "blockchain:             " + _END_ + blockchain);
 		
-        hdwallet_info["mnemonics"] = mnemonics;		
+        new_wallet["mnemonics"] = mnemonics;		
 		
 		//-------------------- Derivation Path --------------------	
         // https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address).		
         // Start at the master key                                  (m)
         // Follow the BIP44 standard                                (44′)
         // Derive the key for Bitcoin                               (0′)
-        // Access the first account                                 (0′)
+        // Access the first account                                 (account′)
         // Choose the external chain, used for public addresses     (0)
         // And finally, generate the first address in this sequence (0)
 		//                                NB: ref. value is /0'/0/address_index
 		
 		// https://arshbot.medium.com/hd-wallets-explained-from-high-level-to-nuts-and-bolts-9a41545f5b0
-		//let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
-		let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
-		console.log("   " + _YELLOW_ + "master_derivation_path: " + _END_ + master_derivation_path);
-		hdwallet_info[DERIVATION_PATH] = master_derivation_path;
+		// let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
+		let derivation_path = "m/44'/" + coin_type + "'" + "/" + account + "'/0/" + address_index;
+		console.log("   " + _YELLOW_ + "master_derivation_path: " + _END_ + derivation_path);	
+		pretty_log( "derivation_path", derivation_path );
+		new_wallet[DERIVATION_PATH] = derivation_path;
 		//-------------------- Derivation Path --------------------
 		
 		//-------------------- Master Seed --------------------
@@ -170,10 +172,8 @@ class Solana_API {
 		
 		let master_seed_hex   = uint8ArrayToHex( master_seed );
 	    let master_seed_bytes = master_seed_hex.length / 2;
-	    console.log(    "   " + _YELLOW_
-		              + Bip39Utils.LabelWithSize("master seed", master_seed_bytes) 
-	                  + "        " + _END_ + master_seed_hex);	
-		hdwallet_info[MASTER_SEED] = master_seed_hex;
+		pretty_log( "master seed", master_seed_hex );
+		new_wallet[MASTER_SEED] = master_seed_hex;
         //-------------------- Master Seed	
 
 		//********* https://www.npmjs.com/package/ed25519-keygen
@@ -190,7 +190,7 @@ class Solana_API {
 	    //console.log(  "   " + _YELLOW_
 		//            + Bip39Utils.LabelWithSize("master_private_key", master_pk_bytes) 
 	    //            + " " + _END_ + master_pk_key_hex);
-		hdwallet_info[MASTER_PK_HEX] = master_pk_key_hex;
+		new_wallet[MASTER_PK_HEX] = master_pk_key_hex;
 		//-------------------- Master Private Key
 		
 		//------------------------ Chaincode ------------------------
@@ -201,7 +201,7 @@ class Solana_API {
 	    console.log(    "   " + _YELLOW_
 		              + Bip39Utils.LabelWithSize("chaincode", chaincode_bytes) 
 	                  + "          " + _END_ + chaincode);
-		hdwallet_info[CHAINCODE] = chaincode;
+		new_wallet[CHAINCODE] = chaincode;
         //------------------------ Chaincode
 		
 		//----------------------- Master Node -----------------------
@@ -213,26 +213,32 @@ class Solana_API {
 		//let key = master_node.derivePath( master_derivation_path );
 		// https://github.com/paulmillr/scure-bip32
 		// https://www.npmjs.com/package/ed25519-keygen
-		let hdkey2 = master_node.derive( master_derivation_path, true );
+		let hdkey2 = master_node.derive( derivation_path, true );
 		
 		//let private_key_hex = uint8ArrayToHex( key["__D"] );
 		let private_key_hex = uint8ArrayToHex( hdkey2["privateKey"] );
-		console.log(   "   " + _YELLOW_ 
-		             + "private_key_hex:        " + _END_ + private_key_hex);
-		hdwallet_info[PRIVATE_KEY_HEX] = private_key_hex;					  
-		//-------------------- First Private Key		
-			
-		//----------------------- Extended Private key -----------------------
-		//----------------------- Extended Private key
-				 
-		//--------------------------- WIF ---------------------------
-		//--------------------------- WIF	
+        pretty_log( "private_key_hex", private_key_hex );		
+		
+		new_wallet[PRIVATE_KEY_HEX] = private_key_hex;					  
+		//-------------------- First Private Key
 
-		return hdwallet_info;
-	} // Solana_API.MnemonicsToHDWalletInfo()
-} // Solana_API class
-//=========== Solana_API ===========
+		return new_wallet;
+	} // SolanaHD_API.MnemonicsToHDWalletInfo()
+	
+	static InitializeWallet() {
+		let null_wallet = {}; 
+		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
+		null_wallet[CRYPTO_NET]      = "Null-NET";
+		null_wallet[UUID]            = "Null-UUID";
+		null_wallet[PRIVATE_KEY_HEX] = NULL_HEX;
+		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
+		null_wallet[ADDRESS]         = "Null-ADDRESS";
+		null_wallet[MNEMONICS]       = "Null-MNEMONICS";
+		return null_wallet;
+	} // SolanaHD_API.InitializeWallet()
+} // SolanaHD_API class
+//=========== SolanaHD_API ===========
 
 if (typeof exports === 'object') {
-	exports.Solana_API = Solana_API
+	exports.SolanaHD_API = SolanaHD_API
 } // exports of 'solana_api.js'

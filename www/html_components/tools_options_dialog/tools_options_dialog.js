@@ -104,16 +104,24 @@ class ToolsOptionsDialog {
 	static OnChangeWalletMode() {
 		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.OnChangeWalletMode" + _END_;
 		log2Main(log_msg);
-		let wallet_mode = HtmlUtils.GetField( TOD_WALLET_MODE_SELECT_ID );
+		let wallet_mode = HtmlUtils.GetNodeValue( TOD_WALLET_MODE_SELECT_ID );
 		log2Main( "   wallet_mode:        " + wallet_mode );
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
-			HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
-			HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowNode( TOD_SW_ENTROPY_SIZE_ID );
+			HtmlUtils.HideNode( TOD_ENTROPY_SIZE_SELECT_ID );
 		}	
 		else if ( wallet_mode == HD_WALLET_TYPE ) {
-			HtmlUtils.ShowElement( TOD_ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideElement( TOD_SW_ENTROPY_SIZE_ID );
-		}		
+			HtmlUtils.ShowNode( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideNode( TOD_SW_ENTROPY_SIZE_ID );
+		}
+
+		HtmlUtils.InitializeNode
+				( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
+			      this.Options['Blockchains'][wallet_mode],
+				  this.Options['Blockchains'][wallet_mode] );
+
+		HtmlUtils.SetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
+				                this.Options[DEFAULT_BLOCKCHAIN][wallet_mode]);			
 	} // ToolsOptionsDialog.OnChangeWalletMode()
 	
 	static OnSave() {
@@ -153,28 +161,36 @@ class ToolsOptionsDialog {
 		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.UpdateFields" + _END_;
 		log2Main(log_msg);
 		
-		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN];
-		log2Main( "   default_blockchain: " + default_blockchain );
-		HtmlUtils.SetField( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, default_blockchain );		
-
+		this.options_data = options_data;
+		
 		let wallet_mode = options_data[WALLET_MODE];
+		
+		HtmlUtils.InitializeNode
+				( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
+			      options_data['Blockchains'][wallet_mode],
+				  options_data['Blockchains'][wallet_mode] );
+
+		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN][wallet_mode];
+		log2Main( "   default_blockchain: " + default_blockchain );
+		HtmlUtils.SetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, default_blockchain );		
+		
 		log2Main( "   wallet_mode:        " + wallet_mode );
-		HtmlUtils.SetField( TOD_WALLET_MODE_SELECT_ID, wallet_mode );
+		HtmlUtils.SetNodeValue( TOD_WALLET_MODE_SELECT_ID, wallet_mode );
 
         let entropy_size = 0;
         if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
 			entropy_size = 256;
-			HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
-			HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowNode( TOD_SW_ENTROPY_SIZE_ID );
+			HtmlUtils.HideNode( TOD_ENTROPY_SIZE_SELECT_ID );
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE ){			
 			entropy_size = options_data[ENTROPY_SIZE][HD_WALLET_TYPE];
-			HtmlUtils.ShowElement( TOD_ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideElement( TOD_SW_ENTROPY_SIZE_ID );
+			HtmlUtils.ShowNode( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideNode( TOD_SW_ENTROPY_SIZE_ID );
 	    }
 		
 		log2Main( "   entropy_size:       " + entropy_size );	
-        HtmlUtils.SetField( TOD_ENTROPY_SIZE_SELECT_ID, entropy_size );		
+        HtmlUtils.SetNodeValue( TOD_ENTROPY_SIZE_SELECT_ID, entropy_size );		
 	} // ToolsOptionsDialog.UpdateFields()
 	
 	static async RequireConfirmationFromUser( message, json_data, ok_handler ) {
@@ -209,27 +225,28 @@ class ToolsOptionsDialog {
 		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.ReadFields" + _END_;
 		log2Main(log_msg);
 		
-		let default_blockchain = HtmlUtils.GetField( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID );
+		let default_blockchain = HtmlUtils.GetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID );
 		log2Main( "   default_blockchain: " + default_blockchain );
 
-		let wallet_mode = HtmlUtils.GetField( TOD_WALLET_MODE_SELECT_ID );
+		let wallet_mode = HtmlUtils.GetNodeValue( TOD_WALLET_MODE_SELECT_ID );
 		log2Main( "   wallet_mode:        " + wallet_mode );
 
-		let entropy_size = HtmlUtils.GetField( TOD_ENTROPY_SIZE_SELECT_ID );
+		let entropy_size = HtmlUtils.GetNodeValue( TOD_ENTROPY_SIZE_SELECT_ID );
 		log2Main( "   entropy_size:       " + entropy_size );
 
-        let options_data = {};
-		options_data[DEFAULT_BLOCKCHAIN] = default_blockchain;
-		options_data[WALLET_MODE]        = wallet_mode;
+		this.options_data[WALLET_MODE]                     = wallet_mode;
+		this.options_data[DEFAULT_BLOCKCHAIN][wallet_mode] = default_blockchain;
+		
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
 			entropy_size = 256;
 		}
 
-        options_data[ENTROPY_SIZE] = { [HD_WALLET_TYPE]:"128", [SIMPLE_WALLET_TYPE]:"256" };
-		log2Main( "   options_data:       " + JSON.stringify(options_data) );
-		options_data[ENTROPY_SIZE][wallet_mode] = entropy_size;
+        this.options_data[ENTROPY_SIZE] = 
+			{ [HD_WALLET_TYPE]:"128", [SIMPLE_WALLET_TYPE]:"256" };
+		log2Main( "   options_data:       " + JSON.stringify(this.options_data) );
+		this.options_data[ENTROPY_SIZE][wallet_mode] = entropy_size;
 		
-		return options_data;		
+		return this.options_data;		
 	} // ToolsOptionsDialog.ReadFields()
 	
 	static async SaveFields() {

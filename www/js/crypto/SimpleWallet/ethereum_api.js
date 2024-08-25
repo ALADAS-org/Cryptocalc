@@ -37,48 +37,44 @@ const eip55           = require("eip55"); // Mixedcase Checksum in Wallet addres
 
 // https://ethereum.stackexchange.com/questions/50294/typeerror-web3-is-not-a-constructor-when-trying-to-use-node-js-with-truffle-con
 // NB: replaces 'web3'
-const { Web3 }        = require("web3"); // for Sepolia (Ethereum testnet)
-const { Base64 }      = require("js-base64");	
+const { Web3 }        = require('web3'); // for Sepolia (Ethereum testnet)
+const { Base64 }      = require('js-base64');	
 
 const { _RED_, _CYAN_, _PURPLE_, 
-        _YELLOW_, _END_ }             = require('../util/color/color_console_codes.js');
+        _YELLOW_, _END_ }             = require('../../util/color/color_console_codes.js');
 
-const { NULL_COIN, BLOCKCHAIN, NULL_BLOCKCHAIN,
+const { NULL_COIN, 
         ETHEREUM, 
 		MAINNET, TESTNET
-	  }                               = require('./const_blockchains.js');
+	  }                               = require('../const_blockchains.js');
 	  
-const { NULL_HEX, NULL_B64, NULL_NET, NULL_UUID,
-        NULL_ADDRESS, NULL_SEEDPHRASE,
-        UUID_HEX, CRYPTO_NET,
-        PRIVATE_KEY_HEX, PRIVATE_KEY_B64,
-		PUBLIC_KEY_HEX, PUBLIC_KEY_B64,        
-		ADDRESS, SEEDPHRASE }         = require('./const_wallet.js'); 
+const { NULL_HEX, NULL_NET, NULL_UUID,
+        NULL_ADDRESS, CRYPTO_NET,
+        PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,        
+		ADDRESS }                     = require('../const_wallet.js'); 
 		
-const { stringify }                   = require('../util/values/string_utils.js');	 
+const { BLOCKCHAIN, NULL_BLOCKCHAIN,
+        UUID, MNEMONICS, WORD_COUNT 
+      }                               = require('../../const_keywords.js'); 
+		
+const { stringify }                   = require('../../util/values/string_utils.js');	 
 const { hexWithPrefix, hexWithoutPrefix,
-        hexToBytes, hexToUint8Array } = require('./hex_utils.js'); 
+        hexToBytes, hexToUint8Array } = require('../hex_utils.js'); 
 
-const { Seedphrase_API }              = require('./seedphrase_api.js');  
+const { Bip39Utils }                  = require('../bip39_utils.js');  
 
 class Ethereum_API {
-    static GetWallet(seed_SHA256_hex, salt_uuid, blockchain, crypto_net) {
+    static GetWallet( private_key, salt_uuid, blockchain, crypto_net ) {
 		console.log(">> " + _CYAN_ + "Ethereum_API.GetWallet " + _END_ + crypto_net);
-		console.log("   seed_SHA256_hex: " + seed_SHA256_hex);
+		if ( crypto_net == undefined ) {
+			crypto_net = MAINNET;
+		}
+		console.log("   private_key: " + private_key);
 			
-		let new_wallet = {};
+		let new_wallet = Ethereum_API.InitializeWallet();
 			
-		if (seed_SHA256_hex == undefined) {
-			console.log(">> BlockchainWallet.GetWallet  **ERROR** private_key: " + seed_SHA256_hex);
-			new_wallet[BLOCKCHAIN]        = NULL_BLOCKCHAIN;
-			new_wallet[UUID_HEX]          = NULL_UUID;
-			new_wallet[CRYPTO_NET]        = NULL_NET;
-			new_wallet[PRIVATE_KEY_HEX]   = NULL_HEX;
-			new_wallet[PRIVATE_KEY_B64]   = NULL_B64;
-			new_wallet[PUBLIC_KEY_HEX]    = NULL_HEX;
-			new_wallet[PUBLIC_KEY_B64]    = NULL_B64;
-			new_wallet[ADDRESS]           = NULL_ADDRESS;
-			new_wallet[SEEDPHRASE]        = NULL_SEEDPHRASE;
+		if ( private_key == undefined ) {
+			console.log(">> BlockchainWallet.GetWallet  **ERROR** private_key: " + seed_SHA256_hex);			
 			return new_wallet;
 		}
 
@@ -87,7 +83,7 @@ class Ethereum_API {
 						
 		new_wallet[BLOCKCHAIN]  = ETHEREUM;
 		new_wallet[CRYPTO_NET]  = crypto_net;
-		new_wallet[UUID_HEX]    = salt_uuid;
+		new_wallet[UUID]        = salt_uuid;
 		
 		//========================= Ethereum =========================
 		let ETH_address     = "";
@@ -109,7 +105,7 @@ class Ethereum_API {
 		    //    "privateKey": "0x10fb87a84c1b4f41975da16a0315387a914616851e36d9dbf81435dd1d1e0f5c" }]
 		
 		    // https://web3js.readthedocs.io/en/v1.2.11/web3-eth-accounts.html
-		    let wallet = web3_sepolia.eth.accounts.wallet.add(hexWithPrefix(seed_SHA256_hex));
+		    let wallet = web3_sepolia.eth.accounts.wallet.add( hexWithPrefix( private_key ) );
 
 		    //this is how we can access to the first account of the wallet
 		    console.log('Sepolia (ETH testnet):');
@@ -123,7 +119,7 @@ class Ethereum_API {
 			//---------- get ETH wallet public key ----------
 			// https://ethereum.stackexchange.com/questions/12571/getting-an-address-from-ethereumjs-utils-ecrecover
 			// NB: This is 'public key' for "ETH Mainnet" but indeed should be the same in Sepolia
-			const private_key_buffer  = EthUtil.toBuffer(hexWithPrefix(seed_SHA256_hex));
+			const private_key_buffer  = EthUtil.toBuffer( hexWithPrefix( private_key ) );
 			let ETH_wallet    = Wallet.fromPrivateKey(private_key_buffer);
 			console.log(">> Wallet address:\n"     + ETH_wallet.getAddressString());
 		    ETH_public_key = ETH_wallet.getPublicKeyString();
@@ -132,19 +128,16 @@ class Ethereum_API {
 		}
 		else {
 			//====================  ETH MAINNET  ====================
-			new_wallet[CRYPTO_NET] = MAINNET;
-			
 			//const eth_wallet = new ethers.Wallet(private_key);
 			// https://piyopiyo.medium.com/generating-an-ethereum-wallet-with-an-existing-private-key-5cda690a8eb8
 			//const eth_wallet = EthWallet.default.generate(private_key);
-			const pk_buffer  = EthUtil.toBuffer(hexWithPrefix(seed_SHA256_hex));
+			const pk_buffer  = EthUtil.toBuffer( hexWithPrefix ( private_key ) );
 			// https://ethereum.stackexchange.com/questions/96732/generating-an-ethereum-wallet-with-an-existing-private-key
-			const eth_wallet = Wallet.fromPrivateKey(pk_buffer);
+			const eth_wallet = Wallet.fromPrivateKey( pk_buffer );
 			
 			// NB: Must keep "Mixed case Hex digits"
 			ETH_address      = eth_wallet.getAddressString(); // toLowerCase();
-			ETH_private_key  = eth_wallet.getPrivateKeyString();
-			
+			ETH_private_key  = eth_wallet.getPrivateKeyString();			
 			ETH_public_key   = eth_wallet.getPublicKeyString();			
         }
 
@@ -152,47 +145,44 @@ class Ethereum_API {
 		
 		//console.log(">> Ethereum Address: " + stringify(eth_wallet.getAddressString()));
 		
-		//console.log("input private_key:\n" + seed_sha256_hex);
+		//console.log("input private_key:\n" + private_key);
 		//console.log("eth_wallet:\n"  + stringify(eth_wallet));
 		
 		//---------- private key ----------
-		new_wallet[PRIVATE_KEY_HEX] = seed_SHA256_hex;
-
-		//console.log("seed_sha256_hex:\n" + seed_sha256_hex);
-	
-		let seed_SHA256_hex_wo_0x = hexWithoutPrefix(seed_SHA256_hex);
-		let pk_uint8_values = hexToUint8Array(seed_SHA256_hex_wo_0x);
-		//console.log(stringify(pk_uint8_values));
-		
-		let private_key_b64 = Base64.fromUint8Array(pk_uint8_values);
-		//console.log("private_key_b64:\n" + private_key_b64);
-		
-		//let private_key_b64_old = hexToB64(seed_sha256_hex);		
-		//console.log("private_key_b64_old:\n" + private_key_b64_old);		
-		
-		new_wallet[PRIVATE_KEY_B64]   = private_key_b64;
+		new_wallet[PRIVATE_KEY_HEX] = private_key;
+		//console.log("private_key:\n" + private_key);
 		//---------- private key
 		
-		let seedphrase = Seedphrase_API.FromSHASeed(seed_SHA256_hex);
-		new_wallet[SEEDPHRASE]        = seedphrase;
+		//---------- mnemonics ----------
+		let args = { [WORD_COUNT]: 24 };
+	    let mnemonics = Bip39Utils.EntropyToMnemonics( private_key, args );
+		new_wallet[MNEMONICS] = mnemonics;
+		//---------- mnemonics
 		
 		//---------- public key ----------
-		new_wallet[PUBLIC_KEY_HEX]    = ETH_public_key;
-	
-		pk_uint8_values               = hexToUint8Array(hexWithoutPrefix(ETH_public_key));
-		let public_key_b64            = Base64.fromUint8Array(pk_uint8_values);
-		new_wallet[PUBLIC_KEY_B64]    = public_key_b64;
+		new_wallet[PUBLIC_KEY_HEX] = ETH_public_key;
 		//---------- public key
 			
-		//---------- Ethereum wallet address ----------
+		//----------Address ----------
 		// Ethereum address is in Hexa
-		let eip55_address             = eip55.encode(hexWithPrefix(ETH_address.toLowerCase()));
-		new_wallet[ADDRESS]           = eip55_address;
+		new_wallet[ADDRESS] =  eip55.encode( hexWithPrefix( ETH_address.toLowerCase() ) );
 		//console.log(">> getBlockchainWallet ** Ethereum address:\n" + new_wallet['address']);
-		//---------- Ethereum wallet address
+		//---------- Address
 		
 		return new_wallet;
-	} // static GetWallet()
+	} // Ethereum_API.GetWallet()
+	
+	static InitializeWallet() {
+		let null_wallet = {}; 
+		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
+		null_wallet[CRYPTO_NET]      = "Null-NET";
+		null_wallet[UUID]            = "Null-UUID";
+		null_wallet[PRIVATE_KEY_HEX] = NULL_HEX;
+		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
+		null_wallet[ADDRESS]         = "Null-ADDRESS";
+		null_wallet[MNEMONICS]       = "Null-MNEMONICS";
+		return null_wallet;
+	} // Ethereum_API.InitializeWallet()
 	
 	static GetSepoliaWallet(seed_SHA256_hex) {
 		// https://coinsbench.com/connecting-to-the-ethereum-testnet-using-only-web3-js-and-the-console-cffe0273b184
@@ -210,7 +200,7 @@ class Ethereum_API {
 		console.log('Sepolia (Eth testnet):');
 		console.log("wallet[0].address:\n"    + wallet[0].address);
 		console.log("wallet[0].privateKey:\n" + wallet[0].privateKey);
-	} // static GetSepoliaWallet()	
+	} // Ethereum_API.GetSepoliaWallet()	
 	
 	static async GetWalletWithKeyStore(seed_SHA256_hex) {
 		//const privateKeyString = '0x61ce8b95ca5fd6f55cd97ac60817777bdf64f1670e903758ce53efc32c3dffeb';
@@ -230,7 +220,7 @@ class Ethereum_API {
 		let	filename = "keystore.json";
 		//console.log("> frieze_text: \n" + frieze_text);
 		fs.writeFileSync(  "./" + filename, stringify(keystore) );
-	} // static GetWalletWithKeyStore()	
+	} // Ethereum_API.GetWalletWithKeyStore()	
 } // Ethereum_API class
 
 // Ethereum_API.GetWalletWithKeyStore()

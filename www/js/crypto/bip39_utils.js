@@ -41,10 +41,9 @@ const { v4: uuidv4 } = require('uuid');
 // https://bitcoin.stackexchange.com/questions/113286/uncaught-typeerror-bip32-fromseed-is-not-a-function
 //const bip32         = require('bip32'); => ERROR: "bip32.fromSeed in not a function"
 const ecc = require('tiny-secp256k1')
-const { BIP32Factory 
-      }             = require('bip32');
+const { BIP32Factory } = require('bip32');
 // You must wrap a tiny-secp256k1 compatible implementation
-const bip32         = BIP32Factory(ecc);
+const bip32            = BIP32Factory(ecc);
 
 const CS_WORDLIST_JSON = require('@scure/bip39/wordlists/czech');
 const CS_WORDLIST      = CS_WORDLIST_JSON['wordlist'];
@@ -56,7 +55,6 @@ const PT_WORDLIST      = PT_WORDLIST_JSON['wordlist'];
 //const { wordlist as korean }             = require('@scure/bip39/wordlists/korean';
 //const { wordlist as simplifiedChinese }  = require('@scure/bip39/wordlists/simplified-chinese';
 //const { wordlist as traditionalChinese } = require('@scure/bip39/wordlists/traditional-chinese';
-
 const { GERMAN_MNEMONICS }    = require('../lib/mnemonics/DE_mnemonics.js');
 const { ESPERANTO_MNEMONICS } = require('../lib/mnemonics/EO_mnemonics.js');
 
@@ -66,6 +64,10 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_,
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
 		_END_ }              = require('../util/color/color_console_codes.js');
 		
+const { getFunctionCallerName,
+        pretty_func_header_log,
+        pretty_log }         = require('../util/log/log_utils.js');
+		
 const { NULL_COIN, 
 	    BITCOIN, ETHEREUM, 
 		//BINANCE,
@@ -74,7 +76,6 @@ const { NULL_COIN,
 		LITECOIN, DASH,
 		//AVALANCHE,
 		MAINNET, TESTNET,
-		BLOCKCHAIN, NULL_BLOCKCHAIN,
 		COIN_ABBREVIATIONS, COIN_TYPES
       }                      = require('./const_blockchains.js');
 	  
@@ -82,19 +83,22 @@ const { NULL_HEX,
 		CRYPTO_NET,
         ADDRESS, UUID, 
 		CHECKSUM, CHAINCODE, 
-		MNEMONICS, ENTROPY_HEX,
-		MASTER_PK_HEX, ROOT_PK_HEX, WIF, 
+		ENTROPY_HEX,
+		MASTER_PK_HEX, ROOT_PK_HEX, 
 		PRIVATE_KEY_HEX, PUBLIC_KEY_HEX 
 	  }                      = require('./const_wallet.js');
 	  
-const { WORD_COUNT, 
-        ACCOUNT_INDEX, ADDRESS_INDEX
+const { BLOCKCHAIN, NULL_BLOCKCHAIN,
+        LANG, MNEMONICS, WORD_COUNT, 
+        ACCOUNT, ADDRESS_INDEX
 	  }                      = require('../const_keywords.js');
 		
 const { hexToBinary, binaryToHex,
         hexWithPrefix, hexWithoutPrefix, isHexString,
         uint8ArrayToHex, hexToUint8Array  
 	  }                      = require('./hex_utils.js');	
+	  
+const { EntropySize }        = require('./entropy_size.js');
 
 const { getShortenedString } = require('../util/values/string_utils.js');
 
@@ -106,21 +110,31 @@ const pad = (n, width, z) => {
 }; // pad()	
 
 class Bip39Utils {
-	static PrivateKeyToMnemonics( private_key_hex ) {		
-		//console.log(">> " + _CYAN_ + "Bip39Utils.PrivateKeyToMnemonics" + _END_);
+	static PrivateKeyToMnemonics( private_key ) {		
+		console.log(">> " + _CYAN_ + "Bip39Utils.PrivateKeyToMnemonics" + _END_);
 		let lang       = "EN";		
 
         // TEST https://github.com/massmux/HowtoCalculateBip39Mnemonic?tab=readme-ov-file 
         // entropy_hex = "656d338db7c217ad57b2516cdddd6d06";
         // TEST
+		// private_key_hex = "0ed797c1da6515542acda6358045702a0a558be931cb0490ea7044e0c0311645";
 		
-		private_key_hex = hexWithoutPrefix( private_key_hex );
-		let private_key_byte_count = private_key_hex.length / 2;
-		//console.log(  "   " + _YELLOW_
-		//            + Bip39Utils.LabelWithSize("private_key", private_key_byte_count) 
-		//            + "        " + _END_ + private_key_hex);	
+		// Erreur
+		// Pour private_key_hex = 
+		// 0ed797c1da6515542acda6358045702a0a558be931cb0490ea7044e0c0311645
+		// => attract royal vacant regular eyebrow present private regular 
+		//    culture acquire foster favorite pipe shine pill defense 
+		//    afraid mansion orchard mean army blush flip rubber
+		//                                                ^^^^^^ OK
+		// => attract royal vacant regular eyebrow present private regular
+		//    culture acquire foster favorite pipe shine pill defense
+		//    afraid mansion orchard mean army blush flip peace
+		//                                                ****** KO
+		private_key = hexWithoutPrefix( private_key );
+		let private_key_byte_count = private_key.length / 2;
+        pretty_log( Bip39Utils.LabelWithSize( "private_key", private_key_byte_count ), private_key );					
 		
-		if ( ! isHexString( private_key_hex ) ) {
+		if ( ! isHexString( private_key ) ) {
 			let error_msg = "**ERROR** Input for 'Private Key' is Not a in Hexadecimal";
 			return error_msg;
 		}
@@ -134,21 +148,28 @@ class Bip39Utils {
 		let word_index            = 0;
 		let word                  = "";
 		let mnemonics             = "";	
-        let private_key_to_sha256 = "";	
 		
         // https://github.com/massmux/HowtoCalculateBip39Mnemonic		
-		let private_key_bits = hexToBinary( private_key_hex );		
-	    let checksum_size = ( (private_key_hex.length / 2) * 8 ) / 32;	
-	    let checksum_bits = private_key_bits.substring(0, checksum_size);
+		let private_key_bits = hexToBinary( private_key );		
+	    let checksum_size = ( (private_key.length / 2) * 8 ) / 32;
 		
-		//console.log(  "   " + _YELLOW_ 
-		//            + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) 
-		//            + "       " + _END_ + checksum_bits);
+		let pk_sha256 = "";
+		if ( isHexString( private_key ) ) {
+			pk_sha256 = sha256( hexToUint8Array( private_key ) );
+		}
+		else {
+			pk_sha256 = sha256( private_key );
+		}
+		
+		let pk_sha256_bits = hexToBinary( pk_sha256 );		
+	    
+	    let checksum_bits = pk_sha256_bits.substring( 0, checksum_size );		
+		pretty_log( Bip39Utils.LabelWithSize( "checksum_bits", checksum_size ), checksum_bits );
 	
 	    private_key_bits += checksum_bits;
 		
 		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
-		for (let i=0; i < private_key_bits.length; i+=11) {
+		for ( let i=0; i < private_key_bits.length; i+=11 ) {
 			let word_index_11bits = private_key_bits.substring( i, i+11 );
 			word_index = parseInt( word_index_11bits, 2 ); // convert binary string in decimal
 			
@@ -227,43 +248,22 @@ class Bip39Utils {
 	
 	static EntropyToMnemonics( entropy_hex, args ) {
 		console.log(">> " + _CYAN_ + "Bip39Utils.EntropyToMnemonics" + _END_);
-		//console.log("   entropy_hex:            " + entropy_hex);
+		pretty_log( "entropy_hex", entropy_hex );
 		
 		args = Bip39Utils.GetArgs( args );
-		let lang          = args["lang"];
-		let word_count    = args["word_count"];
-		let checksum_size = 4;
-        //console.log("   lang: " + lang);		
-		
-		switch ( word_count ) {
-			case 12:	entropy_hex = entropy_hex.substring(0, 32); // [0..31]: first 32 chars of SHA256
-						checksum_size = 4;
-						break;
-						
-			case 15:	entropy_hex = entropy_hex.substring(0, 40); // [0..39]: first 40 chars of SHA256
-			            checksum_size = 5;
-						break;
-						
-			case 18:	entropy_hex = entropy_hex.substring(0, 48); // [0..47]: first 48 chars of SHA256
-						checksum_size = 6;
-						break;
-						
-			case 21:	entropy_hex = entropy_hex.substring(0, 56); // [0..55]: first 56 chars of SHA256
-						checksum_size = 7;
-						break;
-						
-			case 24:	//..........................................// [0..63]: All chars of SHA256
-						checksum_size = 8;
-						break;
-		} // word_count
-		
-		entropy_hex = hexWithoutPrefix( entropy_hex );
+		let lang          = args[LANG];
+		let word_count    = args[WORD_COUNT];
+		pretty_log( "word_count", word_count );
+        //console.log("   lang: " + lang);	
 
+        let checksum_size  = EntropySize.GetChecksumBitCount( word_count ); 
+        entropy_hex        = EntropySize.GetSHA256Substring( entropy_hex, word_count );		
+		
 		let entropy_binary = hexToBinary( entropy_hex );
 				                                                            
-		// !! NB !!: there was error here: SHA256(Uint8Array(entropy_hex)) should be computed, NOT SHA256(entropy_hex)
+		// !! NB !!: there was error here: SHA256(Uint8Array(entropy_hex)) should be hashed, NOT SHA256(entropy_hex)
 		let entropy_hex_sha256 = "";
-		if ( isHexString(entropy_hex) ) {
+		if ( isHexString( entropy_hex ) ) {
 			entropy_hex_sha256 = sha256( hexToUint8Array( entropy_hex ) );
 		}
 		else {
@@ -272,11 +272,8 @@ class Bip39Utils {
 		
 		let entropy_hex_sha256_bits = hexToBinary( entropy_hex_sha256 );		
 	    
-	    let checksum_bits = entropy_hex_sha256_bits.substring(0, checksum_size);
-
-		//console.log(  "   " + _YELLOW_
-		//            + Bip39Utils.LabelWithSize("checksum_bits", checksum_size) + _END_
-		//		      + "       " + checksum_bits);
+	    let checksum_bits = entropy_hex_sha256_bits.substring( 0, checksum_size );
+		pretty_log( Bip39Utils.LabelWithSize("checksum_bits", checksum_size), checksum_bits );
 	
 	    entropy_binary = entropy_binary + checksum_bits;
 
@@ -447,7 +444,7 @@ class Bip39Utils {
 
 		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
 		let word_indexes = [];
-		for (let i=0; i < words.length; i++) {
+		for ( let i=0; i < words.length; i++ ) {
 			let current_word = words[i] ;
 			//console.log("   word("+ i + "): " + current_word);
 			let word_index = LANG_WORDLIST.indexOf( current_word );
@@ -595,7 +592,7 @@ class Bip39Utils {
 	} // Bip39Utils.MnemonicsAs4letter()
 	
 	static MnemonicsAsTwoParts( mnemonics ) {
-		console.log(">> " + _CYAN_ + "Bip39Utils.MnemonicsAsTwoParts" + _END_);
+		//console.log(">> " + _CYAN_ + "Bip39Utils.MnemonicsAsTwoParts" + _END_);
 				
 		if (mnemonics == undefined) {
 			return "Null-MNEMONICS";
@@ -634,7 +631,7 @@ class Bip39Utils {
 	} // Bip39Utils.MnemonicsAsTwoParts()	
 	
 	static LabelWithSize(data, size) {
-		let msg = data + "(" + size + "):";
+		let msg = data + "(" + size + ")";
 		return msg;
 	} // Bip39Utils.LabelWithSize()
 	
@@ -660,7 +657,7 @@ class Bip39Utils {
 		args[CRYPTO_NET]    = getArgValue( args, CRYPTO_NET,    MAINNET );
 		args[UUID]          = getArgValue( args, UUID,          uuidv4() );
         args[ADDRESS_INDEX] = getArgValue( args, ADDRESS_INDEX, 0 );	
-		args[ACCOUNT_INDEX] = getArgValue( args, ACCOUNT_INDEX, 0 );		
+		args[ACCOUNT] = getArgValue( args, ACCOUNT, 0 );		
 		
 		//console.log("   args 2: " + JSON.stringify(args));
 		
