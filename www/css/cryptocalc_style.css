@@ -303,7 +303,11 @@ hr {
 }
 
 #entropy_id { 
-	height:            20px;
+	width:             94.5%;
+}
+
+#wallet_pk_hex_id { 
+	width:             94.5%;
 }
 
 .CopyButton {
@@ -458,6 +462,14 @@ hr {
 .DataField {
 	font-family:       Arial, Helvetica, sans-serif;
 	width:             85%;
+}
+
+.NormalAddressField {
+    font-size:        18px;
+}
+
+.LongAddressField {
+    font-size:        15px;
 }
 
 .SaltField {

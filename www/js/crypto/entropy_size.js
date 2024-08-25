@@ -3,7 +3,44 @@
 // ====================================================================================
 "use strict";
 
+const { NULL_HEX, NULL_WORD_COUNT 
+	  }                    = require('./const_wallet.js');
+	  
+const { isHexString, hexWithoutPrefix 
+	  }                    = require('./hex_utils.js');
+
 class EntropySize {
+	static GetBitCount( entropy_hex ) {
+		if ( ! isHexString( entropy_hex ) ) return NULL_HEX;
+		let bit_count = entropy_hex.length * 4; // 4 bits per hex digit
+		return bit_count;
+	} // EntropySize.GetBitCount()
+	
+	static GetWordCount( entropy_hex ) {
+		let bit_count = EntropySize.GetBitCount( entropy_hex );
+		if ( bit_count == NULL_HEX ) return NULL_WORD_COUNT;
+		let word_count = EntropySize.GetExpectedWordCount( bit_count );
+		return word_count;
+	} // EntropySize.GetWordCount()
+	
+	static GetSHA256Substring( sha256_hex, word_count ) {
+		let entropy_hex = hexWithoutPrefix( sha256_hex );
+		switch ( word_count ) {
+			case 12:	entropy_hex = sha256_hex.substring(0, 32); // [0..31]: first 32 chars of SHA256
+						break;			
+			case 15:	entropy_hex = sha256_hex.substring(0, 40); // [0..39]: first 40 chars of SHA256
+						break;						
+			case 18:	entropy_hex = sha256_hex.substring(0, 48); // [0..47]: first 48 chars of SHA256
+						break;						
+			case 21:	entropy_hex = sha256_hex.substring(0, 56); // [0..55]: first 56 chars of SHA256
+						break;						
+			case 24:	//.........................................// [0..63]: All chars of SHA256
+						break;
+		} // word_count
+		
+		return entropy_hex;
+	} // EntropySize.GetSHA256Substring()
+	
 	static GetChecksumBitCount( word_count ) {
 		if ( word_count == undefined ) {
 			 word_count = 12;

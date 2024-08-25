@@ -6,6 +6,8 @@
 // https://izitoast.marcelodolza.com/    
 class GuiUtils {
 	static ShowInfoDialog( msg ) {
+		iziToast.destroy();
+		
 		let options = {
 			iconUrl:         './icons/Cryptocalc_Icon.png',
 			position:        'center',
@@ -19,6 +21,10 @@ class GuiUtils {
 	} // GuiUtils.ShowInfoDialog()
 	
 	static ShowQuestionDialog( msg, args ) {
+		iziToast.destroy();
+		
+		let bg_color = 'lightblue';
+		
 		let close_button_label   = "OK";
 		let feature_handler      = undefined;
 		let feature_button_label = undefined;
@@ -27,6 +33,10 @@ class GuiUtils {
 			let close_button_label_value = args["CloseButtonLabel"];
 			if ( close_button_label_value != undefined ) {
 				close_button_label = close_button_label_value;
+			}
+			
+			if ( args["BackgroundColor"] != undefined ) {
+				bg_color = args["BackgroundColor"];
 			}
 		}
 		
@@ -56,7 +66,7 @@ class GuiUtils {
 		let options = {
 			iconUrl:         './icons/Cryptocalc_Icon.png',
 			timeout: false, progressBar: false, overlay: true, close: false,
-			backgroundColor: 'lightblue',
+			backgroundColor: bg_color,
 			displayMode:     'once',
 			id:              'question',
 			zindex:          999,

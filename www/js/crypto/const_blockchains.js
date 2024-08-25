@@ -12,10 +12,7 @@
 
 // cf. capitalization order on https://coinmarketcap.com/
 // BUT Ethereum in First place because of the "ecosystem popularity"l
-const NULL_COIN       = "Null-COIN";
-
-const BLOCKCHAIN      = "Blockchain";
-const NULL_BLOCKCHAIN = "Null-Blockchain";
+const NULL_COIN    = "Null-COIN";
 
 const COIN         = "coin";
 const COIN_TYPE    = "coin_type";
@@ -30,7 +27,10 @@ const ETHEREUM     = "Ethereum";
 const BINANCE      = "Binance";
 const SOLANA       = "Solana";
 const RIPPLE       = "Ripple";
+
 const CARDANO      = "Cardano";
+const ADA_PURPOSE  = "1852";
+
 const AVALANCHE    = "Avalanche";
 const DOGECOIN     = "DogeCoin";
 const TRON         = "TRON";
@@ -39,6 +39,7 @@ const POLKADOT     = "Polkadot";
 const POLYGON      = "Polygon";
 const LITECOIN     = "LiteCoin";
 const FILECOIN     = "Filecoin";
+const EOS          = "EOS";
 const FIRO         = "Firo";
 
 // Monero mnemonic library (https://github.com/pywallet-cli/bip-utils)
@@ -84,6 +85,7 @@ const COIN_ABBREVIATIONS = {
 	[ZCASH]        : "ZEC",
 	[KUSAMA]       : "KSM",
 	[DASH]         : "DASH",
+	[EOS]          : "EOS",
 	[FIRO]         : "FIRO",	
 	// ------------ https://coinmarketcap.com/			
 	
@@ -92,12 +94,9 @@ const COIN_ABBREVIATIONS = {
 
 // coin_types: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 const COIN_TYPES = {
-	[NULL_COIN]    :   -1,
-	
-	[BITCOIN]      :    0,
-	
-	[TESTNET_COIN] :    1,
-	
+	[NULL_COIN]    :   -1,	
+	[BITCOIN]      :    0,	
+	[TESTNET_COIN] :    1,	
 	[LITECOIN]     :    2,
 	[DOGECOIN]     :    3,
 	[DASH]         :    5,
@@ -108,6 +107,7 @@ const COIN_TYPES = {
 	[FIRO]         :  136,
 	[RIPPLE]       :  144,
 	[BITCOIN_CASH] :  145,
+	[EOS]          :  194,
 	[TRON]         :  195,
 	[ZILLIQA]      :  313,
 	[KUSAMA]       :  434,
@@ -151,6 +151,7 @@ const MAINNET_EXPLORER_URLs = {
 	[BITCOIN_CASH]: "https://explorer.btc.com/bch/address/",
 	[DASH]:         "https://explorer.dash.org/insight/address/",
 	[RIPPLE]:       "https://livenet.xrpl.org/accounts/",
+	[EOS]:          "Null-URL",
 	[FIRO]:         "https://explorer.firo.org/address/",
 	[LITECOIN]:     "https://live.blockcypher.com/ltc/address/"
 }; // MAINNET_EXPLORER_URLs
@@ -167,16 +168,13 @@ const TESTNET_EXPLORER_URLs = {
     [TRON]:         "Null-URL",
 	[BITCOIN_CASH]: "Null-URL",
 	[DASH]:         "Null-URL",
+	[EOS]:          "Null-URL",
 	[FIRO]:         "Null-URL",
     [LITECOIN]:     "https://sochain.com/address/LTCTEST/%ADDRESS%"	
 }; // TESTNET_EXPLORER_URLs
 
 if (typeof exports === 'object') {
 	exports.NULL_COIN                = NULL_COIN	
-	
-	exports.BLOCKCHAIN               = BLOCKCHAIN
-	exports.NULL_BLOCKCHAIN          = NULL_BLOCKCHAIN
-	
 	exports.COIN                     = COIN
 	exports.COIN_TYPE                = COIN_TYPE
 	
@@ -190,7 +188,10 @@ if (typeof exports === 'object') {
 	exports.BINANCE                  = BINANCE
 	exports.SOLANA                   = SOLANA
 	exports.RIPPLE                   = RIPPLE
+	
 	exports.CARDANO                  = CARDANO
+	exports.ADA_PURPOSE              = ADA_PURPOSE
+	
 	exports.AVALANCHE                = AVALANCHE
 	exports.DOGECOIN                 = DOGECOIN
 	exports.TRON                     = TRON
@@ -204,6 +205,7 @@ if (typeof exports === 'object') {
 	exports.ZILLIQA                  = ZILLIQA
 	exports.KUSAMA                   = KUSAMA
 	exports.DASH                     = DASH
+	exports.EOS                      = EOS
 	exports.FIRO                     = FIRO
 	
 	exports.ZCASH                    = ZCASH

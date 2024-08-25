@@ -34,8 +34,14 @@ const FILE_IMPORT_BTN_ID           = "file_import_btn_id";
 
 const MNEMONICS_ID                 = "mnemonics_id";
 const MNEMONICS_COPY_BTN_ID        = "mnemonics_copy_btn_id";
-
 const MNEMONICS_4LETTER_ID         = "mnemonics_4letter_id";
+
+const SW_MNEMONICS_ID              = "sw_mnemonics_id";
+const SW_MNEMONICS_COPY_BTN_ID     = "sw_mnemonics_copy_btn_id";
+const SW_WIF_COPY_BTN_ID           = "sw_wif_copy_btn_id";
+
+const TR_SW_MNEMONICS_ID           = "tr_sw_mnemonics_id";
+
 const LANG_SELECT_ID               = "LANG_SELECT_ID";
 const WORD_COUNT_SELECT_ID         = "word_count_select_id";
 
@@ -49,8 +55,10 @@ const WALLET_MODE_SELECT_ID        = "wallet_mode_select_id";
 const WALLET_BLOCKCHAIN_LABEL_ID   = "wallet_blockchain_label_id";
 const WALLET_BLOCKCHAIN_ID         = "wallet_blockchain_id"; 
 
+const PURPOSE_ID                   = "purpose_id";
 const COIN_TYPE_ID                 = "coin_type_id";
 const ACCOUNT_ID                   = "account_id";
+const CHANGE_ID                    = "change_id";
 const ADDRESS_INDEX_ID             = "address_index_id";
 
 const DERIVATION_PATH_ROW          = "derivation_path_row";
@@ -65,14 +73,17 @@ const WALLET_URL_LINK_ID           = "wallet_URL_link_id";
 
 const WALLET_PK_LABEL_ID           = "wallet_PK_label_id";
 const WALLET_PK_HEX_ID             = "wallet_pk_hex_id";
+const WALLET_PK_COPY_BTN_ID        = "wlt_pk_copy_btn_id";
 
-const WIF_FIELD_LINE_ID            = "WIF_field_line_id";
-const WIF_LABEL_ID                 = "WIF_label_id";
-const WIF_ID                       = "WIF_id";
+const TR_WIF_ID                    = "tr_wif_id";
+const WIF_LABEL_ID                 = "wif_label_id";
+const WIF_ID                       = "wif_id";
 
-const PRIV_KEY_FIELD_LINE_ID       = "PRIV_KEY_field_line_id";
-const PRIV_KEY_LABEL_ID            = "PRIV_KEY_label_id";
-const PRIV_KEY_ID                  = "PRIV_KEY_id";
+const TR_1ST_PK_ID                 = "tr_1st_PK_id";
+
+const TR_PRIV_KEY_ID               = "tr_priv_key_id";
+const PRIV_KEY_LABEL_ID            = "priv_key_label_id";
+const PRIV_KEY_ID                  = "priv_key_id";
 
 const UPDATE_LABEL_ID              = "update_label_id";
 
@@ -102,14 +113,8 @@ const UPDATE_MSG                   = "Use the [Update] button to refresh compute
 const NOT_SAME_LANG_MSGID          = "NOT_SAME_LANG_MSGID";
 const INVALID_WORD_COUNT_MSGID     = "INVALID_WORD_COUNT_MSGID";
 
-//const HTML_NODE_IDS              = [ SEED_TAB_LINK_ID, WALLET_TAB_LINK_ID,
-//                                     ENTROPY_SRC_LABEL_ID, ENTROPY_LABEL_ID,
-//                                     UPDATE_BTN_ID, RANDOM_BTN_ID, CLEAR_BTN_ID, 
-//									   WALLET_EXPLORE_BTN_ID
-//								     ];
-
-const log2Main = (msg) => {
-	window.ipcMain.log2Main(msg);
+const log2Main = ( msg ) => {
+	window.ipcMain.log2Main( msg );
 }; // log2Main()
 
 if (typeof exports === 'object') {

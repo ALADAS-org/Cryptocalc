@@ -11,8 +11,10 @@
 // *        initWallet()
 // * async  updateOptionsFields( json_data )
 // * async  setSupportedBlockchains( supported_blockchains )
-// * async  updateEntropySize( entropy_size )
 // * async  updateWalletMode( wallet_mode )
+// * async  generateHDWalletAddress( blockchain, entropy )
+// * async  generateSimpleWalletAddress( blockchain, entropy )
+// * async  updateEntropySize( entropy_size )
 // * async  onGUIEvent( data )
 // * async  didFinishLoadInit()
 // * async  localizeHtmlNodes()
@@ -22,8 +24,6 @@
 // * async  propagateFields( entropy, wif )
 // * async  updateEntropy( entropy )
 // *        updateBlockchain( blockchain )
-// * async  generateHDWalletAddress( blockchain, entropy )
-// * async  generateSimpleWalletAddress( blockchain, entropy )
 // *        updateWalletURL( blockchain, wallet_address )
 // *        updateWIF( blockchain, wif )
 // *        updatePrivateKey( blockchain, PRIV_KEY )
@@ -32,7 +32,7 @@
 // * async  updateWordIndexes()
 // * async  generateSalt()
 // * async  generateRandomFields()
-// * async  getCryptoInfo()
+// * async  getWalletInfo()
 // * 	    clearFields( field_ids )
 // * async  onChangeEntropySize( evt )
 // * async  onChangeWordCount( evt )
@@ -57,6 +57,33 @@ const EDITABLE_FIELD_IDS      = [ ENTROPY_SRC_FORTUNES_ID, ENTROPY_ID, MNEMONICS
 const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "RendererGUI.onGUIEvent: ";
 
 const trigger_event = ( elt, event_type ) => elt.dispatchEvent( new CustomEvent( event_type, {} ) );
+
+const getChecksumBitCount = ( word_count ) => {
+		if ( word_count == undefined ) {
+			 word_count = 12;
+		}
+		let checksum_bit_count = 4; // default case is 12 words / 4 bits
+		switch ( word_count ) {
+			case 12: checksum_bit_count = 4; break;						
+			case 15: checksum_bit_count = 5; break;						
+			case 18: checksum_bit_count = 6; break;						
+			case 21: checksum_bit_count = 7; break;						
+			case 24: checksum_bit_count = 8; break;						
+			default: checksum_bit_count = 8; break;
+		}		
+		return checksum_bit_count;
+}; // getChecksumBitCount()
+
+const getWordCount = ( entropy_size ) => {
+	switch ( entropy_size ) { 
+		case 128: 	return 12;	break;						
+		case 160: 	return 15;	break;						
+		case 192: 	return 18;	break;						
+		case 224: 	return 21;	break;						
+		case 256: 	return 24;	break;
+		default:	return 24;	break;
+	} // entropy_size
+}; // getWordCount()
 
 class RendererGUI {	
 	static #key = {};
@@ -113,15 +140,16 @@ class RendererGUI {
 			await window.ipcMain.QuitApp();
 		}
 		
-		log2Main("   *!!* options_data: " + JSON.stringify(options_data));		
+		//log2Main("   *!!* options_data: " + JSON.stringify(options_data));		
 		
-		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN];
-		//log2Main( "   default_blockchain: " + default_blockchain );
-		HtmlUtils.SetField( WALLET_BLOCKCHAIN_ID, default_blockchain );		
-		HtmlUtils.SetField( WALLET_COIN_ID, COIN_ABBREVIATIONS[default_blockchain] );
-
 		let wallet_mode = options_data[WALLET_MODE];
 		log2Main( "   wallet_mode: " + wallet_mode );
+		
+		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN][wallet_mode];
+		//log2Main( "   default_blockchain: " + default_blockchain );
+		HtmlUtils.SetNodeValue( WALLET_BLOCKCHAIN_ID, default_blockchain );		
+		HtmlUtils.SetNodeValue( WALLET_COIN_ID, COIN_ABBREVIATIONS[default_blockchain] );
+
 		await this.updateWalletMode( wallet_mode );
 
 		let entropy_size = options_data[ENTROPY_SIZE][wallet_mode];
@@ -142,90 +170,340 @@ class RendererGUI {
 			let wallet_mode = elt.value;
 			log2Main(">> " + _RED_ + "RendererGUI.onChangeWalletMode() " + _END_ + wallet_mode);
 			log2Main("   ++ 0 wallet_mode: " + wallet_mode);
-			log2Main("   ++ 1 this.Options: " + this.Options);
+			//log2Main("   ++ 1 this.Options: " + this.Options);
 			await this.updateWalletMode( wallet_mode );
-			log2Main("   ++ 2 this.Options: " + this.Options);			
+			//log2Main("   ++ 2 this.Options: " + this.Options);			
 
-            await window.ipcMain.UpdateOptions( this.Options );				  
+            await window.ipcMain.UpdateOptions( this.Options );	
+
+			HtmlUtils.InitializeNode
+				( WALLET_BLOCKCHAIN_ID, 
+			      this.Options['Blockchains'][wallet_mode],
+				  this.Options['Blockchains'][wallet_mode] );
+				  
+			let default_blockchain = this.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
+			log2Main("   ++ 3 default_blockchain: '" + default_blockchain + "'" );	
+			HtmlUtils.SetNodeValue( WALLET_BLOCKCHAIN_ID, default_blockchain);	
 	    }
 	} // onChangeWalletMode()	
 	
 	async updateWalletMode( wallet_mode ) {
 		let log_msg = ">> " + _GREEN_ + "RendererGUI.updateWalletMode" + _END_;
 		log2Main(log_msg);
-		log2Main("   1 this.Options: " + JSON.stringify(this.Options) );
-		log2Main("   1 wallet_mode: " + wallet_mode );
+		//log2Main("   1 this.Options: " + JSON.stringify(this.Options) );	
 		
 		if ( wallet_mode != undefined ) {			
 			this.Options[WALLET_MODE] = wallet_mode;
 		}
 		else {
 			wallet_mode = this.Options[WALLET_MODE];
-		}		
+		}	
+
+        log2Main("   2 wallet_mode: " + wallet_mode );
+
+		HtmlUtils.HideNode( TR_SW_MNEMONICS_ID );
+        
+        let blockchain = HtmlUtils.GetNodeValue( WALLET_BLOCKCHAIN_ID ); 		
 
 	    if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
-			HtmlUtils.SetField( WALLET_MODE_SELECT_ID, SIMPLE_WALLET_TYPE );
-			HtmlUtils.ShowElement( SW_ENTROPY_SIZE_ID );
-			HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
-			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
-			HtmlUtils.HideElement( DERIVATION_PATH_ROW );
+			HtmlUtils.SetNodeValue( WALLET_MODE_SELECT_ID, SIMPLE_WALLET_TYPE );
+			HtmlUtils.ShowNode( SW_ENTROPY_SIZE_ID );
+			HtmlUtils.ShowNode( SW_WORD_COUNT_ID );
+			HtmlUtils.ShowNode( TR_WIF_ID );
+			
+			if ( blockchain == SOLANA ) { 
+				HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
+			}			
+			HtmlUtils.HideNode( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideNode( WORD_COUNT_SELECT_ID );
+			HtmlUtils.HideNode( DERIVATION_PATH_ROW );			
+			HtmlUtils.HideNode( TR_PRIV_KEY_ID );
  
             this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;	
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE ) {
-			HtmlUtils.SetField( WALLET_MODE_SELECT_ID, HD_WALLET_TYPE );
-			HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.ShowElement( DERIVATION_PATH_ROW );
-			HtmlUtils.HideElement( SW_ENTROPY_SIZE_ID);
-			HtmlUtils.HideElement( SW_WORD_COUNT_ID );			
-		}
+			HtmlUtils.SetNodeValue( WALLET_MODE_SELECT_ID, HD_WALLET_TYPE );
+			HtmlUtils.ShowNode( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowNode( DERIVATION_PATH_ROW );
+			HtmlUtils.ShowNode( TR_WIF_ID );
+			
+			if (   blockchain == ETHEREUM || blockchain == AVALANCHE
+                || blockchain == CARDANO  ) { 
+				HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
+			}
+			else if ( blockchain == TRON  ) { 
+				HtmlUtils.HideNode( TR_SW_MNEMONICS_ID );
+			}			
+			
+			HtmlUtils.HideNode( SW_ENTROPY_SIZE_ID);
+			HtmlUtils.HideNode( SW_WORD_COUNT_ID );           			
+		}		
+		
+		HtmlUtils.InitializeNode( WALLET_BLOCKCHAIN_ID, 
+			                      this.Options['Blockchains'][wallet_mode],
+				                  this.Options['Blockchains'][wallet_mode] );
+
+		let default_blockchain = this.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
+		pretty_log( "default_blockchain", default_blockchain );	
+		HtmlUtils.SetNodeValue( WALLET_BLOCKCHAIN_ID, default_blockchain);						  
 				
 		//await ipcMain.UpdateOptions( this.Options ); 
 	} // async updateWalletMode()
 	
+		
+	async generateSimpleWalletAddress( blockchain ) {
+		log2Main(  ">> " + _RED_ + "RendererGUI.generateSimpleWalletAddress() " 
+		         + _YELLOW_ + blockchain + " " + this.entropy_source_type + _END_);		
+				
+		let entropy_src_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		this.entropy_source_type = entropy_src_type;
+		
+		let entropy_src = "XX";
+			
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = HtmlUtils.GetNodeValue( ENTROPY_SRC_FORTUNES_ID );
+		}
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = this.img_data_asURL;
+		}
+		
+		log2Main("   entropy_src:            " + getShortenedString( entropy_src ));
+		
+		let new_wallet  = {};	
+		let private_key = HtmlUtils.GetNodeValue( ENTROPY_ID );		
+		let salt_uuid   = HtmlUtils.GetNodeValue( SALT_ID );
+		let wif         = "";
+		
+		if (   blockchain == ETHEREUM || blockchain == AVALANCHE
+		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN
+			|| blockchain == SOLANA 
+           ) {
+		
+			log2Main( pretty_format( "private_key", private_key ) );
+			
+			let data = { private_key, salt_uuid, blockchain, MAINNET };
+			new_wallet = await window.ipcMain.GetSimpleWallet( data );
+			
+			private_key = new_wallet[PRIVATE_KEY_HEX];
+			wif         = new_wallet[WIF];
+			
+			this.updatePrivateKey( blockchain, private_key );
+			HtmlUtils.SetNodeValue( WALLET_PK_HEX_ID, private_key );
+		
+			let wallet_address = new_wallet[ADDRESS];
+			
+			//---------- Update 'Address' in 'Wallet' Tab ----------
+			log2Main( pretty_format( "wallet_address", wallet_address, 29) );		
+			this.wallet[ADDRESS] = wallet_address;				
+			HtmlUtils.SetNodeValue( ADDRESS_ID, wallet_address );
+			//---------- Update 'Address' in 'Wallet' Tab
+			
+			//---------- Update 'Private Key' in 'Wallet' Tab ----------
+			HtmlUtils.SetNodeValue( WALLET_PK_HEX_ID, private_key );
+			//---------- Update 'Private Key' in 'Wallet' Tab	
+
+			//---------- Update 'WIF' in 'Wallet' Tab ----------
+            log2Main(pretty_format("WIF", wif ));				
+			this.wallet[WIF] = wif;				
+			HtmlUtils.SetNodeValue( WIF_ID, wif );
+			if ( wif == undefined || wif == "" ) {
+				HtmlUtils.HideNode( TR_WIF_ID );
+			}
+			//---------- Update 'WIF' in 'Wallet' Tab			
+	
+	        HtmlUtils.HideNode( TR_SW_MNEMONICS_ID );
+			 
+	        // ** Note **: 'mnemonics' is used for 'Simple Wallet' / Solana			
+			if ( blockchain == SOLANA ) {
+				let mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+				HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
+				HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );
+			}
+			
+			this.updateWalletURL( blockchain, wallet_address );
+		}
+		
+		return new_wallet;
+	} // generateSimpleWalletAddress()
+	
+	async generateHDWalletAddress( blockchain, entropy_hex ) {
+		log2Main(  ">> " + _CYAN_ + "RendererGUI.generateHDWalletAddress() " 
+		         + _YELLOW_ + blockchain + " " + this.entropy_source_type + _END_);		
+		log2Main( pretty_format("entropy_hex", entropy_hex ) );
+		
+		let entropy_src_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		this.entropy_source_type = entropy_src_type;
+		
+		let entropy_src = "XX";
+			
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = HtmlUtils.GetNodeValue( ENTROPY_SRC_FORTUNES_ID );
+		}
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = this.img_data_asURL;
+		}
+		
+		log2Main( pretty_format("entropy_src", getShortenedString( entropy_src ) ) );
+		
+		let new_wallet     = {};
+		let options        = {};
+        let hd_private_key = undefined;	
+		let data           = undefined;
+		
+		let mnemonics      = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+		let words          = mnemonics.split(' ');		
+		let separator      = '\n';		
+
+        let mnemonics_as_2parts = asTwoParts( mnemonics, 15 );
+        log2Main( pretty_format("mnemonics", mnemonics_as_2parts[0] ) );		
+        if ( mnemonics_as_2parts.length > 1 ) { 
+			log2Main( pretty_format("", mnemonics_as_2parts[0] ) );				
+		}
+		
+		let wif            	    = "";
+		let PRIV_KEY            = "";
+		let salt_uuid    	    = HtmlUtils.GetNodeValue( SALT_ID );
+        let new_derivation_path = "";	
+        let crypto_net	        = MAINNET;	
+		
+		if (   blockchain == ETHEREUM || blockchain == AVALANCHE
+		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN
+			|| blockchain == CARDANO  || blockchain == SOLANA   || blockchain == RIPPLE || blockchain == TRON 
+			|| blockchain == BITCOIN_CASH || blockchain == FIRO ) {
+
+			let salt_uuid     = HtmlUtils.GetNodeValue( SALT_ID );
+			let account       = this.bip32_account_index;
+			let address_index = this.bip32_address_index;
+			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index };
+			new_wallet = await window.ipcMain.GetHDWallet( data ); //*** Wallet generated Here ***
+			
+			wif      = "";
+			PRIV_KEY = "";
+			
+			if ( blockchain == CARDANO ) {
+				HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
+				HtmlUtils.SetNodeValue( WALLET_PK_LABEL_ID, 'XPRIV' );
+				HtmlUtils.RemoveClass( ADDRESS_ID, 'NormalAddressField' );
+                HtmlUtils.AddClass( ADDRESS_ID,    'LongAddressField' );					
+			}
+			else {
+				HtmlUtils.SetNodeValue( WALLET_PK_LABEL_ID, 'Private Key' );
+				HtmlUtils.AddClass( ADDRESS_ID,    'NormalAddressField' );
+                HtmlUtils.RemoveClass( ADDRESS_ID, 'LongAddressField' );					
+			}			
+
+			if ( blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN ) {
+                wif      = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";	
+			}
+			else if ( blockchain == FIRO || blockchain == BITCOIN_CASH ) {				
+				PRIV_KEY = ( new_wallet[PRIV_KEY] != undefined ) ? new_wallet[PRIV_KEY] : "";
+			}  	
+			else if (   blockchain == RIPPLE || blockchain == TRON ) {				
+				PRIV_KEY = new_wallet[PRIVATE_KEY_HEX];
+			}   			
+		}
+		
+		this.updateWIF( blockchain, wif );
+		
+		//==================== Update 'Derivation Path' in "Wallet" Tab //====================
+		new_derivation_path = new_wallet[DERIVATION_PATH];
+		let account_value   = "0";
+		let address_index   = "0";
+		let coin_type       = COIN_TYPES[blockchain];
+		
+		if ( new_derivation_path == undefined ) {
+			GuiUtils.ShowQuestionDialog( "'new_derivation_path' is UNDEFINED", 
+					                     {"CloseButtonLabel": "OK", "BackgroundColor": "#FFCCCB" } );
+		}
+		else {
+			let derivation_path_nodes = new_derivation_path.split('/');
+			coin_type     = derivation_path_nodes[2];
+			account_value = derivation_path_nodes[3].replace("'",'');			
+			address_index = derivation_path_nodes[5];
+		}
+		
+		HtmlUtils.SetNodeValue( COIN_TYPE_ID,     coin_type + '/' );
+		HtmlUtils.SetNodeValue( ACCOUNT_ID,       account_value);
+		HtmlUtils.SetNodeValue( ADDRESS_INDEX_ID, address_index );
+	
+		
+		//---------- Update 'Purpose' in "Wallet" Tab ----------
+		if ( blockchain == CARDANO ) HtmlUtils.SetNodeValue( PURPOSE_ID, ADA_PURPOSE + "'");				
+		else                         HtmlUtils.SetNodeValue( PURPOSE_ID, "44'" );					
+		//---------- Update 'Purpose' in "Wallet" Tab
+		
+		//---------- Update 'Change' in "Wallet" Tab ----------
+		if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( CHANGE_ID, "0'/" );				
+		else                         HtmlUtils.SetNodeValue( CHANGE_ID, "0/" );				
+		//---------- Update 'Change' in "Wallet" Tab
+			
+
+		//---------- Update 'Address' in "Wallet" Tab ----------
+        let new_wallet_address = new_wallet[ADDRESS];
+		log2Main( pretty_format( "new_wallet_address", new_wallet_address ) );	
+        this.wallet[ADDRESS] = new_wallet_address;				
+		HtmlUtils.SetNodeValue( ADDRESS_ID, new_wallet_address );
+		//---------- Update 'Address' in "Wallet" Tab
+		
+		//==================== Update 'Derivation Path' in "Wallet" Tab
+		
+		
+		//---------- Update 'Private Key' in "Wallet" Tab ----------
+		hd_private_key = new_wallet[PRIVATE_KEY_HEX];
+		log2Main( pretty_format( "hd_private_key", hd_private_key ) );
+		HtmlUtils.SetNodeValue( WALLET_PK_HEX_ID,  hd_private_key );
+		//---------- Update 'Private Key' in "Wallet" Tab
+		
+		this.updateWalletURL( blockchain, new_wallet_address );
+		
+		return new_wallet;
+	} // generateHDWalletAddress()
+	
 	async updateEntropySize( entropy_size ) {		
-		log2Main(">> " + _YELLOW_ + "RendererGUI.updateEntropySize() " + _END_ + entropy_size);
+		log2Main(">> " + _RED_ + "RendererGUI.updateEntropySize() " + _END_ + "'" + entropy_size + "'");
 		this.expected_entropy_bytes  = 16;
 		this.expected_entropy_digits = 32;
-		this.expected_word_count     = 12;
+		this.expected_word_count     = 12;	
 		
 		if ( isString( entropy_size ) ) {
 			entropy_size = parseInt( entropy_size );
 		}
 		
-		log2Main("   ++ entropy_size: " + entropy_size);
+		log2Main( pretty_format("entropy_size", entropy_size ) );
+		log2Main( pretty_format("isNumber(entropy_size)", valueIsNumber( entropy_size) ) );
 		
-		this.expected_entropy_bytes  = EntropySize.GetExpectedByteCount( entropy_size );
-		this.expected_word_count     = EntropySize.GetExpectedWordCount( entropy_size );
+		if ( ! valueIsNumber( entropy_size) ) {
+			log2Main( pretty_format("'entropy_size' is UNDEFINED" ) );
+			GuiUtils.ShowQuestionDialog( "'entropy_size' is UNDEFINED", 
+					                     {"CloseButtonLabel": "OK", "BackgroundColor": "#FFCCCB" } );
+		    return;								 
+		}			
+		
+		this.expected_entropy_bytes  = entropy_size / 8;
+		log2Main( pretty_format( "entropy_bytes", this.expected_entropy_bytes ) );
+		
+		this.expected_word_count     = getWordCount( entropy_size );
+		log2Main( pretty_format( "expected_word_count", this.expected_word_count ) );
+		
 		this.expected_entropy_digits = this.expected_entropy_bytes * 2;
+		log2Main( pretty_format( "expected_entropy_digits", this.expected_entropy_digits ) );
 		
-		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
 		entropy_elt.setAttribute("minlength", this.expected_entropy_digits);
 		entropy_elt.setAttribute("maxlength", this.expected_entropy_digits);
 		
 		//log2Main("   this.expected_word_count: " + this.expected_word_count);
 			
-		HtmlUtils.SetField( ENTROPY_SIZE_SELECT_ID, entropy_size );
-		HtmlUtils.SetField( WORD_COUNT_SELECT_ID,   this.expected_word_count );
+		HtmlUtils.SetNodeValue( ENTROPY_SIZE_SELECT_ID, entropy_size );
+		HtmlUtils.SetNodeValue( WORD_COUNT_SELECT_ID,   this.expected_word_count );
 		
 		await this.updateFields();
 		
 		let wallet_mode = this.Options[WALLET_MODE];
 		
-		log2Main("   0 %% this.Options:   " + JSON.stringify(this.Options));
-		log2Main("   1 %% entropy_size:   " + entropy_size);
-		
 		this.Options[ENTROPY_SIZE][wallet_mode] = entropy_size;
-		log2Main("   2 %% ENTROPY_SIZE:   " + this.Options[ENTROPY_SIZE][wallet_mode]);		
-        
-		log2Main("   3 %% Default Blockchain: " + this.Options[DEFAULT_BLOCKCHAIN]);		
-		
-		//HtmlUtils.SetField( WALLET_BLOCKCHAIN_ID, default_blockchain );
-        log2Main("   4 %% this.Options: " + JSON.stringify(this.Options));	
-
-        // ** recursive **		
-		//await window.ipcMain.UpdateOptions( this.Options );
+		log2Main( pretty_format( "entropy_size", entropy_size ) );
+        log2Main( pretty_format( "Default Blockchain", this.Options[DEFAULT_BLOCKCHAIN][wallet_mode] ) );
 	} // async updateEntropySize()
 	
 	//**********************************************************************************
@@ -252,7 +530,7 @@ class RendererGUI {
 	
 			case FromMain_FILE_SAVE:
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_FILE_SAVE + _END_ );	
-				let crypto_info = await this.getCryptoInfo();
+				let crypto_info = await this.getWalletInfo();
                 window.ipcMain.SaveWalletInfo( crypto_info );
 				this.showSaveWalletInfoDialog();				
 				break;
@@ -260,7 +538,7 @@ class RendererGUI {
 			case FromMain_UPDATE_OPTIONS:
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_UPDATE_OPTIONS + _END_ );	
 				this.Options = data[1];	
-                log2Main("   >> this.Options: " + JSON.stringify(this.Options));
+                //log2Main("   >> this.Options: " + JSON.stringify(this.Options));
                 await this.updateOptionsFields( this.Options );				
 				break;				
 				
@@ -283,7 +561,7 @@ class RendererGUI {
 				let img_data_URL = URL_prefix+ data[2]
 				                   .replaceAll('\r', '').replaceAll('\n', '');
 				log2Main("   img_data_URL: " + img_data_URL.substring(0,80));
-				let img_elt = HtmlUtils.GetElement( img_elt_id );
+				let img_elt = HtmlUtils.GetNode( img_elt_id );
 				//log2Main("   img_elt: " + img_elt);
 				//log2Main("   img_elt.id: " + img_elt.id);
 				img_elt.src = img_data_URL;
@@ -322,7 +600,7 @@ class RendererGUI {
                 log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SET_SEED_FIELD_VALUE + _END_ );	
 				let raw_data_str = data[1];
 				//log2Main("   FromMain_SET_SEED_FIELD_VALUE:\n" + raw_data_str);
-                HtmlUtils.SetField( ENTROPY_ID, raw_data_str );	
+                HtmlUtils.SetNodeValue( ENTROPY_ID, raw_data_str );	
 				await this.updateFields();				
 				break;
 			
@@ -331,8 +609,8 @@ class RendererGUI {
 			    log2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_ );
 				let fortune_cookie = data[1];
 				log2Main("   fortune_cookie: " + getShortenedString( fortune_cookie ));
-				// HtmlUtils.SetField( ENTROPY_ID, fortune_cookie );	
-				HtmlUtils.SetField( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
+				// HtmlUtils.SetNodeValue( ENTROPY_ID, fortune_cookie );	
+				HtmlUtils.SetNodeValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
 				await this.updateFields();
 				break;
 				
@@ -402,12 +680,12 @@ class RendererGUI {
 		 let L10n_msg      = "";
 		 let L10N_KEYPAIRS = await window.ipcMain.GetL10nKeyPairs();
 		 let L10N_KEYS     = Object.keys( L10N_KEYPAIRS );
-		 for (let i=0; i < L10N_KEYS.length; i++) {
+		 for ( let i=0; i < L10N_KEYS.length; i++ ) {
 			 //log2Main("---------->>");			 
 			 L10n_key = L10N_KEYS[i];
 			 L10n_msg = await window.ipcMain.GetLocalizedMsg( L10n_key );
 			 //log2Main("   L10n_key: " + L10n_key + "   L10n_msg: " + L10n_msg);
-			 HtmlUtils.SetField( L10n_key, L10n_msg );
+			 HtmlUtils.SetNodeValue( L10n_key, L10n_msg );
 		 }
 	} // localizeHtmlNodes()
 	
@@ -437,28 +715,32 @@ class RendererGUI {
 		this.setEventHandler( ENTROPY_SRC_TYPE_SELECTOR_ID, 'change', 
 							  async (evt) => { await this.onSwitchEntropySourceType(); } );
 		
-		this.setEventHandler( ENTROPY_COPY_BTN_ID,   'click',    (evt) => { this.onCopyButton(ENTROPY_COPY_BTN_ID); } );
+		this.setEventHandler( ENTROPY_COPY_BTN_ID,      'click',    (evt) => { this.onCopyButton(ENTROPY_COPY_BTN_ID); } );
 		
-		this.setEventHandler( ENTROPY_SIZE_SELECT_ID,'change',   async (evt) => { await this.onChangeEntropySize(evt); } );
-        this.setEventHandler( WORD_COUNT_SELECT_ID,  'change',   async (evt) => { await this.onChangeWordCount(evt); } );
-		this.setEventHandler( LANG_SELECT_ID,        'change',   async (evt) => { await this.onChangeBip39Lang(evt); } );		
+		this.setEventHandler( ENTROPY_SIZE_SELECT_ID,   'change',   async (evt) => { await this.onChangeEntropySize(evt); } );
+        this.setEventHandler( WORD_COUNT_SELECT_ID,     'change',   async (evt) => { await this.onChangeWordCount(evt); } );
+		this.setEventHandler( LANG_SELECT_ID,           'change',   async (evt) => { await this.onChangeBip39Lang(evt); } );		
 		
-		this.setEventHandler( WALLET_MODE_SELECT_ID, 'change',   async (evt) => { await this.onChangeWalletMode(evt); } );
-		this.setEventHandler( WALLET_BLOCKCHAIN_ID,  'change',   async (evt) => { await this.onChangeBlockchain(evt); } );
-		this.setEventHandler( MNEMONICS_COPY_BTN_ID, 'click',    (evt) => { this.onCopyButton(MNEMONICS_COPY_BTN_ID); } );
+		this.setEventHandler( WALLET_MODE_SELECT_ID,    'change',   async (evt) => { await this.onChangeWalletMode(evt); } );
+		this.setEventHandler( WALLET_BLOCKCHAIN_ID,     'change',   async (evt) => { await this.onChangeBlockchain(evt); } );		
+		this.setEventHandler( WALLET_PK_COPY_BTN_ID,    'click',    (evt) => { this.onCopyButton(WALLET_PK_COPY_BTN_ID); } );
 		
-		this.setEventHandler( MNEMONICS_ID,          'paste',    async (evt) => { await this.onMnemonicsPaste(evt); } );
-		this.setEventHandler( MNEMONICS_4LETTER_ID,  'focus',    (evt) => { this.onFocus(evt); } );
+		this.setEventHandler( MNEMONICS_ID,             'paste',    async (evt) => { await this.onMnemonicsPaste(evt); } );
+		this.setEventHandler( MNEMONICS_4LETTER_ID,     'focus',    (evt) => { this.onFocus(evt); } );
+		this.setEventHandler( MNEMONICS_COPY_BTN_ID,    'click',    (evt) => { this.onCopyButton(MNEMONICS_COPY_BTN_ID); } );
+		this.setEventHandler( SW_MNEMONICS_COPY_BTN_ID, 'click',    (evt) => { this.onCopyButton(SW_MNEMONICS_COPY_BTN_ID); } );
 		
-		this.setEventHandler( WORD_INDEXES_BASE_ID,  'change',   async (evt) => { await this.updateWordIndexes(); } );			
+		this.setEventHandler( SW_WIF_COPY_BTN_ID,       'click',    (evt) => { this.onCopyButton(SW_WIF_COPY_BTN_ID); } );
+		
+		this.setEventHandler( WORD_INDEXES_BASE_ID,     'change',   async (evt) => { await this.updateWordIndexes(); } );			
 				
-		this.setEventHandler( RANDOM_BTN_ID,         'click',    async (evt) => { await this.generateRandomFields(); } );				
-		this.setEventHandler( REFRESH_BTN_ID,        'click',    async (evt) => { await this.onRefreshButton(); } );
+		this.setEventHandler( RANDOM_BTN_ID,            'click',    async (evt) => { await this.generateRandomFields(); } );				
+		this.setEventHandler( REFRESH_BTN_ID,           'click',    async (evt) => { await this.onRefreshButton(); } );
 		
-		this.setEventHandler( ACCOUNT_ID,            'keypress', async (evt) => { await this.onBIP32FieldKeypress(evt); } );
-		this.setEventHandler( ADDRESS_INDEX_ID,      'keypress', async (evt) => { await this.onBIP32FieldKeypress(evt); } );
+		this.setEventHandler( ACCOUNT_ID,               'keypress', async (evt) => { await this.onBIP32FieldKeypress(evt); } );
+		this.setEventHandler( ADDRESS_INDEX_ID,         'keypress', async (evt) => { await this.onBIP32FieldKeypress(evt); } );
 									 
-        trigger_event( HtmlUtils.GetElement( RANDOM_BTN_ID ), 'click' );
+        trigger_event( HtmlUtils.GetNode( RANDOM_BTN_ID ), 'click' );
 	} // registerCallbacks()
 	
 	async updateFields( entropy ) {
@@ -466,7 +748,7 @@ class RendererGUI {
 		
 		//log2Main("   this.entropy_source_type: " + this.entropy_source_type);
 		
-		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID ); 
+		let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID ); 
 		
 		this.showRefreshButton( false );
 
@@ -475,7 +757,7 @@ class RendererGUI {
 		}
 		else {	
             //log2Main("   " + _YELLOW_ + "Entropy is NOT User input" + _END_);		
-			let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID ); 
+			let entropy_src_elt = HtmlUtils.GetNode( ENTROPY_SRC_FORTUNES_ID ); 
 			
 			//log2Main("   expected_entropy_bytes:  " + this.expected_entropy_bytes);
 			//log2Main("   expected_entropy_digits: " + this.expected_entropy_digits);
@@ -492,7 +774,7 @@ class RendererGUI {
 				
 				log2Main("   entropy: " + _YELLOW_ + entropy + _END_);			
 
-				HtmlUtils.SetField( ENTROPY_ID, entropy );
+				HtmlUtils.SetNodeValue( ENTROPY_ID, entropy );
 				await this.propagateFields( entropy );
 				//await this.propagateFields(entropy_elt.value, wif);
 			}                                                          
@@ -500,7 +782,7 @@ class RendererGUI {
 				await this.propagateFields( entropy_value );
 			}
 		}
-		let sb_msg_elt = HtmlUtils.GetElement( SB_MSG_ID );
+		let sb_msg_elt = HtmlUtils.GetNode( SB_MSG_ID );
 		sb_msg_elt.textContent = "";		
 	} // updateFields()
 	
@@ -524,17 +806,17 @@ class RendererGUI {
 	} // propagateFields()
 	
 	async getSaltedEntropySource() {
-		let entropy_source = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		let entropy_source = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		log2Main(  ">> " + _CYAN_ + "RendererGUI.getSaltedEntropySource()" 
 		         + "  " + _YELLOW_ + entropy_source + _END_ );		 
 		
 		let new_uuid = await window.ipcMain.GetUUID();
-		let salt_elt = HtmlUtils.GetElement( SALT_ID );
+		let salt_elt = HtmlUtils.GetNode( SALT_ID );
 		salt_elt.textContent = new_uuid;		
 		
 		let entropy_src_value = "";
 		if ( entropy_source == FORTUNES_ENTROPY_SRC_TYPE ) {
-			entropy_src_value = HtmlUtils.GetField( ENTROPY_SRC_FORTUNES_ID );
+			entropy_src_value = HtmlUtils.GetNodeValue( ENTROPY_SRC_FORTUNES_ID );
 		}	
 		else if (entropy_source == IMAGE_ENTROPY_SRC_TYPE) {
 		    entropy_src_value = this.img_data_asURL;
@@ -551,159 +833,55 @@ class RendererGUI {
 	async updateEntropy( entropy_hex ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.updateEntropy() " + _END_);
 		log2Main("   entropy_hex: " + entropy_hex);
-		HtmlUtils.SetField( ENTROPY_ID, entropy_hex );
+		HtmlUtils.SetNodeValue( ENTROPY_ID, entropy_hex );
 		
 		this.setEntropyValueValidity( true ); 
 		
-		let blockchain = HtmlUtils.GetField( WALLET_BLOCKCHAIN_ID );	
+		let blockchain = HtmlUtils.GetNodeValue( WALLET_BLOCKCHAIN_ID );	
 
         await this.updateMnemonics( entropy_hex ); 
 		await this.updateChecksum( entropy_hex );
+		
+		let wallet_mode = HtmlUtils.GetNodeValue( WALLET_MODE_SELECT_ID );
 
-		let wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
-    } // updateEntropy()
+		let wallet = undefined;
+		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
+			wallet = await this.generateSimpleWalletAddress( blockchain );
+		}
+		else if ( wallet_mode == HD_WALLET_TYPE ) {
+			wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
+		}
+	} // updateEntropy()
 	
 	async updateBlockchain( blockchain ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.updateBlockchain() " + _END_ + blockchain);
 		this.wallet[BLOCKCHAIN] = blockchain;
 		
-		let entropy_hex = HtmlUtils.GetField( ENTROPY_ID );
-		let mnemonics   = HtmlUtils.GetField( MNEMONICS_ID );
-		let wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
+		let entropy_hex = HtmlUtils.GetNodeValue( ENTROPY_ID );
+		let mnemonics   = HtmlUtils.GetNodeValue( MNEMONICS_ID );
 		
+		let wallet = undefined;
+		let wallet_mode = HtmlUtils.GetNodeValue( WALLET_MODE_SELECT_ID );
+		
+		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
+			wallet = await this.generateSimpleWalletAddress( blockchain );
+		}
+		else if ( wallet_mode == HD_WALLET_TYPE ) {
+			wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
+		}
+				
 		this.bip32_account_index = 0;
 		this.bip32_address_index = 0;
 		
 		let coin_abbreviation = COIN_ABBREVIATIONS[blockchain];
-		log2Main("   coin: " + coin_abbreviation);
-		HtmlUtils.SetField( WALLET_COIN_ID, coin_abbreviation );
+		log2Main(pretty_format("coin", coin_abbreviation));
+		HtmlUtils.SetNodeValue( WALLET_COIN_ID, coin_abbreviation );
 		
 		let wallet_address = wallet[ADDRESS];		
-	    log2Main("   wallet_address: " + wallet_address);
+		log2Main(pretty_format("wallet_address", wallet_address));
 
         this.updateWalletURL( blockchain, wallet_address );
 	} // updateBlockchain()
-	
-	async generateHDWalletAddress( blockchain, entropy ) {
-		log2Main(  ">> " + _CYAN_ + "RendererGUI.generateHDWalletAddress() " 
-		         + _YELLOW_ + blockchain + " " + this.entropy_source_type + _END_);		
-		log2Main("   " + _YELLOW_ + "entropy:                " + _END_ + entropy);
-		
-		let entropy_src_type = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
-		this.entropy_source_type = entropy_src_type;
-		
-		let entropy_src = "XX";
-			
-		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
-			entropy_src = HtmlUtils.GetField( ENTROPY_SRC_FORTUNES_ID );
-		}
-		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
-			entropy_src = this.img_data_asURL;
-		}
-		
-		log2Main("   entropy_src:            " + getShortenedString( entropy_src ));
-		
-		let new_wallet     = {};
-		let options        = {};
-        let hd_private_key = undefined;	
-		let data           = undefined;
-		
-		let mnemonics      = HtmlUtils.GetField( MNEMONICS_ID );
-		let words          = mnemonics.split(' ');		
-		let separator      = '\n';		
-
-        let mnemonics_as_2parts = asTwoParts( mnemonics, 15 );
-        log2Main("   mnemonics:              " + mnemonics_as_2parts[0]);		
-        if ( mnemonics_as_2parts.length > 1 ) { 
-			log2Main("                           " + mnemonics_as_2parts[1]);			
-		}
-		
-		let wif            	    = "";
-		let PRIV_KEY            = "";
-		let salt_uuid    	    = HtmlUtils.GetField( SALT_ID );
-        let new_derivation_path = "";		
-		
-		if (   blockchain == ETHEREUM
-		    || blockchain == BITCOIN 
-			|| blockchain == DOGECOIN || blockchain == LITECOIN
-			|| blockchain == RIPPLE   || blockchain == TRON 
-			|| blockchain == BITCOIN_CASH
-			|| blockchain == FIRO ) {
-
-			options = { "blockchain": blockchain, 
-			            [ACCOUNT_INDEX]: this.bip32_account_index,
-						[ADDRESS_INDEX]: this.bip32_address_index, 
-			            "uuid": HtmlUtils.GetField( SALT_ID ) };						
-			data = { mnemonics, options };
-			new_wallet = await window.ipcMain.MnemonicsToHDWalletInfo( data );
-			
-			//if ( blockchain == BITCOIN ) {
-			//	PRIV_KEY = ( new_wallet[BIP32_ROOT_KEY] != undefined ) ? new_wallet[BIP32_ROOT_KEY] : "";
-			//}
-			if ( blockchain == BITCOIN ) {				
-				PRIV_KEY = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
-				wif = "";
-			}
-			else if (    blockchain == DOGECOIN || blockchain == LITECOIN
-                      || blockchain == FIRO	|| blockchain == BITCOIN_CASH ) {				
-				PRIV_KEY = ( new_wallet[PRIV_KEY] != undefined ) ? new_wallet[PRIV_KEY] : "";
-				wif   = "";
-			}  	
-			else if (   blockchain == RIPPLE 
-			         || blockchain == TRON ) {				
-				PRIV_KEY = new_wallet[PRIVATE_KEY_HEX];
-				wif   = "";
-			}   			
-		}
-		else if ( blockchain == SOLANA ) {			
-			options = { "blockchain": SOLANA, "uuid": salt_uuid };
-		    data = { mnemonics, options };
-			new_wallet = await window.ipcMain.GetSolanaWallet( data );
-		}
-		
-		this.updateWIF( blockchain, wif );
-		this.updatePrivateKey( blockchain, PRIV_KEY );
-		
-		//---------- Update 'Derivation Path' in "Wallet" Tab ----------
-		//log2Main(  "   " + _YELLOW_ 
-		//         + "new_wallet keys: " + _END_ + JSON.stringify(Object.keys(new_wallet)));
-		new_derivation_path = new_wallet[DERIVATION_PATH];
-		//log2Main(  "   " + _YELLOW_ 
-		//         + "new_wallet:\n" + _END_ + JSON.stringify(new_wallet));
-				 
-		let derivation_path_nodes = new_derivation_path.split("/");
-        HtmlUtils.SetField( COIN_TYPE_ID,     derivation_path_nodes[2] + "/" );
-
-		let account_id_value = derivation_path_nodes[3].replace("'","");
-        HtmlUtils.SetField( ACCOUNT_ID,       account_id_value);
-		
-		if ( blockchain == SOLANA )  
-		    HtmlUtils.SetField( ADDRESS_INDEX_ID, "0" );
-		else
-			HtmlUtils.SetField( ADDRESS_INDEX_ID, derivation_path_nodes[5] );
-		
-		//HtmlUtils.SetField( DERIVATION_PATH_ID, new_derivation_path );
-		//---------- Update 'Derivation Path' in "Wallet" Tab
-
-		//---------- Update 'Address' in "Wallet" Tab ----------
-        let new_wallet_address = new_wallet[ADDRESS];
-		log2Main(  "   " + _YELLOW_ 
-		         + "new_wallet_address:     " + _END_ + new_wallet_address);		
-        this.wallet[ADDRESS] = new_wallet_address;				
-		HtmlUtils.SetField( ADDRESS_ID, new_wallet_address );
-		//---------- Update 'Address' in "Wallet" Tab
-		
-		//---------- Update 'Private Key' in "Wallet" Tab ----------
-		hd_private_key = new_wallet[PRIVATE_KEY_HEX];
-		log2Main(  "   " + _YELLOW_
-		         + "hd_private_key:         " + _END_ + hd_private_key);
-		HtmlUtils.SetField( WALLET_PK_HEX_ID,  hd_private_key );
-		//---------- Update 'Private Key' in "Wallet" Tab
-		
-		this.updateWalletURL( blockchain, new_wallet_address );
-		
-		return new_wallet;
-	} // generateHDWalletAddress()
 	
 	updateWalletURL( blockchain, wallet_address ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.updateWalletURL() " + _YELLOW_ + blockchain + _END_);
@@ -713,7 +891,7 @@ class RendererGUI {
 		let explorer_URL = MAINNET_EXPLORER_URLs[blockchain] + wallet_address;
 		// log2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
 		
-		let wallet_URL_elt =  HtmlUtils.GetElement( WALLET_URL_LINK_ID );
+		let wallet_URL_elt =  HtmlUtils.GetNode( WALLET_URL_LINK_ID );
 		//log2Main("   wallet_URL_elt: " + wallet_URL_elt);
 		if (wallet_URL_elt != undefined) {
 			wallet_URL_elt.href = explorer_URL;
@@ -721,47 +899,64 @@ class RendererGUI {
 	} // updateWalletURL()
 	
 	updateWIF( blockchain, wif ) {
-		log2Main(">> " + _CYAN_ + "RendererGUI.updateWIF() " + _END_ + "   wif: " + wif );
-		if (      (   blockchain == BITCOIN 
-		           || blockchain == DOGECOIN || blockchain == LITECOIN
-		           || blockchain == SOLANA)
-  		      &&  wif != undefined && wif != "") {
-			HtmlUtils.SetField( WIF_ID, wif );
-			HtmlUtils.ShowElement( WIF_FIELD_LINE_ID );
+		log2Main(">> " + _CYAN_ + "RendererGUI.updateWIF() " + _END_ + "   wif: '" + wif + "'" );
+		if ( wif == undefined || wif == "" ) {
+			HtmlUtils.HideNode( TR_WIF_ID );
 		}
-		else {
-			HtmlUtils.SetField( WIF_ID, "" );
-			HtmlUtils.HideElement( WIF_FIELD_LINE_ID );
+		else if (   blockchain == BITCOIN 
+		         || blockchain == DOGECOIN || blockchain == LITECOIN
+		         || blockchain == SOLANA ) {
+				  
+			HtmlUtils.ShowNode( TR_WIF_ID );
+			HtmlUtils.SetNodeValue( WIF_ID, wif );
+			
+			HtmlUtils.HideNode( TR_PRIV_KEY_ID );
+		}
+		
+		let wallet_mode = HtmlUtils.GetNodeValue( WALLET_MODE_SELECT_ID );
+		if ( wallet_mode == HD_WALLET_TYPE ) {  
+			HtmlUtils.ShowNode( TR_1ST_PK_ID );						
+		}
+		else if ( wallet_mode == SIMPLE_WALLET_TYPE ) {  
+			HtmlUtils.HideNode( TR_1ST_PK_ID );
 		}
 	} // updateWIF()
 		
 	updatePrivateKey( blockchain, PRIV_KEY ) {
 		if (      (   blockchain == BITCOIN 
 		           || blockchain == DOGECOIN || blockchain == LITECOIN
-		           || blockchain == ETHEREUM 
-				   || blockchain == RIPPLE || blockchain == FIRO)
+		           || blockchain == ETHEREUM || blockchain == AVALANCHE 
+				   || blockchain == RIPPLE 
+				   || blockchain == FIRO)
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
 				  
-			HtmlUtils.SetField( PRIV_KEY_ID, PRIV_KEY );
-			HtmlUtils.ShowElement( PRIV_KEY_FIELD_LINE_ID );			
-	
+			HtmlUtils.SetNodeValue( PRIV_KEY_ID, PRIV_KEY );			
+			
+			let wallet_node = HtmlUtils.GetNodeValue( WALLET_MODE_SELECT_ID );			  
+			if ( wallet_node == SIMPLE_WALLET_TYPE ) {
+				HtmlUtils.HideNode( TR_PRIV_KEY_ID );			
+	        }
+			else if ( wallet_node == HD_WALLET_TYPE ) {
+				HtmlUtils.ShowNode( TR_PRIV_KEY_ID );			
+	        }
+			
 			if (   blockchain == BITCOIN 
 			    || blockchain == DOGECOIN || blockchain == LITECOIN ) {
-				HtmlUtils.SetField( PRIV_KEY_LABEL_ID, "WIF");
+				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "WIF");
 			}
 			else if ( blockchain == RIPPLE || blockchain == TRON ) {
-				HtmlUtils.SetField( PRIV_KEY_LABEL_ID, "Private Key");
-				HtmlUtils.HideElement( PRIV_KEY_FIELD_LINE_ID );
+				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "Private Key");
+				HtmlUtils.HideNode( TR_PRIV_KEY_ID );
 			
 			}
-			else if ( blockchain == FIRO ) {
-				HtmlUtils.SetField( PRIV_KEY_LABEL_ID, "Private Key (B58)");
-				HtmlUtils.HideElement( WIF_FIELD_LINE_ID );
+			else if ( blockchain == FIRO) {
+				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "Private Key (B58)");
+				HtmlUtils.HideNode( tr_wif_id );
 			}			
 		}
 		else {
-			HtmlUtils.SetField( PRIV_KEY_ID, "" );
-			HtmlUtils.HideElement( PRIV_KEY_FIELD_LINE_ID );
+			HtmlUtils.SetNodeValue( PRIV_KEY_ID, "" );
+			HtmlUtils.HideNode( TR_PRIV_KEY_ID );
 		}
 	} // updatePrivateKey()
 	
@@ -771,47 +966,50 @@ class RendererGUI {
 		let checksum = await window.ipcMain.EntropyToChecksum( data );
 		//log2Main(  ">> " + _CYAN_ 
 		//         + "RendererGUI.updateChecksum() " + _YELLOW_ + checksum +_END_);		
-		HtmlUtils.SetField( CHECKSUM_ID, checksum );
+		HtmlUtils.SetNodeValue( CHECKSUM_ID, checksum );
 	} // updateChecksum()
 	
 	async updateMnemonics( entropy ) {
-		//log2Main(">> " + _CYAN_ + "RendererGUI.updateMnemonics() " + _END_);
-		let lang       = HtmlUtils.GetElement( LANG_SELECT_ID ).value; 
-		let blockchain = HtmlUtils.GetField( WALLET_BLOCKCHAIN_ID );
-        let options = { "lang": lang, "word_count": this.expected_word_count, "blockchain": blockchain }; 		
-		let data = { entropy, options };
-		let mnemonics = await window.ipcMain.EntropyToMnemonics( data );
-		HtmlUtils.SetField( MNEMONICS_ID, mnemonics );		
+		log2Main(">> " + _CYAN_ + "RendererGUI.updateMnemonics() " + _END_);
+		let lang       = HtmlUtils.GetNode( LANG_SELECT_ID ).value; 
+		let blockchain = HtmlUtils.GetNodeValue( WALLET_BLOCKCHAIN_ID );
+        let options    = { "lang": lang, "word_count": this.expected_word_count, "blockchain": blockchain }; 		
+		let data       = { entropy, options };
+		let mnemonics  = await window.ipcMain.EntropyToMnemonics( data );
+		
+		HtmlUtils.SetNodeValue( MNEMONICS_ID,    mnemonics );
+		
+		HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );		
 		
 		let seedphrase_as_4letter = await window.ipcMain.MnemonicsAs4letter( mnemonics );
-		HtmlUtils.SetField( MNEMONICS_4LETTER_ID, seedphrase_as_4letter );
+		HtmlUtils.SetNodeValue( MNEMONICS_4LETTER_ID, seedphrase_as_4letter );
 
 		await this.updateWordIndexes();		
     } // updateMnemonics()
 	
 	async updateWordIndexes() {
 		//log2Main(">> " + _CYAN_ + "RendererGUI.updateWordIndexes() " + _END_);
-		let mnemonics = HtmlUtils.GetField( MNEMONICS_ID ); 
-		let lang      = HtmlUtils.GetElement( LANG_SELECT_ID ).value; 
+		let mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID ); 
+		let lang      = HtmlUtils.GetNode( LANG_SELECT_ID ).value; 
 		
-		let word_index_base = HtmlUtils.GetField( WORD_INDEXES_BASE_ID);
+		let word_index_base = HtmlUtils.GetNodeValue( WORD_INDEXES_BASE_ID);
 		let options = { "lang": lang, "word_index_base": word_index_base }; 		
 		let data = { mnemonics, options };
 		let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
 		let word_indexes_str = "";
 		word_indexes_str = word_indexes.join(' ');
 		//log2Main("   word_indexes_str: " + word_indexes_str);
-		HtmlUtils.SetField( WORD_INDEXES_ID, word_indexes_str) ;
+		HtmlUtils.SetNodeValue( WORD_INDEXES_ID, word_indexes_str) ;
     } // updateWordIndexes()
 	
 	async generateSalt( force_generation ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.generateSalt() " + _END_);
-		let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID );
+		let entropy_src_elt = HtmlUtils.GetNode( ENTROPY_SRC_FORTUNES_ID );
 		let new_uuid = "";
 		if ( entropy_src_elt.value != "" || force_generation == true) {
 			new_uuid = await window.ipcMain.GetUUID();
-			//HtmlUtils.SetField(SALT_ID, new_uuid);
-			let salt_elt = HtmlUtils.GetElement( SALT_ID );
+			//HtmlUtils.SetNodeValue(SALT_ID, new_uuid);
+			let salt_elt = HtmlUtils.GetNode( SALT_ID );
 			salt_elt.textContent = new_uuid;
         }
 		return new_uuid;
@@ -827,12 +1025,12 @@ class RendererGUI {
 
 		this.setEntropySourceIsUserInput( false );
 		
-		let entropy_source_type = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		let entropy_source_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		log2Main("   entropy_source_type:    " + entropy_source_type);
 		
 		if ( entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
 			let fortune_cookie = await window.ipcMain.GetFortuneCookie();
-			HtmlUtils.SetField( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );
+			HtmlUtils.SetNodeValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );
 			log2Main(">> getNewEntropySource fortune_cookie: " + fortune_cookie);
 		}
 		else if ( entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
@@ -849,7 +1047,7 @@ class RendererGUI {
 		for (let i=0; i < field_ids.length; i++) { 
 			let field_id = field_ids[i];
 			
-			let elt = HtmlUtils.GetElement(field_id);
+			let elt = HtmlUtils.GetNode(field_id);
 			
 			if (field_id == SALT_ID)
 				elt.textContent = "";
@@ -878,23 +1076,23 @@ class RendererGUI {
 			let word_count = parseInt( elt.value );
 			log2Main(">> " + _CYAN_ + "RendererGUI.onChangeWordCount() " + _END_ + word_count);
 			let entropy_size = 
-			    ( word_count * 11 ) - EntropySize.GetChecksumBitCount( word_count );
+			    ( word_count * 11 ) - getChecksumBitCount( word_count );
 			await this.updateEntropySize( entropy_size );
 	    }	
 	} // async onChangeWordCount()
 	
 	async onSwitchEntropySourceType() {
 		log2Main(">> " + _CYAN_ + "RendererGUI.onSwitchEntropySource() " + _END_);
-		this.entropy_source_type = HtmlUtils.GetField( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		this.entropy_source_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		log2Main("   entropy_source_type: " +  this.entropy_source_type);
 		
 		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE) {
-			HtmlUtils.ShowElement( ENTROPY_SRC_FORTUNES_ID );
-			HtmlUtils.HideElement( ENTROPY_SRC_IMG_CONTAINER_ID );
+			HtmlUtils.ShowNode( ENTROPY_SRC_FORTUNES_ID );
+			HtmlUtils.HideNode( ENTROPY_SRC_IMG_CONTAINER_ID );
 		}
 		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE) {
-			HtmlUtils.ShowElement( ENTROPY_SRC_IMG_CONTAINER_ID );
-			HtmlUtils.HideElement( ENTROPY_SRC_FORTUNES_ID );
+			HtmlUtils.ShowNode( ENTROPY_SRC_IMG_CONTAINER_ID );
+			HtmlUtils.HideNode( ENTROPY_SRC_FORTUNES_ID );
 		}
 		
         await this.getNewEntropySource();		
@@ -905,7 +1103,7 @@ class RendererGUI {
 		if ( elt.id == LANG_SELECT_ID ) {
 			let lang_value = elt.value;
 			log2Main(">> " + _CYAN_ + "RendererGUI.onChangeBip39Lang() " + _END_ + lang_value);
-			let entropy = HtmlUtils.GetField( ENTROPY_ID );
+			let entropy = HtmlUtils.GetNodeValue( ENTROPY_ID );
             await this.updateMnemonics( entropy );
 	    }
 		else {
@@ -924,7 +1122,7 @@ class RendererGUI {
 	
 	async onSaveWalletInfo( evt ) {
 		log2Main( ">> " + _CYAN_ + "RendererGUI.onSaveWalletInfo() " + _END_ );
-		let crypto_info = await this.getCryptoInfo();
+		let crypto_info = await this.getWalletInfo();
         window.ipcMain.SaveWalletInfo( crypto_info );
 		this.showSaveWalletInfoDialog();		
 	} // async onSaveWalletInfo()
@@ -966,7 +1164,7 @@ class RendererGUI {
 			evt.preventDefault();
 			
 			let allowed_alphabet     = ALLOWED_ALPHABETS[elt.id];
-			let entropy_value        = HtmlUtils.GetField( ENTROPY_ID );
+			let entropy_value        = HtmlUtils.GetNodeValue( ENTROPY_ID );
 			let expected_digit_count = this.expected_entropy_bytes * 2;
 			
 			log2Main("   >> entropy_value: " + entropy_value );
@@ -991,7 +1189,7 @@ class RendererGUI {
 		//log2Main("  evt.keyCode:  " + evt.keyCode);
 		log2Main("  evt.charCode: " + evt.charCode);
 		
-		let entropy  = HtmlUtils.GetField( ENTROPY_ID );
+		let entropy  = HtmlUtils.GetNodeValue( ENTROPY_ID );
 		
 		//========== Filter non hexadecimal characters ==========
 		let is_hex_digit =    ( evt.charCode >= 48 && evt.charCode <= 57 )  // 0..9
@@ -1016,7 +1214,7 @@ class RendererGUI {
 		
 		evt.preventDefault();
 		
-		let text_cursor_pos = HtmlUtils.GetElement( ENTROPY_ID ).selectionStart;
+		let text_cursor_pos = HtmlUtils.GetNode( ENTROPY_ID ).selectionStart;
 		
 		let new_char = String.fromCharCode(evt.charCode);
 		log2Main( "   new_char: " + new_char);
@@ -1028,10 +1226,10 @@ class RendererGUI {
 		log2Main( "   expected_digits:  " + this.expected_entropy_digits);
         log2Main( "   text_cursor_pos:  " + text_cursor_pos);	
 		
-		HtmlUtils.SetField( ENTROPY_ID, new_entropy );
+		HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );
 		
 		text_cursor_pos += 1;
-		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
 		entropy_elt.selectionStart = text_cursor_pos;
 		entropy_elt.selectionEnd   = text_cursor_pos;
 		
@@ -1041,7 +1239,7 @@ class RendererGUI {
 		if ( new_entropy.length == this.expected_entropy_digits ) {
 			log2Main( "   new_entropy(" + new_entropy.length + "):  " + new_entropy); 
 
-            HtmlUtils.SetField( ENTROPY_ID, new_entropy );			
+            HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );			
 			
 			await this.updateFields( new_entropy );
 		}	
@@ -1065,7 +1263,7 @@ class RendererGUI {
 	
 	// Entropy 'paste' event handler
 	async onEntropyPaste( evt ) {				
-	    let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+	    let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
 		log2Main(">> " + _CYAN_ + "RendererGUI.onEntropyPaste() " + _END_);
         
 		evt.preventDefault();
@@ -1075,7 +1273,7 @@ class RendererGUI {
 		
 		log2Main("   paste_data(" + paste_length + "): " + paste_data);		
 		
-		let current_entropy = HtmlUtils.GetField(ENTROPY_ID);
+		let current_entropy = HtmlUtils.GetNodeValue(ENTROPY_ID);
 		log2Main("   current_entropy(" + current_entropy.length + "): " + current_entropy);	
 		
 		let new_entropy     = "";
@@ -1110,13 +1308,13 @@ class RendererGUI {
 				new_entropy = insertSubstringAtIndex
 				              ( current_entropy, paste_data, text_cursor_pos );
 				log2Main("   new_entropy (pasted): " + new_entropy);
-				HtmlUtils.SetField( ENTROPY_ID, new_entropy );
+				HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );
 			}	
 
             if ( new_entropy.length == this.expected_entropy_digits ) {			
 				this.setEntropySourceIsUserInput( true );
 				this.updateStatusbarInfo( true );
-				HtmlUtils.SetField( ENTROPY_ID, new_entropy );	
+				HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );	
 					
 				await this.updateFields( new_entropy );	
 			}	
@@ -1133,7 +1331,7 @@ class RendererGUI {
 		log2Main("  paste_data(w: " + paste_words.length + "): " + paste_data);
 		//log2Main("  this.expected_word_count: " + this.expected_word_count);		
 		
-		let current_mnemonics = HtmlUtils.GetField( MNEMONICS_ID );
+		let current_mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID );
 		let current_words = current_mnemonics.split(' ');
 		log2Main("   current_mnemonics(w: " + current_words.length + "): " + current_mnemonics);
 
@@ -1150,10 +1348,10 @@ class RendererGUI {
 			log2Main(  "   OK: paste_words:" + paste_words.length
 			         + "  ==  expected_words:" + this.expected_word_count);
 			
-			// HtmlUtils.SetField( MNEMONICS_ID, paste_data );
+			// HtmlUtils.SetNodeValue( MNEMONICS_ID, paste_data );
 			
 			// 1. Must check if 'Mnemonics' is in current 'lang' chosen by user
-			let current_lang = HtmlUtils.GetField( LANG_SELECT_ID ); 
+			let current_lang = HtmlUtils.GetNodeValue( LANG_SELECT_ID ); 
 			log2Main("  current_lang: " + current_lang);
 			
 			let mnemonics = paste_data;
@@ -1182,7 +1380,7 @@ class RendererGUI {
 			// 3. Update 'Mnemonics' from 'Entropy'
 			this.setEntropySourceIsUserInput( true );
 			this.updateStatusbarInfo( true );
-			HtmlUtils.SetField( ENTROPY_ID, new_entropy );	
+			HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );	
 					
 			await this.updateFields( new_entropy );	
 		}
@@ -1194,11 +1392,29 @@ class RendererGUI {
 		let copy_text = "";
 		switch ( evt_src_elt_id ) {
 			case ENTROPY_COPY_BTN_ID: 
-				copy_text = HtmlUtils.GetField( ENTROPY_ID );
+				copy_text = HtmlUtils.GetNodeValue( ENTROPY_ID );
+				GuiUtils.ShowQuestionDialog
+					( "Entropy copied in Clipboard", 
+					  {"CloseButtonLabel": "OK" } );
 				break;
+
+			case WALLET_PK_COPY_BTN_ID: 
+				copy_text = HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID );
+				GuiUtils.ShowQuestionDialog
+					( "Private Key copied in Clipboard", { "CloseButtonLabel": "OK" } );
+				break;			
 				
 			case MNEMONICS_COPY_BTN_ID: 
-				copy_text = HtmlUtils.GetField( MNEMONICS_ID );
+			case SW_MNEMONICS_COPY_BTN_ID:
+				copy_text = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+				GuiUtils.ShowQuestionDialog
+					( "Seedphrase copied in Clipboard", { "CloseButtonLabel": "OK" } );
+				break;
+				
+			case SW_WIF_COPY_BTN_ID:
+				copy_text = HtmlUtils.GetNodeValue( WIF_ID );
+				GuiUtils.ShowQuestionDialog
+					( "WIF copied in Clipboard",  	   { "CloseButtonLabel": "OK" } );
 				break;
 		}
 		
@@ -1222,17 +1438,17 @@ class RendererGUI {
 			log2Main("   'ENTER' or 'Return' key pressed");
 			let is_valid_field_value = false;
 			
-			let account_index = HtmlUtils.GetField( ACCOUNT_ID );
+			let account_index = HtmlUtils.GetNodeValue( ACCOUNT_ID );
 			if ( account_index == "" ) {
-				HtmlUtils.SetField( ACCOUNT_ID, "0" );
+				HtmlUtils.SetNodeValue( ACCOUNT_ID, "0" );
 			}
 			
-			let address_index = HtmlUtils.GetField( ADDRESS_INDEX_ID );
+			let address_index = HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID );
 			if ( address_index == "" ) {
-				HtmlUtils.SetField( ADDRESS_INDEX_ID, "0" );
+				HtmlUtils.SetNodeValue( ADDRESS_INDEX_ID, "0" );
 			}
 			
-			field_value = HtmlUtils.GetField( evt.target.id ); // evt.target; 			
+			field_value = HtmlUtils.GetNodeValue( evt.target.id ); // evt.target; 			
 			if ( field_value == "" ) {
 				field_value = "0";
 			}
@@ -1278,15 +1494,15 @@ class RendererGUI {
 	async updateWalletAddress() {
 		log2Main(">> " + _CYAN_ + "RendererGUI.updateWalletAddress() " + _END_);				
 							
-		let entropy = HtmlUtils.GetField( ENTROPY_ID );
-		log2Main( "   entropy:  " + entropy);	
+		let entropy = HtmlUtils.GetNodeValue( ENTROPY_ID );
+		log2Main( "   entropy:                 " + entropy);	
 		
 		this.bip32_account_index = 
-				parseInt( HtmlUtils.GetField( ACCOUNT_ID ) );
+				parseInt( HtmlUtils.GetNodeValue( ACCOUNT_ID ) );
 		log2Main( "   bip32_account_index:  " + this.bip32_account_index);
 		
 		this.bip32_address_index = 
-				parseInt( HtmlUtils.GetField( ADDRESS_INDEX_ID ) );
+				parseInt( HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID ) );
 		log2Main( "   bip32_address_index:  " + this.bip32_address_index);
 		
 		this.setEntropySourceIsUserInput( true );
@@ -1299,11 +1515,11 @@ class RendererGUI {
 		//log2Main(">> " + _CYAN_ + "RendererGUI.showRefreshButton() " + _END_);
 		if ( show_refresh ) { // show "Regenerate" AND "Refresh" buttons 
 		    //log2Main("   Show REFRESH");
-			HtmlUtils.ShowElement( RIGHT_BTNBAR_ITEM_ID );
+			HtmlUtils.ShowNode( RIGHT_BTNBAR_ITEM_ID );
 		}
 		else { // show only "Regenerate" button centered 
 		    //log2Main("   HIDE REFRESH");
-			HtmlUtils.HideElement( RIGHT_BTNBAR_ITEM_ID );
+			HtmlUtils.HideNode( RIGHT_BTNBAR_ITEM_ID );
 		}
 	} // showRefreshButton()
 	
@@ -1311,49 +1527,50 @@ class RendererGUI {
 		this.entropy_source_is_user_input = is_user_input;
 		this.updateStatusbarInfo( is_user_input );
 		if ( is_user_input ) {
-			HtmlUtils.HideElement( ENTROPY_SRC_ROW );
-			HtmlUtils.HideElement("salt_row");	
-			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.HideNode( ENTROPY_SRC_ROW );
+			HtmlUtils.HideNode("salt_row");	
+			HtmlUtils.HideNode( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideNode( WORD_COUNT_SELECT_ID );
 			
-			HtmlUtils.SetField( CHECKSUM_ID,          "" );
-            HtmlUtils.SetField( MNEMONICS_ID,         "" );	
-            HtmlUtils.SetField( MNEMONICS_4LETTER_ID, "" );
-			HtmlUtils.SetField( WORD_INDEXES_ID,      "" );			
+			HtmlUtils.SetNodeValue( CHECKSUM_ID,          "" );
+            HtmlUtils.SetNodeValue( MNEMONICS_ID,         "" );	
+			HtmlUtils.SetNodeValue( SW_MNEMONICS_ID,      "" );	
+            HtmlUtils.SetNodeValue( MNEMONICS_4LETTER_ID, "" );
+			HtmlUtils.SetNodeValue( WORD_INDEXES_ID,      "" );			
 		}
 		else {
-			HtmlUtils.ShowElement( ENTROPY_SRC_ROW );
-			HtmlUtils.ShowElement("salt_row");	
+			HtmlUtils.ShowNode( ENTROPY_SRC_ROW );
+			HtmlUtils.ShowNode("salt_row");	
 			
             if ( this.Options[WALLET_MODE] == HD_WALLET_TYPE ) {			
-				HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
-				HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
+				HtmlUtils.ShowNode( ENTROPY_SIZE_SELECT_ID );
+				HtmlUtils.ShowNode( WORD_COUNT_SELECT_ID );
 			}			
 		}
 	} // setEntropySourceIsUserInput()
 	
 	async displayMessageInStatusbar( msg_id ) {
-		if (msg_id != undefined) {
+		if ( msg_id != undefined ) {
 			let	msg = await window.ipcMain.GetLocalizedMsg(msg_id);
-			HtmlUtils.SetField( "SB_item_message_id", msg );
+			HtmlUtils.SetNodeValue( "SB_item_message_id", msg );
 		}	
 	} // displayMessageInStatusbar()
 	
 	updateStatusbarInfo( is_displayed ) {
-		let entropy = HtmlUtils.GetField( ENTROPY_ID );
+		let entropy = HtmlUtils.GetNodeValue( ENTROPY_ID );
 		if ( is_displayed ) {		
 			let msg =   "*Warning* Entropy source is User Input"
 					  + "  |  Entropy value length: " + entropy.length
 				 	  + "  expected digits: " + this.expected_entropy_digits;		
-			HtmlUtils.SetField( "SB_item_message_id", msg );
+			HtmlUtils.SetNodeValue( "SB_item_message_id", msg );
 		}
 		else {
-			HtmlUtils.SetField( "SB_item_message_id", "" );   
+			HtmlUtils.SetNodeValue( "SB_item_message_id", "" );   
 		}
 	} // updateStatusbarInfo
 	
 	setEntropyValueValidity( is_valid ) {
-		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
 		
 		if ( is_valid ) {
 			entropy_elt.classList.remove( INVALID_VALUE_CSS_CLASS ); 
@@ -1367,10 +1584,10 @@ class RendererGUI {
 	
 	setFocus( elt_id ) {
 		log2Main(">> " + _CYAN_ + "RendererGUI.setFocus() " + _YELLOW_ + elt_id + _END_);		
-		let target_elt = HtmlUtils.GetElement( elt_id );
+		let target_elt = HtmlUtils.GetNode( elt_id );
 		for (let i=0; i < FIELD_IDS.length; i++) { 
 			let field_id = FIELD_IDS[i];
-			let elt = HtmlUtils.GetElement(field_id);
+			let elt = HtmlUtils.GetNode(field_id);
 			
 		    if ( target_elt.id == field_id ) {
 				elt.classList.remove( WITHOUT_FOCUS_CSS_CLASS ); 
@@ -1394,58 +1611,60 @@ class RendererGUI {
 		this.setFocus( source_elt.id );
 	} // onFocus()
 	
-	async getCryptoInfo() {
-		log2Main(">> " + _CYAN_ + "RendererGUI.getCryptoInfo() " + _END_);
+	async getWalletInfo() {
+		log2Main( pretty_func_header_format( getFunctionCallerName() ) );
 		
 		let crypto_info = {};
 		
-		let blockchain = HtmlUtils.GetField( WALLET_BLOCKCHAIN_ID ); 
+		let blockchain = HtmlUtils.GetNodeValue( WALLET_BLOCKCHAIN_ID ); 
 		crypto_info[BLOCKCHAIN] = blockchain;
 		
-		let coin = HtmlUtils.GetField( WALLET_COIN_ID ).replaceAll('\n','').replaceAll('\t',''); 
-		crypto_info['coin'] = coin;
+		let coin_id = HtmlUtils.GetNodeValue( WALLET_COIN_ID );
+		log2Main( pretty_format( "coin_id", coin_id ) );
+		let coin = HtmlUtils.GetNodeValue( WALLET_COIN_ID ).replaceAll('\n','').replaceAll('\t',''); 
+		log2Main( pretty_format( "coin", coin ) );
+		crypto_info[COIN] = coin;
 		
-		let wallet_address = HtmlUtils.GetField( ADDRESS_ID );
+		let wallet_address = HtmlUtils.GetNodeValue( ADDRESS_ID );
         // log2Main("wallet_address " + wallet_address );		
 		crypto_info['address'] = wallet_address;
 		
-		let wallet_URL_elt =  HtmlUtils.GetElement( WALLET_URL_LINK_ID );
+		let wallet_URL_elt =  HtmlUtils.GetNode( WALLET_URL_LINK_ID );
 		if (wallet_URL_elt != undefined) {
 			crypto_info['Blockchain Explorer'] = wallet_URL_elt.href;
 		}
 		
 		// log2Main("blockchain " + blockchain );
 		
-		if (   blockchain == BITCOIN 
-		    || blockchain == DOGECOIN || blockchain == LITECOIN
-		    || blockchain == ETHEREUM || blockchain == SOLANA
-			|| blockchain == RIPPLE       || blockchain == TRON  
-			|| blockchain == BITCOIN_CASH || blockchain == FIRO) {
+		if (   blockchain == ETHEREUM || blockchain == AVALANCHE 
+		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN 
+    		|| blockchain == SOLANA
+			|| blockchain == RIPPLE   || blockchain == TRON  
+			|| blockchain == BITCOIN_CASH || blockchain == FIRO ) {
 				
-			let PRIV_KEY_value = HtmlUtils.GetField( PRIV_KEY_ID );
+			let PRIV_KEY_value = HtmlUtils.GetNodeValue( PRIV_KEY_ID );
 			// log2Main("PRIV_KEY_value " + PRIV_KEY_value );
 			
-			let WIF_value = HtmlUtils.GetField( WIF_ID ); 
+			let WIF_value = HtmlUtils.GetNodeValue( WIF_ID ); 
 			// log2Main("WIF_value " + WIF_value );
 			if ( WIF_value != "" ) {
 				crypto_info[WIF] = WIF_value;
 			}
 
-			let PRIV_KEY = HtmlUtils.GetField( PRIV_KEY_ID );
+			let PRIV_KEY = HtmlUtils.GetNodeValue( PRIV_KEY_ID );
 			if ( PRIV_KEY != "" ) {
 				crypto_info[PRIV_KEY] = PRIV_KEY;
 			}
 	
-			if (blockchain == BITCOIN ) {
-				crypto_info["Private Key"] = HtmlUtils.GetField( WALLET_PK_HEX_ID );
+			if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+				crypto_info["Private Key"] = HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID );
                 delete crypto_info[PRIV_KEY];				
-				crypto_info["WIF"]         = HtmlUtils.GetField( PRIV_KEY_ID ); 
+				crypto_info[WIF] = WIF_value; 
 			}
-			else if (    blockchain == ETHEREUM 
-			          || blockchain == DOGECOIN || blockchain == LITECOIN
+			else if (    blockchain == ETHEREUM || blockchain == AVALANCHE			          
 					  || blockchain == SOLANA ) {
 				delete crypto_info[PRIV_KEY];
-				crypto_info["Private Key"] = HtmlUtils.GetField( WALLET_PK_HEX_ID ); 
+				crypto_info["Private Key"] = HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID ); 
 			}	
             else if (blockchain == RIPPLE ) {
 				PRIV_KEY_value = crypto_info[PRIV_KEY];
@@ -1453,18 +1672,19 @@ class RendererGUI {
 				crypto_info["Private Key"] = PRIV_KEY_value; 
 			}
 			else if (    blockchain == TRON 
-			          || blockchain == BITCOIN_CASH || blockchain == FIRO) {
-				//log2Main("blockchain is TRON " + HtmlUtils.GetField( WALLET_PK_HEX_ID ) );
-				crypto_info["Private Key"] = HtmlUtils.GetField( WALLET_PK_HEX_ID ); 
+			          || blockchain == BITCOIN_CASH 
+					  || blockchain == FIRO) {
+				//log2Main("blockchain is TRON " + HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID ) );
+				crypto_info["Private Key"] = HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID ); 
 			}            		
 		}
 		
-		let mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_ID ); 
+		let mnemonics_elt = HtmlUtils.GetNode( MNEMONICS_ID ); 
 		let mnemonics = mnemonics_elt.value;
 		//crypto_info[MNEMONICS] = mnemonics;	
 		crypto_info['Seedphrase'] = mnemonics;	
 		
-		let shortened_mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_4LETTER_ID ); 
+		let shortened_mnemonics_elt = HtmlUtils.GetNode( MNEMONICS_4LETTER_ID ); 
 		let shortened_mnemonics = shortened_mnemonics_elt.value;
 		crypto_info['Shortened Seedphrase'] = shortened_mnemonics;
 		
@@ -1477,22 +1697,22 @@ class RendererGUI {
 							   .replaceAll( '[', '' ).replaceAll( ']', '' )
 		crypto_info['Word indexes'] = word_indexes_str;
 		
-		//log2Main(">> " + _CYAN_ + "RendererGUI.getCryptoInfo() " + _END_);
+		//log2Main(">> " + _CYAN_ + "RendererGUI.getWalletInfo() " + _END_);
 		
 		crypto_info[DERIVATION_PATH] =  "m/44'/" + COIN_TYPES[blockchain] + "'/"
-		                              + HtmlUtils.GetField( ACCOUNT_ID ) + "'/0/"
-									  + HtmlUtils.GetField( ADDRESS_INDEX_ID );
+		                              + HtmlUtils.GetNodeValue( ACCOUNT_ID ) + "'/0/"
+									  + HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID );
 		
-		let entropy_value = HtmlUtils.GetField( ENTROPY_ID ); 
+		let entropy_value = HtmlUtils.GetNodeValue( ENTROPY_ID ); 
 		crypto_info['Entropy'] = entropy_value;
 		
-		let entropy_size = (entropy_value.length / 2) * 8;
+		let entropy_size = ( entropy_value.length / 2 ) * 8;
 		crypto_info[ENTROPY_SIZE] = entropy_size + " bits";
 		
 		crypto_info['lang'] = lang;
 		
 		return crypto_info;
-	} // getCryptoInfo()
+	} // getWalletInfo()
 	
 	// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
 	openTabPage( pageName, elt, color ) {
@@ -1540,7 +1760,7 @@ class RendererGUI {
 	getLang() {
 		log2Main(">> " + _CYAN_ + "RendererGUI.getLang()" + _END_);
 		let lang = "EN";
-		let elt  = HtmlUtils.GetElement( LANG_SELECT_ID );
+		let elt  = HtmlUtils.GetNode( LANG_SELECT_ID );
 		if ( elt != undefined ) {
 			lang = elt.value;			
 	    }

@@ -1,406 +1,439 @@
-<!DOCTYPE html>
-<html lang_x="en">
-	<head>
-		<title>Cryptocalc</title>
+	<!DOCTYPE html>
+	<html lang_x="en">
+		<head>
+			<title>Cryptocalc</title>
+			
+			<!-- ----------------- prerequisite libraries ----------------- -->	
+			<script type="text/javascript" src="./js/lib/iziToast.min.js"></script>
+			<link   rel="stylesheet" type="text/css" href="css/iziToast.css">
+			
+			<script type="text/javascript" src="./js/lib/jquery-3.6.3.min.js"></script>
+			<script type="text/javascript" src="./js/lib/jquery-ui-1.13.2.min.js"></script>
+			
+			<link   rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
+			<link   rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
+			<!-- ----------------- prerequisite libraries -->
+			
+			<!-- ----------------- Renderer prerequisite modules ----------------- -->
+			<script type="text/javascript" src="./js/const_keywords.js"></script>
+			<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
+			<script type="text/javascript" src="./js/util/values/string_utils.js"></script>
+			<script type="text/javascript" src="./js/util/values/number_utils.js"></script>
+			<script type="text/javascript" src="./js/util/html/w3.js"></script>
+			<script type="text/javascript" src="./js/util/html/html_utils.js"></script>
+			
+			<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
+			<script type="text/javascript" src="./js/util/log/log_utils.js"></script>
+			<script type="text/javascript" src="./js/gui/gui_utils.js"></script>
+			
+			<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
+			<script type="text/javascript" src="./js/crypto/const_blockchains.js"></script>
+			<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>	
+			
+			<script type="text/javascript" src="./js/const_events.js"></script>
+			
+			<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
+			<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
+			
+			<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
+			<!-- ----------------- Renderer prerequisite modules -->
+			
+			<link rel="stylesheet" type="text/css" href="css/cryptocalc_style.css">
+		<head>
 		
-		<!-- ----------------- prerequisite libraries ----------------- -->	
-		<script type="text/javascript" src="./js/lib/iziToast.min.js"></script>
-		<link   rel="stylesheet" type="text/css" href="css/iziToast.css">
-		
-		<script type="text/javascript" src="./js/lib/jquery-3.6.3.min.js"></script>
-	    <script type="text/javascript" src="./js/lib/jquery-ui-1.13.2.min.js"></script>
-		
-		<link   rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
-		<link   rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
-		<!-- ----------------- prerequisite libraries -->
-		
-		<!-- ----------------- Renderer prerequisite modules ----------------- -->
-		<script type="text/javascript" src="./js/const_keywords.js"></script>
-		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
-		<script type="text/javascript" src="./js/util/values/string_utils.js"></script>
-		<script type="text/javascript" src="./js/util/html/w3.js"></script>
-		<script type="text/javascript" src="./js/util/html/html_utils.js"></script>
-		
-		<script type="text/javascript" src="./js/util/color/color_console_codes.js"></script>
-		<script type="text/javascript" src="./js/gui/gui_utils.js"></script>
-		
-		<script type="text/javascript" src="./js/crypto/hex_utils.js"></script>
-		<script type="text/javascript" src="./js/crypto/entropy_size.js"></script>
-		<script type="text/javascript" src="./js/crypto/const_blockchains.js"></script>
-		<script type="text/javascript" src="./js/crypto/const_wallet.js"></script>	
-		
-		<script type="text/javascript" src="./js/const_events.js"></script>
-		
-		<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
-		<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
-		
-		<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
-		<!-- ----------------- Renderer prerequisite modules -->
-		
-		<link rel="stylesheet" type="text/css" href="css/cryptocalc_style.css">
-	<head>
-	
-	<body>
-		<!-- ====================================================================== -->
-		<!-- =========================== Main ToolBar ============================= -->
-		<!-- ===================================================================== -->
-		<div w3-include-html="./html_components/main_toolbar/main_toolbar.html"></div>
-		<!-- <link rel="stylesheet" type="text/css" href="./html_components/main_toolbar/main_toolbar.css"> -->
-		<!-- =========================== Main ToolBar -->
-		
-		
-		<!-- ======================== Tab Pages buttons ======================== -->
-		<button class="tablink" id="seed_tab_link_id" 
-				onclick="RendererGUI.GetInstance().openTabPage('Seed', this, '#FFFFF0')">Seed</button>
-				
-		<button class="tablink" id="wallet_tab_link_id" 
-				onclick="RendererGUI.GetInstance().openTabPage('Wallet', this, '#F1FFFF')">Wallet</button>
-				
-		<button class="tablink EmptyTabLink EmptyTabLinkBorders" id="empty_tab_link_id">&nbsp;</button>
-		<!-- ======================== Tab Pages buttons -->
-		
-		<!-- ========================== 'Seed' Tab page =========================== -->		
-		<div id="Seed" class="tabcontent">
-			<table class="inner SeedTabLayout">	
-                <tr><td class="HorizontalBar" colspan="4"><br/></td></tr>			
-				<!-- ----------------  Entropy Source ---------------- -->
-				<tr id="entropy_src_row">
-					<td class="LabelColumn">
-					    <span id="entropy_src_label_id" class="LabelColumn">Entropy Source</span>
-						<select id="entropy_src_type_selector_id" 
-						        class="InputField EntropySelector"> 
-							<option value="Image" selected>Image</option>	
-							<option value="Fortunes">Fortunes</option>			
-						</select>
-					</td>
-					<td colspan="2" class="FieldColumn">
-						<table width="100%">
-							<tr><td class="TextArea">
-									<textarea class="RawDataField WithoutFocus" 
-									          id="entropy_src_fortunes_id" 
-											  rows="6" spellcheck="false" hidden>
-									</textarea>									
-												
-									<table id="entropy_src_img_container_id">
-										<tr><td><div id="entropy_src_img_div_id" 
-										             ondrop="drop(evt)" 
-													 ondrag="drag(evt)"
-													 ondragover="allowDrop(evt)">
-													 <img id="entropy_src_img_id" style="object-fit: none;"
-														  src="img/MazePattern.png"	draggable="true">
-													  <script>function allowDrop(evt) { 
-															     evt.preventDefault(); 
-														      }
-                                                              function drag(evt) { 
-															     evt.preventDefault(); 
-														      } 															  
-													  </script>
-												</div>
-											</td>
-											<td>
-												&nbsp;&nbsp;&nbsp;<p style="display:inline">
-												Drag an image in <br>
-												&nbsp;&nbsp;&nbsp;the white rectangle</p> 
-											</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-				<!-- ------------------ Entropy Source -->
-				
+		<body>
+			<!-- ====================================================================== -->
+			<!-- =========================== Main ToolBar ============================= -->
+			<!-- ===================================================================== -->
+			<div w3-include-html="./html_components/main_toolbar/main_toolbar.html"></div>
+			<!-- <link rel="stylesheet" type="text/css" href="./html_components/main_toolbar/main_toolbar.css"> -->
+			<!-- =========================== Main ToolBar -->
+			
+			
+			<!-- ======================== Tab Pages buttons ======================== -->
+			<button class="tablink" id="seed_tab_link_id" 
+					onclick="RendererGUI.GetInstance().openTabPage('Seed', this, '#FFFFF0')">Seed</button>
+					
+			<button class="tablink" id="wallet_tab_link_id" 
+					onclick="RendererGUI.GetInstance().openTabPage('Wallet', this, '#F1FFFF')">Wallet</button>
+					
+			<button class="tablink EmptyTabLink EmptyTabLinkBorders" id="empty_tab_link_id">&nbsp;</button>
+			<!-- ======================== Tab Pages buttons -->
+			
+			<!-- ========================== 'Seed' Tab page =========================== -->		
+			<div id="Seed" class="tabcontent">
+				<table class="inner SeedTabLayout">	
+					<tr><td class="HorizontalBar" colspan="4"><br/></td></tr>			
+					<!-- ----------------  Entropy Source ---------------- -->
+					<tr id="entropy_src_row">
+						<td class="LabelColumn">
+							<span id="entropy_src_label_id" class="LabelColumn">Entropy Source</span>
+							<select id="entropy_src_type_selector_id" 
+									class="InputField EntropySelector"> 
+								<option value="Image" selected>Image</option>	
+								<option value="Fortunes">Fortunes</option>			
+							</select>
+						</td>
+						<td colspan="2" class="FieldColumn">
+							<table width="100%">
+								<tr><td class="TextArea">
+										<textarea class="RawDataField WithoutFocus" 
+												  id="entropy_src_fortunes_id" 
+												  rows="6" spellcheck="false" hidden>
+										</textarea>									
+													
+										<table id="entropy_src_img_container_id">
+											<tr><td><div id="entropy_src_img_div_id" 
+														 ondrop="drop(evt)" 
+														 ondrag="drag(evt)"
+														 ondragover="allowDrop(evt)">
+														 <img id="entropy_src_img_id" style="object-fit: none;"
+															  src="img/MazePattern.png"	draggable="true">
+														  <script>function allowDrop(evt) { 
+																	 evt.preventDefault(); 
+																  }
+																  function drag(evt) { 
+																	 evt.preventDefault(); 
+																  } 															  
+														  </script>
+													</div>
+												</td>
+												<td>
+													&nbsp;&nbsp;&nbsp;<p style="display:inline">
+													Drag an image in <br>
+													&nbsp;&nbsp;&nbsp;the white rectangle</p> 
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!-- ------------------ Entropy Source -->
+					
 
-				<!-- ------------------------------------------------- -->
-				<!-- -----------------  Salt (UUID)  ----------------- -->
-				<!-- ------------------------------------------------- -->
-				<tr id="salt_row"><td class="LabelColumn">Salt</td>
-					<td colspan="2" class="FieldColumn">
-					    <!-- <input type="checkbox" id="use_salt_id" name="use" checked /> -->
-						<span class="ReadOnlyValue" id="salt_id">XX</span>
-					</td>
-				</tr>
-				<!-- ------------------ Salt (UUID) -->
-				
-				
-				<!-- ----------------------------------------------------------- -->
-				<!-- ----------------- Entropy (128/256 bits) ------------------ -->
-				<!-- ----------------------------------------------------------- -->
-				<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
-				<tr><td class="LabelColumn">
-						<span id="entropy_label_id">Entropy</span>                              <!-- ---- Entropy Label ---- -->
-						<select class="InputField LabelValueSelector"
-						        id="entropy_bits_select_id" hidden>
-							<option value="128" selected>128 bits</option>	
-							<option value="160">160 bits</option>
-							<option value="192">192 bits</option>
-							<option value="224">224 bits</option>							
-							<option value="256">256 bits</option>	
-						</select>
-						<div class="SimpleWalletLabel" 
-						     id="sw_entropy_size_id">&nbsp;256 bits</div> 
-					</td>
-					<td colspan="2" class="FieldColumn">
-					    <!-- ---------- Entropy value ---------- -->
-						<div class="DataFieldWithButton_Container"
-						     id="entropy_container_id">
-							<input 
-							   class="RawDataFieldWithButton WithoutFocus ValidValue EntropyInput"
-							   id="entropy_id" type="text"
-							   minlength="32" maxlength="32"
-							   value="FF"/>
-							<button class="CopyButton" id="entropy_copy_btn_id">
-								<img src="icons/copy_16px_icn.png" 
-									 alt="Copy to Clipboard" border="0"/>
-							</button>
-						</div>
-					</td>
-				</tr>
-				<!-- ----------------------- Entropy (128/256 bits) -->
-				
-				<!-- -----------------------  Checksum  ----------------------- -->
-				<!-- <tr><td class="HorizontalBar" colspan="4"></td></tr> -->
-				<tr><td class="LabelColumn">
-						<span id="checksum_label_id">Checksum</span>
-					</td>
-					<td colspan="2" class="FieldColumn">
-						<span id="checksum_id">XX</span>
-					</td>
-				</tr>
-				<!-- ----------------------- Checksum -->
-				
-				
-				<!-- ----------------------- Seedphrase ------------------------ -->
-				<tr><td class="LabelColumn">
-						<span>Seedphrase</span>
-						<!-- https://www.andiamo.co.uk/resources/iso-lang_xuage-codes/ -->
-						<select class="InputField LabelValueSelector"
-						        id="LANG_SELECT_ID">
-							<option value="EN" selected>English</option>							
-							<option value="DE">Deutsch</option>
-							<option value="FR">French</option>
-							<option value="ES">Spanish</option>
-							<option value="PT">Portuguese</option>
-							<option value="IT">Italian</option>
-							<option value="CS">Czech</option>			
-						</select>
-						<select id="word_count_select_id" 
-						        class="InputField LabelValueSelector">
-							<option value="12" selected>12 words</option>
-							<option value="15">15 words</option>
-							<option value="18">18 words</option>
-							<option value="21">21 words</option>							
-							<option value="24">24 words</option>	
-						</select>
-						<div class="SimpleWalletLabel" 
-       						 id="sw_word_count_id">&nbsp;24 words</div> 
-					</td>
-					<td class="FieldColumn" colspan="2">
-					    <div class="DataFieldWithButton_Container" 
-						     id="seedphrase_container_id">
-							<textarea class="RawDataFieldWithButton WithoutFocus" 
-									  rows="2" spellcheck="false"
-									  id="mnemonics_id">XX								  
-							</textarea>
-							<button class="CopyButton" id="mnemonics_copy_btn_id">
+					<!-- ------------------------------------------------- -->
+					<!-- -----------------  Salt (UUID)  ----------------- -->
+					<!-- ------------------------------------------------- -->
+					<tr id="salt_row"><td class="LabelColumn">Salt</td>
+						<td colspan="2" class="FieldColumn">
+							<!-- <input type="checkbox" id="use_salt_id" name="use" checked /> -->
+							<span class="ReadOnlyValue" id="salt_id">XX</span>
+						</td>
+					</tr>
+					<!-- ------------------ Salt (UUID) -->
+					
+					
+					<!-- ----------------------------------------------------------- -->
+					<!-- ----------------- Entropy (128/256 bits) ------------------ -->
+					<!-- ----------------------------------------------------------- -->
+					<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
+					<tr><td class="LabelColumn">
+							<span id="entropy_label_id">Entropy</span>  <!-- ---- Entropy Label ---- -->
+							<select class="InputField LabelValueSelector"
+									id="entropy_bits_select_id" hidden>
+								<option value="128" selected>128 bits</option>	
+								<option value="160">160 bits</option>
+								<option value="192">192 bits</option>
+								<option value="224">224 bits</option>							
+								<option value="256">256 bits</option>	
+							</select>
+							<div class="SimpleWalletLabel" 
+								 id="sw_entropy_size_id">&nbsp;256 bits</div> 
+						</td>
+						<td colspan="2" class="FieldColumn">
+							<!-- ---------- Entropy value ---------- -->
+							<div class="DataFieldWithButton_Container"
+								 id="entropy_container_id">
+								<input 
+								   class="RawDataFieldWithButton WithoutFocus ValidValue EntropyInput"
+								   id="entropy_id" type="text"
+								   minlength="32" maxlength="32"
+								   value="FF"/>
+								<button class="CopyButton" id="entropy_copy_btn_id">
 									<img src="icons/copy_16px_icn.png" 
 										 alt="Copy to Clipboard" border="0"/>
-							</button>
-						</div>
-						<textarea class="RawDataField WithoutFocus" rows="2" readonly
-							      id="mnemonics_4letter_id">XX								  
-						</textarea>
-					</td>
-				</tr>
-				<!-- ----------------------- Seedphrase -->
-				
-				<!-- ---------------------- Word Indexes ----------------------- -->
-				<tr><td class="LabelColumn">
-						<span id="word_indexes_label_id">Word Indexes</span>
-						<select class="InputField LabelValueSelector"
-						        id="word_indexes_base_id">
-							<option value="Decimal" selected>Decimal</option>
-							<option value="Binary">Binary</option>								
-						</select>
-					</td>
-					<td class="FieldColumn" colspan="2">
-						<textarea class="RawDataField WithoutFocus" 
-						          rows="3" spellcheck="false"
-							      id="word_indexes_id">XX								  
-						</textarea>
-					</td>
-				</tr>
-				<!-- ---------------------- Word Indexes -->	
-                <tr><td colspan="4"></td></tr>				
-			</table>
-		</div>
-		<!-- =================================== 'Seed' Tab page -->
-		
+								</button>
+							</div>
+						</td>
+					</tr>
+					<!-- ----------------------- Entropy (128/256 bits) -->
+					
+					<!-- -----------------------  Checksum  ----------------------- -->
+					<!-- <tr><td class="HorizontalBar" colspan="4"></td></tr> -->
+					<tr><td class="LabelColumn">
+							<span id="checksum_label_id">Checksum</span>
+						</td>
+						<td colspan="2" class="FieldColumn">
+							<span id="checksum_id">XX</span>
+						</td>
+					</tr>
+					<!-- ----------------------- Checksum -->
+					
+					
+					<!-- ----------------------- Seedphrase ------------------------ -->
+					<tr><td class="LabelColumn">
+							<span>Seedphrase</span>
+							<!-- https://www.andiamo.co.uk/resources/iso-lang_xuage-codes/ -->
+							<select class="InputField LabelValueSelector"
+									id="LANG_SELECT_ID">
+								<option value="EN" selected>English</option>							
+								<option value="DE">Deutsch</option>
+								<option value="FR">French</option>
+								<option value="ES">Spanish</option>
+								<option value="PT">Portuguese</option>
+								<option value="IT">Italian</option>
+								<option value="CS">Czech</option>			
+							</select>
+							<select id="word_count_select_id" 
+									class="InputField LabelValueSelector">
+								<option value="12" selected>12 words</option>
+								<option value="15">15 words</option>
+								<option value="18">18 words</option>
+								<option value="21">21 words</option>							
+								<option value="24">24 words</option>	
+							</select>
+							<div class="SimpleWalletLabel" 
+								 id="sw_word_count_id">&nbsp;24 words</div> 
+						</td>
+						<td class="FieldColumn" colspan="2">
+							<div class="DataFieldWithButton_Container" 
+								 id="seedphrase_container_id">
+								<textarea class="RawDataFieldWithButton WithoutFocus" 
+										  rows="2" spellcheck="false"
+										  id="mnemonics_id">XX								  
+								</textarea>
+								<button class="CopyButton" id="mnemonics_copy_btn_id">
+										<img src="icons/copy_16px_icn.png" 
+											 alt="Copy to Clipboard" border="0"/>
+								</button>
+							</div>
+							<textarea class="RawDataField WithoutFocus" rows="2" readonly
+									  id="mnemonics_4letter_id">XX								  
+							</textarea>
+						</td>
+					</tr>
+					<!-- ----------------------- Seedphrase -->
+					
+					<!-- ---------------------- Word Indexes ----------------------- -->
+					<tr><td class="LabelColumn">
+							<span id="word_indexes_label_id">Word Indexes</span>
+							<select class="InputField LabelValueSelector"
+									id="word_indexes_base_id">
+								<option value="Decimal" selected>Decimal</option>
+								<option value="Binary">Binary</option>								
+							</select>
+						</td>
+						<td class="FieldColumn" colspan="2">
+							<textarea class="RawDataField WithoutFocus" 
+									  rows="3" spellcheck="false"
+									  id="word_indexes_id">XX								  
+							</textarea>
+						</td>
+					</tr>
+					<!-- ---------------------- Word Indexes -->	
+					<tr><td colspan="4"></td></tr>				
+				</table>
+			</div>
+			<!-- =================================== 'Seed' Tab page -->
 			
-		<!-- ========================================================================================= -->
-		<!-- =================================== 'Wallet' Tab page =================================== -->
-		<!-- ========================================================================================= -->
-		<div id="Wallet" class="tabcontent">
-			<table>
-			    <tr><td class="HorizontalBar" colspan="4"><br></td></tr>
-                <!-- ---------------------- Wallet Mode ---------------------- -->	
-                <tr><td class="LabelColumn">Wallet Mode</td>	
-                    <td colspan="2" class="FieldColumn">				
-						<select class="InputField ValueSelector"
-						        id="wallet_mode_select_id">
-							<!-- <option value="Simple Wallet" selected>Simple Wallet</option> -->	 
-							<option value="HD Wallet" selected>HD Wallet</option>
-						</select>
+				
+			<!-- ========================================================================================= -->
+			<!-- =================================== 'Wallet' Tab page =================================== -->
+			<!-- ========================================================================================= -->
+			<div id="Wallet" class="tabcontent">
+				<table>
+					<tr><td class="HorizontalBar" colspan="4"><br></td></tr>
+					<!-- ---------------------- Wallet Mode ---------------------- -->	
+					<tr><td class="LabelColumn">Wallet Mode</td>	
+						<td colspan="2" class="FieldColumn">				
+							<select class="InputField ValueSelector"
+									id="wallet_mode_select_id">
+								<option value="Simple Wallet" selected>Simple Wallet</option>	 
+								<option value="HD Wallet" selected>HD Wallet</option>
+							</select>
+						</td>
+					</tr>
+					<!-- ---------------------- Wallet Mode -->
+					
+					<!-- ----------------------- Blockchain ----------------------- -->				
+					<tr><td class="LabelColumn" id="wallet_blockchain_label_id">Blockchain</td>
+						<td colspan="2" class="FieldColumn">
+							<select class="InputField ValueSelector" 
+									id="wallet_blockchain_id" >
+								<option value="XX" selected>XX</option>
+							</select>&nbsp;
+							<span id="wallet_coin_id">XX						
+							</span>
+						</td>
+					</tr>
+					<!-- ----------------------- Blockchain -->
+					
+					<!-- -------------------- Derivation Path  --------------------- -->
+					<tr id="derivation_path_row"><td class="LabelColumn">
+							<span id="derivation_path_label_id">Derivation Path</span>
+						</td>
+						<td class="FieldColumn" colspan="2">
+							<table>
+								<tr>
+									<td class="Bip32Cell Bip32CellHeader">Root Node</td>
+									<td class="Bip32Cell Bip32CellHeader">Purpose</td>
+									<td class="Bip32Cell Bip32CellHeader">Coin Type</td>
+									<td class="Bip32Cell Bip32CellHeader">Account</td>
+									<td class="Bip32Cell Bip32CellHeader">Change</td>
+									<td class="Bip32Cell Bip32CellHeader">Address Index</td>
+								</tr>
+								<tr>
+									<td class="Bip32Cell">m/</td>
+									<td class="Bip32Cell" id="purpose_id">44'/</td>
+									<td id="coin_type_id"
+										class="Bip32Cell">0'</td>
+									<td class="Bip32Cell">
+										<input id="account_id" type="text" class="Bip32CellValue" 
+											   value="0" maxlength="4"/><span>&nbsp;'/</span> 
+									</td>
+									<td class="Bip32Cell" id="change_id">0/</td>
+									<td class="Bip32Cell">
+										<input id="address_index_id" type="text" 
+											   class="Bip32CellValue" 
+											   value="0" maxlength="4"/>
+									</td>
+								</tr>							
+							</table>
+						</td>
+					</tr>
+					<!-- -------------------- Derivation Path -->				
+					
+					<!-- ------------------------- Address ------------------------ -->	
+					<tr><td class="LabelColumn" id="address_label_id">Address</td>
+						<td colspan="2" class="FieldColumn">
+							<span id="address_id">FF						
+							</span>&nbsp;
+							<a id="wallet_URL_link_id"
+							   href="https://etherscan.io" target="_blank" rel="noreferrer">
+							   <input class="WalletButton" type="button" 
+									  id="wallet_explore_btn_id" value="Explore...">
+							</a>
+						</td>
+					</tr>
+					<!-- ----------------------- Address -->
+					
+					<!-- ----------------------- Private Key ----------------------- -->
+					<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
+					<tr id="tr_1st_PK_id">
+						<td class="LabelColumn" 
+							id="wallet_PK_label_id">Private Key</td>
+						<td colspan="2" class="FieldColumn">
+							<div class="DataFieldWithButton_Container" 
+								 id="wlt_pk_container_id">
+								<input class="RawDataField WithoutFocus ValidValue" readonly
+									id="wallet_pk_hex_id" type="text" value="XX">
+								<button class="CopyButton" 
+									id="wlt_pk_copy_btn_id">
+									<img src="icons/copy_16px_icn.png" 
+										 alt="Copy to Clipboard" border="0"/>
+								</button>
+							</div>
+						</td>
+					</tr>
+					<!-- ----------------------- Private Key -->
+					
+					<!-- --------------- Seedphrase (Simple Wallet) ---------------- -->
+					<tr id="tr_sw_mnemonics_id">
+						<td class="LabelColumn">Seedphrase</td>	
+						<td colspan="2" class="FieldColumn">	
+							<div class="DataFieldWithButton_Container" 
+								 id="seedphrase_container_id">					
+								<textarea 
+								  class="RawDataFieldWithButton WithoutFocus" 
+								  rows="2" spellcheck="false" readonly
+								  id="sw_mnemonics_id">XX								  
+								</textarea>
+								<button class="CopyButton" id="sw_mnemonics_copy_btn_id">
+								<img src="icons/copy_16px_icn.png" 
+									 alt="Copy to Clipboard" border="0"/>
+								</button>
+							</div>
+						</td>
+					</tr>
+					<!-- --------------- Seedphrase (Simple Wallet) -->
+					
+					
+					<!-- -------------------------- WIF --------------------------- -->
+					<tr id="tr_wif_id">
+						<td class="LabelColumn" id="wif_label_id">WIF</td>
+						<td colspan="2" class="FieldColumn">
+							<div class="DataFieldWithButton_Container" 
+								 id="seedphrase_container_id">	
+								<span id="wif_id">						
+								</span>
+								<button class="CopyButton" id="sw_wif_copy_btn_id">
+									<img src="icons/copy_16px_icn.png" 
+										 alt="Copy to Clipboard" border="0"/>
+								</button>
+							</div>
+						</td>
+					</tr>
+					<!-- ----------------------- WIF -->
+					
+					
+					<!-- ----------------------- PRIV_KEY ------------------------- -->
+					<tr id="tr_priv_key_id">
+						<td class="LabelColumn" id="priv_key_label_id">PRIV_KEY</td>
+						<td colspan="2" class="FieldColumn">
+							<span id="priv_key_id">						
+							</span>
+						</td>
+					</tr>
+					<!-- ------------------------- PRIV_KEY -->
+					
+					<tr><td colspan="4"></td></tr>
+				</table>
+			</div>
+			<!-- =================================== 'Wallet' Tab page -->
+			
+			<!-- ----------------------- Buttons Bar ----------------------- -->
+			<table class="ButtonsBar" id="buttons_bar_container" width="100%">
+				<tr><td class="HorizontalBar" colspan="3"><hr></td></tr>
+				<tr id="buttons_bar">
+					<td id="left_BtnBar_item_id" width="25%" hidden>
+						<center><span>&nbsp;<span></center>									
+					</td>
+					<td>
+						<center><input class="GenerateButton" 
+									   type="button" id="random_btn_id" value="Generate">
+						</center>
+					</td>
+					<td id="right_BtnBar_item_id" hidden>
+						<center>
+							<input class="RefreshButton BlinkingButton" 
+								   type="button" id="refresh_btn_id" value="Refresh">
+						</center>
 					</td>
 				</tr>
-				<!-- ---------------------- Wallet Mode -->
-				
-			    <!-- ----------------------- Blockchain ----------------------- -->				
-				<tr><td class="LabelColumn" id="wallet_blockchain_label_id">Blockchain</td>
-					<td colspan="2" class="FieldColumn">
-						<select class="InputField ValueSelector" 
-						        id="wallet_blockchain_id" >
-							<option value="Bitcoin" selected>Bitcoin</option>
-							<option value="Ethereum">Ethereum</option>		
-							<option value="Solana">Solana</option>
-							<option value="Ripple">Ripple</option>
-							<option value="DogeCoin">DogeCoin</option>
-                            <option value="TRON">TRON</option>	
-                            <option value="Bitcoin Cash">Bitcoin Cash</option>							
-							<option value="LiteCoin">LiteCoin</option>
-							<option value="Firo">Firo</option>
-						</select>&nbsp;
-						<span id="wallet_coin_id">XX						
-						</span>
-					</td>
-				</tr>
-				<!-- ----------------------- Blockchain -->
-				
-				<!-- -------------------- Derivation Path  --------------------- -->
-				<tr id="derivation_path_row"><td class="LabelColumn">
-						<span id="derivation_path_label_id">Derivation Path</span>
-					</td>
-					<td class="FieldColumn" colspan="2">
-					    <table>
-							<tr>
-								<td class="Bip32Cell Bip32CellHeader">Root Node</td>
-								<td class="Bip32Cell Bip32CellHeader">Purpose</td>
-								<td class="Bip32Cell Bip32CellHeader">Coin Type</td>
-								<td class="Bip32Cell Bip32CellHeader">Account</td>
-								<td class="Bip32Cell Bip32CellHeader">Change</td>
-								<td class="Bip32Cell Bip32CellHeader">Address Index</td>
-							</tr>
-							<tr>
-								<td class="Bip32Cell">m/</td>
-								<td class="Bip32Cell">44'/</td>
-								<td id="coin_type_id"
-								    class="Bip32Cell">0'</td>
-								<td class="Bip32Cell">
-									<input id="account_id" type="text" class="Bip32CellValue" 
-									       value="0" maxlength="4"/><span>&nbsp;'/</span> 
-								</td>
-								<td class="Bip32Cell">0/</td>
-								<td class="Bip32Cell">
-									<input id="address_index_id" type="text" 
-									       class="Bip32CellValue" 
-									       value="0" maxlength="4"/>
-								</td>
-							</tr>							
-						</table>
-					</td>
-				</tr>
-				<!-- -------------------- Derivation Path -->				
-				
-				<!-- ------------------------- Address ------------------------ -->	
-				<tr><td class="LabelColumn" id="address_label_id">Address</td>
-					<td colspan="2" class="FieldColumn">
-						<span id="address_id">FF						
-						</span>&nbsp;
-						<a id="wallet_URL_link_id"
-						   href="https://etherscan.io" target="_blank" rel="noreferrer">
-						   <input class="WalletButton" type="button" 
-						          id="wallet_explore_btn_id" value="Explore...">
-						</a>
-					</td>
-				</tr>
-				<!-- ----------------------- Address -->
-				
-				<!-- ----------------------- Private Key ----------------------- -->
-				<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
-				<tr><td class="LabelColumn" id="wallet_PK_label_id">Private Key</td>
-					<td colspan="2" class="FieldColumn">
-						<input class="RawDataField WithoutFocus ValidValue" readonly
-							   id="wallet_pk_hex_id" type="text" value="XX">
-					</td>
-				</tr>
-				<!-- ----------------------- Private Key -->
-				
-				
-				<!-- -------------------------- WIF --------------------------- -->
-				<tr id="WIF_field_line_id"><td class="LabelColumn" id="WIF_label_id">WIF</td>
-					<td colspan="2" class="FieldColumn">
-						<span id="WIF_id">						
-						</span>
-					</td>
-				</tr>
-				<!-- ----------------------- WIF -->
-				
-				
-				<!-- ----------------------- PRIV_KEY ------------------------- -->
-				<tr id="PRIV_KEY_field_line_id"><td class="LabelColumn" id="PRIV_KEY_label_id">PRIV_KEY</td>
-					<td colspan="2" class="FieldColumn">
-						<span id="PRIV_KEY_id">						
-						</span>
-					</td>
-				</tr>
-				<!-- ------------------------- PRIV_KEY -->
-				<tr><td colspan="4"></td></tr>
 			</table>
-		</div>
-		<!-- =================================== 'Wallet' Tab page -->
-		
-		<!-- ----------------------- Buttons Bar ----------------------- -->
-		<table class="ButtonsBar" id="buttons_bar_container" width="100%">
-		    <tr><td class="HorizontalBar" colspan="3"><hr></td></tr>
-			<tr id="buttons_bar">
-				<td id="left_BtnBar_item_id" width="25%" hidden>
-					<center><span>&nbsp;<span></center>									
-				</td>
-				<td>
-					<center><input class="GenerateButton" 
-								   type="button" id="random_btn_id" value="Generate">
-					</center>
-				</td>
-				<td id="right_BtnBar_item_id" hidden>
-					<center>
-						<input class="RefreshButton BlinkingButton" 
-							   type="button" id="refresh_btn_id" value="Refresh">
-					</center>
-				</td>
-			</tr>
-		</table>
-		<!-- ----------------------- Buttons Bar -->		
-		
-		<!-- ========================================================================================= -->
-		<!-- ==================================== Tools Options dialog ====================================== -->
-		<!-- ========================================================================================= -->
-		<div class="DialogBox" id="tools_options_dialog_id" 
-			 w3-include-html="./html_components/tools_options_dialog/tools_options_dialog.html"
-			 title="Tools / Options..." hidden></div>
-		<link rel="stylesheet" type="text/css" href="./html_components/tools_options_dialog/tools_options_dialog.css">
-		<script src="./html_components/tools_options_dialog/tools_options_dialog.js"></script>
-		<!-- ==================================== Tools Options dialog -->
-		
-		<!-- ========================================================================================= -->
-		<!-- ======================================= Status bar ====================================== -->
-		<!-- ========================================================================================= -->
-		<div w3-include-html="./html_components/status_bar/status_bar.html"></div>
-		<link rel="stylesheet" type="text/css" href="./html_components/status_bar/status_bar.css">
-		<!-- ======================================= Status bar -->
-		
-		<script>
-			includeHTML(); // includes html <div> entities with 'w3-include-html' attribute
-		</script>
-  </body>
-</html>
+			<!-- ----------------------- Buttons Bar -->		
+			
+			<!-- ========================================================================================= -->
+			<!-- ==================================== Tools Options dialog ====================================== -->
+			<!-- ========================================================================================= -->
+			<div class="DialogBox" id="tools_options_dialog_id" 
+				 w3-include-html="./html_components/tools_options_dialog/tools_options_dialog.html"
+				 title="Tools / Options..." hidden></div>
+			<link rel="stylesheet" type="text/css" href="./html_components/tools_options_dialog/tools_options_dialog.css">
+			<script src="./html_components/tools_options_dialog/tools_options_dialog.js"></script>
+			<!-- ==================================== Tools Options dialog -->
+			
+			<!-- ========================================================================================= -->
+			<!-- ======================================= Status bar ====================================== -->
+			<!-- ========================================================================================= -->
+			<div w3-include-html="./html_components/status_bar/status_bar.html"></div>
+			<link rel="stylesheet" type="text/css" href="./html_components/status_bar/status_bar.css">
+			<!-- ======================================= Status bar -->
+			
+			<script>
+				includeHTML(); // includes html <div> entities with 'w3-include-html' attribute
+			</script>
+	  </body>
+	</html>
