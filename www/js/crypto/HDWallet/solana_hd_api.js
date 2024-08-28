@@ -109,7 +109,7 @@ class SolanaHD_API {
 		const solana_seed     = bip39.mnemonicToSeedSync( mnemonics, "" ); // (mnemonic, password)
 		//const derivation_path = "m/44'/501'/" + account + "'/0/" + address_index;
 		const derivation_path = "m/44'/501'/" + account + "'/0'/" + address_index + "'";
-		pretty_log( "derivation_path", derivation_path );
+		pretty_log( "& derivation_path", derivation_path );
 		new_wallet[DERIVATION_PATH] = derivation_path;		
 		
 		const keypair = solanaWeb3.Keypair.fromSeed
@@ -159,8 +159,8 @@ class SolanaHD_API {
 		// https://arshbot.medium.com/hd-wallets-explained-from-high-level-to-nuts-and-bolts-9a41545f5b0
 		// let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
 		let derivation_path = "m/44'/" + coin_type + "'" + "/" + account + "'/0/" + address_index;
-		console.log("   " + _YELLOW_ + "master_derivation_path: " + _END_ + derivation_path);	
-		pretty_log( "derivation_path", derivation_path );
+		pretty_log( "master_derivation_path", derivation_path );	
+		pretty_log( "+ derivation_path", derivation_path );
 		new_wallet[DERIVATION_PATH] = derivation_path;
 		//-------------------- Derivation Path --------------------
 		

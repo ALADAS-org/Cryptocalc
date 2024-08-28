@@ -15,7 +15,7 @@ const { getFunctionCallerName,
 const { NULL_COIN, COIN, COIN_TYPE,
 	    ETHEREUM, BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA, CARDANO, RIPPLE, 
-		EOS, FIRO, TRON, 
+		EOS, DASH, FIRO, TRON, 
 		AVALANCHE, BITCOIN_CASH,   
 		MAINNET, TESTNET,
 		COIN_ABBREVIATIONS
@@ -86,7 +86,8 @@ class HDWallet {
 		if (   blockchain == ETHEREUM     || blockchain == AVALANCHE 
 		    || blockchain == BITCOIN      || blockchain == DOGECOIN || blockchain == LITECOIN 
             || blockchain == RIPPLE       || blockchain == TRON     
-            || blockchain == BITCOIN_CASH || blockchain == FIRO ) {				
+            || blockchain == BITCOIN_CASH 
+			|| blockchain == DASH || blockchain == FIRO ) {				
 				
 			if ( blockchain	== AVALANCHE ) { 
 				options[BLOCKCHAIN] = ETHEREUM
@@ -101,7 +102,7 @@ class HDWallet {
 			new_wallet[COIN_TYPE]       = hdwallet_info[COIN_TYPE];
 			new_wallet[PRIVATE_KEY_HEX] = hdwallet_info[PRIVATE_KEY_HEX]; 
 			new_wallet[DERIVATION_PATH] = hdwallet_info[DERIVATION_PATH];
-			pretty_log("derivation_path", new_wallet[DERIVATION_PATH]);
+			pretty_log("% derivation_path", new_wallet[DERIVATION_PATH]);
 			new_wallet[WIF]             = hdwallet_info[WIF];
 			pretty_log("WIF", new_wallet[WIF]);
             new_wallet[PRIV_KEY]        = hdwallet_info[PRIV_KEY]; 			

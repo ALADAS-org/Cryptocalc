@@ -54,7 +54,7 @@ const { NULL_COIN,
 		ETHEREUM, AVALANCHE,
 		BITCOIN, DOGECOIN, LITECOIN,
 		BINANCE, SOLANA, CARDANO, 
-		RIPPLE, TRON, BITCOIN_CASH, EOS, FIRO,
+		RIPPLE, TRON, BITCOIN_CASH, EOS, DASH, FIRO,
 		MAINNET, TESTNET,
 		COIN_ABBREVIATIONS
       }                                 = require('../crypto/const_blockchains.js');

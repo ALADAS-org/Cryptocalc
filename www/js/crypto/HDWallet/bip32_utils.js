@@ -52,8 +52,7 @@ const { MAINNET, TESTNET,
 		//BINANCE,
 		CARDANO,  RIPPLE, 
 		DOGECOIN, TRON, BITCOIN_CASH,
-		LITECOIN, DASH,
-		AVALANCHE, EOS, FIRO				
+		LITECOIN, AVALANCHE, EOS, DASH, FIRO				
       }                    = require('../const_blockchains.js');
 	  
 const { NULL_HEX,
@@ -268,11 +267,10 @@ class Bip32Utils {
 		
 		let child_private_key = hexWithoutPrefix( addresses[0]["privKey"] );
 					 
-		if ( blockchain == BITCOIN_CASH ) {
-			hdwallet_info[PRIVATE_KEY_HEX] = child_private_key;
-			hdwallet_info[PRIV_KEY]        = child_private_key;
-		}
-		else if ( ! isHexString( child_private_key ) ) { 
+		//if ( blockchain == BITCOIN_CASH ) {
+		//	hdwallet_info[PRIV_KEY] = child_private_key;
+		//}
+		if ( ! isHexString( child_private_key ) ) { 
 			if ( isBase58String( child_private_key ) ) {
 				hdwallet_info[PRIV_KEY] = child_private_key;
 				child_private_key = b58ToHex( child_private_key );
@@ -314,11 +312,11 @@ class Bip32Utils {
 		hdwallet_info[ACCOUNT_XPUB] = account_xpub;
 		//----------------------- Extended Public key
 					 
-		//--------------------------- First WIF ---------------------------
+		//--------------------------- WIF ---------------------------
 		let wif = bs58.encode( Buffer.from( child_private_key, 'hex' ) );
-		pretty_log( "WIF", wif );			 
+		pretty_log( ">> WIF", wif );
 		hdwallet_info[WIF] = wif;
-		//--------------------------- First WIF	
+		//--------------------------- WIF	
 
 		return hdwallet_info;
 	} // Bip32Utils.MnemonicsToHDWalletInfo()

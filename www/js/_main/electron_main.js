@@ -102,7 +102,7 @@ const { NULL_COIN,
 		ETHEREUM, AVALANCHE,
 		BITCOIN, DOGECOIN, LITECOIN,
 		BINANCE, SOLANA, CARDANO, 
-		RIPPLE, TRON, BITCOIN_CASH, EOS, FIRO,
+		RIPPLE, TRON, BITCOIN_CASH, EOS, DASH, FIRO,
 		MAINNET, TESTNET,
 		COIN_ABBREVIATIONS
       }                                 = require('../crypto/const_blockchains.js');
@@ -136,7 +136,7 @@ const DEFAULT_OPTIONS = {
 		[HD_WALLET_TYPE]:     [ "Bitcoin","Ethereum","Solana",
                                 "Ripple","DogeCoin","Cardano","TRON",
 					            "Avalanche","Bitcoin Cash",
-								"LiteCoin","Firo" ], 
+								"LiteCoin","Dash","Firo" ], 
 		[SIMPLE_WALLET_TYPE]: [ "Bitcoin","Ethereum","Solana",
                                 "DogeCoin","Avalanche","LiteCoin"] 
 	},
@@ -623,8 +623,12 @@ class ElectronMain {
 				let end_of_line = '\n';
 				if ( i == wallet_keys.length ) {
 					end_of_line = '';
-                }					
-				wallet_info_str += current_key.padEnd(22,' ') + crypto_info[current_key] + end_of_line;
+                }
+
+                // *BUG* in crypto_info: current_key == crypto_info[current_key] 
+                if ( current_key != crypto_info[current_key] ) 	{ 				
+					wallet_info_str += current_key.padEnd(22,' ') + crypto_info[current_key] + end_of_line;
+				}	
 			}
 			
 			fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );

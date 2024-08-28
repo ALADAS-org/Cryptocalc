@@ -162,7 +162,7 @@ class CardanoHD_API {
 
 		new_wallet[DERIVATION_PATH] =  "m/" + purpose + "'/" + coin_type 
 		                             + "'/" + account + "'/" + change_chain + "/" + address_index;
-		pretty_log( DERIVATION_PATH, new_wallet[DERIVATION_PATH] );
+		pretty_log( "$" + DERIVATION_PATH, new_wallet[DERIVATION_PATH] );
 		
 		//---------- Extended Private key (xpriv) ----------
 		let xpriv_key                 = account_rootKey_bech32;		
