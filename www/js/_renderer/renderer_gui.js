@@ -252,8 +252,7 @@ class RendererGUI {
 	
 		
 	async generateSimpleWalletAddress( blockchain ) {
-		log2Main(  ">> " + _RED_ + "RendererGUI.generateSimpleWalletAddress() " 
-		         + _YELLOW_ + blockchain + " " + this.entropy_source_type + _END_);		
+        log2Main( pretty_format( "RendererGUI.generateSimpleWalletAddress()", blockchain + " " + this.entropy_source_type ) );					 
 				
 		let entropy_src_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		this.entropy_source_type = entropy_src_type;
@@ -286,6 +285,7 @@ class RendererGUI {
 			
 			private_key = new_wallet[PRIVATE_KEY_HEX];
 			wif         = new_wallet[WIF];
+			log2Main( pretty_format( ">> new_wallet[WIF]", new_wallet[WIF] ) );
 			
 			this.updatePrivateKey( blockchain, private_key );
 			HtmlUtils.SetNodeValue( WALLET_PK_HEX_ID, private_key );
@@ -293,7 +293,7 @@ class RendererGUI {
 			let wallet_address = new_wallet[ADDRESS];
 			
 			//---------- Update 'Address' in 'Wallet' Tab ----------
-			log2Main( pretty_format( "wallet_address", wallet_address, 29) );		
+			log2Main( pretty_format( "wallet_address", wallet_address) );		
 			this.wallet[ADDRESS] = wallet_address;				
 			HtmlUtils.SetNodeValue( ADDRESS_ID, wallet_address );
 			//---------- Update 'Address' in 'Wallet' Tab
@@ -306,7 +306,10 @@ class RendererGUI {
             log2Main(pretty_format("WIF", wif ));				
 			this.wallet[WIF] = wif;				
 			HtmlUtils.SetNodeValue( WIF_ID, wif );
-			if ( wif == undefined || wif == "" ) {
+			if ( wif != undefined && wif != "" ) {
+				HtmlUtils.ShowNode( TR_WIF_ID );
+			}
+			else {
 				HtmlUtils.HideNode( TR_WIF_ID );
 			}
 			//---------- Update 'WIF' in 'Wallet' Tab			
@@ -327,8 +330,7 @@ class RendererGUI {
 	} // generateSimpleWalletAddress()
 	
 	async generateHDWalletAddress( blockchain, entropy_hex ) {
-		log2Main(  ">> " + _CYAN_ + "RendererGUI.generateHDWalletAddress() " 
-		         + _YELLOW_ + blockchain + " " + this.entropy_source_type + _END_);		
+        log2Main( pretty_format( "RendererGUI.generateHDWalletAddress()", blockchain + " " + this.entropy_source_type ) );				 
 		log2Main( pretty_format("entropy_hex", entropy_hex ) );
 		
 		let entropy_src_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
@@ -369,7 +371,8 @@ class RendererGUI {
 		if (   blockchain == ETHEREUM || blockchain == AVALANCHE
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN
 			|| blockchain == CARDANO  || blockchain == SOLANA   || blockchain == RIPPLE || blockchain == TRON 
-			|| blockchain == BITCOIN_CASH || blockchain == FIRO ) {
+			|| blockchain == BITCOIN_CASH 
+			|| blockchain == DASH || blockchain == FIRO ) {
 
 			let salt_uuid     = HtmlUtils.GetNodeValue( SALT_ID );
 			let account       = this.bip32_account_index;
@@ -392,13 +395,12 @@ class RendererGUI {
                 HtmlUtils.RemoveClass( ADDRESS_ID, 'LongAddressField' );					
 			}			
 
-			if ( blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN ) {
-                wif      = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";	
+			if (    blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN
+			     || blockchain == BITCOIN_CASH
+                 || blockchain == DASH || blockchain == FIRO ) {
+                wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";	
 			}
-			else if ( blockchain == FIRO || blockchain == BITCOIN_CASH ) {				
-				PRIV_KEY = ( new_wallet[PRIV_KEY] != undefined ) ? new_wallet[PRIV_KEY] : "";
-			}  	
-			else if (   blockchain == RIPPLE || blockchain == TRON ) {				
+			else if ( blockchain == RIPPLE || blockchain == TRON ) {				
 				PRIV_KEY = new_wallet[PRIVATE_KEY_HEX];
 			}   			
 		}
@@ -903,13 +905,15 @@ class RendererGUI {
 		if ( wif == undefined || wif == "" ) {
 			HtmlUtils.HideNode( TR_WIF_ID );
 		}
-		else if (   blockchain == BITCOIN 
-		         || blockchain == DOGECOIN || blockchain == LITECOIN
-		         || blockchain == SOLANA ) {
+		
+		if (    blockchain == BITCOIN 
+		     || blockchain == DOGECOIN || blockchain == LITECOIN
+		     || blockchain == SOLANA
+			 || blockchain == BITCOIN_CASH
+             || blockchain == DASH || blockchain == FIRO ) {
 				  
 			HtmlUtils.ShowNode( TR_WIF_ID );
-			HtmlUtils.SetNodeValue( WIF_ID, wif );
-			
+			HtmlUtils.SetNodeValue( WIF_ID, wif );			
 			HtmlUtils.HideNode( TR_PRIV_KEY_ID );
 		}
 		
@@ -926,8 +930,8 @@ class RendererGUI {
 		if (      (   blockchain == BITCOIN 
 		           || blockchain == DOGECOIN || blockchain == LITECOIN
 		           || blockchain == ETHEREUM || blockchain == AVALANCHE 
-				   || blockchain == RIPPLE 
-				   || blockchain == FIRO)
+				   || blockchain == RIPPLE   || blockchain == BITCOIN_CASH 
+				   || blockchain == DASH || blockchain == FIRO )
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
 				  
 			HtmlUtils.SetNodeValue( PRIV_KEY_ID, PRIV_KEY );			
@@ -946,12 +950,10 @@ class RendererGUI {
 			}
 			else if ( blockchain == RIPPLE || blockchain == TRON ) {
 				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "Private Key");
-				HtmlUtils.HideNode( TR_PRIV_KEY_ID );
-			
+				HtmlUtils.HideNode( TR_PRIV_KEY_ID );			
 			}
-			else if ( blockchain == FIRO) {
+			else if ( blockchain == FIRO ) {
 				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "Private Key (B58)");
-				HtmlUtils.HideNode( tr_wif_id );
 			}			
 		}
 		else {
@@ -1640,7 +1642,8 @@ class RendererGUI {
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN 
     		|| blockchain == SOLANA
 			|| blockchain == RIPPLE   || blockchain == TRON  
-			|| blockchain == BITCOIN_CASH || blockchain == FIRO ) {
+			|| blockchain == BITCOIN_CASH 
+			|| blockchain == DASH || blockchain == FIRO ) {
 				
 			let PRIV_KEY_value = HtmlUtils.GetNodeValue( PRIV_KEY_ID );
 			// log2Main("PRIV_KEY_value " + PRIV_KEY_value );
@@ -1656,7 +1659,7 @@ class RendererGUI {
 				crypto_info[PRIV_KEY] = PRIV_KEY;
 			}
 	
-			if (blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {
+			if ( blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN ) {
 				crypto_info["Private Key"] = HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID );
                 delete crypto_info[PRIV_KEY];				
 				crypto_info[WIF] = WIF_value; 
@@ -1673,7 +1676,7 @@ class RendererGUI {
 			}
 			else if (    blockchain == TRON 
 			          || blockchain == BITCOIN_CASH 
-					  || blockchain == FIRO) {
+					  || blockchain == DASH || blockchain == FIRO ) {
 				//log2Main("blockchain is TRON " + HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID ) );
 				crypto_info["Private Key"] = HtmlUtils.GetNodeValue( WALLET_PK_HEX_ID ); 
 			}            		

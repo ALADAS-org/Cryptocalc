@@ -6,7 +6,7 @@
 const OK                        = 0;
 const KO                        = -1;
 
-const APP_VERSION               = '0.2.1';
+const APP_VERSION               = '0.2.2';
 const LANG                      = 'lang';
 const FROM_MAIN                 = 'FromMain';
 

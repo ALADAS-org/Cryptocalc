@@ -1,14 +1,14 @@
-## Cryptocalc 0.2.1
+## Cryptocalc 0.2.2
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_2_0_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
-   with the _Hierarchical Deterministic_ (`BIP32`) paradigm.
+   with either the _Non Deterministic_ (_Simple Wallet_) or _Hierarchical Deterministic_ (`BIP32`) paradigm.
    Even though there is already a similar tools online, the purpose is to use these features
    locally on your computer in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Seedphrase_ informations being stolen.    
    _Supported Blockchains_: _Bitcoins_ (`BTC`), _Ethereum_ (`ETH`), _Solana_ (`SOL`),
    _Ripple_ (`XRP`), _DogeCoin_ (`DOGE`), _Cardano_ (`ADA`), _TRON_ (`TRON`), 
-   _Avalanche_ (`AVX`), _Bitcoin Cash_ (`BCH`), _LiteCoin_ (`LTC`) and _Firo_ (`FIRO`)  
+   _Avalanche_ (`AVX`), _Bitcoin Cash_ (`BCH`), _LiteCoin_ (`LTC`), _Dash_ (`DASH`) and _Firo_ (`FIRO`)  
    NB: _Cryptocalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron)
    
@@ -42,19 +42,22 @@
           * Type `npm install`    
 
 3. Release notes
-	+ 3.1. Features in `0.2.0`
-	    * Choice between _Simple Wallet_ and _HD Wallet_		
+    + 3.1. Features in `0.2.2`
+	    * Added `Dash` blockchain in _HD Wallet_
+        * Bug fixes for `Firo` and `Bitcoin Cash` 		
+	+ 3.2. Features in `0.2.1`
+	    * Choice between _Simple Wallet_ (Default mode) and _HD Wallet_		
 		* New cryptocurrencies supported: `Cardano` (_HD Wallet_ only) and `Avalanche` 
 		* GUI enhancements esp. `Copy to Clipboard` button for _Address_, _Seedphrase_, _Private Key_ and _WIF_ 
 		* Enhancement in log feature
 		* Update of Screenshots
-    + 3.2. Features in `0.1.17`
+    + 3.3. Features in `0.1.17`
 	    * Picture at last step of setup with _Cryptocalc Standalone installer_
-    + 3.3. Features in `0.1.16`
+    + 3.4. Features in `0.1.16`
 	    * When saving a wallet the Popup dialog allows to show where it is saved
 		* Bug fix in the behavior of [Save...] button in `Tools/Options` dialog
 		* Update of Screenshots
-    + 3.4. Features in `0.1.15`    
+    + 3.5. Features in `0.1.15`    
         * _Cryptocalc Standalone installer_ (see 4.1.1)
 		* Bigger icons in the main toolbar (`16x16px` > `24x24px`)
 		* Logo in desktop shortcut and .exe (Standalone installer) and in the
@@ -64,7 +67,7 @@
 		both the _Private Key_ (in hexadecimal) and _Seedphrase_ (when converted 
 		to _Mnemonics_) 
 		* Update of `README.md`
-    + 3.5. Features in `0.1.14`    
+    + 3.6. Features in `0.1.14`    
         * Added `Tools/Options` menu item: allows to set _Options_ values for
 		`Default Blockchain` and `Entropy Size`. These values are defined
         in `www/config/options.json` file. 		
@@ -106,15 +109,17 @@
             * 4.1.3.c: When using [Generate], _Cryptocurrency logos_ are drawn 
 			from the `www/js/img/CryptoCurrency` folder and the first image 
 			is always our logo (`Zilver_64px.svg`).
-        * 4.1.4. Choose _Wallet_Mode_ : _Simple Wallet_ or _HD Wallet_ (this field  is in the `Wallet` tab page)  	
+        * 4.1.4. Choose _Wallet_Mode_ : _Simple Wallet_ or _HD Wallet_ (this field is in the `Wallet` tab)  	
             * 4.1.4.a. _Simple Wallet_
-            In this _Wallet Mode_, each wallet is separated. It is simpler to use (because there is no need to 
-            understand the meaning of the `Derivation Path` used by _HD Wallets_ ) so a good it's a good fit to 
-			_Give it a Try_ and start creating your cryptocurrency wallets with minimum knowledge.    
-			On the other hand it's less secure than _HD Wallets_ and becomes clumsy if you need to manage 
-            multiple wallets (for example to secure your assets by splitting them among a set of wallets). 			
+            This is the default _Wallet Mode_. In this mode, each wallet is separated. 
+			and there is no need to understand the principles of the _HD Wallet Wallet Tree_
+			and the purpose of the `Derivation Path` used by _HD Wallets_. So a  it's a good fit to 
+			_Give it a Try_ and start creating your _Cryptocurrency Wallets_ with minimum knowledge.    
+			On the other hand it's less secure than _HD Wallets_ and it becomes clumsy if you need to manage 
+            multiple wallets (for example to secure your assets by splitting them among many wallets). 			
 			* 4.1.4.b. _HD Wallet_    
-			This _Wallet Mode_ allows to create/manage a while hierarchy (_HD_ ist he acronym for _Hierarchical Deterministic_)
+			This _Wallet Mode_ allows to create / manage a whole hierarchy of Wallets (_HD_ is the acronym for 
+			_Hierarchical Deterministic_)
 			of wallets in the same _BIP32 tree_
             this hierarchy is generated from the _Entropy_ (and optionnaly a _password_, not yet supported).    
 			The `BIP32` HD wallet tree_ is fully by the _Entropy_ or _Seedphrase_. 
