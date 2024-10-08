@@ -11,14 +11,21 @@ class L10nUtils {
 	static GetLocalizedMsg( msg_id ) {
 		//console.log(">> ---------- L10nUtils.GetLocalizedMsg ----------");
 		//console.log(">> msg_id: '" + msg_id + "'");	
+		
 		let L10n_msg = "";
 		let lang     = L10nUtils.GetLocale();
 		let filename = "gui-msg-" + lang + ".json";
 		//console.log(">> filename: '" + filename + "'");	
 		let locale_json_str = fs.readFileSync(__dirname + "/" + filename);
-		if (locale_json_str != undefined) {
+		
+		//console.log(">> locale_json_str: '" + locale_json_str + "'");	
+		if ( locale_json_str == undefined ) {
+			L10n_msg = msg_id; 
+		}	
+		else {
 			let json_data = JSON.parse( locale_json_str );
-			L10n_msg = json_data[msg_id];
+			if ( json_data[msg_id] != undefined ) 	L10n_msg = json_data[msg_id];
+		    else                                    L10n_msg = msg_id;	
 			//console.log("   i18n_msg['" + msg_id + "'] = " + i18n_msg);
 		}
 		return L10n_msg;

@@ -16,7 +16,7 @@
 			
 			<!-- ----------------- Renderer prerequisite modules ----------------- -->
 			<script type="text/javascript" src="./js/const_keywords.js"></script>
-			<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>
+			<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>			
 			<script type="text/javascript" src="./js/util/values/string_utils.js"></script>
 			<script type="text/javascript" src="./js/util/values/number_utils.js"></script>
 			<script type="text/javascript" src="./js/util/html/w3.js"></script>
@@ -35,6 +35,7 @@
 			<script type="text/javascript" src="./js/_renderer/dialog_manager.js"></script>
 			<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
 			
+			<script type="text/javascript" src="./js/_renderer/wallet.js"></script>
 			<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
 			<!-- ----------------- Renderer prerequisite modules -->
 			
@@ -42,9 +43,7 @@
 		<head>
 		
 		<body>
-			<!-- ====================================================================== -->
 			<!-- =========================== Main ToolBar ============================= -->
-			<!-- ===================================================================== -->
 			<div w3-include-html="./html_components/main_toolbar/main_toolbar.html"></div>
 			<!-- <link rel="stylesheet" type="text/css" href="./html_components/main_toolbar/main_toolbar.css"> -->
 			<!-- =========================== Main ToolBar -->
@@ -84,24 +83,17 @@
 													
 										<table id="entropy_src_img_container_id">
 											<tr><td><div id="entropy_src_img_div_id" 
-														 ondrop="drop(evt)" 
-														 ondrag="drag(evt)"
-														 ondragover="allowDrop(evt)">
+														 ondrop="drop(e)"  ondrag="drag(e)"
+														 ondragover="allowDrop(e)">
 														 <img id="entropy_src_img_id" style="object-fit: none;"
 															  src="img/MazePattern.png"	draggable="true">
-														  <script>function allowDrop(evt) { 
-																	 evt.preventDefault(); 
-																  }
-																  function drag(evt) { 
-																	 evt.preventDefault(); 
-																  } 															  
+														  <script>function allowDrop(e) { e.preventDefault(); }
+																  function drag(e)      { e.preventDefault(); } 															  
 														  </script>
 													</div>
 												</td>
-												<td>
-													&nbsp;&nbsp;&nbsp;<p style="display:inline">
-													Drag an image in <br>
-													&nbsp;&nbsp;&nbsp;the white rectangle</p> 
+												<td>&nbsp;&nbsp;&nbsp;<p style="display:inline">
+													Drag an image in <br>&nbsp;&nbsp;&nbsp;the white rectangle</p> 
 												</td>
 											</tr>
 										</table>
@@ -113,9 +105,7 @@
 					<!-- ------------------ Entropy Source -->
 					
 
-					<!-- ------------------------------------------------- -->
 					<!-- -----------------  Salt (UUID)  ----------------- -->
-					<!-- ------------------------------------------------- -->
 					<tr id="salt_row"><td class="LabelColumn">Salt</td>
 						<td colspan="2" class="FieldColumn">
 							<!-- <input type="checkbox" id="use_salt_id" name="use" checked /> -->
@@ -125,14 +115,12 @@
 					<!-- ------------------ Salt (UUID) -->
 					
 					
-					<!-- ----------------------------------------------------------- -->
-					<!-- ----------------- Entropy (128/256 bits) ------------------ -->
-					<!-- ----------------------------------------------------------- -->
+					<!-- ---------------- Entropy (128...256 bits) ----------------- -->
 					<!-- <tr><td class="HorizontalBar" colspan="4"><hr></td></tr> -->
 					<tr><td class="LabelColumn">
 							<span id="entropy_label_id">Entropy</span>  <!-- ---- Entropy Label ---- -->
 							<select class="InputField LabelValueSelector"
-									id="entropy_bits_select_id" hidden>
+									id="entropy_size_select_id" hidden>
 								<option value="128" selected>128 bits</option>	
 								<option value="160">160 bits</option>
 								<option value="192">192 bits</option>
@@ -156,9 +144,11 @@
 										 alt="Copy to Clipboard" border="0"/>
 								</button>
 							</div>
+							<!-- ---------- Entropy value -->
 						</td>
 					</tr>
 					<!-- ----------------------- Entropy (128/256 bits) -->
+					
 					
 					<!-- -----------------------  Checksum  ----------------------- -->
 					<!-- <tr><td class="HorizontalBar" colspan="4"></td></tr> -->
@@ -177,7 +167,7 @@
 							<span>Seedphrase</span>
 							<!-- https://www.andiamo.co.uk/resources/iso-lang_xuage-codes/ -->
 							<select class="InputField LabelValueSelector"
-									id="LANG_SELECT_ID">
+									id="lang_select_id">
 								<option value="EN" selected>English</option>							
 								<option value="DE">Deutsch</option>
 								<option value="FR">French</option>
@@ -291,13 +281,16 @@
 										class="Bip32Cell">0'</td>
 									<td class="Bip32Cell">
 										<input id="account_id" type="text" class="Bip32CellValue" 
-											   value="0" maxlength="4"/><span>&nbsp;'/</span> 
+											   value="0" maxlength="4"/><span id="account_suffix_id">&nbsp;'/</span> 
+										<span id="account_readonly_id" hidden>0'/</span>
 									</td>
 									<td class="Bip32Cell" id="change_id">0/</td>
 									<td class="Bip32Cell">
 										<input id="address_index_id" type="text" 
 											   class="Bip32CellValue" 
 											   value="0" maxlength="4"/>
+										<span id="address_hardened_suffix_id">&nbsp;</span>
+										<span id="address_index_readonly_id" hidden>0</span>
 									</td>
 								</tr>							
 							</table>
@@ -323,14 +316,14 @@
 					<tr><td class="HorizontalBar" colspan="4"><hr></td></tr>
 					<tr id="tr_1st_PK_id">
 						<td class="LabelColumn" 
-							id="wallet_PK_label_id">Private Key</td>
+							id="pk_label_id">Private Key</td>
 						<td colspan="2" class="FieldColumn">
 							<div class="DataFieldWithButton_Container" 
 								 id="wlt_pk_container_id">
 								<input class="RawDataField WithoutFocus ValidValue" readonly
-									id="wallet_pk_hex_id" type="text" value="XX">
+									id="private_key_id" type="text" value="XX">
 								<button class="CopyButton" 
-									id="wlt_pk_copy_btn_id">
+									id="pk_copy_btn_id">
 									<img src="icons/copy_16px_icn.png" 
 										 alt="Copy to Clipboard" border="0"/>
 								</button>

@@ -1,6 +1,0 @@
-{
-	"Default Blockchain":"Bitcoin",
-	"Wallet Mode":"HD Wallet",
-	"Entropy Size": { "HD Wallet": "128", "Simple Wallet": "256" },
-	"Wallet Save Path":"$CRYPTOCALC/_output"
-}

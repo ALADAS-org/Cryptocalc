@@ -118,6 +118,12 @@ hr {
 	font-size:     14px;
 }
 
+.DerivationPathFieldAsLabel {
+	background:        lightblue;	
+	background-color:  lightblue;
+	border:            none;
+}
+
 /* ================================= Tab pages ================================= */
 /* https://www.w3schools.com/howto/howto_js_full_page_tabs.asp */
 .SeedTabLayout {
@@ -306,7 +312,7 @@ hr {
 	width:             94.5%;
 }
 
-#wallet_pk_hex_id { 
+#private_key_id { 
 	width:             94.5%;
 }
 

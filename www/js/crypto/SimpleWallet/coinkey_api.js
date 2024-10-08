@@ -22,6 +22,9 @@ const bitcoin          = require('bitcoinjs-lib');
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_ 
 	  }                    = require('../../util/color/color_console_codes.js');
 	  
+const { pretty_func_header_log,
+        pretty_log }   = require('../../util/log/log_utils.js');
+	  
 const { NULL_COIN, 
         MAINNET, TESTNET,
         BITCOIN, DOGECOIN, LITECOIN,
@@ -29,7 +32,7 @@ const { NULL_COIN,
 	  }                    = require('../const_blockchains.js');
 	  
 const { NULL_HEX,
-        ADDRESS, CRYPTO_NET, PRIVATE_KEY_HEX, 
+        ADDRESS, CRYPTO_NET, PRIVATE_KEY, 
 		PUBLIC_KEY_HEX 
 	  }                    = require('../const_wallet.js');
 
@@ -38,7 +41,10 @@ const { BLOCKCHAIN, NULL_BLOCKCHAIN,
 	  }                    = require('../../const_keywords.js');	  
 	  
 const { stringify }        = require('../../util/values/string_utils.js');
-const { hexWithoutPrefix } = require('../hex_utils.js'); 
+const { hexWithoutPrefix,
+        hexToUint8Array }  = require('../hex_utils.js'); 
+		
+const { computeWIF }       = require('../crypto_utils.js');
 /*
 http://cryptocoinjs.com/modules/currency/coininfo/
 Crypto Coin	Public Address		Private Wallet Import Format	Script Hash
@@ -75,21 +81,29 @@ and l(Lowercase L) to avoid visual ambiguity.
 
 class CoinKey_API {
     static GetWallet( private_key, salt_uuid, blockchain, crypto_net ) {
-		console.log(  ">> " + _CYAN_ + "CoinKey_API.GetWallet " + _END_ 
-		            + " " + COIN_ABBREVIATIONS[blockchain] + " " + crypto_net);
+		pretty_func_header_log( "CoinKey_API.GetWallet ", COIN_ABBREVIATIONS[blockchain] + " " + crypto_net );
 		
 		let new_wallet = {};
-			
+		
+		let null_wallet = {};
+			null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
+			null_wallet[CRYPTO_NET]      = "Null-NET";
+			null_wallet[UUID]            = "Null-UUID";
+			null_wallet[PRIVATE_KEY] = NULL_HEX;
+			null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
+			null_wallet[ADDRESS]         = "Null-ADDRESS";
+			null_wallet[MNEMONICS]       = "Null-MNEMONICS";
+	
 		if ( private_key == undefined ) {
-			console.log(">> CoinKey_API.GetWallet  **ERROR** private_key: " + private_key);
-			new_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
-			new_wallet[CRYPTO_NET]      = "Null-NET";
-			new_wallet[UUID]            = "Null-UUID";
-			new_wallet[PRIVATE_KEY_HEX] = NULL_HEX;
-			new_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
-			new_wallet[ADDRESS]         = "Null-ADDRESS";
-			new_wallet[MNEMONICS]       = "Null-MNEMONICS";
-			return new_wallet;
+			pretty_log(">> CoinKey_API.GetWallet  **ERROR: UNDEFINED PK**: ", private_key);
+			return null_wallet;
+		}
+		
+		// Note: 'Simple Walllet' mode => 'private_key' must be 32 bytes / 64 hex digits
+		if ( private_key.length != 64 ) {
+			pretty_log( ">> CoinKey_API.GetWallet  **ERROR: INVALID PK SIZE**: ", 
+			            private_key + "(" + private_key.length + ")" );
+			return null_wallet;
 		}
 		
 		let versions = {};	
@@ -98,7 +112,7 @@ class CoinKey_API {
 		//console.log(">> getBlockchainWallet  private_key: " + private_key);
 		
 		// https://github.com/Swyftx/crypto-address-validator
-		if (blockchain == undefined) {
+		if ( blockchain == undefined ) {
 			blockchain  = BITCOIN;
 			crypto_net  = MAINNET;
 			
@@ -145,57 +159,59 @@ class CoinKey_API {
 		//console.log(">> getBlockchainWallet  blockchain: " + blockchain + " crypto_net:" + crypto_net + "  versions: " + JSON.stringify(versions));	
 		new_wallet = {};
 		
-		var public_key = "";		
+		new_wallet[BLOCKCHAIN] = blockchain;		
+		pretty_log( "coinK.getW> BLOCKCHAIN", blockchain );
+		
+		new_wallet[CRYPTO_NET] = crypto_net;
+		new_wallet[UUID]       = salt_uuid;
+		
+		new_wallet[PRIVATE_KEY] = private_key;
+		pretty_log( "coinK.getW> private_key(" + private_key.length + ")", private_key );
+		
+		var public_key = "";
 
 		//========================= Bitcoin, LiteCoin, DogeCoin =========================
 		// https://stackoverflow.com/questions/52165333/deprecationwarning-buffer-is-deprecated-due-to-security-and-usability-issues
-		//let coinkey_wallet = new CoinKey(new Buffer(private_key, 'hex'), versions);
-		let coinkey_wallet = new CoinKey( Buffer.from(private_key, 'hex'), versions);
 		
-        coinkey_wallet.compressed = true;
+		var coinkey_wallet = {};
 		
-		// http://cryptocoinjs.com/modules/misc/bs58/
-		public_key = bs58.encode(Buffer.from(coinkey_wallet.publicKey, 'hex'));
-		
-		//console.log("Public Key Base58\n" + b58_encoded); // => 16UjcYNBG9GTK4uq2f7yYEbuifqCzoLMGS
-	
-		//var b58_decoded = bs58.decode(public_key_b58_encoded);
-		//var b58_decoded_to_hex = new Buffer(b58_decoded).toString('hex');
-		//console.log("Public Key Base58 to Hex\n" + b58_decoded_to_hex); // => 003c176e659bea0f29a3e9bf7880c112b1b31b4dc826268187
-		
-		//console.log("getBlockchainWallet wallet.privateKey:\n" + wallet.privateKey);
-		
-		new_wallet[BLOCKCHAIN] = blockchain;
-		new_wallet[CRYPTO_NET] = crypto_net;
-		
-		//---------- UUID salt ----------
-		new_wallet[UUID] = salt_uuid;
-		//---------- UUID salt ----------
-		
-		//---------- WIF ----------
-		new_wallet[WIF] = coinkey_wallet.privateWif;
-		//---------- WIF
-		
-		//---------- private key ----------
-		new_wallet[PRIVATE_KEY_HEX] = hexWithoutPrefix( coinkey_wallet.privateKey.toString('hex') );
-		//---------- private key
-		
+		//---------- ADDRESS / WIF ----------	
+		//if ( blockchain == BITCOIN ) {
+        //pretty_log( "coinK.getW> BITCOIN" );
+		//	var wif = computeWIF( private_key );
+			
+		//	pretty_log( "coinK.getW> wif 1", wif );
+			
+		//	var address = new bitcore.PrivateKey( wif ).toAddress();
+		//	new_wallet[ADDRESS] = address;
+		//	pretty_log( "coinK.getW> ADDRESS 1", new_wallet[ADDRESS]);
+			
+		//	new_wallet[WIF] = wif;
+		//}
+		//else {
+			coinkey_wallet = new CoinKey( Buffer.from(private_key, 'hex'), versions);
+
+            // pretty_log( "coinK.getW> coinkey_wallet", JSON.stringify(coinkey_wallet) );	
+			
+			coinkey_wallet.compressed = true;			
+			
+			// http://cryptocoinjs.com/modules/misc/bs58/
+		    // public_key = bs58.encode(Buffer.from(coinkey_wallet.publicKey, 'hex'));
+			
+			new_wallet[WIF] = coinkey_wallet.privateWif;
+			// pretty_log( "coinK.getW> WIF 2", new_wallet[WIF] );
+			
+			new_wallet[ADDRESS] = coinkey_wallet.publicAddress;
+		//}
+
 		//---------- public key ----------
-		//console.log("getBlockchainWallet wallet.publicKey:\n" + wallet.publicKey);
-		new_wallet[PUBLIC_KEY_HEX] = hexWithoutPrefix( coinkey_wallet.publicKey.toString('hex') );
-		//console.log("getBlockchainWallet wallet public_key_hex:\n" + new_wallet['public_key_hex']);
+		// new_wallet[PUBLIC_KEY_HEX] = hexWithoutPrefix( coinkey_wallet.publicKey.toString('hex') );
 		//---------- public key
 		
-		//---------- BTC/LTC/DOGE wallet address ----------
-		//console.log(">> getBlockchainWallet ** BTC/LTC/DOGE address:\n" + wallet.publicAddress);
-		new_wallet[ADDRESS] = coinkey_wallet.publicAddress;
-		//console.log(">> getBlockchainWallet ** wallet address:\n" + new_wallet['address']);
+		//---------- BTC/LTC/DOGE wallet address ----------		
+		// pretty_log( "coinK.getW> ADDRESS 2", new_wallet[ADDRESS]);
 		//---------- BTC/LTC/DOGE wallet address
 
-		//console.log("SAVE BUT DO NOT SHARE THIS:", wallet.privateKey.toString('hex'));
-		//console.log("Public Key Hex\n", wallet.publicKey.toString('hex'));
-		//console.log("Address\n", wallet.publicAddress);
-		
 		return new_wallet;
 	} // static GetWallet()	
 } // CoinKey_API class

@@ -1,0 +1,29 @@
+How to build "Cryptocalc standalone installer" ('cryptocalc_setup.exe')
+
+1. Prerequisites
+   1.a. Install 'Inno Setup' (https://jrsoftware.org/isinfo.php)
+   1.b. npm install --save-dev @electron/packager
+   1.c. npm install -g electron-packager-interactive
+   
+2. Package 'Cryptocalc' with 'electron-packager': 
+  2.a. Delete the content of '_output' folder	
+  2.b. Launch'_open_cmd_window' then enter 'epi' then usee the following answers:  
+    - Overwrite output directory ?                                        => Y
+	- Use asar source packaging ?                                         => N
+	- Select Electron app source directory: (e.g. D:\Cryptocalc)          => [Return] key 
+	- Select Electron app output directory: (e.g. D:\Cryptocalc\releases) => [Return] key
+	- Select Application name: (@aladas-org/cryptocalc)                   => [Return] key
+	- Select App Bundle Id (optional)                                     => [Return] key
+	- Select App Version(optional):                                       => 0.1.15
+	- Select Electron icon file: e.g. D:\Cryptocalc\www\icons\Silverquote_30_ico.ico
+	- Select Electron version release:                                    => 28.2.7
+	- Select platforms:    use up/down arrow keys and [Space] key to select 'win32'
+	- Select architecture: use up/down arrow keys and [Space] key to select 'x64'
+    => Result in 'releases' folder
+  2.c. Rename subfolder 'releases/@aladas...cryptocalc' to 'cryptocalc'
+  2.d. Rename 'releases/@aladas..cryptocalc/@aladas-org-cryptocalc.exe' to 'cryptocalc.exe'
+  2.e. Delete '_inno_setup' subfolder in 'releases/cryptocalc/resources/app'
+
+3. Build 'cryptocalc_setup.exe' with 'Inno Setup' installer: 
+  * Use '_inno_setup' script to compile 'cryptocalc_setup.iss' script in folder '_inno_setup'
+  => Result in '_inno_setup/Output' folder

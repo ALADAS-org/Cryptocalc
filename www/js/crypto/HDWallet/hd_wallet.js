@@ -8,8 +8,7 @@ const bip39 = require('bip39');
 const { _RED_, _CYAN_, _PURPLE_, 
         _YELLOW_, _END_ }  = require('../../util/color/color_console_codes.js');
 		
-const { getFunctionCallerName,
-        pretty_func_header_log,
+const { pretty_func_header_log,
         pretty_log }       = require('../../util/log/log_utils.js');
 		
 const { NULL_COIN, COIN, COIN_TYPE,
@@ -23,7 +22,7 @@ const { NULL_COIN, COIN, COIN_TYPE,
 	  
 const { NULL_HEX, CRYPTO_NET, 
         ADDRESS, 
-		PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,
+		PRIVATE_KEY, PUBLIC_KEY_HEX,
 		PRIV_KEY
 	  }                    = require('../const_wallet.js');
 	  
@@ -52,25 +51,26 @@ class HDWallet {
 			crypto_net = MAINNET;
 		}
 		
-		pretty_func_header_log( getFunctionCallerName(), blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "entropy_hex", entropy_hex );
+		pretty_func_header_log( "HDWallet.GetWallet", blockchain + " " + coin + " " + crypto_net );
+		//pretty_log( "hdw.gw> entropy_hex", entropy_hex );
+		
+		if ( entropy_hex == undefined || entropy_hex == "" ) {
+			throw new Error("HDWallet.GetWallet 'entropy_hex' NOT DEFINED");
+		} 
 		
 		if ( account == undefined ) 		account       = 0;	
 		if ( address_index == undefined ) 	address_index = 0;
 		
-		let word_count = EntropySize.GetWordCount( entropy_hex );
-		let args       = { [WORD_COUNT]: word_count };
-		
-	    let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex, args );		
+	    let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex );		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "mnemonics", mnemonics_items[0] );
+		pretty_log( "hdw.gw> mnemonics", mnemonics_items[0] );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "mnemonics", mnemonics_items[1] );		
+			pretty_log( "hdw.gw>", mnemonics_items[1] );		
 		}
 		
-		pretty_log( "blockchain",    blockchain );
-		pretty_log( "account",       account );
-		pretty_log( "address_index", address_index );
+		//pretty_log( "hdw.gw> blockchain",    blockchain );
+		//pretty_log( "hdw.gw> account",       account );
+		//pretty_log( "hdw.gw> address_index", address_index );
 		
 		let options = { [BLOCKCHAIN]:    blockchain, 
 			            [ACCOUNT]:       account,
@@ -96,15 +96,17 @@ class HDWallet {
             //console.log("   >> hdwallet_info:\n" + JSON.stringify(hdwallet_info));	
 
 			new_wallet[ADDRESS]         = hdwallet_info[ADDRESS]; 
-			pretty_log("wallet address", new_wallet[ADDRESS]);
+			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);
 			
 			new_wallet[COIN]            = hdwallet_info[COIN];
 			new_wallet[COIN_TYPE]       = hdwallet_info[COIN_TYPE];
-			new_wallet[PRIVATE_KEY_HEX] = hdwallet_info[PRIVATE_KEY_HEX]; 
+			new_wallet[PRIVATE_KEY] = hdwallet_info[PRIVATE_KEY]; 
 			new_wallet[DERIVATION_PATH] = hdwallet_info[DERIVATION_PATH];
-			pretty_log("% derivation_path", new_wallet[DERIVATION_PATH]);
+			//pretty_log("hdw.gw> derivation_path", new_wallet[DERIVATION_PATH]);
+			
 			new_wallet[WIF]             = hdwallet_info[WIF];
-			pretty_log("WIF", new_wallet[WIF]);
+			pretty_log("hdw.gw> WIF", new_wallet[WIF]);
+			
             new_wallet[PRIV_KEY]        = hdwallet_info[PRIV_KEY]; 			
 		}
 		else if ( blockchain == CARDANO ) {	
@@ -123,7 +125,7 @@ class HDWallet {
 		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
 		null_wallet[CRYPTO_NET]      = "Null-NET";
 		null_wallet[UUID]            = "Null-UUID";
-		null_wallet[PRIVATE_KEY_HEX] = NULL_HEX;
+		null_wallet[PRIVATE_KEY] = NULL_HEX;
 		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
 		null_wallet[ADDRESS]         = "Null-ADDRESS";
 		null_wallet[MNEMONICS]       = "Null-MNEMONICS";

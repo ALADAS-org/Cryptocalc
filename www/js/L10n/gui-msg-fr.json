@@ -1,6 +1,9 @@
 {
   "File":                      "Fichier",
-  "Save":                      "Sauver",
+  "New":                       "Nouveau",
+  "Open":                      "Ouvrir...",
+  "Save":                      "Enregistrer",
+  "SaveAs":                    "Enregistrer sous...",
   "Import":                    "Importer",
   "FromFile":                  "depuis un fichier...",
   "FortuneCookie":             "Fortune Cookie",

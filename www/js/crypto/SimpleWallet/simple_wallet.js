@@ -45,8 +45,7 @@ const CoinKey  = require('coinkey');
 const { _RED_, _CYAN_, _PURPLE_, 
         _YELLOW_, _END_ }  = require('../../util/color/color_console_codes.js');
 		
-const { getFunctionCallerName,
-        pretty_func_header_log,
+const { pretty_func_header_log,
         pretty_log }       = require('../../util/log/log_utils.js');
 		
 const { COIN, NULL_COIN,
@@ -60,11 +59,13 @@ const { COIN, NULL_COIN,
       }                    = require('../const_blockchains.js');
 	  
 const { NULL_HEX, CRYPTO_NET, 
-        ADDRESS, PRIVATE_KEY_HEX, 
+        ADDRESS, PRIVATE_KEY, 
 		PUBLIC_KEY_HEX
 	  }                    = require('../const_wallet.js');
 	  
-const { NULL_BLOCKCHAIN, WALLET_MODE, SIMPLE_WALLET_TYPE,
+const { NULL_BLOCKCHAIN, 
+        WORD_COUNT, WALLET_MODE, 
+        SIMPLE_WALLET_TYPE,
         UUID, MNEMONICS, MNEMONICS_KP
 	  }                    = require('../../const_keywords.js');
 	  
@@ -81,20 +82,20 @@ const { SolanaSW_API }     = require('./solana_sw_api.js');
 class SimpleWallet {	
     static async GetWallet( private_key, salt_uuid, blockchain, crypto_net ) {
 		let coin = COIN_ABBREVIATIONS[blockchain];
-		if ( crypto_net == undefined ) {
-			crypto_net = "mainnet";
-		}
+		if ( crypto_net == undefined )  crypto_net = "mainnet";
 
-		pretty_func_header_log( getFunctionCallerName(), blockchain + " " + coin + " " + crypto_net );
-		pretty_log("private_key", private_key);
+		pretty_func_header_log( "SimpleWallet.GetWallet", blockchain + " " + coin + " " + crypto_net );
+		pretty_log( "sw.gw> private_key", private_key );
 		
-		let args = { "word_count": 24 };
-	    let mnemonics = Bip39Utils.EntropyToMnemonics( private_key, args );
+		if ( private_key == undefined || private_key == "" ) {
+			throw new Error("SimpleWallet.GetWallet 'private_key' NOT DEFINED");
+		} 
 		
+	    let mnemonics = Bip39Utils.EntropyToMnemonics( private_key );		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "mnemonics", mnemonics_items[0] );
+		pretty_log( "sw.gw> mnemonics(24)", mnemonics_items[0] );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "mnemonics", mnemonics_items[1] );		
+			pretty_log( "", mnemonics_items[1] );		
 		}
 		
 		let new_wallet = SimpleWallet.InitializeWallet();
@@ -103,7 +104,8 @@ class SimpleWallet {
 		new_wallet[MNEMONICS]   = mnemonics;
 
 		if (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {		
-			new_wallet = await CoinKey_API.GetWallet
+		    // await CoinKey_API.GetWallet
+			new_wallet = CoinKey_API.GetWallet 
 			             ( private_key, salt_uuid, blockchain, crypto_net );			
 		}
 		else if ( blockchain == ETHEREUM || blockchain == AVALANCHE ) {		
@@ -152,7 +154,7 @@ class SimpleWallet {
 		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
 		null_wallet[CRYPTO_NET]      = "Null-NET";
 		null_wallet[UUID]            = "Null-UUID";
-		null_wallet[PRIVATE_KEY_HEX] = NULL_HEX;
+		null_wallet[PRIVATE_KEY] = NULL_HEX;
 		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
 		null_wallet[ADDRESS]         = "Null-ADDRESS";
 		null_wallet[MNEMONICS]       = "Null-MNEMONICS";

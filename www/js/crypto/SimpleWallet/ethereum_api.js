@@ -50,7 +50,7 @@ const { NULL_COIN,
 	  
 const { NULL_HEX, NULL_NET, NULL_UUID,
         NULL_ADDRESS, CRYPTO_NET,
-        PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,        
+        PRIVATE_KEY, PUBLIC_KEY_HEX,        
 		ADDRESS }                     = require('../const_wallet.js'); 
 		
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
@@ -149,13 +149,12 @@ class Ethereum_API {
 		//console.log("eth_wallet:\n"  + stringify(eth_wallet));
 		
 		//---------- private key ----------
-		new_wallet[PRIVATE_KEY_HEX] = private_key;
+		new_wallet[PRIVATE_KEY] = private_key;
 		//console.log("private_key:\n" + private_key);
 		//---------- private key
 		
 		//---------- mnemonics ----------
-		let args = { [WORD_COUNT]: 24 };
-	    let mnemonics = Bip39Utils.EntropyToMnemonics( private_key, args );
+	    let mnemonics = Bip39Utils.EntropyToMnemonics( private_key );
 		new_wallet[MNEMONICS] = mnemonics;
 		//---------- mnemonics
 		
@@ -177,7 +176,7 @@ class Ethereum_API {
 		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
 		null_wallet[CRYPTO_NET]      = "Null-NET";
 		null_wallet[UUID]            = "Null-UUID";
-		null_wallet[PRIVATE_KEY_HEX] = NULL_HEX;
+		null_wallet[PRIVATE_KEY] = NULL_HEX;
 		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
 		null_wallet[ADDRESS]         = "Null-ADDRESS";
 		null_wallet[MNEMONICS]       = "Null-MNEMONICS";

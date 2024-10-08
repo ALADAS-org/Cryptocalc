@@ -1,6 +1,9 @@
 {
   "File":                      "File",
+  "New":                       "New",
+  "Open":                      "Open...",
   "Save":                      "Save",
+  "SaveAs":                    "Save As...",
   "Import":                    "Import",
   "FromFile":                  "from file...",
   "FortuneCookie":             "Fortune Cookie",

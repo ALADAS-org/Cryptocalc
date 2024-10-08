@@ -17,7 +17,7 @@ const { NULL_COIN,
 		COIN_ABBREVIATIONS
       }                    = require('./const_blockchains.js');
 	  
-const { PRIVATE_KEY_HEX, ADDRESS
+const { PRIVATE_KEY, ADDRESS
 	  }                    = require('./const_wallet.js');
 	  
 const { BLOCKCHAIN, NULL_BLOCKCHAIN
@@ -35,7 +35,7 @@ class Avalanche_API {
 		let new_wallet = await HD_Wallet_API.GetWallet( entropy_hex, salt_uuid, ETHEREUM, crypto_net);			
 	    new_wallet[BLOCKCHAIN]      = AVALANCHE;
 		new_wallet[ADDRESS]         = new_wallet[ADDRESS].toLowerCase();
-		new_wallet[PRIVATE_KEY_HEX] = hexWithoutPrefix(new_wallet[PRIVATE_KEY_HEX]);
+		new_wallet[PRIVATE_KEY] = hexWithoutPrefix(new_wallet[PRIVATE_KEY]);
 		return new_wallet;
 	} // Avalanche_API.GetWallet()
 } // Avalanche_API class
