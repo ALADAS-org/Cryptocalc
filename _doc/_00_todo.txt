@@ -1,0 +1,25 @@
+2024/10/07
+- HD Wallet / Cardano: adresse retrouvée par Guarda et Yoroi <> celle calculée par Cryptocalc 
+  Validation (Guarda et Yoroi): 
+  mnemonics:  physical trap  excite elephant swap   ask  bulb park bundle miss   federal intact
+              relax    dizzy invest vendor   absent jazz rug  duck foil   nation hollow  across
+  => address: addr1q92edd203ck2h6edm6nk3p663vj46q7r2t7vx46es4sdhhudwd3a4hav3xecst032qy5dpmu9x9fk77lqtckpkdsw0ysp0g00d
+- Blocage: "HD Wallet" puis 'entropy size' = 160 bits => Blocage 
+  => Bip39Utils.MnemonicsAsTwoParts( mnemonics );
+
+Simple Wallet:
+  https://www.npmjs.com/package/crypto-wallets
+
+GUI:
+  https://jsuites.net/docs
+
+- Entropy source:
+  - Mouvement de la Souris
+  
+- Modes: Basic / Advanced => Tools/Options...
+  Basic: XMR (Monero), DASH, ADA, AVAX (Avalanche)
+
+- QRCode for address and for Private Key or Seedphrase
+  - Logo coin dans QRCode
+  
+- Themes / CSS

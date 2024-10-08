@@ -3,6 +3,7 @@
 // =======================================================================================
 "use strict";
 
+const NULL_VALUE      = "Null-VALUE";
 const NULL_HEX        = "Null-HEX";
 const NULL_BECH32     = "Null-Bech32";
 const NULL_WORD_COUNT = "Null-WORD_COUNT";
@@ -10,6 +11,8 @@ const NULL_UUID       = "Null-UUID";
 const NULL_NET        = "Null-NET";
 const NULL_ADDRESS    = "Null-ADDRESS";
 const NULL_MNEMONICS  = "Null-MNEMONICS";
+
+const ADDRESS         = 'address';
 
 const MASTER_SEED     = 'master_seed';
 const HD_WALLET       = 'hd_wallet';
@@ -23,16 +26,15 @@ const MASTER_PK_HEX   = 'master_pk_hex';
 const CHAINCODE       = 'chaincode';
 
 const BIP32_ROOT_KEY  = 'BIP32_root_key';
+const ROOT_KEY        = 'root_key';
 const PRIV_KEY        = 'PRIV KEY';
 const XPRIV           = 'xpriv';
 const XPUB            = 'xpub';
 const ACCOUNT_XPRIV   = 'account_xpriv';
 const ACCOUNT_XPUB    = 'account_xpub';
 
-const PRIVATE_KEY_HEX = 'private_key_hex';
+const PRIVATE_KEY     = 'Private Key';
 const PUBLIC_KEY_HEX  = 'public_key_hex';
-
-const ADDRESS         = 'address';
 
 const BALANCE_URL     = 'balance_URL';
 
@@ -56,6 +58,7 @@ if (typeof exports === 'object') {
 	exports.CHAINCODE       = CHAINCODE
 	
 	exports.BIP32_ROOT_KEY  = BIP32_ROOT_KEY
+	exports.ROOT_KEY        = ROOT_KEY
 	exports.PRIV_KEY        = PRIV_KEY
 	exports.XPUB            = XPUB
 	exports.ACCOUNT_XPRIV   = ACCOUNT_XPRIV
@@ -63,7 +66,7 @@ if (typeof exports === 'object') {
 	
 	exports.CHECKSUM        = CHECKSUM
 	
-	exports.PRIVATE_KEY_HEX = PRIVATE_KEY_HEX	
+	exports.PRIVATE_KEY     = PRIVATE_KEY	
 	exports.PUBLIC_KEY_HEX  = PUBLIC_KEY_HEX
 	
 	exports.ADDRESS         = ADDRESS

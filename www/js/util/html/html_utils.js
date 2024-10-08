@@ -6,12 +6,12 @@
 class HtmlUtils {
 	// https://stackoverflow.com/questions/2155737/remove-css-class-from-element-with-javascript-no-jquery
 	static HasClass(elt_id, className) {
-		//log2Main(">> HtmlUtils.HasClass elt_id:" + elt_id);
+		//trace2Main(">> HtmlUtils.HasClass elt_id:" + elt_id);
 		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
 		    return false;
 		}		
-		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
+		//trace2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
 		
 		if (elt.classList != null) {
 			return elt.classList.contains(className);
@@ -22,12 +22,12 @@ class HtmlUtils {
 	} // HtmlUtils.HasClass()
 	
 	static AddClass(elt_id, className) {
-		//log2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
+		//trace2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
 		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
 		    return;
 		}
-		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
+		//trace2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
 		
 		if (elt.classList != null) {
 			elt.classList.add(className);
@@ -40,12 +40,12 @@ class HtmlUtils {
 	} // HtmlUtils.AddClass()
 	
 	static RemoveClass(elt_id, className) {
-		//log2Main(">> HtmlUtils.RemoveClass elt_id:" + elt_id);
+		//trace2Main(">> HtmlUtils.RemoveClass elt_id:" + elt_id);
 		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
 		    return;
 		}
-		//log2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
+		//trace2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
 		
 		if (elt.classList != null) {
 			elt.classList.remove(className);
@@ -59,11 +59,11 @@ class HtmlUtils {
 	
 	static HideNode( elt_id ) {
 		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
-		//log2Main(">> HtmlUtils.HideNode elt_id: " + elt_id);
+		//trace2Main(">> HtmlUtils.HideNode elt_id: " + elt_id);
 	  
 		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
-		    log2Main(">> " + _RED_ + elt_id + " NOT DEFINED");
+		    //trace2Main(">> " + _RED_ + elt_id + " NOT DEFINED");
 		    return;
 		}
 		
@@ -75,7 +75,7 @@ class HtmlUtils {
 	
 	static ShowNode( elt_id ) {
 		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
-		//	log2Main(">> HtmlUtils.ShowNode elt_id: " + elt_id);
+		//	trace2Main(">> HtmlUtils.ShowNode elt_id: " + elt_id);
 		
 		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
@@ -93,28 +93,28 @@ class HtmlUtils {
 	} // HtmlUtils.GetNode()
 	
 	static InitializeNode( elt_id, values, labels ) {
-		//log2Main(  ">> " + _CYAN_ + "HtmlUtils.InitializeNode" + _END_
-		//         + " elt_id: " + elt_id);
+		// trace2Main( pretty_func_header_format( "HtmlUtils.InitializeNode", " elt_id: " + elt_id ) );	
+				 
 		let elt = document.getElementById(elt_id);
 		if (elt != undefined) { 
-		    //log2Main("   elt.nodeName: " + elt.nodeName);
+		    //trace2Main("   elt.nodeName: " + elt.nodeName);
 			if ( elt.nodeName == "SELECT" ) {	
 				if (   Array.isArray(values) 
 					&& Array.isArray(labels)
                     && values.length == labels.length	) {
 						$("#" + elt_id).empty();
 						for ( let i=0; i < values.length; i++ ) {
-							//log2Main("   values[" + i +"]: " + values[i]);							
+							//trace2Main("   values[" + i +"]: " + values[i]);							
 							elt.add(new Option(values[i], values[i]));
 						}
 				}					
 			}
 		}
-		return;
+		// trace2Main( pretty_func_header_format( "<END> HtmlUtils.InitializeNode", " elt_id: " + elt_id ) );
 	} // HtmlUtils.InitializeNode()
 	
 	static GetNodeValue( elt_id ) {
-		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetNodeValue() " + _YELLOW_ + elt_id + _END_);
+		// trace2Main( pretty_func_header_format( "HtmlUtils.GetNodeValue() ", elt_id ));
 		let elt = document.getElementById( elt_id );	
         		
 		if ( elt != undefined ) { 
@@ -129,11 +129,11 @@ class HtmlUtils {
 	} // HtmlUtils.GetNodeValue()	
 
 	static SetNodeValue( elt_id, value_str ) {
-		//log2Main(">> " + _CYAN_ + "HtmlUtils.SetNodeValue() " + _END_ + elt_id);
-		//log2Main(" elt_id: " + elt_id);
+		//trace2Main(">> " + _CYAN_ + "HtmlUtils.SetNodeValue() " + _END_ + elt_id);
+		//trace2Main(" elt_id: " + elt_id);
 		let elt = document.getElementById( elt_id );
 		if ( elt != undefined ) {
-            //log2Main(" elt.nodeName: " + elt.nodeName);			
+            //trace2Main(" elt.nodeName: " + elt.nodeName);			
 			if (   elt.nodeName == "TD" 
 			    || elt.nodeName == "SPAN" || elt.nodeName == "DIV" 
 				|| elt.nodeName == "BUTTON" ) {
@@ -148,7 +148,7 @@ class HtmlUtils {
 				$('#' + elt_id).prop("value", value_str);
 			}
 			else {
-				//log2Main(" elt.value: '" + value_str + "'");
+				//trace2Main(" elt.value: '" + value_str + "'");
 				elt.value = value_str;
 			}	
 		}

@@ -29,7 +29,7 @@ const { NULL_COIN, BLOCKCHAIN, NULL_BLOCKCHAIN,
 	  }                      = require('../const_blockchains.js');
 	  
 const { CRYPTO_NET, UUID, ADDRESS,
-	    PRIVATE_KEY_HEX, PUBLIC_KEY_HEX 
+	    PRIVATE_KEY, PUBLIC_KEY_HEX 
 	  }                      = require('../const_wallet.js');
 	  
 const { WORD_COUNT, MNEMONICS, WIF 
@@ -69,11 +69,14 @@ class SolanaSW_API {
 	static GetWallet( entropy_hex, salt_uuid ) {
 		console.log(">> " + _CYAN_ + "[SolanaHD_API.GetWallet]" + _END_ + " " + entropy_hex);
 		
-		let args = { [WORD_COUNT]: 24 };
-		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex, args ); // (mnemonic, password)
+		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex ); // (mnemonic, password)
 		pretty_log("entropy_hex", entropy_hex);
 		
-        pretty_log("mnemonics", mnemonics);		
+		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
+		pretty_log( "mnemonics(24)" , mnemonics_items[0] );
+		if ( mnemonics_items[1].length > 0 ) {	
+			pretty_log( "", mnemonics_items[1] );		
+		}	
 		
 		let seed_64_bytes     = bip39.mnemonicToSeedSync( mnemonics );
 		let seed_64_bytes_hex = uint8ArrayToHex( seed_64_bytes );
@@ -115,7 +118,7 @@ class SolanaSW_API {
 		pretty_log("secret_key_b58_to_hex", secret_key_b58_to_hex);
 		pretty_log("secret_key_b58", secret_key_b58);
 		
-		wallet[PRIVATE_KEY_HEX]     = secret_key_b58_to_hex;
+		wallet[PRIVATE_KEY]     = secret_key_b58_to_hex;
 		
 		let wif = computeWIF( entropy_hex );	
 		wallet[WIF] = wif;

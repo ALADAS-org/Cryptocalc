@@ -45,8 +45,12 @@ const getSecp256k1PK = ( sha256_hex ) => {
 const computeWIF = ( entropy_hex ) => {
 	// https://en.bitcoin.it/wiki/Wallet_import_format
 	// https://learnmeabitcoin.com/technical/keys/private-key/wif/
-	// ex: 0C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D		
-	let wif_step1 = entropy_hex; // seed_32_bytes_hex; // entropy_hex 
+	// ex: 0C28FCA386C7A227600B2FE50B7CAE11EC86D3BF1FBE471BE89827E19D72AA1D
+
+    // https://stackoverflow.com/questions/31712808/how-to-force-javascript-to-deep-copy-a-string	
+    let entropy_hex_copy = (' ' + entropy_hex).slice(1);
+	
+	let wif_step1 = entropy_hex_copy; // seed_32_bytes_hex; // entropy_hex 
 	//pretty_log("wif_step1", wif_step1);
 	
 	let wif_step2 = "80" + wif_step1 + "01"; // + "01" at end for compressed key;

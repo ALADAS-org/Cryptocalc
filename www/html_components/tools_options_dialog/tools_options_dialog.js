@@ -15,8 +15,10 @@ const TOD_CANCEL_BUTTON_ID             = "tod_cancel_button_id";
 
 class ToolsOptionsDialog {
 	static Initialize() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.Initialize" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.Initialize" ) );
+		
+		ToolsOptionsDialog.Options = {};
+		
 		//console.log(log_msg);
 		$("#" + TOOLS_OPTIONS_DIALOG_ID).dialog
 		(   { 	
@@ -47,8 +49,7 @@ class ToolsOptionsDialog {
 						},
 						
 				close:  function( event, ui ) {
-							let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog <close Event>" + _END_;
-							log2Main(log_msg);
+							trace2Main( pretty_func_header_format( "ToolsOptionsDialog <close Event>" ) );
 							
 	                        ToolsOptionsDialog.RemoveCallback( TOD_WALLET_MODE_SELECT_ID, 
 							    'change', ToolsOptionsDialog.OnChangeWalletMode );							  
@@ -57,15 +58,13 @@ class ToolsOptionsDialog {
 							    'click', ToolsOptionsDialog.OnReset );
 								
 				            ToolsOptionsDialog.RemoveCallback( TOD_SAVE_BUTTON_ID,    
-							    'click', 
-								async () => { await ToolsOptionsDialog.OnSave() } );
+							    'click', async () => { await ToolsOptionsDialog.OnSave() } );
 							  
 							ToolsOptionsDialog.RemoveCallback( TOD_RESTORE_BUTTON_ID, 
 							    'click', ToolsOptionsDialog.OnReset );
 							  
                             ToolsOptionsDialog.RemoveCallback( TOD_APPLY_BUTTON_ID,
-							    'click', 
-								async () => { await ToolsOptionsDialog.OnApply() } );								
+							    'click', async () => { await ToolsOptionsDialog.OnApply() } );								
 							
 							ToolsOptionsDialog.RemoveCallback( TOD_CANCEL_BUTTON_ID,
  							    'click', ToolsOptionsDialog.OnClose );
@@ -75,10 +74,9 @@ class ToolsOptionsDialog {
 	} // ToolsOptionsDialog.Initialize()
 	
 	static ShowDialog( options_data ) {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.ShowDialog" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.ShowDialog" ) );
 		
-		log2Main("   µµ options_data:\n   " + JSON.stringify( options_data ));
+		//trace2Main( pretty_format( "shwdlg> options_data", JSON.stringify( options_data ) ) );
 
 		let dialog_id = TOOLS_OPTIONS_DIALOG_ID; // "tools_options_dialog_id";
 		let tools_options_dialog_node = document.getElementById( dialog_id );
@@ -102,10 +100,10 @@ class ToolsOptionsDialog {
 	} // ToolsOptionsDialog.ShowDialog()
 
 	static OnChangeWalletMode() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.OnChangeWalletMode" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.OnChangeWalletMode" ) );
+		
 		let wallet_mode = HtmlUtils.GetNodeValue( TOD_WALLET_MODE_SELECT_ID );
-		log2Main( "   wallet_mode:        " + wallet_mode );
+		trace2Main( pretty_format( "wallet_mode", wallet_mode ) );
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
 			HtmlUtils.ShowNode( TOD_SW_ENTROPY_SIZE_ID );
 			HtmlUtils.HideNode( TOD_ENTROPY_SIZE_SELECT_ID );
@@ -115,30 +113,28 @@ class ToolsOptionsDialog {
 			HtmlUtils.HideNode( TOD_SW_ENTROPY_SIZE_ID );
 		}
 
+        //trace2Main( pretty_format( "Options", JSON.stringify(ToolsOptionsDialog.Options) ) );
 		HtmlUtils.InitializeNode
 				( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
-			      this.Options['Blockchains'][wallet_mode],
-				  this.Options['Blockchains'][wallet_mode] );
+			      ToolsOptionsDialog.Options['Blockchains'][wallet_mode],
+				  ToolsOptionsDialog.Options['Blockchains'][wallet_mode] );
 
 		HtmlUtils.SetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
-				                this.Options[DEFAULT_BLOCKCHAIN][wallet_mode]);			
+				                ToolsOptionsDialog.Options[DEFAULT_BLOCKCHAIN][wallet_mode]);			
 	} // ToolsOptionsDialog.OnChangeWalletMode()
 	
 	static OnSave() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.OnSave" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.OnSave" ) );
 		ToolsOptionsDialog.SaveFields();
 	} // ToolsOptionsDialog.OnSave()
 	
 	static OnReset() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.OnReset" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.OnReset" ) );
 		ToolsOptionsDialog.ResetFields();
 	} // ToolsOptionsDialog.OnReset()
 	
 	static async OnApply() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.OnApply" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.OnApply" ) );
 		let options_data = ToolsOptionsDialog.ReadFields();	
 		await window.ipcMain.UpdateOptions( options_data )
 	} // ToolsOptionsDialog.OnApply()
@@ -151,30 +147,27 @@ class ToolsOptionsDialog {
 	} // ToolsOptionsDialog.Close()
 	
 	static OnClose() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.OnClose" + _END_;
-		log2Main(log_msg);
-		
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.OnClose" ) );		
 		ToolsOptionsDialog.Close();
 	} // ToolsOptionsDialog.OnClose()
 	
 	static UpdateFields( options_data ) {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.UpdateFields" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.UpdateFields" ) );
 		
-		this.options_data = options_data;
+		ToolsOptionsDialog.Options= options_data;
 		
 		let wallet_mode = options_data[WALLET_MODE];
 		
 		HtmlUtils.InitializeNode
 				( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
-			      options_data['Blockchains'][wallet_mode],
-				  options_data['Blockchains'][wallet_mode] );
+			      ToolsOptionsDialog.Options['Blockchains'][wallet_mode],
+				  ToolsOptionsDialog.Options['Blockchains'][wallet_mode] );
 
-		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN][wallet_mode];
-		log2Main( "   default_blockchain: " + default_blockchain );
+		let default_blockchain = ToolsOptionsDialog.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
+		trace2Main( pretty_format( "default_blockchain", default_blockchain ) );
 		HtmlUtils.SetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, default_blockchain );		
-		
-		log2Main( "   wallet_mode:        " + wallet_mode );
+
+		trace2Main( pretty_format( "wallet_mode", wallet_mode ) );
 		HtmlUtils.SetNodeValue( TOD_WALLET_MODE_SELECT_ID, wallet_mode );
 
         let entropy_size = 0;
@@ -188,8 +181,8 @@ class ToolsOptionsDialog {
 			HtmlUtils.ShowNode( TOD_ENTROPY_SIZE_SELECT_ID );
 			HtmlUtils.HideNode( TOD_SW_ENTROPY_SIZE_ID );
 	    }
-		
-		log2Main( "   entropy_size:       " + entropy_size );	
+
+		trace2Main( pretty_format( "entropy_size", entropy_size ) );		
         HtmlUtils.SetNodeValue( TOD_ENTROPY_SIZE_SELECT_ID, entropy_size );		
 	} // ToolsOptionsDialog.UpdateFields()
 	
@@ -219,42 +212,38 @@ class ToolsOptionsDialog {
 				]
 			]
 		});	
-	} // ToolsOptionsDialog.RequireConfirmationFromUser()
+	} // async ToolsOptionsDialog.RequireConfirmationFromUser()
 	
 	static ReadFields() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.ReadFields" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.ReadFields" ) );
 		
 		let default_blockchain = HtmlUtils.GetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID );
-		log2Main( "   default_blockchain: " + default_blockchain );
+		trace2Main( pretty_format( "default_blockchain", default_blockchain ) );
 
 		let wallet_mode = HtmlUtils.GetNodeValue( TOD_WALLET_MODE_SELECT_ID );
-		log2Main( "   wallet_mode:        " + wallet_mode );
+		trace2Main( pretty_format( "wallet_mode", wallet_mode ) );
 
 		let entropy_size = HtmlUtils.GetNodeValue( TOD_ENTROPY_SIZE_SELECT_ID );
-		log2Main( "   entropy_size:       " + entropy_size );
+		trace2Main( pretty_format( "entropy_size", entropy_size ) );
 
-		this.options_data[WALLET_MODE]                     = wallet_mode;
-		this.options_data[DEFAULT_BLOCKCHAIN][wallet_mode] = default_blockchain;
+		ToolsOptionsDialog.Options[WALLET_MODE]                     = wallet_mode;
+		ToolsOptionsDialog.Options[DEFAULT_BLOCKCHAIN][wallet_mode] = default_blockchain;
 		
-		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
-			entropy_size = 256;
-		}
+		if ( wallet_mode == SIMPLE_WALLET_TYPE ) entropy_size = 256;
 
-        this.options_data[ENTROPY_SIZE] = 
+        ToolsOptionsDialog.Options[ENTROPY_SIZE] = 
 			{ [HD_WALLET_TYPE]:"128", [SIMPLE_WALLET_TYPE]:"256" };
-		log2Main( "   options_data:       " + JSON.stringify(this.options_data) );
-		this.options_data[ENTROPY_SIZE][wallet_mode] = entropy_size;
+		//trace2Main( pretty_format( "options_data", JSON.stringify(ToolsOptionsDialog.Options) ) );
+		ToolsOptionsDialog.Options[ENTROPY_SIZE][wallet_mode] = entropy_size;
 		
-		return this.options_data;		
+		return ToolsOptionsDialog.Options;		
 	} // ToolsOptionsDialog.ReadFields()
 	
 	static async SaveFields() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.SaveFields" + _END_;
-		log2Main(log_msg);		
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.SaveFields" ) );		
 
         let options_data = ToolsOptionsDialog.ReadFields();		
-		log2Main("   && options_data: " + JSON.stringify(options_data));
+		//trace2Main( pretty_format( "options_data", JSON.stringify(options_data) ) );
 		
 		let message =   
 			  "<center><b>Save Options" + "</b></center><br>" 
@@ -268,8 +257,7 @@ class ToolsOptionsDialog {
 	} // ToolsOptionsDialog.SaveFields()
 	
 	static async ResetFields() {
-		let log_msg = ">> " + _CYAN_ + "ToolsOptionsDialog.ResetFields" + _END_;
-		log2Main(log_msg);
+		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.ResetFields" ) );
 		
 		let message =   
 			  "<center><b>Reset Options" + "</b></center><br>" 
@@ -282,7 +270,7 @@ class ToolsOptionsDialog {
 		);
 	} // ToolsOptionsDialog.ResetFields()
 	
-		static AddCallback( elt_id, event_name, handler) {
+	static AddCallback( elt_id, event_name, handler) {
 		let elt = document.getElementById( elt_id );
 		if ( elt != undefined ) {
 			elt.addEventListener( event_name, handler );									

@@ -6,12 +6,14 @@
 // https://docs.solana.com/developing/clients/javascript-api
 "use strict";
 
-// ========== Test import dans Guarda.com ==========
-// ========== Test import dans Guarda.com
+// NB: Import Test OK in "Phantom Wallet" ( private key as Base58 string )
 
 const bip39            = require('bip39');
 const bs58             = require('bs58');
 const solanaWeb3       = require('@solana/web3.js');
+
+const { Keypair }      = require('@solana/web3.js');
+
 const { derivePath }   = require('ed25519-hd-key');
 const { HDKey }        = require('ed25519-keygen/hdkey');
 const { HDPrivateKey, 
@@ -30,18 +32,17 @@ const bip32            = require('@scure/bip32');
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_ 
 	  }                             = require('../../util/color/color_console_codes.js');
 	  
-const { getFunctionCallerName,
-        pretty_func_header_log,
+const { pretty_func_header_log,
         pretty_log }                = require('../../util/log/log_utils.js');
 	  
-const { COIN, NULL_COIN,        
+const { COIN, COIN_TYPE, NULL_COIN,        
         MAINNET, TESTNET,
         SOLANA,
 		COIN_ABBREVIATIONS		
 	  }                             = require('../const_blockchains.js');
 	  
 const { NULL_HEX, 
-        PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,
+        PRIVATE_KEY, PUBLIC_KEY_HEX,
         CRYPTO_NET, 
 		MASTER_SEED, ADDRESS,
 		CHAINCODE,
@@ -79,19 +80,19 @@ class SolanaHD_API {
 		blockchain = SOLANA;
 		let coin   = COIN_ABBREVIATIONS[blockchain];
 		
-		pretty_func_header_log( getFunctionCallerName(), blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "entropy_hex", entropy_hex );
+		pretty_func_header_log( "SolanaHD_API.GetWallet", blockchain + " " + coin + " " + crypto_net );
+		pretty_log( "SolHD.gW>> entropy_hex", entropy_hex );
 		
 		if ( account == undefined ) 		account       = 0;	
 		if ( address_index == undefined ) 	address_index = 0;
 
 		let word_count = EntropySize.GetWordCount( entropy_hex );
-		let args = { [WORD_COUNT]: word_count }; 
-		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex, args );
+		let mnemonics  = Bip39Utils.EntropyToMnemonics( entropy_hex );
+		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "mnemonics" + mnemonics_items[0] );
+		pretty_log( "SolHD.gW> mnemonics(" + word_count + ")" , mnemonics_items[0] );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "mnemonics" + mnemonics_items[1] );			
+			pretty_log( "SolHD.gW>" + mnemonics_items[1] );			
 		}
 		
 		let new_wallet = SolanaHD_API.InitializeWallet();
@@ -99,32 +100,30 @@ class SolanaHD_API {
 		new_wallet[BLOCKCHAIN] = SOLANA;
 		new_wallet[CRYPTO_NET] = crypto_net;
 		new_wallet[UUID]       = salt_uuid;
-        new_wallet[MNEMONICS]  = mnemonics;	
+        new_wallet[MNEMONICS]  = mnemonics;
 
-        let hd_wallet_info = await SolanaHD_API.MnemonicsToHDWalletInfo( mnemonics, account, address_index );
-		pretty_log( "private_key", new_wallet[PRIVATE_KEY_HEX] );		
+        // let hd_wallet_info = await SolanaHD_API.MnemonicsToHDWalletInfo( mnemonics, account, address_index );
+		// pretty_log( "SolHD.gW>> hd_wallet_info", JSON.stringify(hd_wallet_info) );		
 					
 		// https://stackoverflow.com/questions/72658589/how-do-i-create-an-hd-wallet-and-child-wallets-in-solana
 		// https://yihau.github.io/solana-web3-demo/tour/create-keypair.html
-		const solana_seed     = bip39.mnemonicToSeedSync( mnemonics, "" ); // (mnemonic, password)
-		//const derivation_path = "m/44'/501'/" + account + "'/0/" + address_index;
-		const derivation_path = "m/44'/501'/" + account + "'/0'/" + address_index + "'";
-		pretty_log( "& derivation_path", derivation_path );
+		const solana_seed = bip39.mnemonicToSeedSync( mnemonics, "" ); // (mnemonic, password)
+                                                                              
+		// NB: 'derivation_path' must be "hardened", even the 'address_index' (eg: "m/44'/501'/0'/0'/0')
+		let derivation_path = "m/44'/501'/" + account + "'/0'/" + address_index;		
+		if ( ! derivation_path.endsWith("'") )  derivation_path += "'";
+		
+		pretty_log( "SolHD.gW> derivation_path", derivation_path );
 		new_wallet[DERIVATION_PATH] = derivation_path;		
 		
-		const keypair = solanaWeb3.Keypair.fromSeed
-						( derivePath( derivation_path, solana_seed.toString("hex")).key );
+		let keypair = solanaWeb3.Keypair.fromSeed
+					  ( derivePath( derivation_path, solana_seed.toString("hex")).key );
 		new_wallet[ADDRESS] = keypair.publicKey.toBase58();	
-		pretty_log( "address", new_wallet[ADDRESS]);
+		pretty_log( "SolHD.gW>> address", new_wallet[ADDRESS]);
 		
-		new_wallet[PRIVATE_KEY_HEX] = bs58.encode( keypair.secretKey );
-		pretty_log( "private_key", new_wallet[PRIVATE_KEY_HEX] );
-	
-		// props
-		//[hdkey1.depth, hdkey1.index, hdkey1.chainCode];
-		//console.log(hdkey2.privateKey, hdkey2.publicKey);
-		//console.log(hdkey3.derive("m/0/2147483647'/1'"));
-		//**********************		
+		let pk_b58 = bs58.encode( keypair.secretKey );
+		new_wallet[PRIVATE_KEY] = pk_b58;
+		pretty_log( "SolHD.gW>> private_key", new_wallet[PRIVATE_KEY] );
 
 		return new_wallet;
 	} // SolanaHD_API.GetWallet()
@@ -136,15 +135,15 @@ class SolanaHD_API {
 		
 		let new_wallet = SolanaHD_API.InitializeWallet();
 		new_wallet[BLOCKCHAIN]     = SOLANA;
-		new_wallet["coin"]         = coin;
-		new_wallet["coin_type"]    = coin_type;		
+		new_wallet[COIN]           = coin;
+		new_wallet[COIN_TYPE]      = coin_type;		
 		
 		//console.log("   coin_type:                  " + coin_type);
 		console.log(">> " + _CYAN_ + "SolanaHD_API.MnemonicsToHDWalletInfo " + _YELLOW_ + coin + _END_);
 		
-		console.log("   " + _YELLOW_ + "blockchain:             " + _END_ + blockchain);
+		pretty_log( "blockchain", blockchain );
 		
-        new_wallet["mnemonics"] = mnemonics;		
+        new_wallet[MNEMONICS] = mnemonics;		
 		
 		//-------------------- Derivation Path --------------------	
         // https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address).		
@@ -219,7 +218,7 @@ class SolanaHD_API {
 		let private_key_hex = uint8ArrayToHex( hdkey2["privateKey"] );
         pretty_log( "private_key_hex", private_key_hex );		
 		
-		new_wallet[PRIVATE_KEY_HEX] = private_key_hex;					  
+		new_wallet[PRIVATE_KEY] = private_key_hex;					  
 		//-------------------- First Private Key
 
 		return new_wallet;
@@ -230,7 +229,7 @@ class SolanaHD_API {
 		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
 		null_wallet[CRYPTO_NET]      = "Null-NET";
 		null_wallet[UUID]            = "Null-UUID";
-		null_wallet[PRIVATE_KEY_HEX] = NULL_HEX;
+		null_wallet[PRIVATE_KEY] = NULL_HEX;
 		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
 		null_wallet[ADDRESS]         = "Null-ADDRESS";
 		null_wallet[MNEMONICS]       = "Null-MNEMONICS";

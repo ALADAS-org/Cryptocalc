@@ -1,5 +1,5 @@
-## Cryptocalc 0.2.2
-![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_2_0_EN.gif)
+## Cryptocalc 0.3.2
+![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_3_2_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
    with either the _Non Deterministic_ (_Simple Wallet_) or _Hierarchical Deterministic_ (`BIP32`) paradigm.
@@ -13,18 +13,21 @@
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron)
    
 2. Setup 
-   + 2.1. _Fast and Furious_ (for end users)
+   + 2.1. _Fast and Furious_ (advised for end users)
       + 2.1.1. Download [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/files/latest/download)
 	  from _SourceForge_ (NB: the installer was generated with  
 	  [electron packager](https://www.npmjs.com/package/@electron/packager) and
       [Inno Setup](https://jrsoftware.org/isinfo.php).    
       Notice that the installer is not signed so _Windows Defender Smartscreen_ 
-	  will require that you validate yourself the application source. If you dont't want
-      to so then proceed to _Wizard's Lair_ setup instead (see 2.2)	  
+	  will require that you validate yourself the application source. 
+	  If you don't trust the installer, you can either:
+	      + 2.1.1.a. Rebuild yourself the _Installer_ by downloading `Inno Setup` and following the _Howto_ 
+          provided in the `_inno_setup` subfolder (`Howto build cryptocalc_setup.txt`) 		  
+          + 2.1.1.b. Else you can proceed to _Wizard's Lair_ setup instead (see 2.2)	  
       + 2.1.2. Default setup folder is `C:\Users\$CURRENT_USER\AppData\Local\Programs\Cryptocalc`
       + 2.1.3. Default subfolder where _Wallet informations_ are saved:    
 	      * `$DEFAULT_SETUP_FOLDER\resources\app\_output`	  
-   + 2.2. _Wizard's Lair_ (for custom local setup and developers)
+   + 2.2. _Wizard's Lair_ (advised for custom local setup and/or software developers)
       + 2.2.1. Prerequisites
           * Install [NodeJS](https://nodejs.org/en/)
 	      * Install [Git](https://git-scm.com/)
@@ -42,22 +45,29 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.2.2`
+    + 3.1. Features in `0.3.2`
+	    * Added `File.New`, `File.Open...` and `File.Save As...` menu items
+		* _Wallet informations_ are also saved as a `.wits` file (`JSON` format). This file can be opened either
+		  with `File.Open...` or with `Cryptocalc.exe` by double clicking on it.
+		* This README can now be opened from within _Cryptocalc_ by means of the 
+		`Help / Resources / Setup guide and User's Manual` menu item
+		* `Wallet Mode and `Cryptocurrency` are now displayed in the title bar (e.g. Simple Wallet: BTC)
+    + 3.2. Features in `0.2.2`
 	    * Added `Dash` blockchain in _HD Wallet_
         * Bug fixes for `Firo` and `Bitcoin Cash` 		
-	+ 3.2. Features in `0.2.1`
+	+ 3.3. Features in `0.2.1`
 	    * Choice between _Simple Wallet_ (Default mode) and _HD Wallet_		
 		* New cryptocurrencies supported: `Cardano` (_HD Wallet_ only) and `Avalanche` 
 		* GUI enhancements esp. `Copy to Clipboard` button for _Address_, _Seedphrase_, _Private Key_ and _WIF_ 
 		* Enhancement in log feature
 		* Update of Screenshots
-    + 3.3. Features in `0.1.17`
+    + 3.4. Features in `0.1.17`
 	    * Picture at last step of setup with _Cryptocalc Standalone installer_
-    + 3.4. Features in `0.1.16`
+    + 3.5. Features in `0.1.16`
 	    * When saving a wallet the Popup dialog allows to show where it is saved
 		* Bug fix in the behavior of [Save...] button in `Tools/Options` dialog
 		* Update of Screenshots
-    + 3.5. Features in `0.1.15`    
+    + 3.6. Features in `0.1.15`    
         * _Cryptocalc Standalone installer_ (see 4.1.1)
 		* Bigger icons in the main toolbar (`16x16px` > `24x24px`)
 		* Logo in desktop shortcut and .exe (Standalone installer) and in the
@@ -67,14 +77,10 @@
 		both the _Private Key_ (in hexadecimal) and _Seedphrase_ (when converted 
 		to _Mnemonics_) 
 		* Update of `README.md`
-    + 3.6. Features in `0.1.14`    
-        * Added `Tools/Options` menu item: allows to set _Options_ values for
-		`Default Blockchain` and `Entropy Size`. These values are defined
-        in `www/config/options.json` file. 		
-		* Bug Fix: when switching to `Fortunes`, `Entropy Source` was `undefined`   
  	
 4. _Cryptocalc_ User Guide  
-    Double click on `_run.bat`: this will launch _Cryptocalc_ desktop standalone application
+    You can launch _Cryptocalc_ either by using the _Cryptocalc Standalone installer_ (see 2.1)
+	or by downloading the `npm package` (see 2.2) then double clicking on `_run.bat`.
     + 4.1. Features 
         * 4.1.1. _Cryptocalc Standalone installer_    
 		    + 4.1.1.a: Download [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/files/latest/download)
@@ -109,7 +115,7 @@
             * 4.1.3.c: When using [Generate], _Cryptocurrency logos_ are drawn 
 			from the `www/js/img/CryptoCurrency` folder and the first image 
 			is always our logo (`Zilver_64px.svg`).
-        * 4.1.4. Choose _Wallet_Mode_ : _Simple Wallet_ or _HD Wallet_ (this field is in the `Wallet` tab)  	
+        * 4.1.4. Choose _Wallet_Mode_ : _Simple Wallet_ or _HD Wallet_ (choice of _Wallet_Mode_ is in the `Wallet` tab)  	
             * 4.1.4.a. _Simple Wallet_
             This is the default _Wallet Mode_. In this mode, each wallet is separated. 
 			and there is no need to understand the principles of the _HD Wallet Wallet Tree_
@@ -119,8 +125,7 @@
             multiple wallets (for example to secure your assets by splitting them among many wallets). 			
 			* 4.1.4.b. _HD Wallet_    
 			This _Wallet Mode_ allows to create / manage a whole hierarchy of Wallets (_HD_ is the acronym for 
-			_Hierarchical Deterministic_)
-			of wallets in the same _BIP32 tree_
+			_Hierarchical Deterministic_) of wallets in the same _BIP32 tree_
             this hierarchy is generated from the _Entropy_ (and optionnaly a _password_, not yet supported).    
 			The `BIP32` HD wallet tree_ is fully by the _Entropy_ or _Seedphrase_. 
 			The _Entropy_ is isomorphic with the _Mnemonics Sequence_ which may be called either a _Seedphrase_, _Mnemonics_
@@ -133,7 +138,11 @@
 			to recompute the wallet once you gave finished editing these fields 
 			(you can input a decimal value between 0 and 9999).		
 			Pushing the [Refresh] button (or hitting either [ Return ] or [ Enter ] keys) 
-			will recompute the wallet accordingly.
+			will recompute the wallet accordingly. 
+			* 4.1.4.c. Please notice that for `Cardano` HD wallets, the `Account` and `Address Index` parameters are not taken 
+			into account by the _Wallet Managers_ which I have tested (namely `Guarda` and `Yoroi`) because they ask for 
+			the `Mnemonics` (`Seedphrase` in _Cryptocalc_). This is why in by _Cryptocalc_, these parameters are _hard-coded_
+			to Zero (for `Cardano` HD wallets only).			
 			* 4.1.4.c. You can check generated _HD Wallets_ by using _Ian Coleman BIP39_ homepage.   
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (Help / Resources / Ian Coleman BIP39)
 		* 4.1.5. _Salted Entropy_    
@@ -147,18 +156,17 @@
 		* 4.1.8. _Wallet Address_
 		_Wallet Address_ is displayed in the `Wallet` tab page. There's also an [Explorer...] button which allows to check
 		the generated address in the appropriate _Blockchain Explorer_.
-		* 4.1.9. Save _Wallet Informations_    
+		* 4.1.9. `Save` _Wallet Informations_    
 		With `File/Save` (or the _Save_ icon in the main toolbar), you can save the _Wallet Informations_ in a timestamped 
-		subfolder (eg. `2024_03_07_21h-4m-4s-3_BTC`) under `_output` folder.	
+		subfolder (eg. `2024_10_07_21h-4m-4s-3_BTC_EN`) under `_output` folder.	
 		This subfolder contains `wallet_info.txt` and a `wallet.json` with the informations displayed in _Seed_ and _Wallet_ tab pages. 
 			* 4.1.9.a. When you save the current generated wallet a Popup dialog confirms the saving and allows to show where it is saved.    
             * 4.1.9.b. The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Seedphrase`,
-			`Entropy`, `Entropy_rMQR` (a _Rectangular Micro QRCode_ of _Entropy_)
-			and `WIF` (if applicable).    
-			Notice that there is a `svg` subfolder where these _QR codes_ are provided
-			in the `svg` format and there is also a _Rectangular Micro QR code_ (`rMQR`) of the 
+			`Entropy` and `WIF` (if applicable).    
+			Notice that there is a `xtras` subfolder where these _QR codes_ are provided
+			in the `svg` format. There is also a _Rectangular Micro QR code_ (`rMQR`) of the 
 			`Entropy` (_Rectangular Micro QR Code_, `R15x59` or `R15x77` version depending on		
-			`Entropy size`).
+			`Entropy size`) and an experimental `Ultracode` color QR code of the `Entropy`.
 		    * 4.1.9.c: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
 		        * 4.1.9.c.I: Notice that most Android _QR Code reader_ apps will 
 			    not be compatible with _Rectangular Micro QR Code_ but it works with 
@@ -169,11 +177,22 @@
 				**Caution**: Take care to set _Cryptocalc_ with the same `Entropy Size` and 
 				`Derivation path` (if applicable, don't forget to use the [Refresh] button)
 				than those used when the wallet was created (these informations 
-				are provided in the `wallet_info.txt` file).
-		* 4.1.10. Import a wallet in Guarda    
+				are provided either in the `wallet_info.txt` or in `wallet_info.wits`).
+		* 4.1.10. `Open` _ a previous _Wallet Informations_ of a previously saved wallet 		
+		    * 4.1.1O.a. _Wallet informations_ are saved both as a `.txt` but also as a `.wits` file (`JSON` format). 
+		    * 4.1.1O.b. A `.wits` file can be opened either with `File.Open...` menu item or 'Open...' icon
+			in the toolbar. It can be also be opened in `Cryptocalc.exe` by double clicking on the `.wits` 
+			(_File extension to Application_ feature): this will launch `Cryptocalc.exe` (cf. 2.1 for installing 
+			`Cryptocalc.exe` with the _Cryptocalc Standalone installer_)  /
+			* 4.1.1O.c. Once opened, a wallet can't be saved on itself (it is to prevent accidental overwrite of the original wallet),
+            but you can use `File.Save As...` which will save the wallet with a different timestamp than the original one.	
+            * 4.1.1O.d.	Notice that for a _HD Wallet_ you can change the `Account` and/or the `Address Index` (dont forget to push
+			the [Refresh] button). Now you can save the new wallet with `File.Save As...` and if you didn't change the `Entropy` 
+            then this new wallet will belong to the same `Bip32 HD Wallet Tree` (see 5.2) than the original one.			
+		* 4.1.11. Import a wallet in `Guarda`    
 		An item in the menu (Help / Resources / Guarda) eases importing a wallet in a
-		_Wallet Manager_ application by opening [_Guarda_](https://guarda.com/).				
-        * 4.1.11. Select _Seedphrase Language_    
+		_Wallet Manager_ application by opening [`Guarda`](https://guarda.com/).				
+        * 4.1.12. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
         Changing _Wordlist Language_ is indeed a mean to add a scramble step in order 
@@ -181,23 +200,23 @@
         it should be translated to _English_ to be used with a _Wallet Manager_.   
 		NB: the translation between languages is native in _Cryptocalc_
 		because the reference is the _Word Indexes_ (see 4.1.11) not the words.
-		* 4.1.12. Display of _Word Indexes_    
+		* 4.1.13. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
 		_Seedphrase_ words in the `BIP39` dictionary (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
-		* 4.1.13. Display of the _BIP32 Derivation Path_    
+		* 4.1.14. Display of the _BIP32 Derivation Path_    
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
 		_Seedphrase_ (also called the _Secret Recovery Passphrase_).
-		* 4.1.14. Change/Reset of _Options_ (`Tools/Options`)    
-		Currently it allows to set default values for `Default Blockchain` and `Entropy Size`.
+		* 4.1.15. Change/Reset of _Options_ (`Tools/Options`)    
+		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
 		It is also possible to reset _Options_ to _Default Options_
 		(defined in `www/config/defaults/options.json`)
-        * 4.1.15. Support of _Localization_    
+        * 4.1.16. Support of _Localization_    
         In _Cryptocalc_, the _Localization_ (`l10n`) feature is the translation of 
 		_GUI Labels_ to adapt to the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use, 
@@ -209,10 +228,10 @@
 		Currently only `en` and `fr` are provided.  		
     + 4.2. Use cases
         * 4.2.1. Generate a new _Wallet_ and import it in a _Wallet manager_  
-	    With a _Wallet Manager_ like [_Guarda_](https://https://guarda.com/) you can import
+	    With a _Wallet Manager_ like [`Guarda`](https://https://guarda.com/) you can import
 		a wallet generated by _Cryptocalc_:
             * 4.2.1.a. Choose _Wallet Mode_: _Simple Wallet_ or _HD Wallet_ 		
-            * 4.2.1.b. Choose a coin: `BTC`,`ETH`,`XRP`,`ADA`,`DOGE`,`LTC,``SOL`,`AVX`,`BCH`,`Firo` 
+            * 4.2.1.b. Choose a coin: `BTC`,`ETH`,`XRP`,`ADA`,`DOGE`,`LTC`,`SOL`,`AVX`,`TRON`,`BCH`,`DASH`,`Firo` 
 		    * 4.2.1.c. Enter _Private Key_  (NB: or _WIF_ for `BTC` wallets)    
         * 4.2.3. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
         The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 

@@ -32,7 +32,7 @@ const getShortenedString = ( in_str, max_length ) => {
 
 const stringify = (obj) => {
   let cache = [];
-  let str = JSON.stringify(obj, function(key, value) {
+  let str = JSON.stringify( obj, function(key, value) {
     if (typeof value === "object" && value !== null) {
       if (cache.indexOf(value) !== -1) {
         // Circular reference found, discard key

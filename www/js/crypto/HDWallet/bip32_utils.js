@@ -40,7 +40,7 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_,
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
 		_END_ }            = require('../../util/color/color_console_codes.js');
 		
-const { getFunctionCallerName, pretty_func_header_log, 
+const { pretty_func_header_log, 
         pretty_log,  }     = require('../../util/log/log_utils.js');
 		
 const { MAINNET, TESTNET,
@@ -59,7 +59,7 @@ const { NULL_HEX,
         ADDRESS, UUID, CRYPTO_NET, MASTER_SEED,
 		MASTER_PK_HEX, CHAINCODE, ROOT_PK_HEX, 
 		BIP32_ROOT_KEY,		
-		PRIVATE_KEY_HEX, PUBLIC_KEY_HEX,
+		PRIVATE_KEY, PUBLIC_KEY_HEX,
 		PRIV_KEY, XPUB,
 		ACCOUNT_XPRIV, ACCOUNT_XPUB		
 	  }                    = require('../const_wallet.js');
@@ -74,6 +74,8 @@ const { hexToBinary, binaryToHex,
         hexWithPrefix, hexWithoutPrefix, isHexString,
         uint8ArrayToHex, hexToUint8Array 
 	  }                    = require('../hex_utils.js');
+	  
+const { isString }                    = require('../../util/values/string_utils.js');	  
 	  
 const { b58ToHex,
         isBase58String 
@@ -114,19 +116,25 @@ class Bip32Utils {
 		let blockchain    = args[BLOCKCHAIN];		
 		let coin          = COIN_ABBREVIATIONS[blockchain];
 		
-		pretty_func_header_log( getFunctionCallerName(), coin );
+		pretty_func_header_log( "Bip32Utils.MnemonicsToHDWalletInfo", coin );
 		
-		let coin_type     = COIN_TYPES[blockchain];
+		let coin_type = COIN_TYPES[blockchain];	
+        if ( isString( coin_type ) )  coin_type = parseInt( coin_type );		
+		pretty_log( "b32.mnk2wi> coin_type", coin_type );
 		
 		let account = 0;
 		if ( args[ACCOUNT] != undefined ) { 
 			account = args[ACCOUNT];
+			if ( isString( account ) )  account = parseInt( account );
 		}
+		pretty_log( "b32.mnk2wi> account", account );
 		
 		let address_index = 0;
 		if ( args[ADDRESS_INDEX] != undefined ) { 
 			address_index = args[ADDRESS_INDEX];
+			if ( isString( address_index ) )  address_index = parseInt( address_index );
 		}
+		pretty_log( "b32.mnk2wi> address_index", address_index );
 		
 		//console.log(   "   account_index: " + account_index + "   " 
 		//             + "   address_index: " + address_index );
@@ -163,7 +171,7 @@ class Bip32Utils {
 		
 		let path_options = { [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
 		let master_derivation_path = Bip32Utils.GetDerivationPath( coin_type, path_options );
-		pretty_log( "master_derivation_path", master_derivation_path );
+		pretty_log( "b32.mnk2wi> master_derivation_path", master_derivation_path );
 		hdwallet_info[DERIVATION_PATH] = master_derivation_path;
 		//-------------------- Derivation Path --------------------
 		
@@ -184,7 +192,7 @@ class Bip32Utils {
 		//********
 		//********-------------------- Test HDKey --------------------
 		// https://www.npmjs.com/package/hdkey
-		const hdkey = HDKey.fromMasterSeed( Buffer.from(master_seed_hex, 'hex') );
+		const hdkey = HDKey.fromMasterSeed( Buffer.from( master_seed_hex, 'hex' ) );
 		//console.log(  "   " + _YELLOW_
 	    //            + "hdkey.PRIV_KEY:            " + _END_ + hdkey.privateExtendedKey);
 
@@ -209,7 +217,7 @@ class Bip32Utils {
 	    //            + " " + _END_ + master_pk_key_hex);
 		hdwallet_info[MASTER_PK_HEX] = master_pk_key_hex;
 		
-		let master_pk_to_mnemonics = Bip39Utils.PrivateKeyToMnemonics( master_pk_key_hex );
+		let master_pk_to_mnemonics = Bip39Utils.EntropyToMnemonics( master_pk_key_hex );
 		//console.log(   "   " + _YELLOW_ 
 		//             + "master_pk_to_mnemonics:  " + _END_ + master_pk_to_mnemonics);
 		//-------------------- Master Private Key
@@ -239,8 +247,8 @@ class Bip32Utils {
 		//-------------------- First Private Key --------------------
 		let child_key   = master_node.derivePath( master_derivation_path );
 		let private_key = uint8ArrayToHex( child_key["__D"] );
-		pretty_log( "private key", private_key );
-		hdwallet_info[PRIVATE_KEY_HEX] = private_key;
+		pretty_log( "b32.mnk2wi> private key", private_key );
+		hdwallet_info[PRIVATE_KEY] = private_key;
 		hdwallet_info[PRIV_KEY]        = private_key;
 		//-------------------- First Private Key
 
@@ -277,12 +285,13 @@ class Bip32Utils {
 			}				
 		}
 		
-        pretty_log( "child_private_key", child_private_key );		
+        pretty_log( "b32.mnk2wi> child_private_key", child_private_key );		
 		
-		let child_pk_to_mnemonics = Bip39Utils.PrivateKeyToMnemonics( child_private_key );
+		let child_pk_to_mnemonics = Bip39Utils.EntropyToMnemonics( child_private_key );
 		
 		//-ok-------------------- Extended Private key -----------------------
-		let account_derivation_path = "m/44'/" + coin_type + "'" + "/" + account + "'";
+		let account_derivation_path = "m/44'/" + coin_type + "'/" + account + "'";
+		pretty_log( "b32.mnk2wi> account_derivation_path", account_derivation_path );	
 		let ACCOUNT_XPRIV = master_node.derivePath( account_derivation_path ).toBase58();
 		//console.log(   "   " + _YELLOW_ 
 		//             + "Account PRIV_KEY:          " + _END_ + ACCOUNT_XPRIV);
@@ -306,6 +315,8 @@ class Bip32Utils {
 		//console.log(  "   " + _YELLOW_
 		//            + "account_index type: " + _END_ + typeof account_index);
 		
+		pretty_log( "b32.mnk2wi> coin_type", coin_type );
+		pretty_log( "b32.mnk2wi> account", account );
 		let account_xpub = getMasterPublicKey( master_seed, coin_type, account );
 		//console.log(  "   " + _YELLOW_
 		//            + "Account XPUB:           " + _END_ + account_xpub);
