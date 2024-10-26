@@ -8,19 +8,17 @@
 // -------- 2024/02/29: Test import avec Avalanche/AVAX dans Guarda.com --------
 //  OK : avec Private Key (Hex)
 //  OK : avec Seedphrase
-const { _RED_, _CYAN_, _PURPLE_, 
-        _YELLOW_, _END_ }     = require('../util/color/color_console_codes.js');
+const { _CYAN_, 
+        _END_ }            = require('../util/color/color_console_codes.js');
 		
-const { NULL_COIN, 
-	    ETHEREUM, AVALANCHE,  
-		MAINNET, TESTNET,
+const { ETHEREUM, AVALANCHE,  
 		COIN_ABBREVIATIONS
       }                    = require('./const_blockchains.js');
 	  
 const { PRIVATE_KEY, ADDRESS
 	  }                    = require('./const_wallet.js');
 	  
-const { BLOCKCHAIN, NULL_BLOCKCHAIN
+const { BLOCKCHAIN 
 	  }                    = require('../const_keywords.js');
 	  
 const { hexWithoutPrefix 

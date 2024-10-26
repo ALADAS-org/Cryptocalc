@@ -36,8 +36,12 @@ const MSG_ID                    = 'msg_id';
 
 const DERIVATION_PATH           = 'Derivation Path';
 const HARDENED                  = 'hardened';
+
 const ACCOUNT                   = 'account'; 
+const ACCOUNT_MAX               = 9999;
+
 const ADDRESS_INDEX             = 'address_index';
+const ADDRESS_INDEX_MAX         = 9999;
 
 const MNEMONICS                 = 'mnemonics';
 const WORD_INDEXES              = 'Word indexes'; //'word_indexes';
@@ -95,8 +99,12 @@ if (typeof exports === 'object') {
 	
 	exports.DERIVATION_PATH       = DERIVATION_PATH
 	exports.HARDENED              = HARDENED
+
 	exports.ACCOUNT               = ACCOUNT
+	exports.ACCOUNT_MAX           = ACCOUNT_MAX
+
 	exports.ADDRESS_INDEX         = ADDRESS_INDEX
+	exports.ADDRESS_INDEX_MAX     = ADDRESS_INDEX_MAX
 	
 	exports.MSG_ID                = MSG_ID
 	exports.GUI_THEME             = GUI_THEME

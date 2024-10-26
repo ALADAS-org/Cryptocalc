@@ -14,33 +14,28 @@
 
 const bip39      = require('bip39');
 const bs58       = require('bs58');
-const bs58check  = require('bs58check-b4bcoin');
-const sha256     = require('js-sha256');
 const solanaWeb3 = require('@solana/web3.js');
 
-const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_ 
+const { _CYAN_, _END_ 
 	  } = require('../../util/color/color_console_codes.js');
 	  
 const { pretty_log }         = require('../../util/log/log_utils.js');
 	  
-const { NULL_COIN, BLOCKCHAIN, NULL_BLOCKCHAIN,
-        MAINNET, TESTNET,
-        SOLANA, 
+const { BLOCKCHAIN,
+        MAINNET,
+        SOLANA 
 	  }                      = require('../const_blockchains.js');
 	  
 const { CRYPTO_NET, UUID, ADDRESS,
 	    PRIVATE_KEY, PUBLIC_KEY_HEX 
 	  }                      = require('../const_wallet.js');
 	  
-const { WORD_COUNT, MNEMONICS, WIF 
+const { MNEMONICS, WIF 
 	  }                      = require('../../const_keywords.js');
 
-const { hexWithPrefix, hexToBytes,
-        hexToB64, hexToUint8Array,
-		uint8ArrayToHex	}    = require('../hex_utils.js');
+const { uint8ArrayToHex	}    = require('../hex_utils.js');
 		
-const { b58ToHex, hexToB58       
-	  }                      = require('../base58_utils.js');
+const { b58ToHex }           = require('../base58_utils.js');
 
 const { Bip39Utils }         = require('../bip39_utils.js');
 const { computeWIF }         = require('../crypto_utils.js');		

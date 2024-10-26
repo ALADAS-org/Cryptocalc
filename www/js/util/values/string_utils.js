@@ -88,7 +88,7 @@ const stringToHex = (in_str) => {
 
 const asTwoParts = ( seedphrase, word_count_per_line ) => {
 		//console.log(">> " + _CYAN_ + "string_utils: asTwoParts" + _END_);
-		//console.log("\seedphrase:\n    " + seedphrase);
+		//console.log("seedphrase:\n    " + seedphrase);
 		
 		// https://stackoverflow.com/questions/35499498/replace-nth-occurrence-of-string
 		
@@ -98,28 +98,22 @@ const asTwoParts = ( seedphrase, word_count_per_line ) => {
 		
 		let words            = seedphrase.split(' ');
 		let word_count       = words.length;
-        let seedphrase_lines =	[];	
+		let half_word_count  = Math.floor( word_count/2 );
+        let seedphrase_lines = [];	
 		
-		// NB: No need to cut in 2 parts less than 'word_count_per_line'	
+		// NB: No need to cut in 2 parts less than 'word_count_per_line' (15)	
 		if ( word_count <= word_count_per_line ) {
 			seedphrase_lines.push( seedphrase );
 		}
-		else {			
-			// Replace ('word_count'/2)th occurence of space to cut seedphrase
-			// ('word_count') words in two parts of ('word_count'/2) words
-			let nThIndex   = 0;
-		    let needle     = ' ';
-			let counter    = word_count / 2; // zero-based index
+		else {	
+		    // console.log("full seedphrase: " + seedphrase);
+            let seedphrase_1 = words.slice(0, half_word_count).join(' '); 
+            // console.log("seedphrase_1: " + seedphrase_1);			
+			seedphrase_lines.push( seedphrase_1 ); 
 			
-			if ( counter > 0 ) {
-				while ( counter-- ) {
-					// Get the index of the next occurence
-					nThIndex = seedphrase.indexOf( needle, nThIndex + needle.length );
-				}
-			}
-			seedphrase_lines.push( seedphrase.substring( 0, nThIndex ) );
-			seedphrase_lines.push( seedphrase.substring( nThIndex + needle.length ) );
-			//---------- Replace ('word_count'/2)th occurence of space				   
+			let seedphrase_2 = words.slice( half_word_count ).join(' '); 
+			// console.log("seedphrase_2: " + seedphrase_2);
+			seedphrase_lines.push( seedphrase_2 );
 		}  
 		
 		return seedphrase_lines;

@@ -37,7 +37,6 @@
 "use strict";
 
 const bip39    = require('bip39');
-const crypto   = require('crypto');
 const elliptic = require('elliptic');
 
 const CoinKey  = require('coinkey');
@@ -48,12 +47,11 @@ const { _RED_, _CYAN_, _PURPLE_,
 const { pretty_func_header_log,
         pretty_log }       = require('../../util/log/log_utils.js');
 		
-const { COIN, NULL_COIN,
+const { COIN,
 	    ETHEREUM, 
 		BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA,  
-		AVALANCHE,  
-		MAINNET, TESTNET,
+		AVALANCHE,
 		COIN_ABBREVIATIONS,
 		BLOCKCHAIN
       }                    = require('../const_blockchains.js');
@@ -64,13 +62,13 @@ const { NULL_HEX, CRYPTO_NET,
 	  }                    = require('../const_wallet.js');
 	  
 const { NULL_BLOCKCHAIN, 
-        WORD_COUNT, WALLET_MODE, 
+        WALLET_MODE, 
         SIMPLE_WALLET_TYPE,
-        UUID, MNEMONICS, MNEMONICS_KP
+        UUID, MNEMONICS
 	  }                    = require('../../const_keywords.js');
 	  
 	  
-const { hexWithoutPrefix, uint8ArrayToHex 
+const { uint8ArrayToHex 
 	  }                    = require('../hex_utils.js');
 	
 const { Bip39Utils }       = require('../bip39_utils.js');
