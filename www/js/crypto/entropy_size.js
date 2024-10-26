@@ -75,7 +75,7 @@ class EntropySize {
 			case 192: 	return 24; break; // 48 hexadecimal digits						
 			case 224: 	return 28; break; // 56 hexadecimal digits					
 			case 256: 	return 32; break; // 64 hexadecimal digits
-			default:	return 32;	break;
+			default:	return 32; break;
 		} // entropy_size
 	} // EntropySize.GetExpectedByteCount()
 } // EntropySize class

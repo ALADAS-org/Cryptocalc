@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.2
+## Cryptocalc 0.3.3
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Seed_Wallet_0_3_2_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -45,29 +45,37 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.2`
+    + 3.1. Features in `0.3.3`
+	    * Added `SWORD Wallet` in _Wallet Types_. `SWORD` is an acronym which means 
+		  `Simple Wallet Over Randomized Deterministic`, it's an hybrid between `Simple Wallet` and `HD Wallet`
+		  because it hides the `Derivation Path` logic (which contains `Account` and `Address Index`), thus you 
+		  don't need to care or understand the principles of _Hierarchical Deterministic_ wallets, but it allows
+		  to generate all the cryptocurrencies provided by `HD Wallet`. 		  
+	    * Bug fix: when changing 'Entropy Size' to 224 bits, Cryptocalc was blocked 
+		  while trying to split the seedphrase in 2 parts for the traces.  
+    + 3.2. Features in `0.3.2`
 	    * Added `File.New`, `File.Open...` and `File.Save As...` menu items
 		* _Wallet informations_ are also saved as a `.wits` file (`JSON` format). This file can be opened either
 		  with `File.Open...` or with `Cryptocalc.exe` by double clicking on it.
 		* This README can now be opened from within _Cryptocalc_ by means of the 
 		`Help / Resources / Setup guide and User's Manual` menu item
 		* `Wallet Mode and `Cryptocurrency` are now displayed in the title bar (e.g. Simple Wallet: BTC)
-    + 3.2. Features in `0.2.2`
+    + 3.3. Features in `0.2.2`
 	    * Added `Dash` blockchain in _HD Wallet_
         * Bug fixes for `Firo` and `Bitcoin Cash` 		
-	+ 3.3. Features in `0.2.1`
+	+ 3.4. Features in `0.2.1`
 	    * Choice between _Simple Wallet_ (Default mode) and _HD Wallet_		
 		* New cryptocurrencies supported: `Cardano` (_HD Wallet_ only) and `Avalanche` 
 		* GUI enhancements esp. `Copy to Clipboard` button for _Address_, _Seedphrase_, _Private Key_ and _WIF_ 
 		* Enhancement in log feature
 		* Update of Screenshots
-    + 3.4. Features in `0.1.17`
+    + 3.5. Features in `0.1.17`
 	    * Picture at last step of setup with _Cryptocalc Standalone installer_
-    + 3.5. Features in `0.1.16`
+    + 3.6. Features in `0.1.16`
 	    * When saving a wallet the Popup dialog allows to show where it is saved
 		* Bug fix in the behavior of [Save...] button in `Tools/Options` dialog
 		* Update of Screenshots
-    + 3.6. Features in `0.1.15`    
+    + 3.7. Features in `0.1.15`    
         * _Cryptocalc Standalone installer_ (see 4.1.1)
 		* Bigger icons in the main toolbar (`16x16px` > `24x24px`)
 		* Logo in desktop shortcut and .exe (Standalone installer) and in the
@@ -115,7 +123,7 @@
             * 4.1.3.c: When using [Generate], _Cryptocurrency logos_ are drawn 
 			from the `www/js/img/CryptoCurrency` folder and the first image 
 			is always our logo (`Zilver_64px.svg`).
-        * 4.1.4. Choose _Wallet_Mode_ : _Simple Wallet_ or _HD Wallet_ (choice of _Wallet_Mode_ is in the `Wallet` tab)  	
+        * 4.1.4. Choose _Wallet_Mode_: _Simple Wallet_, _HD Wallet_ or _SWORD Wallet_ (choice is in the `Wallet` tab)  	
             * 4.1.4.a. _Simple Wallet_
             This is the default _Wallet Mode_. In this mode, each wallet is separated. 
 			and there is no need to understand the principles of the _HD Wallet Wallet Tree_
@@ -139,11 +147,16 @@
 			(you can input a decimal value between 0 and 9999).		
 			Pushing the [Refresh] button (or hitting either [ Return ] or [ Enter ] keys) 
 			will recompute the wallet accordingly. 
-			* 4.1.4.c. Please notice that for `Cardano` HD wallets, the `Account` and `Address Index` parameters are not taken 
+			* 4.1.4.c. _SWORD Wallet_: `SWORD` is an acronym which means 
+		    `Simple Wallet Over Randomized Deterministic`, it's an hybrid between `Simple Wallet` and `HD Wallet`
+		    because it hides the `Derivation Path` logic (which contains `Account` and `Address Index`), thus you 
+		    don't need to care or understand the principles of _Hierarchical Deterministic_ wallets, but it allows
+		    to generate all the cryptocurrencies provided by `HD Wallet`.
+			* 4.1.4.d. Please notice that for `Cardano` HD wallets, the `Account` and `Address Index` parameters are not taken 
 			into account by the _Wallet Managers_ which I have tested (namely `Guarda` and `Yoroi`) because they ask for 
 			the `Mnemonics` (`Seedphrase` in _Cryptocalc_). This is why in by _Cryptocalc_, these parameters are _hard-coded_
 			to Zero (for `Cardano` HD wallets only).			
-			* 4.1.4.c. You can check generated _HD Wallets_ by using _Ian Coleman BIP39_ homepage.   
+			* 4.1.4.e. You can check generated _HD Wallets_ by using _Ian Coleman BIP39_ homepage.   
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (Help / Resources / Ian Coleman BIP39)
 		* 4.1.5. _Salted Entropy_    
 		_Entropy_ is generated from _Entropy Source_ (either _Image_ or _Fortune Cookie_ ATM) and adding

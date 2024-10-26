@@ -1,1 +1,17 @@
-{"Default Blockchain":{"HD Wallet":"Bitcoin","Simple Wallet":"Bitcoin"},"Wallet Mode":"Simple Wallet","Entropy Size":{"HD Wallet":"128","Simple Wallet":256},"Blockchains":{"HD Wallet":["Bitcoin","Ethereum","Solana","Ripple","DogeCoin","Cardano","TRON","Avalanche","Bitcoin Cash","LiteCoin","Dash","Firo"],"Simple Wallet":["Bitcoin","Ethereum","Solana","DogeCoin","Avalanche","LiteCoin"]},"lang": "EN","Wallet Save Path":"$CRYPTOCALC/_output"}
+{ "Default Blockchain":
+  { "HD Wallet":     "Bitcoin",
+    "SWORD Wallet":  "Bitcoin",
+    "Simple Wallet": "Bitcoin" 
+  },
+  "Wallet Mode": "Simple Wallet",
+  "Entropy Size": { "HD Wallet": 128, "SWORD Wallet": 128, "Simple Wallet": 256 },
+  "Blockchains": 
+  { "HD Wallet":     [ "Bitcoin","Ethereum","Solana","Ripple","DogeCoin","Cardano",
+                       "TRON","Avalanche","Bitcoin Cash","LiteCoin","Dash","Firo" ],
+    "SWORD Wallet":  [ "Bitcoin","Ethereum","Solana","Ripple","DogeCoin","Cardano",
+                       "TRON","Avalanche","Bitcoin Cash","LiteCoin","Dash","Firo" ],
+    "Simple Wallet": ["Bitcoin","Ethereum","Solana","DogeCoin","Avalanche","LiteCoin" ] 
+  },
+  "lang": "EN",
+  "Wallet Save Path": "$CRYPTOCALC/_output"
+}

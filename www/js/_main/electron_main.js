@@ -41,11 +41,8 @@ const { app, Menu, BrowserWindow, ipcMain,
 require('v8-compile-cache');
 
 const fs               = require('fs');
-const firstline        = require('firstline');
 const path             = require('path');
-const sha256           = require('js-sha256');
 const { v4: uuidv4 }   = require('uuid');
-const bwipjs           = require('bwip-js');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_ 
 	  }                = require('../util/color/color_console_codes.js');
@@ -55,13 +52,10 @@ const { pretty_func_header_log,
 		
 const { Skribi }       = require('../util/log/skribi.js');		
 	  
-const { APP_VERSION, LANG, 
+const { APP_VERSION, 
         PROGRAM, ELECTRON_LAUNCHER, EXE_LAUNCHER, 
 		WITS_PATH, PATH, ARGS,
-        BLOCKCHAIN, NULL_BLOCKCHAIN, DEFAULT_BLOCKCHAIN,
-        WALLET_MODE, HD_WALLET_TYPE, SIMPLE_WALLET_TYPE,
-		WALLET_SAVE_PATH, MNEMONICS, WIF, ENTROPY_SIZE, 
-		GUI_THEME  }   = require('../const_keywords.js');
+      }                = require('../const_keywords.js');
 
 const { CMD_OPEN_WALLET,
         VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
@@ -80,11 +74,10 @@ const { CMD_OPEN_WALLET,
 		ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO, 
 		
 		ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO, 
-		ToMain_RQ_GET_SIMPLE_WALLET,
-		ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS,
+		ToMain_RQ_GET_SIMPLE_WALLET,		
 		
 		ToMain_RQ_ENTROPY_TO_MNEMONICS, ToMain_RQ_ENTROPY_TO_CHECKSUM,
-		ToMain_RQ_ENTROPY_SRC_TO_ENTROPY,	ToMain_RQ_ENTROPY_SRC_TO_PK,	
+		ToMain_RQ_ENTROPY_SRC_TO_ENTROPY,	
 
 		ToMain_RQ_MNEMONICS_AS_4LETTER, ToMain_RQ_MNEMONICS_AS_TWO_PARTS,
         ToMain_RQ_GET_UUID, 
@@ -93,20 +86,19 @@ const { CMD_OPEN_WALLET,
 		
 		ToMain_RQ_SET_MENU_ITEM_STATE,
 		
-		ToMain_RQ_GET_SECP256K1,
 		ToMain_RQ_CHECK_MNEMONICS, 
 		ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, ToMain_RQ_GUESS_MNEMONICS_LANG,
 		
 		ToMain_RQ_SAVE_OPTIONS, ToMain_RQ_RESET_OPTIONS, ToMain_RQ_UPDATE_OPTIONS,
 		ToMain_RQ_GET_FORTUNE_COOKIE,		
 		
-		ToMain_RQ_GET_HD_WALLET, 
-		ToMain_RQ_GET_HD_SOLANA_WALLET,
+		ToMain_RQ_GET_HD_WALLET,	
 		
 		FromMain_DID_FINISH_LOAD, FromMain_EXEC_CMD,
-        FromMain_FILE_NEW, FromMain_FILE_OPEN, FromMain_FILE_SAVE, 
+		
+		FromMain_FILE_NEW, FromMain_FILE_OPEN, FromMain_FILE_SAVE, 
 		FromMain_HELP_ABOUT,
-		FromMain_SHOW_MSG_DIALOG,
+
 		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_UPDATE_OPTIONS, 
 		FromMain_SEND_IMG_URL,
 		FromMain_SET_FORTUNE_COOKIE, 
@@ -115,34 +107,19 @@ const { CMD_OPEN_WALLET,
 	  
 const { ENTROPY_SOURCE_IMG_ID
       }                                 = require('../_renderer/const_renderer.js');
-	  
-const { NULL_COIN, 
-		ETHEREUM, AVALANCHE,
-		BITCOIN, DOGECOIN, LITECOIN,
-		BINANCE, SOLANA, CARDANO, 
-		RIPPLE, TRON, BITCOIN_CASH, EOS, DASH, FIRO,
-		MAINNET, TESTNET,
-		COIN_ABBREVIATIONS
-      }                                 = require('../crypto/const_blockchains.js');
-	  
-const { ADDRESS, PRIV_KEY, 
-        PRIVATE_KEY   
-      }                                 = require('../crypto/const_wallet.js');
 
+const { DEFAULT_OPTIONS
+      }                                 = require('../crypto/const_default_options.js');
+	  
 const { getShortenedString }            = require('../util/values/string_utils.js');	  
-const { getDayTimestamp }               = require('../util/system/timestamp.js');
 const { FileUtils }                     = require('../util/system/file_utils.js');
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
-const { hexToBytes, hexToB64,
-        hexWithoutPrefix, hexWithPrefix,
-        isHexString, getRandomInt  }    = require('../crypto/hex_utils.js');
+const { getRandomInt  }                 = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { L10nUtils }                     = require('../L10n/L10n_utils.js');
 
 const { Bip32Utils }                    = require('../crypto/HDWallet/bip32_utils.js');
-const { SolanaHD_API }                  = require('../crypto/HDWallet/solana_hd_api.js');
 const { HDWallet }                      = require('../crypto/HDWallet/hd_wallet.js');
-
 const { SimpleWallet }                  = require('../crypto/SimpleWallet/simple_wallet.js');
 
 const { MainModel }                     = require('./main_model.js');
@@ -150,24 +127,6 @@ const { MainModel }                     = require('./main_model.js');
 const DEFAULT_APP_CONFIG = {
 	"ToFile": true
 }; // DEFAULT_APP_CONFIG
-
-const DEFAULT_OPTIONS = {
-	[DEFAULT_BLOCKCHAIN]: { [HD_WALLET_TYPE]:     "Bitcoin", 
-	                        [SIMPLE_WALLET_TYPE]: "Bitcoin" },
-	[WALLET_MODE]:        SIMPLE_WALLET_TYPE,
-	[ENTROPY_SIZE]:       { [HD_WALLET_TYPE]:"128", [SIMPLE_WALLET_TYPE]: "256" },
-	"Blockchains": { 
-		[HD_WALLET_TYPE]:     [ "Bitcoin","Ethereum","Solana",
-                                "Ripple","DogeCoin","Cardano","TRON",
-					            "Avalanche","Bitcoin Cash",
-								"LiteCoin","Dash","Firo" ], 
-		[SIMPLE_WALLET_TYPE]: [ "Bitcoin","Ethereum","Solana",
-                                "DogeCoin","Avalanche","LiteCoin"] 
-	},
-	[LANG]: "EN",
-	[WALLET_SAVE_PATH]:"$CRYPTOCALC/_output",
-	[GUI_THEME]: "Default"
-}; // DEFAULT_OPTIONS
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -1033,7 +992,7 @@ else {
 		// Someone tried to run a second instance, we should focus our window.
 		let main_window = ElectronMain.GetInstance().getMainWindow();
 		
-		Skribi.log("   >> 1. process.argv: " + JSON.stringify(process.argv));
+		// Skribi.log("   >> 1. process.argv: " + JSON.stringify(process.argv));
 		
 		if ( main_window != null ) {
 			if ( main_window ) {
@@ -1043,20 +1002,21 @@ else {
 		}
 	}); // Manage case of second instance
 	
-	ipcMain.on( 'get-file-data', (event, data) => {
-		Skribi.log("   >> 'get-file-data': $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-        this.getCmdLineArgs();			
-	} ); // 'get-file-data'
+	//ipcMain.on( 'get-file-data', (event, data) => {
+	//	Skribi.log("   >> 'get-file-data': $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+    //    this.getCmdLineArgs();			
+	//} ); // 'get-file-data'
 	
 	// Create Electron main window, load the rest of the app, etc...
 	app.whenReady().then(() => {
 		if (   process.platform.startsWith('win') 
 			&& process.argv.length >= 2 ) {
 			const in_file_path = process.argv[1];
-			Skribi.log( "   2. process.argv: "     + JSON.stringify(process.argv) );
-			Skribi.log( "   >>> in_file_path: " + in_file_path );
+			// Skribi.log( "   2. process.argv: "     + JSON.stringify(process.argv) );
+			// Skribi.log( "   >>> in_file_path: " + in_file_path );
 		}
 		ElectronMain.GetInstance().createWindow();
 	});
 }
-// ========== Prevent Multiple instances of Electron main process// =====================================================================================
+// ========== Prevent Multiple instances of Electron main process
+// =====================================================================================

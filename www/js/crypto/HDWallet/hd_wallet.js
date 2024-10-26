@@ -11,12 +11,12 @@ const { _RED_, _CYAN_, _PURPLE_,
 const { pretty_func_header_log,
         pretty_log }       = require('../../util/log/log_utils.js');
 		
-const { NULL_COIN, COIN, COIN_TYPE,
+const { COIN, COIN_TYPE,
 	    ETHEREUM, BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA, CARDANO, RIPPLE, 
-		EOS, DASH, FIRO, TRON, 
+		DASH, FIRO, TRON, 
 		AVALANCHE, BITCOIN_CASH,   
-		MAINNET, TESTNET,
+		MAINNET,
 		COIN_ABBREVIATIONS
       }                    = require('../const_blockchains.js');
 	  
@@ -29,8 +29,7 @@ const { NULL_HEX, CRYPTO_NET,
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
-        ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH,		
-        WORD_COUNT, MNEMONICS_KP
+        ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 	  }                    = require('../../const_keywords.js');
 	  
 	  
@@ -40,7 +39,6 @@ const { hexWithoutPrefix,
 
 const { Bip39Utils }       = require('../bip39_utils.js');
 const { Bip32Utils }       = require('./bip32_utils.js');
-const { EntropySize }      = require('../entropy_size.js');
 const { CardanoHD_API }    = require('./cardano_hd_api.js');
 const { SolanaHD_API }     = require('./solana_hd_api.js');
 	

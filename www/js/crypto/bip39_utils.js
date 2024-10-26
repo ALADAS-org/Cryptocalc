@@ -28,12 +28,7 @@
 // * static GetArgs( args )
 
 const sha256         = require('js-sha256');
-const { sha512 }     = require('js-sha512');
-const { Base64 }     = require('js-base64');
-const bs58           = require('bs58');
 const Bip39Mnemonic  = require('bitcore-mnemonic');
-const bip39          = require('bip39');
-const HdAddGen       = require('hdaddressgenerator');
 const { v4: uuidv4 } = require('uuid');
 
 // https://bitcoin.stackexchange.com/questions/113286/uncaught-typeerror-bip32-fromseed-is-not-a-function

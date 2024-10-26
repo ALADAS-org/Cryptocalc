@@ -1,3 +1,6 @@
+2024/10/26
+- HD Wallet / SWORD Wallet: when setting 'Entropy Size' to 224 bits, 'Wallet tab' cannot no more be activated 
+
 2024/10/07
 - HD Wallet / Cardano: adresse retrouvée par Guarda et Yoroi <> celle calculée par Cryptocalc 
   Validation (Guarda et Yoroi): 

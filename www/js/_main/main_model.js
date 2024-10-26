@@ -15,8 +15,6 @@
 const { app } = require('electron');	
 
 const fs               = require('fs');
-const firstline        = require('firstline');
-const path             = require('path');
 const bwipjs           = require('bwip-js');
 
 const { Skribi }          = require('../util/log/skribi.js'); 
