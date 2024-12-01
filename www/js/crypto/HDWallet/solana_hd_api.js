@@ -72,7 +72,7 @@ const { EntropySize }               = require('../entropy_size.js');
 // https://www.abiraja.com/blog/from-seed-phrase-to-solana-address
 // https://stackoverflow.com/questions/72658589/how-do-i-create-an-hd-wallet-and-child-wallets-in-solana
 class SolanaHD_API { 
-	static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index  ) {
+	static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index  ) {
 		if ( crypto_net == undefined ) {
 			crypto_net = MAINNET;
 		}
@@ -107,7 +107,7 @@ class SolanaHD_API {
 					
 		// https://stackoverflow.com/questions/72658589/how-do-i-create-an-hd-wallet-and-child-wallets-in-solana
 		// https://yihau.github.io/solana-web3-demo/tour/create-keypair.html
-		const solana_seed = bip39.mnemonicToSeedSync( mnemonics, "" ); // (mnemonic, password)
+		const solana_seed = bip39.mnemonicToSeedSync( mnemonics, password ); // (mnemonic, password)
                                                                               
 		// NB: 'derivation_path' must be "hardened", even the 'address_index' (eg: "m/44'/501'/0'/0'/0')
 		let derivation_path = "m/44'/501'/" + account + "'/0'/" + address_index;		

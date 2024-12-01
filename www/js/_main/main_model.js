@@ -24,7 +24,8 @@ const { pretty_func_header_log,
 const { EXE_LAUNCHER, LANG, WALLET_MODE,
         BLOCKCHAIN, ENTROPY, ENTROPY_SIZE, 
         MNEMONICS, WIF,
-		DERIVATION_PATH, ACCOUNT, ADDRESS_INDEX 
+		PASSWORD, DERIVATION_PATH, ACCOUNT, ADDRESS_INDEX, 
+		HD_WALLET_TYPE, SWORD_WALLET_TYPE, 
 	  }                   = require('../const_keywords.js');
 const { COIN, COIN_ABBREVIATIONS
       }                   = require('../crypto/const_blockchains.js');
@@ -248,11 +249,18 @@ class MainModel {
 		
 		let json_data = {};
 		
-		json_data[WALLET_MODE]           = crypto_info[WALLET_MODE];
-		json_data["Version"]             = this.getAppVersion();
-		json_data["timestamp"]           = timestamp;
-		json_data[BLOCKCHAIN]            = crypto_info[BLOCKCHAIN];
-		json_data[COIN]                  = COIN_ABBREVIATIONS[json_data[BLOCKCHAIN]];
+		json_data[WALLET_MODE]    = crypto_info[WALLET_MODE];
+
+		if ( json_data[WALLET_MODE] == HD_WALLET_TYPE || json_data[WALLET_MODE] == SWORD_WALLET_TYPE ) {
+			if ( crypto_info[PASSWORD] != undefined && crypto_info[PASSWORD] != "") {
+				json_data[PASSWORD] = crypto_info[PASSWORD];
+			}
+		}
+			
+		json_data["Version"]     = this.getAppVersion();
+		json_data["timestamp"]   = timestamp;
+		json_data[BLOCKCHAIN]    = crypto_info[BLOCKCHAIN];
+		json_data[COIN]          = COIN_ABBREVIATIONS[json_data[BLOCKCHAIN]];
 		
 		//---------- ENTROPY_SIZE ----------
 		pretty_log( "ENTROPY_SIZE", ENTROPY_SIZE );

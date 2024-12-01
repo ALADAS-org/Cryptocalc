@@ -41,6 +41,8 @@ contextBridge.exposeInMainWorld(
 		MnemonicsToHDWalletInfo:     (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_hd_wallet_info", data),
 		MnemonicsAsTwoParts:         (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_two_parts", data),
 		
+		GeneratePassword:            (data) => ipcRenderer.invoke("ToMain:Request/GeneratePassword", data),
+		
 		GetSimpleWallet:             (data) => ipcRenderer.invoke("ToMain:Request/get_simple_wallet", data),
 		GetHDWallet:                 (data) => ipcRenderer.invoke("ToMain:Request/get_hd_wallet", data),
 		

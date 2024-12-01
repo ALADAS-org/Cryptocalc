@@ -8,6 +8,9 @@ const APP_VERSION               = '0.3.2';
 const OK                        = 0;
 const KO                        = -1;
 
+const BACKSPACE_KEY_CODE        = 8;
+const DEL_KEY_CODE              = 46;
+
 const CMD                       = 'cmd';
 const NEW_WALLET                = 'new_wallet';
 const OPEN_WALLET               = 'open_wallet';
@@ -31,6 +34,7 @@ const ENTROPY                   = 'Entropy';
 const ENTROPY_SIZE              = 'Entropy Size';
 const EXPECTED_ENTROPY_DIGITS   = 'expected_entropy_digits';
 const WORD_COUNT                = 'word_count'; 
+const PASSWORD                  = 'password';
  
 const MSG_ID                    = 'msg_id'; 
 
@@ -94,6 +98,7 @@ if (typeof exports === 'object') {
 	exports.MNEMONICS             = MNEMONICS
 	exports.WORD_INDEXES          = WORD_INDEXES
 	exports.WORD_COUNT            = WORD_COUNT
+	exports.PASSWORD              = PASSWORD
 	
 	exports.WIF                   = WIF
 	

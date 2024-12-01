@@ -27,6 +27,19 @@ const ENTROPY_COPY_BTN_ID          = "entropy_copy_btn_id";
 const ENTROPY_SIZE_SELECT_ID       = "entropy_size_select_id";
 const SW_ENTROPY_SIZE_ID           = "sw_entropy_size_id";
 
+const PASSWORD_ROW_ID              = "password_row_id";
+const PASSWORD_WITH_APPLY_CSS_CLASS    = "PasswordFielWithApplyButton";
+const PASSWORD_WITHOUT_APPLY_CSS_CLASS = "PasswordFielWithoutApplyButton";
+const PASSWORD_ID                  = "password_id";
+const APPLY_BTN_SEPARATOR_ID       = "apply_btn_separator_id";
+const APPLY_PASSWORD_BTN_ID        = "apply_password_btn_id";
+const GENERATE_PASSWORD_BTN_ID     = "generate_password_btn_id";
+const CLEAR_PASSWORD_BTN_ID        = "clear_password_btn_id";
+const EYE_BTN_ID                   = "eye_btn_id";
+const EYE_BTN_IMG_ID               = "eye_btn_img_id";
+const EYE_OPEN_ICON                = "eye_open_16px.png";
+const EYE_CLOSED_ICON              = "eye_closed_16px.png";
+
 const CHECKSUM_ID                  = "checksum_id";
 
 const FILE_IMPORT_BTN_ID           = "file_import_btn_id";

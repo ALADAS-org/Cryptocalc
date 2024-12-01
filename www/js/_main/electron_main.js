@@ -44,6 +44,8 @@ const fs               = require('fs');
 const path             = require('path');
 const { v4: uuidv4 }   = require('uuid');
 
+const PasswordGenerator = require('generate-password');
+
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_ 
 	  }                = require('../util/color/color_console_codes.js');
 	  
@@ -90,7 +92,9 @@ const { CMD_OPEN_WALLET,
 		ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, ToMain_RQ_GUESS_MNEMONICS_LANG,
 		
 		ToMain_RQ_SAVE_OPTIONS, ToMain_RQ_RESET_OPTIONS, ToMain_RQ_UPDATE_OPTIONS,
-		ToMain_RQ_GET_FORTUNE_COOKIE,		
+		ToMain_RQ_GET_FORTUNE_COOKIE,	
+
+        ToMain_RQ_GENERATE_PASSWORD,		
 		
 		ToMain_RQ_GET_HD_WALLET,	
 		
@@ -142,11 +146,11 @@ class ElectronMain {
 	
 	static GetInstance() {
 		if( ElectronMain.#_Singleton == undefined ) {
-			ElectronMain.#_Singleton = new ElectronMain();
-			if (ElectronMain.#_Singleton > 0) {
+			this.#_Singleton = new ElectronMain();
+			if (this.#_InstanceCount > 0) {
 				throw new TypeError("ElectronMain constructor called more than once.");
 			}
-			ElectronMain.#_Singleton++;
+			this.#_InstanceCount++;
         }
         return ElectronMain.#_Singleton;
     } // ElectronMain.GetInstance() 
@@ -639,7 +643,7 @@ class ElectronMain {
 		// ====================== ToMain_RQ_SET_WINDOW_TITLE ======================
 		// called like this by Renderer: window.ipcMain.SetWindowTitle(data)
 		ipcMain.on( ToMain_RQ_SET_WINDOW_TITLE, (event, data) => {
-			pretty_func_header_log( "[Electron]", ToMain_RQ_SET_WINDOW_TITLE );
+			// pretty_func_header_log( "[Electron]", ToMain_RQ_SET_WINDOW_TITLE );
 			const { coin, wallet_mode } = data;
 			ElectronMain.GetInstance().updateWindowTitle( coin, wallet_mode );
 		}); // "ToMain:Request/set_window_title" event handler
@@ -792,17 +796,37 @@ class ElectronMain {
             return img_data_asURL;			
 		}); // "ToMain:Request/drop_rnd_crypto_logo" event handler
 		
+		
+		// ================== ToMain_RQ_GENERATE_PASSWORD ==================
+		// called like this by Renderer: await window.ipcMain.GeneratePassword( data )
+		// https://www.npmjs.com/package/generate-password
+		ipcMain.handle( ToMain_RQ_GENERATE_PASSWORD, async (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_GENERATE_PASSWORD );
+			// const {} = data;
+			let new_password = PasswordGenerator.generate({
+				length:                    24,
+				numbers:                   true,
+				//symbols:                   true,
+				uppercase:                 true,
+				lowercase:                 true,
+				excludeSimilarCharacters : true,
+				strict:                    true
+			});
+
+			return new_password;
+		}); // "ToMain:Request/GeneratePassword event handler
+		
 		// ================== ToMain_RQ_GET_HD_WALLET ==================
 		// called like this by Renderer: await window.ipcMain.GetHDWallet( data )
 		ipcMain.handle( ToMain_RQ_GET_HD_WALLET, async (event, data) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_HD_WALLET );
-			const { entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index } = data;
-			pretty_log( "eMain.evtH('getHDW')> blockchain", blockchain );
+			const { entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index } = data;
+			// pretty_log( "eMain.evtH('getHDW')> blockchain", blockchain );
 			// pretty_log( "account", account );
 			// pretty_log( "address_index", address_index );
 			// Skribi.log("   options: " + JSON.stringify(options));
-			let wallet = await HDWallet.GetWallet( entropy_hex, salt_uuid, 
-							                       blockchain, crypto_net, account, address_index );
+			let wallet = await HDWallet.GetWallet
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );
 			return wallet;
 		}); // "ToMain:Request/get_hd_wallet" event handler
 		
@@ -811,10 +835,10 @@ class ElectronMain {
 		ipcMain.handle( ToMain_RQ_GET_SIMPLE_WALLET, async ( event, data ) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_SIMPLE_WALLET );
 			const { private_key, salt_uuid, blockchain, crypto_net } = data;
-			pretty_log( "eMain.evtH('getSW')> private_key", private_key );
-			pretty_log( "eMain.evtH('getSW')> salt_uuid", salt_uuid );
-			pretty_log( "eMain.evtH('getSW')> blockchain", blockchain );
-			pretty_log( "eMain.evtH('getSW')> crypto_net", crypto_net );
+			// pretty_log( "eMain.evtH('getSW')> private_key", private_key );
+			// pretty_log( "eMain.evtH('getSW')> salt_uuid", salt_uuid );
+			// pretty_log( "eMain.evtH('getSW')> blockchain", blockchain );
+			// pretty_log( "eMain.evtH('getSW')> crypto_net", crypto_net );
 			if ( private_key == undefined || private_key == "" ) {
 				throw new Error("ElectronMain ToMain_RQ_GET_SIMPLE_WALLET handler: 'private_key' NOT DEFINED");
 			} 
@@ -973,7 +997,7 @@ class ElectronMain {
 		ipcMain.on( ToMain_RQ_SET_MENU_ITEM_STATE, (event, data) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_SET_MENU_ITEM_STATE );
 			const { menu_item_id, enabled } = data;
-			pretty_log( "eMain.evtH('setMenuItemState')> menu_item_id(state)", menu_item_id + "(" + enabled + ")" );
+			// pretty_log( "eMain.evtH('setMenuItemState')> menu_item_id(state)", menu_item_id + "(" + enabled + ")" );
 			let menu_elt = Menu.getApplicationMenu().getMenuItemById( menu_item_id );
 			// pretty_log( "eMain.evtH('setMenuItemState')> menu_elt", menu_elt );
 			menu_elt.enabled = enabled;

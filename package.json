@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Crypto Calculator",
   "main": "./www/js/_main/electron_main.js",
   "//1": "electron .",
@@ -74,6 +74,7 @@
     "ethereumjs-wallet": "^1.0.2",
     "filter-console": "^1.0.0",
     "firstline": "^2.0.2",
+    "generate-password": "^1.7.1",
     "hdaddressgenerator": "^1.1.12",
     "hdkey": "^2.1.0",
     "js-base64": "^3.7.7",

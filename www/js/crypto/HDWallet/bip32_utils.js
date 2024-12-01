@@ -66,7 +66,7 @@ const { NULL_HEX,
 	  
 const { BLOCKCHAIN, NULL_BLOCKCHAIN, 
         WORD_COUNT, MNEMONICS,
-        ACCOUNT, ADDRESS_INDEX,
+        PASSWORD, ACCOUNT, ADDRESS_INDEX,
 		DERIVATION_PATH, WIF
 	  }                    = require('../../const_keywords.js');
 		
@@ -122,19 +122,25 @@ class Bip32Utils {
         if ( isString( coin_type ) )  coin_type = parseInt( coin_type );		
 		pretty_log( "b32.mnk2wi> coin_type", coin_type );
 		
+		let password = "";
+		if ( args[PASSWORD] != undefined && args[PASSWORD] != null && args[PASSWORD] != "" ) { 
+			password = args[PASSWORD];
+		}
+		pretty_log( "b32.mnk2wi> password", password );
+		
 		let account = 0;
 		if ( args[ACCOUNT] != undefined ) { 
 			account = args[ACCOUNT];
 			if ( isString( account ) )  account = parseInt( account );
 		}
-		pretty_log( "b32.mnk2wi> account", account );
+		// pretty_log( "b32.mnk2wi> account", account );
 		
 		let address_index = 0;
 		if ( args[ADDRESS_INDEX] != undefined ) { 
 			address_index = args[ADDRESS_INDEX];
 			if ( isString( address_index ) )  address_index = parseInt( address_index );
 		}
-		pretty_log( "b32.mnk2wi> address_index", address_index );
+		// pretty_log( "b32.mnk2wi> address_index", address_index );
 		
 		//console.log(   "   account_index: " + account_index + "   " 
 		//             + "   address_index: " + address_index );
@@ -178,8 +184,8 @@ class Bip32Utils {
 		//-------------------- Master Seed --------------------
 		// https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786
 		//                            ====Master Private Key====    =========Chaincode=========
-		// seed (64 bytes/512 bits) = LeftSide(32 bytes/256 bits) + RightSide(32 bytes/256 bits)		
-		const master_seed = bip39.mnemonicToSeedSync( mnemonics, "" );	
+		// seed (64 bytes/512 bits) = LeftSide(32 bytes/256 bits) + RightSide(32 bytes/256 bits)
+		const master_seed = bip39.mnemonicToSeedSync( mnemonics, password );	
 		
 		let master_seed_hex   = uint8ArrayToHex( master_seed );
 	    let master_seed_bytes = master_seed_hex.length / 2;
@@ -193,19 +199,8 @@ class Bip32Utils {
 		//********-------------------- Test HDKey --------------------
 		// https://www.npmjs.com/package/hdkey
 		const hdkey = HDKey.fromMasterSeed( Buffer.from( master_seed_hex, 'hex' ) );
-		//console.log(  "   " + _YELLOW_
-	    //            + "hdkey.PRIV_KEY:            " + _END_ + hdkey.privateExtendedKey);
 
-		//console.log(  "   " + _YELLOW_
-	    //            + "hdkey.XPUB:             " + _END_ + hdkey.publicExtendedKey);
-					
 		const childkey = hdkey.derive( master_derivation_path );		
-		//console.log(  "   " + _YELLOW_
-	    //            + "childkey.PRIV_KEY:         " + _END_ + childkey.privateExtendedKey);
-		//console.log(  "   " + _YELLOW_
-	    //            + "childkey.XPUB:          " + _END_ + childkey.publicExtendedKey);
-		//-------------------- Test HDKey
-		//********
  
         //-------------------- Master Private Key --------------------
 		//                            ====Master Private Key====
@@ -249,7 +244,7 @@ class Bip32Utils {
 		let private_key = uint8ArrayToHex( child_key["__D"] );
 		pretty_log( "b32.mnk2wi> private key", private_key );
 		hdwallet_info[PRIVATE_KEY] = private_key;
-		hdwallet_info[PRIV_KEY]        = private_key;
+		hdwallet_info[PRIV_KEY]    = private_key;
 		//-------------------- First Private Key
 
 		
@@ -258,9 +253,14 @@ class Bip32Utils {
 		//*******************************************************************
 		// https://www.npmjs.com/package/hdaddressgenerator
 		//let bip44 = HdAddGen.withMnemonic( mnemonics, false, coin );
+		let passphrase = false;
+		if ( password != "" ) {
+			passphrase = password;
+		    hdwallet_info[PASSWORD] = password;
+		}	
 		let bip44 = HdAddGen.withMnemonic
-					( mnemonics,  false,     coin, false,   44,  account );
-        //                      passphrase       hardened   bip  account        
+					( mnemonics,  passphrase, coin,    false,   44,  account );
+        //                        passphrase          hardened  bip  account        
 		//*** BIP44 *********************************************************
 
 		// Generates 'expected_address_count' addresse from index 'address_index'
@@ -316,7 +316,7 @@ class Bip32Utils {
 		//            + "account_index type: " + _END_ + typeof account_index);
 		
 		pretty_log( "b32.mnk2wi> coin_type", coin_type );
-		pretty_log( "b32.mnk2wi> account", account );
+		// pretty_log( "b32.mnk2wi> account", account );
 		let account_xpub = getMasterPublicKey( master_seed, coin_type, account );
 		//console.log(  "   " + _YELLOW_
 		//            + "Account XPUB:           " + _END_ + account_xpub);
@@ -325,7 +325,7 @@ class Bip32Utils {
 					 
 		//--------------------------- WIF ---------------------------
 		let wif = bs58.encode( Buffer.from( child_private_key, 'hex' ) );
-		pretty_log( ">> WIF", wif );
+		pretty_log( "b32.mnk2wi>> WIF", wif );
 		hdwallet_info[WIF] = wif;
 		//--------------------------- WIF	
 
