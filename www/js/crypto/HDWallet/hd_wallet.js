@@ -29,7 +29,7 @@ const { NULL_HEX, CRYPTO_NET,
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
-        ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
+        PASSWORD, ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 	  }                    = require('../../const_keywords.js');
 	  
 	  
@@ -43,7 +43,7 @@ const { CardanoHD_API }    = require('./cardano_hd_api.js');
 const { SolanaHD_API }     = require('./solana_hd_api.js');
 	
 class HDWallet {	
-    static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index  ) {
+    static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index  ) {
 		let coin = COIN_ABBREVIATIONS[blockchain];
 		if ( crypto_net == undefined ) {
 			crypto_net = MAINNET;
@@ -63,7 +63,7 @@ class HDWallet {
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
 		pretty_log( "hdw.gw> mnemonics", mnemonics_items[0] );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "hdw.gw>", mnemonics_items[1] );		
+			pretty_log( "", mnemonics_items[1] );		
 		}
 		
 		//pretty_log( "hdw.gw> blockchain",    blockchain );
@@ -71,6 +71,7 @@ class HDWallet {
 		//pretty_log( "hdw.gw> address_index", address_index );
 		
 		let options = { [BLOCKCHAIN]:    blockchain, 
+		                [PASSWORD]:      password,
 			            [ACCOUNT]:       account,
 					    [ADDRESS_INDEX]: address_index, 
 			            [UUID]:          salt_uuid };
@@ -94,11 +95,16 @@ class HDWallet {
             //console.log("   >> hdwallet_info:\n" + JSON.stringify(hdwallet_info));	
 
 			new_wallet[ADDRESS]         = hdwallet_info[ADDRESS]; 
-			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);
+			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);	
 			
 			new_wallet[COIN]            = hdwallet_info[COIN];
 			new_wallet[COIN_TYPE]       = hdwallet_info[COIN_TYPE];
-			new_wallet[PRIVATE_KEY] = hdwallet_info[PRIVATE_KEY]; 
+			
+			if ( hdwallet_info[PASSWORD] != undefined && hdwallet_info[PASSWORD] != "") { 
+				new_wallet[PASSWORD] = hdwallet_info[PASSWORD];
+			}				
+			
+			new_wallet[PRIVATE_KEY]     = hdwallet_info[PRIVATE_KEY]; 
 			new_wallet[DERIVATION_PATH] = hdwallet_info[DERIVATION_PATH];
 			//pretty_log("hdw.gw> derivation_path", new_wallet[DERIVATION_PATH]);
 			
@@ -109,11 +115,11 @@ class HDWallet {
 		}
 		else if ( blockchain == CARDANO ) {	
 			new_wallet = await CardanoHD_API.GetWallet
-			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index );
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );
 		}		
 		else if ( blockchain == SOLANA ) {	
 			new_wallet = await SolanaHD_API.GetWallet
-			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index );		
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );		
 		}
 		return new_wallet;
 	} // HDWallet.GetWallet()
@@ -123,7 +129,7 @@ class HDWallet {
 		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
 		null_wallet[CRYPTO_NET]      = "Null-NET";
 		null_wallet[UUID]            = "Null-UUID";
-		null_wallet[PRIVATE_KEY] = NULL_HEX;
+		null_wallet[PRIVATE_KEY]     = NULL_HEX;
 		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
 		null_wallet[ADDRESS]         = "Null-ADDRESS";
 		null_wallet[MNEMONICS]       = "Null-MNEMONICS";

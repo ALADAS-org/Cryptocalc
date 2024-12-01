@@ -39,6 +39,8 @@ const ToMain_RQ_ENTROPY_TO_MNEMONICS              = "ToMain:Request/entropy_to_m
 const ToMain_RQ_ENTROPY_TO_CHECKSUM               = "ToMain:Request/entropy_to_checksum";
 const ToMain_RQ_ENTROPY_SRC_TO_PK                 = "ToMain:Request/entropy_src_to_pk";
 
+const ToMain_RQ_GENERATE_PASSWORD                 = "ToMain:Request/GeneratePassword";
+
 const ToMain_RQ_MNEMONICS_AS_4LETTER              = "ToMain:Request/mnemonics_as_4letter";
 const ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = "ToMain:Request/mnemonics_as_two_parts";
 const ToMain_RQ_CHECK_MNEMONICS                   = "ToMain:Request/check_mnemonics";
@@ -88,15 +90,15 @@ const FromMain_SET_VARIABLE                     = "FromMain:SetVariable";
 const FromMain_SEND_IMG_URL                     = "FromMain:SendImageURL";
 
 if ( typeof exports === 'object' ) {
-	exports.CMD_NONE                                 = CMD_NONE
+	exports.CMD_NONE                                   = CMD_NONE
 	
     exports.CMD_NEW_WALLET                             = CMD_NEW_WALLET
     exports.CMD_OPEN_WALLET                            = CMD_OPEN_WALLET
 	exports.CMD_GENERATE_WALLET                        = CMD_GENERATE_WALLET
 	exports.CMD_REFRESH_WALLET                         = CMD_REFRESH_WALLET
 	
-	exports.VIEW_TOGGLE_DEVTOOLS                     = VIEW_TOGGLE_DEVTOOLS
-    exports.TOOLS_OPTIONS                            = TOOLS_OPTIONS	
+	exports.VIEW_TOGGLE_DEVTOOLS                       = VIEW_TOGGLE_DEVTOOLS
+    exports.TOOLS_OPTIONS                              = TOOLS_OPTIONS	
 	
 	exports.ToMain_RQ_QUIT_APP                         = ToMain_RQ_QUIT_APP
 	
@@ -118,6 +120,8 @@ if ( typeof exports === 'object' ) {
 	exports.ToMain_RQ_ENTROPY_TO_CHECKSUM              = ToMain_RQ_ENTROPY_TO_CHECKSUM	
 	exports.ToMain_RQ_ENTROPY_SRC_TO_PK                = ToMain_RQ_ENTROPY_SRC_TO_PK
 	exports.ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO      = ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO
+	
+	exports.ToMain_RQ_GENERATE_PASSWORD                = ToMain_RQ_GENERATE_PASSWORD
 	
 	exports.ToMain_RQ_OPEN_URL                         = ToMain_RQ_OPEN_URL	
 	exports.ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER   = ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER

@@ -113,12 +113,12 @@ class Bip39Utils {
 		if ( lang == undefined )  lang = "EN";
 		
 		let word_count = EntropySize.GetWordCount( entropy_hex );
-		pretty_log( "b39.E2Mnk> word_count", word_count );
+		// pretty_log( "b39.E2Mnk> word_count", word_count );
 		
         // pretty_log( "b39.E2Mnk> lang", lang );	
 
         let checksum_size = EntropySize.GetChecksumBitCount( word_count );
-        pretty_log( "b39.E2Mnk> checksum_size", checksum_size);
+        // pretty_log( "b39.E2Mnk> checksum_size", checksum_size);
 		
 		// pretty_log( "b39.E2Mnk> entropy_hex", entropy_hex );
         entropy_hex = EntropySize.GetSHA256Substring( entropy_hex, word_count );
@@ -127,7 +127,7 @@ class Bip39Utils {
 		let entropy_bits = hexToBinary( entropy_hex );
 				                                                            
 		let checksum_bits = Bip39Utils.EntropyToChecksum( entropy_hex ); // NB: entropy MUST BE HASHED to compute 'Checksum'
-		pretty_log( Bip39Utils.LabelWithSize("b39.E2Mnk> checksum_bits 2", checksum_size), checksum_bits );
+		// pretty_log( Bip39Utils.LabelWithSize("b39.E2Mnk> checksum_bits 2", checksum_size), checksum_bits );
 	
 	    entropy_bits += checksum_bits;
 
@@ -195,9 +195,9 @@ class Bip39Utils {
 			return error_msg;
 		}		
                                                             
-		let word_index            = 0;
-		let word                  = "";
-		let mnemonics             = "";	
+		let word_index = 0;
+		let word       = "";
+		let mnemonics  = "";	
 		
         // https://github.com/massmux/HowtoCalculateBip39Mnemonic		
 		let private_key_bits = hexToBinary( private_key );		
@@ -214,7 +214,7 @@ class Bip39Utils {
 		let pk_sha256_bits = hexToBinary( pk_sha256 );		
 	    
 	    let checksum_bits = pk_sha256_bits.substring( 0, checksum_size );		
-		pretty_log( "bip39.pk2Mnk> " + Bip39Utils.LabelWithSize( "checksum_bits", checksum_size ), checksum_bits );
+		// pretty_log( "bip39.pk2Mnk> " + Bip39Utils.LabelWithSize( "checksum_bits", checksum_size ), checksum_bits );
 	
 	    private_key_bits += checksum_bits;
 		
@@ -299,8 +299,7 @@ class Bip39Utils {
 	} // Bip39Utils.EntropySourceToMnemonics()
 	
 	static EntropyToChecksum( entropy_hex ) {
-		pretty_func_header_log( "Bip39Utils.EntropyToChecksum" );
-		
+		// pretty_func_header_log( "Bip39Utils.EntropyToChecksum" );		
 		let word_count    		= EntropySize.GetWordCount( entropy_hex );
 		let checksum_size 		= 8;
 		

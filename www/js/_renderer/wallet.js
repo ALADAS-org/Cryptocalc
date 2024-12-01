@@ -14,6 +14,7 @@ class Wallet {
 							"word_count": "word_count_select_id",
 							"mnemonics": "mnemonics_id",
 							"checksum": "checksum_id",
+							"password": "password_id",
 							"Word indexes": "word_indexes_id",
 		                    "address": "address_id", 
 							"Private Key": "private_key_id",
@@ -31,7 +32,7 @@ class Wallet {
 	reset() {
 		// trace2Main( pretty_func_header_format( "Wallet.reset" ) );
 		
-		this.attributes[CMD]       = CMD_NONE; 
+		this.attributes[CMD]  = CMD_NONE; 
 		
 		this.attributes[LANG] = ( this.options[LANG] != undefined ) ? this.options[LANG]:"EN";
 		//trace2Main( pretty_format( "W.reset> lang", this.attributes[LANG] ) );
@@ -39,6 +40,8 @@ class Wallet {
 		
 		let wallet_mode = ( this.options[WALLET_MODE] != undefined ) ? this.options[WALLET_MODE]:SIMPLE_WALLET_TYPE;
 		this.attributes[WALLET_MODE] = wallet_mode;
+		
+		this.attributes[PASSWORD] = ""; 
 		
 		if (    this.options[DEFAULT_BLOCKCHAIN] != undefined 
 		     && this.options[DEFAULT_BLOCKCHAIN][wallet_mode] == undefined ) {
@@ -72,7 +75,7 @@ class Wallet {
 	} // getAttribute()
 	
 	setAttribute( attr_name, value ) {
-		trace2Main( pretty_func_header_format( "Wallet.setAttribute", attr_name + " = " + value) );
+		// trace2Main( pretty_func_header_format( "Wallet.setAttribute", attr_name + " = " + value) );
 		this.attributes[attr_name] = value;
 		if ( Wallet.GUI_NODE_IDs[attr_name] != undefined && Wallet.GUI_NODE_IDs[attr_name] != "" ) {
 			if ( attr_name == "coin_type" ) { value = value.toString() + "'"; }

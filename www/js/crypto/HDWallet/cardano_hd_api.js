@@ -73,7 +73,7 @@ const harden = (num) => {
 // entropy     a3fce93b23edb41a877d021e51b951bacb50805d7f9100aeeef421e5a7269b38
 // => address: addr1q92edd203ck2h6edm6nk3p663vj46q7r2t7vx46es4sdhhudwd3a4hav3xecst032qy5dpmu9x9fk77lqtckpkdsw0ysp0g00d
 class CardanoHD_API {
-    static GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index ) {
+    static GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index ) {
 		if ( crypto_net == undefined )  crypto_net = MAINNET;
 		
 		blockchain = CARDANO;

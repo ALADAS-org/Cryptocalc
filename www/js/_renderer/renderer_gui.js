@@ -2,6 +2,9 @@
 // ================================   renderer_gui.js   ================================
 // =====================================================================================
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
+
+// password in HD wallet:
+// https://help.blockstream.com/hc/en-us/articles/8712301763737-What-is-a-BIP39-passphrase
 "use strict";
 
 // ===============================  RendererGUI class  ===============================
@@ -24,6 +27,7 @@
 // * async  updateOptionsFields( json_data )
 // * async  updateFields()
 // * async  updateWalletMode( wallet_mode )
+// * async  updatePassword( password )
 // * async  updateEntropySize( entropy_size )
 // * async  updateEntropy( entropy )
 // *        updateBlockchain( blockchain )
@@ -41,9 +45,17 @@
 // * 	    clearFields( field_ids )
 //
 // * async  onGUIEvent( data )
-// * async  onFileOpenWallet( evt )
-// * async  onFileSaveWallet( evt )
-//   	    showSaveWalletInfoDialog() {
+//
+// *        GuiClearPassword()
+// *        GuiGeneratePassword()
+// *        GuiTogglePasswordVisibility()
+// *        GuiSetPasswordApplyState()
+//
+// * async  fileSaveWallet()
+// * async  fileOpenWallet()
+//
+//   	    showSaveWalletInfoDialog()
+//
 // * async  onGuiUpdateEntropySize( evt )
 // * async  onGuiUpdateWordCount( evt )
 // * async  onGuiUpdateLang( evt )
@@ -121,6 +133,8 @@ class RendererGUI {
 		this.wallet_info.setAttribute( WORD_COUNT, 24 );
 				
 		this.first_time                   = true; 
+		
+		this.password_visible             = false;
 		this.wits_path                    = "";
 		
         this.new_cmd_count                = 0;
@@ -137,7 +151,7 @@ class RendererGUI {
 	} // ** Private constructor **
 	
 	async newWallet( options_json_data ) {
-		trace2Main( pretty_format_error( "=============================================" ) );
+		trace2Main( "===== rGUI.newW> ===============================================================" );
 		trace2Main( pretty_func_header_format( "RendererGUI.newWallet" ) );
 		
 		trace2Main( pretty_format( "RendererGUI.newWallet" ) );
@@ -192,7 +206,6 @@ class RendererGUI {
 		// ---------- Coin Type
 
 		// ---------- Entropy Size ----------
-		trace2Main( pretty_format( "rGUI.newW> b4 entropy_size" ) );
 		let entropy_size = options_json_data[ENTROPY_SIZE][wallet_mode];
 		this.wallet_info.setAttribute( ENTROPY_SIZE, entropy_size ); 
 		await this.updateEntropySize( entropy_size );
@@ -200,12 +213,12 @@ class RendererGUI {
 		// ---------- Entropy Size
 		
 		// ---------- Entropy ----------
-		let	entropy_1 = HtmlUtils.GetNodeValue( ENTROPY_ID );
-		trace2Main( pretty_format( "rGUI.newW> entropy 1", entropy_1 ) );
+		// let	entropy_1 = HtmlUtils.GetNodeValue( ENTROPY_ID );
+		// trace2Main( pretty_format( "rGUI.newW> entropy 1", entropy_1 ) );
 		
 		let	entropy = await this.generateEntropyFromEntropySource();
         this.wallet_info.setAttribute( ENTROPY, entropy ); 		
-        trace2Main( pretty_format( "rGUI.newW> entropy 2", entropy ) );	
+        trace2Main( pretty_format( "rGUI.newW> entropy", entropy ) );	
 
 		await this.updateChecksum( entropy );		
 		// ---------- Entropy 
@@ -235,7 +248,7 @@ class RendererGUI {
         // --------------------------------
 		
 		this.wallet_info.setAttribute( CMD, CMD_NONE );		
-		trace2Main( pretty_func_header_format( "<END> RendererGUI.newWallet" ) );
+		// trace2Main( pretty_func_header_format( "<END> RendererGUI.newWallet" ) );
 		
 		this.updateFieldsVisibility();
 		
@@ -258,8 +271,9 @@ class RendererGUI {
 	} // async newWallet()
 	
 	async openWallet( json_data ) {
+		trace2Main( "===== rGUI.openW> ===============================================================" );
 		trace2Main( pretty_func_header_format( "RendererGUI.openWallet" ) );
-		trace2Main( pretty_format( "rGUI.openW> ", JSON.stringify(json_data) ) );
+		trace2Main( JSON.stringify(json_data) );
 
         this.cb_enabled = false;
 		
@@ -273,7 +287,7 @@ class RendererGUI {
 		// ---------- Entropy ----------
 		let entropy = json_data[ENTROPY];
 		this.wallet_info.setAttribute( ENTROPY, entropy );
-		trace2Main( pretty_format( "rGUI.openW> 1. entropy", entropy ) );
+		trace2Main( pretty_format( "rGUI.openW> entropy", entropy ) );
 		// ---------- Entropy		
 		
 		// ---------- Entropy Size ----------
@@ -281,13 +295,13 @@ class RendererGUI {
 		if ( isString( entropy_size ) )  entropy_size = parseInt( entropy_size );
 		this.wallet_info.setAttribute( ENTROPY_SIZE, entropy_size );
         await this.updateEntropySize( entropy_size );		
-		trace2Main( pretty_format( "rGUI.openW> 2. entropy_size", entropy_size ) );		
+		trace2Main( pretty_format( "rGUI.openW> entropy_size", entropy_size ) );		
 		// ---------- Entropy Size	
 		
 		// ---------- Wallet Mode ----------
 		let wallet_mode = json_data[WALLET_MODE];		
 		this.wallet_info.setAttribute( WALLET_MODE, wallet_mode );
-		trace2Main( pretty_format( "rGUI.openW> 4. wallet_mode", wallet_mode ) );
+		trace2Main( pretty_format( "rGUI.openW> wallet_mode", wallet_mode ) );
 		await this.updateWalletMode( wallet_mode );	
 		// ---------- Wallet Mode
 		
@@ -296,58 +310,65 @@ class RendererGUI {
 		let blockchain = json_data[BLOCKCHAIN];
 		this.wallet_info.setAttribute( BLOCKCHAIN, blockchain ); 
         await this.updateBlockchain( blockchain );	
-		trace2Main( pretty_format( "rGUI.openW> 3. blockchain", blockchain ) );
+		trace2Main( pretty_format( "rGUI.openW> blockchain", blockchain ) );
 		// ---------- Blockchain
 		
 		//---------- lang ----------
 		let lang = json_data[LANG];			
 		await this.updateLanguage( lang );	
-		trace2Main( pretty_format( "rGUI.openW> 5. lang", lang ) );	
+		trace2Main( pretty_format( "rGUI.openW> lang", lang ) );	
         //---------- lang	
 		
 		// ---------- Coin ----------
 		let coin = COIN_ABBREVIATIONS[blockchain];		
 		this.wallet_info.setAttribute( COIN, coin ); 
-		trace2Main( pretty_format( "rGUI.openW> 6. coin", coin ) );
+		// trace2Main( pretty_format( "rGUI.openW> coin", coin ) );
 		// ---------- Coin
 		
 		// ---------- Coin Type ----------
 		let coin_type = COIN_TYPES[blockchain];		
 		this.wallet_info.setAttribute( COIN_TYPE, coin_type ); 
-		trace2Main( pretty_format( "rGUI.openW> 7. coin(coin_type)" , coin + "(" + coin_type + ")" ) );
-		// ---------- Coin Type
-		
+		trace2Main( pretty_format( "rGUI.openW> coin(coin_type)" , coin + "(" + coin_type + ")" ) );
+		// ---------- Coin Type		
 
 		// ---------- Word Count ----------
 		let word_count = getWordCount( entropy_size );
 		this.wallet_info.setAttribute( WORD_COUNT, word_count );
         // ---------- Word Count
-
+		
 		// ---------- Checksum ----------
 		// Note: requires 'word_count' updated in 'wallet_info'
 		await this.updateChecksum( entropy );
         // ---------- Checksum		
-		
-		if ( wallet_mode == HD_WALLET_TYPE ) {
+
+		if ( wallet_mode == HD_WALLET_TYPE ) {				
+			// ---------- Password ----------
+			if ( json_data[PASSWORD] != undefined ) {
+				let password = json_data[PASSWORD];
+				this.wallet_info.setAttribute( PASSWORD, password );
+				trace2Main( pretty_format( "rGUI.openW> password", password ) );	
+			}	
+			// ---------- Password
+
 		    let account = json_data[ACCOUNT]; 
 			this.wallet_info.setAttribute( ACCOUNT, account );
-			trace2Main( pretty_format( "rGUI.openW> 8. account", account ) );						
+			// trace2Main( pretty_format( "rGUI.openW> account", account ) );						
 			
 			let address_index = json_data[ADDRESS_INDEX];
             this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
-			trace2Main( pretty_format( "rGUI.openW> 9. address_index", address_index ) );
+			// trace2Main( pretty_format( "rGUI.openW> address_index", address_index ) );
 		} // HD_WALLET_TYPE	
 		
 		// ---------- Mnemonics ----------
 		let mnemonics = json_data[MNEMONICS];
 		this.wallet_info.setAttribute( MNEMONICS, mnemonics );
-		trace2Main( pretty_format( "rGUI.openW> 10. mnemonics", mnemonics ) );		
+		trace2Main( pretty_format( "rGUI.openW> mnemonics", mnemonics ) );		
 		// ---------- Mnemonics
 		
 		// ---------- Address ----------
 		let address = json_data[ADDRESS];
 		this.wallet_info.setAttribute( ADDRESS, address );
-		trace2Main( pretty_format( "rGUI.openW> 11. address", address ) );
+		trace2Main( pretty_format( "rGUI.openW> address", address ) );
         // ---------- Address
 		
 		//---------- Update 'Address Hardened Suffix ("" or "'") in "Wallet" Tab ----------
@@ -358,19 +379,19 @@ class RendererGUI {
 		// ---------- Word_Indexes ----------
 		let word_indexes = json_data[WORD_INDEXES];
 		this.wallet_info.setAttribute( WORD_INDEXES, word_indexes );
-		trace2Main( pretty_format( "rGUI.openW> 12. word_indexes", word_indexes ) );
+		trace2Main( pretty_format( "rGUI.openW> word_indexes", word_indexes ) );
         // ---------- Word_Indexes		
 		
 		// ---------- WIF ----------
 		let wif = json_data[WIF];
 		this.wallet_info.setAttribute( WIF, wif );
-		trace2Main( pretty_format( "rGUI.openW> 13. wif", wif ) );
+		trace2Main( pretty_format( "rGUI.openW> wif", wif ) );
         // ---------- WIF	
 		
 		// ---------- Private Key ----------
 		let private_key = json_data[PRIVATE_KEY];
 		this.wallet_info.setAttribute( PRIVATE_KEY, private_key );
-		trace2Main( pretty_format( "rGUI.openW> 14. private key", private_key ) );
+		trace2Main( pretty_format( "rGUI.openW> private key", private_key ) );
         // ---------- Private Key	
 
 		// ---------- Update Window Title ----------
@@ -378,16 +399,12 @@ class RendererGUI {
 		window.ipcMain.SetWindowTitle( data );
 		// ---------- Update Window Title
 		
-		// --------------------------------		
-        // await this.updateFields( entropy );	       	
-        // --------------------------------
-
 		this.wallet_info.setAttribute( CMD, CMD_NONE );
 		this.updateFieldsVisibility();
 
 		this.cb_enabled = true;
 		
-		trace2Main( pretty_func_header_format( "<END> RendererGUI.openWallet" ) );
+		// trace2Main( pretty_func_header_format( "<END> RendererGUI.openWallet" ) );
 	} // async openWallet()
 		
 	async generateSimpleWalletAddress( blockchain, entropy_hex ) {
@@ -410,9 +427,9 @@ class RendererGUI {
 		
 		// trace2Main( pretty_format( "rGUI.genSW> entropy_src", getShortenedString( entropy_src ) ) );
 		
-		let new_wallet  = {};				
-		let salt_uuid   = HtmlUtils.GetNodeValue(SALT_ID);
-		let wif         = "";
+		let new_wallet = {};				
+		let salt_uuid  = HtmlUtils.GetNodeValue(SALT_ID);
+		let wif        = "";
 		
 		let private_key = entropy_hex;
 		// trace2Main( pretty_format("rGUI.genSW> MAINNET", MAINNET) );
@@ -501,7 +518,7 @@ class RendererGUI {
         let mnemonics_as_2parts = asTwoParts( mnemonics, 15 );
         trace2Main( pretty_format( "rGUI.genHDW> mnemonics(" + word_count + ")", mnemonics_as_2parts[0] ) );		
         if ( mnemonics_as_2parts.length > 1 ) { 
-			trace2Main( pretty_format("rGUI.genHDW>", mnemonics_as_2parts[1] ) );				
+			trace2Main( pretty_format("", mnemonics_as_2parts[1] ) );				
 		}
 		
 		let wif             = "";
@@ -509,6 +526,7 @@ class RendererGUI {
 		let salt_uuid    	= HtmlUtils.GetNodeValue( SALT_ID );
         let derivation_path = "";	
         let crypto_net	    = MAINNET;
+		let password        = "";
 		let account         = "0";
 		let address_index   = "0";
 		let wallet_mode     = this.wallet_info.getAttribute(WALLET_MODE);
@@ -522,16 +540,21 @@ class RendererGUI {
 			|| blockchain == BITCOIN_CASH 
 			|| blockchain == DASH || blockchain == FIRO ) {
 				
-			trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
+			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
 
-			let salt_uuid     = HtmlUtils.GetNodeValue( SALT_ID );
+			let salt_uuid = HtmlUtils.GetNodeValue( SALT_ID );
+			
+			// ---------- get 'Password' ----------
+			password = this.wallet_info.getAttribute(PASSWORD);
+			trace2Main( pretty_format( "rGUI.genHDW> password", "'" + password + "'") );
+			// ---------- get 'Password'
 			
 			// ---------- get 'Account' ----------
 			if ( wallet_mode == HD_WALLET_TYPE )
 				account = this.wallet_info.getAttribute(ACCOUNT);
 			else if ( wallet_mode == SWORD_WALLET_TYPE )
 			    account = Math.floor( Math.random() * (ACCOUNT_MAX + 1) );
-			trace2Main( pretty_format( "rGUI.genHDW> account", account ) );
+			// trace2Main( pretty_format( "rGUI.genHDW> account", account ) );
 			// ---------- get 'Account'
 
 			// ---------- get 'Address Index' ----------
@@ -539,11 +562,12 @@ class RendererGUI {
 				address_index = this.wallet_info.getAttribute(ADDRESS_INDEX);
 			else if ( wallet_mode == SWORD_WALLET_TYPE )
 				address_index = Math.floor( Math.random() * (ADDRESS_INDEX_MAX + 1) );
-			trace2Main( pretty_format( "rGUI.genHDW> account", account ) );
+			// trace2Main( pretty_format( "rGUI.genHDW> address_index", address_index ) );
 			// ---------- get 'Address Index'			
 			
 			// ========== Wallet Generation ==========  
-			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, account, address_index };
+			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index };
+			// trace2Main( pretty_format( "rGUI.genHDW> data", JSON.stringify(data) ) );
 			new_wallet = await window.ipcMain.GetHDWallet( data );
 			// ========== Wallet Generation
 			
@@ -565,7 +589,8 @@ class RendererGUI {
 			if (    blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN
 			     || blockchain == BITCOIN_CASH
                  || blockchain == DASH || blockchain == FIRO ) {
-                wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";	
+                wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
+                trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
 			}
 			else if ( blockchain == RIPPLE || blockchain == TRON ) {				
 				PRIV_KEY = new_wallet[PRIVATE_KEY];
@@ -640,7 +665,7 @@ class RendererGUI {
 		
 		this.cb_enabled = true;
 		
-		trace2Main( "rGUI.genHDW> ------ END OF RendererGUI.generateHDWalletAddress ------" );
+		// trace2Main( "rGUI.genHDW> ------ END OF RendererGUI.generateHDWalletAddress ------" );
 		return new_wallet;
 	} // async generateHDWalletAddress()
 	
@@ -689,7 +714,7 @@ class RendererGUI {
 		// -------------------- Toolbar icon buttons -------------------- 
 		this.setEventHandler( FILE_NEW_ICON_ID, 'click', 
 			async (evt) => { 
-			    trace2Main( pretty_format( "rGUI.evtHandler> " + FILE_NEW_ICON_ID + " *****************" ) );
+			    trace2Main( pretty_format( "rGUI.evtHandler> " + FILE_NEW_ICON_ID ) );
 				if ( this.cb_enabled )  { 
 					await this.onFileNewWallet();  
 				}
@@ -697,14 +722,14 @@ class RendererGUI {
 			
 		this.setEventHandler( FILE_OPEN_ICON_ID, 'click', 
 		    async (evt) => { 
-			    trace2Main( pretty_format( "rGUI.evtHandler> " + FILE_OPEN_ICON_ID + " *****************" ) );
+			    trace2Main( pretty_format( "rGUI.evtHandler> " + FILE_OPEN_ICON_ID ) );
 				if ( this.cb_enabled ) { 
-					await this.onFileOpenWallet(); 
+					await this.fileOpenWallet(); 
 				}
 			} );
 			
 		this.setEventHandler( SAVE_ICON_ID,            'click',
- 		    async (evt) => { if (this.cb_enabled) await this.onFileSaveWallet(); } );
+ 		    async (evt) => { if (this.cb_enabled) await this.fileSaveWallet(); } );
 			
 		this.setEventHandler( REGENERATE_ICON_ID,      'click', 
 		    async (evt) => { if (this.cb_enabled) await this.generateRandomFields(); } );
@@ -737,13 +762,30 @@ class RendererGUI {
 		
 		this.setEventHandler( ENTROPY_COPY_BTN_ID,      'click',    
 		    (evt) => { if (this.cb_enabled) this.onCopyButton(ENTROPY_COPY_BTN_ID); } );
-		
+			
 		this.setEventHandler( ENTROPY_SIZE_SELECT_ID,   'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateEntropySize(evt); } );
         this.setEventHandler( WORD_COUNT_SELECT_ID,     'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateWordCount(evt); } );
 		this.setEventHandler( LANG_SELECT_ID,           'change',   
-		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateLang(evt); } );		
+		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateLang(evt); } );	
+
+		// -------------------- Password --------------------
+		this.setEventHandler( PASSWORD_ID, 'keyup',   
+		    (evt) => { this.onGuiChangePassword(); } );
+
+		this.setEventHandler( APPLY_PASSWORD_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiApplyPassword(); } );
+	
+		this.setEventHandler( GENERATE_PASSWORD_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiGeneratePassword(); } );
+			
+		this.setEventHandler( CLEAR_PASSWORD_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearPassword(); } );
+
+		this.setEventHandler( EYE_BTN_ID, 'click',   
+		    (evt) => { if (this.cb_enabled) this.GuiTogglePasswordVisibility(); } );
+		// -------------------- Password			
 		
 		this.setEventHandler( WALLET_MODE_SELECT_ID,    'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiSwitchWalletMode(evt); } );
@@ -751,7 +793,7 @@ class RendererGUI {
 		this.setEventHandler( WALLET_BLOCKCHAIN_ID,     'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateBlockchain(evt); } );
 			
-		this.setEventHandler( PK_COPY_BTN_ID,    'click',    
+		this.setEventHandler( PK_COPY_BTN_ID, 'click',    
 		    (evt) => { if (this.cb_enabled) this.onCopyButton(PK_COPY_BTN_ID); } );
 		
 		this.setEventHandler( MNEMONICS_ID,             'paste',    
@@ -805,7 +847,7 @@ class RendererGUI {
 			await this.updateMnemonics( entropy );
         }
 		
-		trace2Main( pretty_func_header_format( "<END> RendererGUI.propagateFields", entropy ) );
+		// trace2Main( pretty_func_header_format( "<END> RendererGUI.propagateFields", entropy ) );
 		
         this.cb_enabled	= true;		
 	} // async propagateFields()
@@ -814,6 +856,7 @@ class RendererGUI {
 	// ============================================================================================
 	// ====================================      Updates      =====================================
 	// ============================================================================================
+	// Note: Wallet manahgers: Guarda, Yoroi, Phantom Wallet
 	updateFieldsVisibility() {
 		// ============== SIMPLE WALLET ==============
 		//                            PK    WIF   MNK
@@ -837,7 +880,8 @@ class RendererGUI {
 		//  *   *   BITCOIN CASH   :  -      X     - 
 		//  *   *   DASH           :  -      X     - 
 		//  *   *   FIRO           :  -      X     -  
-		trace2Main( pretty_func_header_format( "RendererGUI.updateFieldsVisibility" ) );
+		
+		// trace2Main( pretty_func_header_format( "RendererGUI.updateFieldsVisibility" ) );
 		HtmlUtils.HideNode( TR_SW_MNEMONICS_ID );
 		
 		let wallet_mode = this.wallet_info.getAttribute(WALLET_MODE);
@@ -854,6 +898,8 @@ class RendererGUI {
 
 			HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
 			
+			HtmlUtils.HideNode( PASSWORD_ROW_ID );
+			
 			HtmlUtils.HideNode( ENTROPY_SIZE_SELECT_ID );
 			HtmlUtils.HideNode( WORD_COUNT_SELECT_ID );
 			HtmlUtils.HideNode( DERIVATION_PATH_ROW );
@@ -861,14 +907,17 @@ class RendererGUI {
 			// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
 		    HtmlUtils.ShowNode( TR_1ST_PK_ID );	
 		}
-		else if ( wallet_mode == HD_WALLET_TYPE  || wallet_mode == SWORD_WALLET_TYPE ) {			
+		else if ( wallet_mode == HD_WALLET_TYPE  || wallet_mode == SWORD_WALLET_TYPE ) {
+            HtmlUtils.ShowNode( PASSWORD_ROW_ID );
+			
 			HtmlUtils.ShowNode( ENTROPY_SIZE_SELECT_ID );
 
 			if ( wallet_mode == HD_WALLET_TYPE )
 				HtmlUtils.ShowNode( DERIVATION_PATH_ROW );
-			else if ( wallet_mode == SWORD_WALLET_TYPE )
+			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
+				HtmlUtils.HideNode( PASSWORD_ROW_ID );
 				HtmlUtils.HideNode( DERIVATION_PATH_ROW );
-
+			}
 			HtmlUtils.ShowNode( TR_WIF_ID );
 			
 			HtmlUtils.HideNode( TR_SW_MNEMONICS_ID );
@@ -950,7 +999,7 @@ class RendererGUI {
 			HtmlUtils.ShowNode( ENTROPY_SRC_ROW );
 			HtmlUtils.ShowNode( TR_SALT_ID );	
 			
-			trace2Main( pretty_format( "rGUI.upFieldVisib> is_user_input", is_user_input ) );
+			// trace2Main( pretty_format( "rGUI.upFieldVisib> is_user_input", is_user_input ) );
             if ( this.wallet_info.getAttribute(WALLET_MODE) == HD_WALLET_TYPE ) {				
 				HtmlUtils.ShowNode( ENTROPY_SIZE_SELECT_ID );
 				HtmlUtils.ShowNode( WORD_COUNT_SELECT_ID );
@@ -971,7 +1020,7 @@ class RendererGUI {
 			entropy = this.wallet_info.getAttribute(ENTROPY);
 			this.wallet_info.setAttribute(ENTROPY, entropy); // to update GUI 
 		}
-		trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
+		// trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
 		
 		//let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID ); 
 		
@@ -1055,7 +1104,7 @@ class RendererGUI {
 		this.updateFieldsVisibility();
 
 		this.cb_enabled	= true; 
-        trace2Main( pretty_func_header_format( "<END> RendererGUI.updateWalletMode" ) );		
+        // trace2Main( pretty_func_header_format( "<END> RendererGUI.updateWalletMode" ) );		
 	} // async updateWalletMode()
 
 	async updateBlockchain( blockchain ) {
@@ -1142,6 +1191,9 @@ class RendererGUI {
 		let entropy = HtmlUtils.GetNodeValue( ENTROPY_ID );
 		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
 		
+		let password = HtmlUtils.GetNodeValue( PASSWORD_ID ); 
+		this.wallet_info.setAttribute( PASSWORD, password );
+		
 		let account = parseInt( HtmlUtils.GetNodeValue( ACCOUNT_ID ) );
 		this.wallet_info.setAttribute( ACCOUNT, account );
 		//trace2Main( pretty_format( "rGUI.uWadr> account", account ) );
@@ -1170,6 +1222,12 @@ class RendererGUI {
 		}
 	} // updateStatusbarInfo	
 	
+	async updatePassword( password ) {
+		trace2Main( "===== rGUI.upPW ===============================================================" );
+		trace2Main( pretty_func_header_format( "RendererGUI.updatePassword", password ) );
+		await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
+	}  // async updatePassword()
+	
 	async updateEntropy( entropy_hex ) {
 		trace2Main( pretty_func_header_format( "RendererGUI.updateEntropy", entropy_hex ) );		
 		
@@ -1186,7 +1244,6 @@ class RendererGUI {
 		await this.updateChecksum( entropy_hex );
 		
 		let wallet_mode = this.wallet_info.getAttribute( WALLET_MODE );
-		trace2Main( pretty_format( "rGUI.upE> wallet_mode(wallet)", wallet_mode ) );
 
 		let wallet = {};
 		trace2Main( pretty_format( "rGUI.upE> entropy_hex", entropy_hex ) );
@@ -1202,7 +1259,7 @@ class RendererGUI {
 			}
 		}		
 
-		trace2Main( pretty_func_header_format( "<END> RendererGUI.updateEntropy", entropy_hex ) );
+		// trace2Main( pretty_func_header_format( "<END> RendererGUI.updateEntropy", entropy_hex ) );
 	} // updateEntropy()
 	
 	async updateEntropySize( entropy_size ) {		
@@ -1218,10 +1275,10 @@ class RendererGUI {
 		this.wallet_info.setAttribute( WORD_COUNT, word_count );
 			
 		this.expected_entropy_bytes  = entropy_size / 8;
-		trace2Main( pretty_format("rGUI.upEsz> expected_entropy_bytes", this.expected_entropy_bytes ) );
+		// trace2Main( pretty_format("rGUI.upEsz> expected_entropy_bytes", this.expected_entropy_bytes ) );
 		
 		let expected_entropy_digits = this.expected_entropy_bytes * 2; 
-		trace2Main( pretty_format("rGUI.upEsz> expected_entropy_digits", expected_entropy_digits ) );
+		// trace2Main( pretty_format("rGUI.upEsz> expected_entropy_digits", expected_entropy_digits ) );
 		this.wallet_info.setAttribute( EXPECTED_ENTROPY_DIGITS, expected_entropy_digits );
 		
 		this.wallet_info.setAttribute( ENTROPY_SIZE, entropy_size );
@@ -1266,8 +1323,7 @@ class RendererGUI {
 	updateWIF( blockchain, wif ) {
 		trace2Main( pretty_func_header_format( "RendererGUI.updateWIF", "WIF:" + wif ) );
 		
-		// let wallet_mode = HtmlUtils.GetNodeValue( WALLET_MODE_SELECT_ID );
-		let wallet_mode = this.wallet_info.getAttribute(WALLET_MODE);
+		if (wif != "") this.wallet_info.setAttribute(WIF, wif);   
 		this.updateFieldsVisibility();
 	} // updateWIF()
 		
@@ -1337,7 +1393,7 @@ class RendererGUI {
 		// trace2Main( pretty_format( "rGUI.upLang> entropy(gui)", entropy ) );
 		
 		let entropy = this.wallet_info.getAttribute(ENTROPY);
-		trace2Main( pretty_format( "rGUI.upLang> entropy(wallet)", entropy ) );
+		// trace2Main( pretty_format( "rGUI.upLang> entropy(wallet)", entropy ) );
 		
         await this.updateMnemonics( entropy );
 	} // async updateLanguage()
@@ -1351,7 +1407,7 @@ class RendererGUI {
         let mnemonics_items = await window.ipcMain.MnemonicsAsTwoParts( mnemonics );		
 		trace2Main( pretty_format( "rGUI.upWidx> mnemonics", mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-            trace2Main( pretty_format( "rGUI.upWidx>", mnemonics_items[1] ) );			
+            trace2Main( pretty_format( "", mnemonics_items[1] ) );			
 		}
 		
 		let lang = this.wallet_info.getAttribute(LANG);
@@ -1620,23 +1676,89 @@ class RendererGUI {
 				break;
 		} // switch ( event_name )
 	} // onGUIEvent()
+
+	onGuiChangePassword( evt ) {
+		let password = HtmlUtils.GetNodeValue( PASSWORD_ID );
+		// trace2Main( pretty_func_header_format( "RendererGUI.onGuiChangePassword", "'" + password + "'" ) );
+		this.wallet_info.setAttribute( PASSWORD, password );
+
+		if ( password == "") {
+			this.GuiSetPasswordApplyState( false );	
+		}
+	} // onGuiChangePassword()
+	
+	async GuiApplyPassword( evt ) {
+		let password = HtmlUtils.GetNodeValue( PASSWORD_ID );
+		trace2Main( pretty_func_header_format( "RendererGUI.GuiApplyPassword", password ) );
+		this.wallet_info.setAttribute( PASSWORD, password );
+		await this.updatePassword( password );
+
+		this.GuiSetPasswordApplyState( false );
+	} // async GuiApplyPassword()
+
+	// https://www.npmjs.com/package/generate-password
+	async GuiGeneratePassword( evt ) {
+		trace2Main( pretty_func_header_format( "RendererGUI.GuiGeneratePassword" ) );
+		let data = {};
+		let new_password = await window.ipcMain.GeneratePassword( data );
+		this.wallet_info.setAttribute( PASSWORD, new_password);
+
+		this.GuiSetPasswordApplyState( true );
+	} // async GuiGeneratePassword()	
+		
+	GuiClearPassword( update_wallet ) {
+		trace2Main( pretty_func_header_format( "RendererGUI.GuiClearPassword" ) );
+		this.wallet_info.setAttribute( PASSWORD, '');
+
+		this.GuiSetPasswordApplyState( false );	
+	} // GuiClearPassword()
+
+	GuiSetPasswordApplyState( visible ) {
+		if ( visible ) {
+			HtmlUtils.ShowNode(APPLY_PASSWORD_BTN_ID);
+			HtmlUtils.ShowNode(APPLY_BTN_SEPARATOR_ID);
+			HtmlUtils.AddClass(PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS);
+			HtmlUtils.RemoveClass(PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS);
+			this.setSaveCmdState( false );
+		}
+		else {
+			HtmlUtils.HideNode(APPLY_PASSWORD_BTN_ID);
+			HtmlUtils.HideNode(APPLY_BTN_SEPARATOR_ID);
+			HtmlUtils.AddClass(PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS);
+			HtmlUtils.RemoveClass(PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS);
+			this.setSaveCmdState( true );
+		}
+	} // GuiSetPasswordApplyState()
+
+	GuiTogglePasswordVisibility() {
+		trace2Main( pretty_func_header_format( "RendererGUI.GuiTogglePasswordVisibility" ) );	
+		if ( this.password_visible ) { 
+			document.getElementById(PASSWORD_ID).type = 'password';	
+			document.getElementById(EYE_BTN_IMG_ID ).src = 'icons/' + EYE_CLOSED_ICON;	
+		}
+		else { 	
+		    document.getElementById(PASSWORD_ID).type = 'text';	
+			document.getElementById(EYE_BTN_IMG_ID ).src = 'icons/' + EYE_OPEN_ICON;	
+		}
+		this.password_visible = ! this.password_visible;
+	} // GuiTogglePasswordVisibility()
 	
 	async onFileNewWallet( evt ) {
 		trace2Main( pretty_func_header_format( "RendererGUI.onFileNewWallet" ) );
         await window.ipcMain.NewWalletInfo();
 	} // async onFileNewWallet()
 	
-	async onFileOpenWallet( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onFileOpenWallet" ) );
+	async fileOpenWallet() {
+		trace2Main( pretty_func_header_format( "RendererGUI.fileOpenWallet" ) );
         let json_data = await window.ipcMain.OpenWalletInfo();
-	} // async onFileOpenWallet()
+	} // async fileOpenWallet()
 	
-	async onFileSaveWallet( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onFileSaveWallet" ) );
+	async fileSaveWallet() {
+		trace2Main( pretty_func_header_format( "RendererGUI.fileSaveWallet" ) );
 		let crypto_info = await this.getWalletInfo();
         window.ipcMain.SaveWalletInfo( crypto_info );
 		this.showSaveWalletInfoDialog();		
-	} // async onFileSaveWallet()
+	} // async fileSaveWallet()
 	
 	showSaveWalletInfoDialog() {
 		trace2Main( pretty_func_header_format( "RendererGUI.showSaveWalletInfoDialog" ) );
@@ -1849,10 +1971,8 @@ class RendererGUI {
 	// Entropy 'keydown' event handler
 	onEntropyKeydown( evt ) {				
 		//trace2Main( pretty_func_header_format( "RendererGUI.onEntropyKeydown" ) );
-		//trace2Main( pretty_format( "evt.keyCode", evt.keyCode ) );
-		
-		const BACKSPACE_KEY_CODE = 8;
-		const DEL_KEY_CODE       = 46;
+		//trace2Main( pretty_format( "evt.keyCode", evt.keyCode ) );		
+
 		if ( evt.keyCode == BACKSPACE_KEY_CODE || evt.keyCode == DEL_KEY_CODE ) {
 			this.setEntropySourceIsUserInput( true );
 			//this.updateStatusbarInfo( true );
@@ -2103,7 +2223,7 @@ class RendererGUI {
 	// =========================================================
 
 	setSaveCmdState( enabled ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.setSaveCmdState", enabled  ) );
+		// trace2Main( pretty_func_header_format( "RendererGUI.setSaveCmdState", enabled  ) );
 		
 		if ( enabled ) {
 			HtmlUtils.ShowNode( FILE_SAVE_ICON_ID );
@@ -2120,15 +2240,15 @@ class RendererGUI {
 		let menu_item_id = FILE_SAVE_MENU_ITEM_ID;
 		let data = { menu_item_id, enabled };
 		window.ipcMain.SetMenuItemState( data );
-        trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_MENU_ITEM_ID + ":" + enabled  ) );		
+        // trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_MENU_ITEM_ID + ":" + enabled  ) );		
 		
 		menu_item_id = FILE_SAVE_AS_MENU_ITEM_ID;
 		enabled = ! enabled ;
 		data = { menu_item_id, enabled };
 		window.ipcMain.SetMenuItemState( data );
-		trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_AS_MENU_ITEM_ID + ":" + enabled  ) );
+		// trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_AS_MENU_ITEM_ID + ":" + enabled  ) );
 		
-		trace2Main( pretty_func_header_format( "<END> RendererGUI.setSaveCmdState" ) );
+		// trace2Main( pretty_func_header_format( "<END> RendererGUI.setSaveCmdState" ) );
 	} // setSaveCmdState()	
 	
     setRefreshCmdState( enable ) {
@@ -2144,7 +2264,7 @@ class RendererGUI {
 	} // setRefreshCmdState()
 	
 	setEntropySourceIsUserInput( is_user_input ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.setEntropySourceIsUserInput", is_user_input ) );
+		// trace2Main( pretty_func_header_format( "RendererGUI.setEntropySourceIsUserInput", is_user_input ) );
 		
 		this.entropy_source_is_user_input = is_user_input;
 		//this.updateStatusbarInfo( is_user_input );
@@ -2155,7 +2275,7 @@ class RendererGUI {
             HtmlUtils.SetNodeValue( MNEMONICS_4LETTER_ID, "" );
 			HtmlUtils.SetNodeValue( WORD_INDEXES_ID,      "" );			
 		}
-		trace2Main( pretty_func_header_format( "<END> RendererGUI.setEntropySourceIsUserInput" ) );
+		// trace2Main( pretty_func_header_format( "<END> RendererGUI.setEntropySourceIsUserInput" ) );
 		
 		this.updateFieldsVisibility();
 	} // setEntropySourceIsUserInput()
@@ -2217,8 +2337,7 @@ class RendererGUI {
 		let img_data_asURL = await window.ipcMain.LoadImageFromFile( img_file_path );
 		this.img_data_asURL = img_data_asURL; 
 	} // onDropImage()
-	// ============================== Event Handlers
-	
+	// ============================== Event Handlers	
 	
 	async getWalletInfo() {
 		trace2Main( pretty_func_header_format( "RendererGUI.getWalletInfo" ) );
@@ -2298,6 +2417,10 @@ class RendererGUI {
 		//trace2Main(">> " + _CYAN_ + "RendererGUI.getWalletInfo() " + _END_);
 		
 		if ( wallet_mode == HD_WALLET_TYPE ) {	
+		    let password = this.wallet_info.getAttribute( PASSWORD );
+			if (password != undefined && password != null && password != "") {
+				crypto_info[PASSWORD] = password;
+			}
 			let account       = HtmlUtils.GetNodeValue( ACCOUNT_ID );			
 			let change_chain  = ( blockchain == SOLANA ) ? "0'" : "0";			
 			let address_index = HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID );
