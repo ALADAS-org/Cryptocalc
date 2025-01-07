@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.6
+## Cryptocalc 0.3.7
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_4_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -45,7 +45,7 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.6`
+    + 3.1. Features in `0.3.7`
 	    * Added support of _Japanese_ for the `Seed phrase` (taking into account the _Ideographic Space_
 		  as a separator between words instead of the _Normal Space_).
 		* Code enhancement: in `renderer_gui.js` and `electron_main.js`. The _Singleton_ design pattern
