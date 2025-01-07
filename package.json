@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Crypto Calculator",
   "main": "./www/js/_main/electron_main.js",
   "//1": "electron .",
