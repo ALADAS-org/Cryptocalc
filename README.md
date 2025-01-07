@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.4
+## Cryptocalc 0.3.5
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_4_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -45,51 +45,40 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.4`
+    + 3.1. Features in `0.3.5`
+	    * Added support of _Japanese_ for the `Seed phrase` (taking into account the _Ideographic Space_
+		  as a separator between words instead of the _Normal Space_).
+		* Code enhancement: in `renderer_gui.js` and `electron_main.js`. The _Singleton_ design pattern
+		  now uses `Symbol()` for the value of the static field `#key`.
+    + 3.2. Features in `0.3.4`
 	    * Added _password feature_ for `HD Wallet` (see 4.1.5)
 		* `Seed` tab renamed to `Entropy`
 		* Bug fix: crash when saving `SWORD Wallet`
 		* Update of [`Cryptocalc installer`](https://sourceforge.net/projects/aladas-cryptocalc/) on [`SourceForge`](https://sourceforge.net/)
-    + 3.2. Features in `0.3.3`
+    + 3.3. Features in `0.3.3`
 	    * Added `SWORD Wallet` in _Wallet Types_. `SWORD` is an acronym which means 
 		  `Simple Wallet Over Randomized Deterministic`, it's an hybrid between `Simple Wallet` and `HD Wallet`
 		  because it hides the `Derivation Path` logic (which contains `Account` and `Address Index`), thus you 
 		  don't need to care or understand the principles of _Hierarchical Deterministic_ wallets, but it allows
 		  to generate all the cryptocurrencies provided by `HD Wallet`. 		  
 	    * Bug fix: when changing 'Entropy Size' to 224 bits, Cryptocalc was blocked 
-		  while trying to split the seedphrase in 2 parts for the traces.  
-    + 3.3. Features in `0.3.2`
+		  while trying to split the `seed phrase` in 2 parts for the traces.  
+    + 3.4. Features in `0.3.2`
 	    * Added `File.New`, `File.Open...` and `File.Save As...` menu items
 		* _Wallet informations_ are also saved as a `.wits` file (`JSON` format). This file can be opened either
 		  with `File.Open...` or with `Cryptocalc.exe` by double clicking on it.
 		* This README can now be opened from within _Cryptocalc_ by means of the 
 		`Help / Resources / Setup guide and User's Manual` menu item
 		* `Wallet Mode and `Cryptocurrency` are now displayed in the title bar (e.g. Simple Wallet: BTC)
-    + 3.4. Features in `0.2.2`
+    + 3.5. Features in `0.2.2`
 	    * Added `Dash` blockchain in _HD Wallet_
         * Bug fixes for `Firo` and `Bitcoin Cash` 		
-	+ 3.5. Features in `0.2.1`
+	+ 3.6. Features in `0.2.1`
 	    * Choice between _Simple Wallet_ (Default mode) and _HD Wallet_		
 		* New cryptocurrencies supported: `Cardano` (_HD Wallet_ only) and `Avalanche` 
 		* GUI enhancements esp. `Copy to Clipboard` button for _Address_, _seed phrase_, _Private Key_ and _WIF_ 
 		* Enhancement in log feature
-		* Update of Screenshots
-    + 3.6. Features in `0.1.17`
-	    * Picture at last step of setup with _Cryptocalc Standalone installer_
-    + 3.7. Features in `0.1.16`
-	    * When saving a wallet the Popup dialog allows to show where it is saved
-		* Bug fix in the behavior of [Save...] button in `Tools/Options` dialog
-		* Update of Screenshots
-    + 3.8. Features in `0.1.15`    
-        * _Cryptocalc Standalone installer_ (see 4.1.1)
-		* Bigger icons in the main toolbar (`16x16px` > `24x24px`)
-		* Logo in desktop shortcut and .exe (Standalone installer) and in the
-        the _Task Bar_ (when _Cryptocalc_ is launched) as well 
-        * _Default Blockchain_ is _Bitcoin_	(with 128 bits of _Entropy_ by default)			
-		* Progress in the implemention of the _Simple Wallet_ mode (where _Entropy_ is
-		both the _Private Key_ (in hexadecimal) and _seed phrase_ (when converted 
-		to _Mnemonics_) 
-		* Update of `README.md`
+		* Update of Screenshots  
  	
 4. _Cryptocalc_ User Guide  
     You can launch _Cryptocalc_ either by using the _Cryptocalc Standalone installer_ (see 2.1)
@@ -105,8 +94,8 @@
 		which then will be used as the _Entropy_ (with the _Salt_) to generate a new _seed phrase_ (between 12 and
 		24 words) which is derived to get the _Private Key_ from which the _Wallet Address_ is obtained
 		(NB: _Private Key_ and _Wallet Address_ are in the _Wallet_ Tab).
-		There is also a conversion to the _Shortened Seedphrase_: as only the 4 first characters of each _mnemonic_ 
-		are useful (cf. `BIP39` specification) then in the _Shortened Seedphrase_ each _mnemonic_ is represented 
+		There is also a conversion to the _Shortened seed phrase_: as only the 4 first characters of each _mnemonic_ 
+		are useful (cf. `BIP39` specification) then in the _Shortened seed phrase_ each _mnemonic_ is represented 
 		only by its 4 first characters (with the first character in Uppercase as a mean to separate _mnemonics_).   
 		NB: As some _mnemonics_ are only 3 characters long, the abbreviation will of course only be whole _mnemonic_.  
 		Here is an example below:  
@@ -114,7 +103,7 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rent expand super sea summer pull catalog mobile proud solve oven goose    
         _Shortened Seedphrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos    
-        NB: Please notice that the _Shortened Seedphrase_ is not meant to be used
+        NB: Please notice that the _Shortened seed phrase_ is not meant to be used
         to import a wallet in a _Wallet Manager_, it's only a trick to _compress_ the _seed phrase_ and make it easier
 		to store on a device with limited memory like a `NTAG213 NFC` (see 4.2.3). 	
 	    * 4.1.3. _Entropy Source_ : `Image` or `Fortunes`    
@@ -159,15 +148,15 @@
 		    to generate all the cryptocurrencies provided by `HD Wallet`.
 			* 4.1.4.d. Please notice that for `Cardano` HD wallets, the `Account` and `Address Index` parameters are not taken 
 			into account by the _Wallet Managers_ which I have tested (namely `Guarda` and `Yoroi`) because they ask for 
-			the `Mnemonics` (`Seedphrase` in _Cryptocalc_). This is why in by _Cryptocalc_, these parameters are _hard-coded_
+			the `Mnemonics` (`Seed phrase` in _Cryptocalc_). This is why in by _Cryptocalc_, these parameters are _hard-coded_
 			to Zero (for `Cardano` HD wallets only).			
 			* 4.1.4.e. You can check generated _HD Wallets_ by using _Ian Coleman BIP39_ homepage.   
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (Help / Resources / Ian Coleman BIP39)
 		* 4.1.5. _Password feature_ (_HD Wallet_ only)
-    		With a _password_ (also called _Passphrase_) a completely different _HD hierarchy_ is generated. 
-			You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
-			**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
-			this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button. 			
+    	With a _password_ (also called _Passphrase_) a completely different _HD hierarchy_ is generated. 
+		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
+		**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
+		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button. 			
 		* 4.1.6. _Salted Entropy_    
 		_Entropy_ is generated from _Entropy Source_ (either _Image_ or _Fortune Cookie_ ATM) and adding
 		a _Salt_ (`UUID`) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ 
@@ -224,7 +213,7 @@
 		because the reference is the _Word Indexes_ (see 4.1.11) not the words.
 		* 4.1.13. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
-		_Seedphr3ase_ words in the `BIP39` dictionary (see also 6.1.1). 
+		_Seed phrase_ words in the `BIP39` dictionary (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).

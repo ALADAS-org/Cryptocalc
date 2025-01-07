@@ -14,16 +14,18 @@ How to build "Cryptocalc standalone installer" ('cryptocalc_setup.exe')
 	- Select Electron app output directory: (e.g. D:\Cryptocalc\releases) => [Return] key
 	- Select Application name: (@aladas-org/cryptocalc)                   => [Return] key
 	- Select App Bundle Id (optional)                                     => [Return] key
-	- Select App Version(optional):                                       => 0.1.15
-	- Select Electron icon file: e.g. D:\Cryptocalc\www\icons\Silverquote_30_ico.ico
+	- Select App Version(optional):                                       => 0.3.4
+	- Select Electron icon file: e.g. D:\Cryptocalc\www\icons\Cryptocalc_ico.ico
 	- Select Electron version release:                                    => 28.2.7
 	- Select platforms:    use up/down arrow keys and [Space] key to select 'win32'
 	- Select architecture: use up/down arrow keys and [Space] key to select 'x64'
     => Result in 'releases' folder
   2.c. Rename subfolder 'releases/@aladas...cryptocalc' to 'cryptocalc'
   2.d. Rename 'releases/@aladas..cryptocalc/@aladas-org-cryptocalc.exe' to 'cryptocalc.exe'
-  2.e. Delete '_inno_setup' subfolder in 'releases/cryptocalc/resources/app'
+  2.e. Delete '_inno_setup/Output' subfolder content
+  2.f. Delete '_inno_setup/Output' subfolder in 'releases/cryptocalc/resources/app'
 
 3. Build 'cryptocalc_setup.exe' with 'Inno Setup' installer: 
+  * Update 'MyAppVersion' in the 'Inno Setup' script
   * Use '_inno_setup' script to compile 'cryptocalc_setup.iss' script in folder '_inno_setup'
   => Result in '_inno_setup/Output' folder

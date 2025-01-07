@@ -140,7 +140,8 @@ const error_handler = (err) => {
 }; // error_handler()
 
 class ElectronMain {
-	static #key = {};
+	//static #key = {};
+	static #key = Symbol();
 	static #_Singleton = new ElectronMain( this.#key );
 	static #_InstanceCount = 0;
 	
