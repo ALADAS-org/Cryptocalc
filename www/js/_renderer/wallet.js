@@ -78,7 +78,13 @@ class Wallet {
 		// trace2Main( pretty_func_header_format( "Wallet.setAttribute", attr_name + " = " + value) );
 		this.attributes[attr_name] = value;
 		if ( Wallet.GUI_NODE_IDs[attr_name] != undefined && Wallet.GUI_NODE_IDs[attr_name] != "" ) {
-			if ( attr_name == "coin_type" ) { value = value.toString() + "'"; }
+			if ( attr_name == "coin_type" ) { 
+				value = value.toString() + "'"; 
+			}
+			else if (attr_name == "mnemonics" && this.attributes["lang"] == "JP") {
+				//value = value.replaceAll(' ','*');				
+				value = value.replaceAll(' ','\u3000');
+			}	
 			HtmlUtils.SetNodeValue( Wallet.GUI_NODE_IDs[attr_name], value );
 		}
 	} // setAttribute()

@@ -113,7 +113,8 @@ const getWordCount = ( entropy_size ) => {
 
 // ==============================  RendererGUI class   ==============================
 class RendererGUI {	
-	static #key = {};
+	//static #key = {};
+	static #key = Symbol();
 	static #_Singleton = new RendererGUI( this.#key );
 	
 	static GetInstance() {
@@ -472,7 +473,15 @@ class RendererGUI {
 	        // ** Note **: 'mnemonics' is used for 'Simple Wallet' / Solana			
 			if ( blockchain == SOLANA ) {
 				let mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID );
-				HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );
+				
+				if (this.wallet_info.getAttribute('lang') == "JP") {
+					let mnemonic_jp = mnemonics.replaceAll(' ', '\u3000');
+					//let mnemonic_jp = mnemonics.replaceAll(' ', '*');
+					HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonic_jp );
+				}
+				else {
+					HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );
+				}				
 			}
 			
 			this.updateWalletURL( blockchain, wallet_address );
@@ -1373,9 +1382,16 @@ class RendererGUI {
 		let data = { entropy, lang };
 		let mnemonics = await window.ipcMain.EntropyToMnemonics( data );
 		
-        this.wallet_info.setAttribute( MNEMONICS, mnemonics );		
-		HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );		
-		
+        this.wallet_info.setAttribute( MNEMONICS, mnemonics );	
+
+		if (this.wallet_info.getAttribute('lang') == "JP") {
+			let mnemonics_jp = mnemonics.replaceAll(' ', '\u3000');
+			// let mnemonics_jp = mnemonics.replaceAll(' ', '*');
+			HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics_jp );
+		}
+		else {		
+			HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );		
+		}
 		let mnemonics_as_4letter = await window.ipcMain.MnemonicsAs4letter( mnemonics );
 		HtmlUtils.SetNodeValue( MNEMONICS_4LETTER_ID, mnemonics_as_4letter );
 
