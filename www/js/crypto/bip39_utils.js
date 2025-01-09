@@ -44,11 +44,12 @@ const CS_WORDLIST      = CS_WORDLIST_JSON['wordlist'];
 const PT_WORDLIST_JSON = require('@scure/bip39/wordlists/portuguese');
 const PT_WORDLIST      = PT_WORDLIST_JSON['wordlist'];
 
-//const { wordlist as japanese }           = require('@scure/bip39/wordlists/japanese';
-//const { wordlist as korean }             = require('@scure/bip39/wordlists/korean';
+const KO_WORDLIST_JSON = require('@scure/bip39/wordlists/korean');
+const KO_WORDLIST      = KO_WORDLIST_JSON['wordlist'];
+
 //const { wordlist as simplifiedChinese }  = require('@scure/bip39/wordlists/simplified-chinese';
 //const { wordlist as traditionalChinese } = require('@scure/bip39/wordlists/traditional-chinese';
-const { GERMAN_MNEMONICS }    = require('../lib/mnemonics/DE_mnemonics.js');
+const { GERMAN_MNEMONICS } = require('../lib/mnemonics/DE_mnemonics.js');
 
 // NB: Separator for Japanese
 // https://bitcoin.stackexchange.com/questions/37780/bip39-japanese-mnemonic-vector-unit-test-process
@@ -57,7 +58,7 @@ const { GERMAN_MNEMONICS }    = require('../lib/mnemonics/DE_mnemonics.js');
 const { JAPANESE_MNEMONICS }  = require('../lib/mnemonics/JP_mnemonics.js');
 // const { ESPERANTO_MNEMONICS } = require('../lib/mnemonics/EO_mnemonics.js');
 
-const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "JP" ];
+const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "JP", "KO" ];
 
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, 
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
@@ -511,6 +512,9 @@ class Bip39Utils {
 						break;
 						
 			case "JP":  mnemonics_dictionary = JAPANESE_MNEMONICS;
+						break;
+						
+			case "KO":  mnemonics_dictionary = KO_WORDLIST;
 						break;
 						
 			// case "EO":  mnemonics_dictionary = ESPERANTO_MNEMONICS;
