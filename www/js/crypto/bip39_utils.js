@@ -47,6 +47,14 @@ const PT_WORDLIST      = PT_WORDLIST_JSON['wordlist'];
 const KO_WORDLIST_JSON = require('@scure/bip39/wordlists/korean');
 const KO_WORDLIST      = KO_WORDLIST_JSON['wordlist'];
 
+// Simplified Chinese
+const SC_WORDLIST_JSON = require('@scure/bip39/wordlists/simplified-chinese');
+const SC_WORDLIST      = SC_WORDLIST_JSON['wordlist'];
+
+// Traditional Chinese
+const TC_WORDLIST_JSON = require('@scure/bip39/wordlists/traditional-chinese');
+const TC_WORDLIST      = TC_WORDLIST_JSON['wordlist'];
+
 //const { wordlist as simplifiedChinese }  = require('@scure/bip39/wordlists/simplified-chinese';
 //const { wordlist as traditionalChinese } = require('@scure/bip39/wordlists/traditional-chinese';
 const { GERMAN_MNEMONICS } = require('../lib/mnemonics/DE_mnemonics.js');
@@ -509,6 +517,12 @@ class Bip39Utils {
 						break;
 				
 			case "PT":  mnemonics_dictionary = PT_WORDLIST;
+						break;
+
+			case "SC":  mnemonics_dictionary = SC_WORDLIST;
+						break;
+
+			case "TC":  mnemonics_dictionary = TC_WORDLIST;
 						break;
 						
 			case "JP":  mnemonics_dictionary = JAPANESE_MNEMONICS;
