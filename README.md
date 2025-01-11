@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.8
+## Cryptocalc 0.3.9
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_4_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -45,19 +45,21 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.8`
+    + 3.1. Features in `0.3.9`
+	    * Added support of _Simplified Chinese_ and _Traditional Chinese_for the `Seed phrase` 
+    + 3.2. Features in `0.3.8`
 	    * Added support of _Korean_ for the `Seed phrase` 
-    + 3.2. Features in `0.3.7`
+    + 3.3. Features in `0.3.7`
 	    * Added support of _Japanese_ for the `Seed phrase` (taking into account the _Ideographic Space_
 		  as a separator between words instead of the _Normal Space_).
 		* Code enhancement: in `renderer_gui.js` and `electron_main.js`. The _Singleton_ design pattern
 		  now uses `Symbol()` for the value of the static field `#key`.
-    + 3.3. Features in `0.3.4`
+    + 3.4. Features in `0.3.4`
 	    * Added _password feature_ for `HD Wallet` (see 4.1.5)
 		* `Seed` tab renamed to `Entropy`
 		* Bug fix: crash when saving `SWORD Wallet`
 		* Update of [`Cryptocalc installer`](https://sourceforge.net/projects/aladas-cryptocalc/) on [`SourceForge`](https://sourceforge.net/)
-    + 3.4. Features in `0.3.3`
+    + 3.5. Features in `0.3.3`
 	    * Added `SWORD Wallet` in _Wallet Types_. `SWORD` is an acronym which means 
 		  `Simple Wallet Over Randomized Deterministic`, it's an hybrid between `Simple Wallet` and `HD Wallet`
 		  because it hides the `Derivation Path` logic (which contains `Account` and `Address Index`), thus you 
@@ -65,17 +67,17 @@
 		  to generate all the cryptocurrencies provided by `HD Wallet`. 		  
 	    * Bug fix: when changing 'Entropy Size' to 224 bits, Cryptocalc was blocked 
 		  while trying to split the `seed phrase` in 2 parts for the traces.  
-    + 3.5. Features in `0.3.2`
+    + 3.6. Features in `0.3.2`
 	    * Added `File.New`, `File.Open...` and `File.Save As...` menu items
 		* _Wallet informations_ are also saved as a `.wits` file (`JSON` format). This file can be opened either
 		  with `File.Open...` or with `Cryptocalc.exe` by double clicking on it.
 		* This README can now be opened from within _Cryptocalc_ by means of the 
 		`Help / Resources / Setup guide and User's Manual` menu item
 		* `Wallet Mode and `Cryptocurrency` are now displayed in the title bar (e.g. Simple Wallet: BTC)
-    + 3.6. Features in `0.2.2`
+    + 3.7. Features in `0.2.2`
 	    * Added `Dash` blockchain in _HD Wallet_
         * Bug fixes for `Firo` and `Bitcoin Cash` 		
-	+ 3.7. Features in `0.2.1`
+	+ 3.8. Features in `0.2.1`
 	    * Choice between _Simple Wallet_ (Default mode) and _HD Wallet_		
 		* New cryptocurrencies supported: `Cardano` (_HD Wallet_ only) and `Avalanche` 
 		* GUI enhancements esp. `Copy to Clipboard` button for _Address_, _seed phrase_, _Private Key_ and _WIF_ 

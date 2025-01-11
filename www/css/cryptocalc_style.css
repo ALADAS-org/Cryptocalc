@@ -425,9 +425,9 @@ hr {
 .LabelColumn {
 	/*margin-left:     20px;*/
 	padding-left:      10px;
-	width:             100px;
-	min-width:         100px;
-	max-width:         100px;
+	width:             135px;
+	min-width:         135px;
+	max-width:         135px;
 	height:            25px;
 }
 
