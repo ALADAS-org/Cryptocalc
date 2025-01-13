@@ -14,6 +14,8 @@
 			
 			<link   rel="stylesheet" type="text/css" href="css/jquery-ui.theme.min.css">
 			<link   rel="stylesheet" type="text/css" href="css/jquery-ui.structure.min.css">
+			
+			<script type="text/javascript" src="./js/lib/p5-1.6.0.min.js"></script>
 			<!-- ----------------- prerequisite libraries -->
 			
 			<!-- ----------------- Renderer prerequisite modules ----------------- -->
@@ -68,22 +70,28 @@
 					<tr><td class="HorizontalBar" colspan="4"><br/></td></tr>			
 					<!-- ----------------  Entropy Source ---------------- -->
 					<tr id="entropy_src_row">
+					
 						<td class="LabelColumn">
 							<span id="entropy_src_label_id" class="LabelColumn">Entropy Source</span>
 							<select id="entropy_src_type_selector_id" 
 									class="InputField EntropySelector"> 
 								<option value="Image" selected>Image</option>	
+								<!-- <option value="100d6">100 d6</option> -->
 								<option value="Fortunes">Fortunes</option>			
 							</select>
 						</td>
+						
 						<td colspan="2" class="FieldColumn">
 							<table width="100%">
 								<tr><td class="TextArea">
+								        <!-- ======== Entropy source: Fortune ======== -->
 										<textarea class="RawDataField WithoutFocus" 
 												  id="entropy_src_fortunes_id" 
 												  rows="6" spellcheck="false" hidden>
-										</textarea>									
+										</textarea>	
+                                        <!-- ======== Entropy source: Fortune -->										
 													
+										<!-- ======== Entropy source: Images ======== -->
 										<table id="entropy_src_img_container_id">
 											<tr><td><div id="entropy_src_img_div_id" 
 														 ondrop="drop(e)"  ondrag="drag(e)"
@@ -100,6 +108,16 @@
 												</td>
 											</tr>
 										</table>
+										<!-- ======== Entropy source: Images -->
+										
+										<!-- ======== Entropy source: 100d6 ======== -->
+										<div id="entropy_src_100d6_container_id">
+											<tr><td>
+												<div id="entropy_src_100d6_div_id">														 
+												</div>												
+											</td></tr>
+										</div>
+										<!-- ======== Entropy source: 100d6 -->
 									</td>
 								</tr>
 							</table>

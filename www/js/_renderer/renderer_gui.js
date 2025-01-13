@@ -601,7 +601,11 @@ class RendererGUI {
                 wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
                 trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
 			}
-			else if ( blockchain == RIPPLE || blockchain == TRON ) {				
+			else if ( blockchain == TRON ) {				
+				PRIV_KEY = new_wallet[PRIVATE_KEY];
+			} 
+			else if ( blockchain == RIPPLE ) {	
+				wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";			
 				PRIV_KEY = new_wallet[PRIVATE_KEY];
 			}   			
 		}
@@ -766,6 +770,7 @@ class RendererGUI {
 							  
 		this.setEventHandler( ENTROPY_SOURCE_IMG_ID, 'dragover', 
 		    (evt) => { if (this.cb_enabled) evt.preventDefault(); evt.stopPropagation();  } );
+
 		this.setEventHandler( ENTROPY_SRC_TYPE_SELECTOR_ID, 'change', 
 			async (evt) => { if (this.cb_enabled) await this.onGuiSwitchEntropySourceType(); } );
 		
@@ -936,7 +941,7 @@ class RendererGUI {
 			HtmlUtils.HideNode( WORD_COUNT_SELECT_ID );
 			HtmlUtils.HideNode( SW_WORD_COUNT_ID );  
 
-			if ( blockchain == RIPPLE || blockchain == TRON ) {
+			if ( blockchain == TRON ) {
 				HtmlUtils.HideNode( TR_PRIV_KEY_ID );			
 			}
 			
@@ -960,6 +965,11 @@ class RendererGUI {
 			}
 			// HtmlUtils.HideNode( TR_1ST_PK_ID );	
             HtmlUtils.HideNode( TR_PRIV_KEY_ID );
+
+			if ( blockchain == RIPPLE ) {
+				HtmlUtils.ShowNode( TR_1ST_PK_ID );			
+		    }
+
             if (   blockchain == ETHEREUM || blockchain == AVALANCHE
                 || blockchain == SOLANA	) { 
 				HtmlUtils.ShowNode( TR_1ST_PK_ID );
@@ -1701,6 +1711,9 @@ class RendererGUI {
 		if ( password == "") {
 			this.GuiSetPasswordApplyState( false );	
 		}
+		else {
+			this.GuiSetPasswordApplyState( true );	
+		}	
 	} // onGuiChangePassword()
 	
 	async GuiApplyPassword( evt ) {
@@ -1862,6 +1875,7 @@ class RendererGUI {
 	} // async onGuiUpdateWordCount()
 	
 	async onGuiSwitchEntropySourceType() {
+		trace2Main( "\n\n==========================================================" );
 		trace2Main( pretty_func_header_format( "RendererGUI.onGuiSwitchEntropySourceType" ) );
 		this.entropy_source_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		trace2Main( pretty_format( "entropy_source_type", this.entropy_source_type ) );
