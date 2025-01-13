@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.13
+## Cryptocalc 0.3.14
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_4_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -45,10 +45,11 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.13`
+    + 3.1. Features in `0.3.14`
 	    * Bug fixes on Ripple (XRP) HD Wallet: 
 		      + Bug 1. [Apply] button displayed when password input manually
 		      + Bug 2. WIF and Private Key displayed for Ripple (XRP) HD Wallet
+			  + Bug 3. WIF and Private Key in 'wallet_info.txt'
     + 3.2. Features in `0.3.11`
 	    * Added support of _Simplified Chinese_ and _Traditional Chinese_ for the `Seed phrase` 
     + 3.3. Features in `0.3.8`
