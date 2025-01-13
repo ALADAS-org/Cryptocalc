@@ -2416,7 +2416,8 @@ class RendererGUI {
             else if ( blockchain == RIPPLE ) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[PRIV_KEY];
-				crypto_info[PRIVATE_KEY] = PRIV_KEY_value; 
+				// crypto_info[PRIVATE_KEY] = PRIV_KEY_value;
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
 			}
 			else if (    blockchain == TRON 
 			          || blockchain == BITCOIN_CASH 
