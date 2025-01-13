@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.11
+## Cryptocalc 0.3.12
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_4_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
