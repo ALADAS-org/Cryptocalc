@@ -126,6 +126,12 @@ hr {
 	max-width:         85.5%;
 }
 
+#internet_connection_td_id {
+	position: absolute; 
+    top:   0px; 
+    right: 7px
+}
+
 #password_label_id {
 	margin-top: 5px ;
 }

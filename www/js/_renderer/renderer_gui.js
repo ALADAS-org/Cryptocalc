@@ -1695,9 +1695,23 @@ class RendererGUI {
 				GuiUtils.ShowInfoDialog( description_data );
 				break;	
 				
+			case FromMain_INTERNET_CONNECTED:
+			    // trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_INTERNET_CONNECTED + _END_ );
+				let internet_connected = data[1];
+				// trace2Main( pretty_format( "Internet connected", internet_connected ) );
+				
+				let internet_connection_elt = HtmlUtils.GetNode(INTERNET_CONNECTION_ICON_ID);
+				if ( internet_connected ) {
+					internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_ON_Red.png";
+				}
+				else {
+					internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_OFF_Green.png";
+				}
+			    break;
+				
 			default:
-				trace2Main(   ON_GUI_EVENT_LOG_PREFIX
-						  + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + "from main");
+				trace2Main(  ON_GUI_EVENT_LOG_PREFIX
+						   + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + "from main");
 				//DialogManager.Clean();
 				break;
 		} // switch ( event_name )

@@ -89,6 +89,8 @@ const FromMain_UPDATE_OPTIONS                   = "FromMain:UpdateOptions";
 const FromMain_SET_VARIABLE                     = "FromMain:SetVariable";
 const FromMain_SEND_IMG_URL                     = "FromMain:SendImageURL";
 
+const FromMain_INTERNET_CONNECTED               = "FromMain:InternetConnected";
+
 if ( typeof exports === 'object' ) {
 	exports.CMD_NONE                                   = CMD_NONE
 	
@@ -173,4 +175,6 @@ if ( typeof exports === 'object' ) {
 	exports.FromMain_UPDATE_OPTIONS                  = FromMain_UPDATE_OPTIONS	
 	
 	exports.FromMain_SET_VARIABLE                    = FromMain_SET_VARIABLE
+	
+	exports.FromMain_INTERNET_CONNECTED              = FromMain_INTERNET_CONNECTED
 } // exports of 'const_events.js'
