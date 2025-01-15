@@ -44,6 +44,8 @@ const fs               = require('fs');
 const path             = require('path');
 const { v4: uuidv4 }   = require('uuid');
 
+const checkInternetConnected = require('check-internet-connected');
+
 const PasswordGenerator = require('generate-password');
 
 const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_ 
@@ -106,7 +108,8 @@ const { CMD_OPEN_WALLET,
 		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_UPDATE_OPTIONS, 
 		FromMain_SEND_IMG_URL,
 		FromMain_SET_FORTUNE_COOKIE, 
-        FromMain_SET_VARIABLE 
+        FromMain_SET_VARIABLE,
+		FromMain_INTERNET_CONNECTED		
 	  }                                 = require('../const_events.js');
 	  
 const { ENTROPY_SOURCE_IMG_ID
@@ -1033,7 +1036,7 @@ else {
 	//} ); // 'get-file-data'
 	
 	// Create Electron main window, load the rest of the app, etc...
-	app.whenReady().then(() => {
+	app.whenReady().then( async () => {
 		if (   process.platform.startsWith('win') 
 			&& process.argv.length >= 2 ) {
 			const in_file_path = process.argv[1];
@@ -1041,6 +1044,27 @@ else {
 			// Skribi.log( "   >>> in_file_path: " + in_file_path );
 		}
 		ElectronMain.GetInstance().createWindow();
+		
+		const TIME_OUT = 1250;
+		let test_internet_connection_count = 0;
+		let internet_connected = true;
+		
+		const check_internet_connection_fn = async () => {
+			// https://stackoverflow.com/questions/44663864/correct-try-catch-syntax-using-async-await			
+			internet_connected = true;
+			await checkInternetConnected().catch( error => {
+				  internet_connected = false;
+            });
+						              
+			// console.log("> test_internet_connection_count: " + test_internet_connection_count++ + "  internet_connected = " + internet_connected);
+						
+			ElectronMain.GetInstance().getMainWindow().webContents.send
+						( "fromMain", [ FromMain_INTERNET_CONNECTED, internet_connected ] );
+						
+			setTimeout( check_internet_connection_fn, TIME_OUT );
+		}; // check_internet_connection_fn()
+
+		await check_internet_connection_fn();
 	});
 }
 // ========== Prevent Multiple instances of Electron main process

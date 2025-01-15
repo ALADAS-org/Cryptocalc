@@ -127,6 +127,8 @@ const FILE_SAVE_ICON_DISABLED_ID       = "save_icon_disabled_id";
 const SAVE_ICON_ID                     = "save_icon_id";
 const REGENERATE_ICON_ID               = "regenerate_icon_id";
 const TOGGLE_DEVTOOLS_ICON_ID          = "toggle_devtools_icon_id";
+
+const INTERNET_CONNECTION_ICON_ID      = "internet_connection_icon_id";
 // --------------------  Main Toolbar		
 
 // --------------------  Buttons Bar  --------------------
