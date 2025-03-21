@@ -21,11 +21,11 @@ const DEFAULT_OPTIONS = {
 		[HD_WALLET_TYPE]:     [ "Bitcoin","Ethereum","Solana",
                                 "Ripple","DogeCoin","Cardano","TRON",
 					            "Avalanche","Bitcoin Cash",
-								"LiteCoin","Dash","Firo" ], 
+								"LiteCoin","Dash","Firo", "ZCASH" ], 
 		[SWORD_WALLET_TYPE]:  [ "Bitcoin","Ethereum","Solana",
 								"Ripple","DogeCoin","Cardano","TRON",
 								"Avalanche","Bitcoin Cash",
-								"LiteCoin","Dash","Firo" ], 
+								"LiteCoin","Dash","Firo", "ZCASH" ], 
 		[SIMPLE_WALLET_TYPE]: [ "Bitcoin","Ethereum","Solana",
                                 "DogeCoin","Avalanche","LiteCoin"] 
 	},

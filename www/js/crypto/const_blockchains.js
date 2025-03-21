@@ -54,7 +54,7 @@ const TEZOS        = "Tezos";
 const DASH         = "Dash";
 const ZILLIQA      = "Zilliqa";
 const KUSAMA       = "Kusama";
-const ZCASH        = "Zcash";
+const ZCASH        = "ZCASH";
 
 const NAMECOIN     = "Namecoin";
 
@@ -86,7 +86,8 @@ const COIN_ABBREVIATIONS = {
 	[KUSAMA]       : "KSM",
 	[DASH]         : "DASH",
 	[EOS]          : "EOS",
-	[FIRO]         : "FIRO",	
+	[FIRO]         : "FIRO",
+	[ZCASH]        : "ZEC",	
 	// ------------ https://coinmarketcap.com/			
 	
 	[NAMECOIN]     : "NMC"	
@@ -131,6 +132,7 @@ const FAUCET_URLs = {
 	[TRON]         : "Null-URL",
 	[DASH]         : "Null-URL",
 	[FIRO]         : "Null-URL",
+	[ZCASH]        : "Null-URL",
 	[BITCOIN_CASH] : "Null-URL",
 	[LITECOIN]     : "https://litecointf.salmen.website/"
 }; // FAUCET_URLs
@@ -153,6 +155,7 @@ const MAINNET_EXPLORER_URLs = {
 	[RIPPLE]:       "https://livenet.xrpl.org/accounts/",
 	[EOS]:          "Null-URL",
 	[FIRO]:         "https://explorer.firo.org/address/",
+	[ZCASH]:        "Null-URL",
 	[LITECOIN]:     "https://live.blockcypher.com/ltc/address/"
 }; // MAINNET_EXPLORER_URLs
 
@@ -170,6 +173,7 @@ const TESTNET_EXPLORER_URLs = {
 	[DASH]:         "Null-URL",
 	[EOS]:          "Null-URL",
 	[FIRO]:         "Null-URL",
+	[ZCASH]:        "Null-URL",
     [LITECOIN]:     "https://sochain.com/address/LTCTEST/%ADDRESS%"	
 }; // TESTNET_EXPLORER_URLs
 

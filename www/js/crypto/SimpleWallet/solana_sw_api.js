@@ -47,7 +47,7 @@ const { computeWIF }         = require('../crypto_utils.js');
 // * Supported Blockchains:
 //   - Bitcoin, DogeCoin, LiteCoin, Ethereum, 
 //     Solana, Avalanche, , 
-//   - Not supported (in 'Simple Wallet'): Cardano, Ripple, TRON, Dash
+//   - Not supported (in 'Simple Wallet'): Cardano, Ripple, TRON, Dash, (ZCASH: check)
 //
 // -------- ** Import Test 'Guarda.com' ** 2024/08/13 --------
 // - 'Private Key':           ^OK^ => GaWbMj7YbXwDoQVAXbYYeAwb41tGCvaGZiWPrtTK75m8
