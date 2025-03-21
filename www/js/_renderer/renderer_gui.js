@@ -547,7 +547,7 @@ class RendererGUI {
 			|| blockchain == CARDANO  || blockchain == SOLANA   
 			|| blockchain == RIPPLE   || blockchain == TRON 
 			|| blockchain == BITCOIN_CASH 
-			|| blockchain == DASH || blockchain == FIRO ) {
+			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH) {
 				
 			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
 
@@ -597,7 +597,7 @@ class RendererGUI {
 
 			if (    blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN
 			     || blockchain == BITCOIN_CASH
-                 || blockchain == DASH || blockchain == FIRO ) {
+                 || blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {
                 wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
                 trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
 			}
@@ -1351,7 +1351,7 @@ class RendererGUI {
 		           || blockchain == DOGECOIN || blockchain == LITECOIN
 		           || blockchain == ETHEREUM || blockchain == AVALANCHE 
 				   || blockchain == RIPPLE   || blockchain == BITCOIN_CASH 
-				   || blockchain == DASH     || blockchain == FIRO )
+				   || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH  )
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
 			
 			if (   blockchain == BITCOIN 
@@ -2435,7 +2435,7 @@ class RendererGUI {
 			}
 			else if (    blockchain == TRON 
 			          || blockchain == BITCOIN_CASH 
-					  || blockchain == DASH || blockchain == FIRO ) {
+					  || blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
 			}            		
 		}
@@ -2565,7 +2565,7 @@ class RendererGUI {
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN 
 		    || blockchain == CARDANO  || blockchain == SOLANA
 		    || blockchain == RIPPLE   || blockchain == TRON     || blockchain == BITCOIN_CASH 
-		    || blockchain == DASH     || blockchain == FIRO ) {
+		    || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH ) {
 			return true;	
 		} 
 		return false;

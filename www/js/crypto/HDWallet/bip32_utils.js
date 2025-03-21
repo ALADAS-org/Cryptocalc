@@ -50,7 +50,7 @@ const { MAINNET, TESTNET,
 		
 	    BITCOIN,  ETHEREUM, 
 		//BINANCE,
-		CARDANO,  RIPPLE, 
+		CARDANO,  RIPPLE, ZCASH, 
 		DOGECOIN, TRON, BITCOIN_CASH,
 		LITECOIN, AVALANCHE, EOS, DASH, FIRO				
       }                    = require('../const_blockchains.js');

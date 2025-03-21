@@ -28,6 +28,7 @@ const LITECOIN        = "LiteCoin";
 const DASH            = "Dash";
 const EOS             = "EOS";
 const FIRO            = "Firo";
+const ZCASH           = "ZCASH";
 
 // NB: [NULL_COIN] syntax means NULL_COIN const is interpreted as its value ("None")
 //     else it would be interpreted a the const name "NULL_COIN" 8((
@@ -46,7 +47,8 @@ const COIN_ABBREVIATIONS = {
 	[LITECOIN]     : "LTC",
 	[DASH]         : "DASH",
 	[EOS]          : "EOS",
-	[FIRO]         : "FIRO"
+	[FIRO]         : "FIRO",
+	[ZCASH]        : "ZEC"
 }; // COIN_ABBREVIATIONS
 
 // coin_types: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
@@ -89,6 +91,7 @@ const FAUCET_URLs = {
 	[DOGECOIN]   : "https://testnet-faucet.com/doge-testnet/",
 	[TRON]       : "Null-URL",
 	[LITECOIN]   : "https://testnet-faucet.com/ltc-testnet/",
+	[ZCASH]      : "Null-URL",
 	[DASH]       : "Null-URL"
 }; // FAUCET_URLs
 
@@ -105,6 +108,7 @@ const MAINNET_EXPLORER_URLs = {
 	[RIPPLE]:       "https://livenet.xrpl.org/accounts/",
 	[BITCOIN_CASH]: "Null-URL",
 	[FIRO]:         "https://explorer.firo.org/address/",
+	[ZCASH]:        "Null-URL",
 	[LITECOIN]:     "https://live.blockcypher.com/ltc/address/",
 	[DASH]:         "https://explorer.dash.org/insight/address/"
 }; // MAINNET_EXPLORER_URLs

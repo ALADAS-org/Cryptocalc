@@ -55,18 +55,16 @@ const SC_WORDLIST      = SC_WORDLIST_JSON['wordlist'];
 const TC_WORDLIST_JSON = require('@scure/bip39/wordlists/traditional-chinese');
 const TC_WORDLIST      = TC_WORDLIST_JSON['wordlist'];
 
-//const { wordlist as simplifiedChinese }  = require('@scure/bip39/wordlists/simplified-chinese';
-//const { wordlist as traditionalChinese } = require('@scure/bip39/wordlists/traditional-chinese';
-const { GERMAN_MNEMONICS } = require('../lib/mnemonics/DE_mnemonics.js');
+const { GERMAN_MNEMONICS }    = require('../lib/mnemonics/DE_mnemonics.js');
+const { ESPERANTO_MNEMONICS } = require('../lib/mnemonics/EO_2048_mnemonics.js');
 
 // NB: Separator for Japanese
 // https://bitcoin.stackexchange.com/questions/37780/bip39-japanese-mnemonic-vector-unit-test-process
 // For display: IDEOGRAPHIC SPACEs: '\u3000'
 // Else:        Normal Space:       '\u0020'
 const { JAPANESE_MNEMONICS }  = require('../lib/mnemonics/JP_mnemonics.js');
-// const { ESPERANTO_MNEMONICS } = require('../lib/mnemonics/EO_mnemonics.js');
 
-const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "JP", "KO" ];
+const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "EO", "JP", "KO", "SC", "TC" ];
 
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, 
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
@@ -78,7 +76,7 @@ const { pretty_func_header_log,
 const { NULL_COIN, 
 	    BITCOIN, DOGECOIN, LITECOIN, 
 		ETHEREUM, AVALANCHE,
-		CARDANO, RIPPLE, 
+		CARDANO, RIPPLE, ZCASH, 
 		TRON, DASH,
 		MAINNET, TESTNET,
 		COIN_ABBREVIATIONS, COIN_TYPES
@@ -498,42 +496,21 @@ class Bip39Utils {
 
 		let mnemonics_dictionary = Bip39Mnemonic.Words.ENGLISH;
 		switch ( lang ) {
-			case "EN": 	mnemonics_dictionary = Bip39Mnemonic.Words.ENGLISH;
-						break;
-				
-			case "DE":  mnemonics_dictionary = GERMAN_MNEMONICS;
-						break;
-				
-			case "FR":  mnemonics_dictionary = Bip39Mnemonic.Words.FRENCH;
-						break;
-				
-			case "ES":  mnemonics_dictionary = Bip39Mnemonic.Words.SPANISH;
-						break;		
-				
-			case "IT":  mnemonics_dictionary = Bip39Mnemonic.Words.ITALIAN;
-						break;
-				
-			case "CS":  mnemonics_dictionary = CS_WORDLIST;
-						break;
-				
-			case "PT":  mnemonics_dictionary = PT_WORDLIST;
-						break;
+			case "EN": 	mnemonics_dictionary = Bip39Mnemonic.Words.ENGLISH; break; // English	
+			case "FR":  mnemonics_dictionary = Bip39Mnemonic.Words.FRENCH; break;  // French		
+			case "ES":  mnemonics_dictionary = Bip39Mnemonic.Words.SPANISH; break; // Spanish		
+			case "IT":  mnemonics_dictionary = Bip39Mnemonic.Words.ITALIAN; break; // Italian				
+			case "CS":  mnemonics_dictionary = CS_WORDLIST; break;                 // Czech		
+			case "PT":  mnemonics_dictionary = PT_WORDLIST; break;                 // Portuguese	
+			
+			case "DE":  mnemonics_dictionary = GERMAN_MNEMONICS; break;		       // German (non official in BIP39)	
+            case "EO":  mnemonics_dictionary = ESPERANTO_MNEMONICS; break;		   // Esperanto (non official in BIP39)			
 
-			case "SC":  mnemonics_dictionary = SC_WORDLIST;
-						break;
-
-			case "TC":  mnemonics_dictionary = TC_WORDLIST;
-						break;
-						
-			case "JP":  mnemonics_dictionary = JAPANESE_MNEMONICS;
-						break;
-						
-			case "KO":  mnemonics_dictionary = KO_WORDLIST;
-						break;
-						
-			// case "EO":  mnemonics_dictionary = ESPERANTO_MNEMONICS;
-			//			break;
-				
+			case "SC":  mnemonics_dictionary = SC_WORDLIST; break;                 // Simplified Chinese		
+			case "TC":  mnemonics_dictionary = TC_WORDLIST; break;                 // Traditional Chinese				
+			case "JP":  mnemonics_dictionary = JAPANESE_MNEMONICS; break;          // Japanese						
+			case "KO":  mnemonics_dictionary = KO_WORDLIST; break;                 // Korean						
+		
 			default:	mnemonics_dictionary = Bip39Mnemonic.Words.ENGLISH;
 						break;
 		}
