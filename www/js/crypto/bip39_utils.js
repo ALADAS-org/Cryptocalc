@@ -57,6 +57,7 @@ const TC_WORDLIST      = TC_WORDLIST_JSON['wordlist'];
 
 const { GERMAN_MNEMONICS }    = require('../lib/mnemonics/DE_mnemonics.js');
 const { ESPERANTO_MNEMONICS } = require('../lib/mnemonics/EO_2048_mnemonics.js');
+const { RUSSIAN_MNEMONICS }   = require('../lib/mnemonics/RU_2048_mnemonics.js');
 
 // NB: Separator for Japanese
 // https://bitcoin.stackexchange.com/questions/37780/bip39-japanese-mnemonic-vector-unit-test-process
@@ -64,7 +65,7 @@ const { ESPERANTO_MNEMONICS } = require('../lib/mnemonics/EO_2048_mnemonics.js')
 // Else:        Normal Space:       '\u0020'
 const { JAPANESE_MNEMONICS }  = require('../lib/mnemonics/JP_mnemonics.js');
 
-const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "EO", "JP", "KO", "SC", "TC" ];
+const SUPPORTED_LANGS = [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "EO", "RU", "JP", "KO", "SC", "TC" ];
 
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, 
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
@@ -504,7 +505,8 @@ class Bip39Utils {
 			case "PT":  mnemonics_dictionary = PT_WORDLIST; break;                 // Portuguese	
 			
 			case "DE":  mnemonics_dictionary = GERMAN_MNEMONICS; break;		       // German (non official in BIP39)	
-            case "EO":  mnemonics_dictionary = ESPERANTO_MNEMONICS; break;		   // Esperanto (non official in BIP39)			
+            case "EO":  mnemonics_dictionary = ESPERANTO_MNEMONICS; break;		   // Esperanto (non official in BIP39)	
+            case "RU":  mnemonics_dictionary = RUSSIAN_MNEMONICS; break;		   // Russian (non official in BIP39)						
 
 			case "SC":  mnemonics_dictionary = SC_WORDLIST; break;                 // Simplified Chinese		
 			case "TC":  mnemonics_dictionary = TC_WORDLIST; break;                 // Traditional Chinese				
