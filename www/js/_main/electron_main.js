@@ -164,7 +164,7 @@ class ElectronMain {
 		if ( key !== ElectronMain.#key ) {
 			throw new TypeError("ElectronMain constructor is private.");
 		}
-		
+				
 		this.cryptocalc_version        = "x.x.x";
 		
 		this.app_config                = DEFAULT_APP_CONFIG;
@@ -338,72 +338,65 @@ class ElectronMain {
 				Skribi.Initialize( this.app_config );
 				//Skribi.log(">> " + _CYAN_ + "[*Electron*] " + _YELLOW_ + " did-finish-load --" + _END_);
 				
-				// Note: must load twice (I suspect because of first 'index.html' redirect)
-				this.DidFinishLoad_FiredCount++;
-				
 				this.app_config = this.readAppConfig();
-				//Skribi.log(">> " + _CYAN_ + "eMain.evtH('did-finish-load')> FiredCount: " + this.DidFinishLoad_FiredCount + _END_ );
-				
-				if ( this.DidFinishLoad_FiredCount == 2 ) {
-					Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
-					                 + _CYAN_ + ")> this.DidFinishLoad_FiredCount == 2" + _END_  );
+				// Skribi.log(">> " + _CYAN_ + "eMain.evtH('did-finish-load')> FiredCount: " + this.DidFinishLoad_FiredCount + _END_ );
 
-                    this.getCmdLineArgs();	
-                    // Skribi.log("  ** this.cmd_line: " + JSON.stringify(this.cmd_line) );
-					Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
-					                 + _CYAN_ + ")> this.cmd_line[PROGRAM]: " + _END_ + this.cmd_line[PROGRAM]);					
-					
-					//---------- Set 'Cryptocalc_version' in Renderer GUI ----------
-					this.cryptocalc_version = MainModel.GetInstance().getAppVersion();	
-					//Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
-					//                 + _CYAN_ + ")> cryptocalc_version: " + _END_ + this.cryptocalc_version);					
-					this.updateWindowTitle();
-					//---------- Set 'this.cryptocalc_version' in Renderer GUI
-					
-					
-					this.MainWindow.webContents.send
-						( "fromMain", [ FromMain_DID_FINISH_LOAD ] );
-					
-					//Skribi.log("   Send : " + FromMain_SET_VARIABLE + " = " + Cryptocalc_version);
-					this.MainWindow.webContents.send
-						( "fromMain", [ FromMain_SET_VARIABLE, APP_VERSION, this.cryptocalc_version ] );
-					
-					// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
-					// Open urls in the user's browser
-					// nB: Triggered by 'RendererGUI.OnExploreWallet()'
-					this.MainWindow.webContents.setWindowOpenHandler( (edata) => {
-						shell.openExternal(edata.url);
-						return { action: "deny" };
-					} );
-					
-					
-					this.setCallbacks();
-                    this.Options = await this.loadOptions();					
-					
-					// =================== Open file by association ===================
-					let wits_path = this.cmd_line[PATH];
-					//let wits_path =  "D:\\_010_Michel\\_00_Lab\\_11_Daniel Rodet\\_00_Lab\\_01_github\\"
-					//               + "Cryptocalc\\_output\\2024_09_26_0h-6m-11s-5_ADA_EN\\wallet_info.wits";
-					
-					if ( wits_path.endsWith(".wits") ) {
-						Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _RED_ + "'did-finish-load'"
-						 			     + _CYAN_ + ")> SET_VARIABLE(" + WITS_PATH + ") in Renderer" + _END_ + wits_path);		 
-						// await this.openWits( wits_path ); 
-						await this.MainWindow.webContents.send
-							( "fromMain", [ FromMain_SET_VARIABLE, WITS_PATH, wits_path ] );
-					}
-					// =================== Open file by association					
-					
-					// Note: will require 'Main' to 'Open Wits' if:
-					// - 'wits_path' in Renderer is not empty 
-					// and 
-					// - not 'first_time' in Renderer  
-					await this.doFileNew();						
+				this.getCmdLineArgs();	
+				// Skribi.log("  ** this.cmd_line: " + JSON.stringify(this.cmd_line) );
+				Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
+								 + _CYAN_ + ")> this.cmd_line[PROGRAM]: " + _END_ + this.cmd_line[PROGRAM]);					
+				
+				//---------- Set 'Cryptocalc_version' in Renderer GUI ----------
+				this.cryptocalc_version = MainModel.GetInstance().getAppVersion();	
+				//Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
+				//                 + _CYAN_ + ")> cryptocalc_version: " + _END_ + this.cryptocalc_version);					
+				this.updateWindowTitle();
+				//---------- Set 'this.cryptocalc_version' in Renderer GUI
+				
+				
+				this.MainWindow.webContents.send
+					( "fromMain", [ FromMain_DID_FINISH_LOAD ] );
+				
+				//Skribi.log("   Send : " + FromMain_SET_VARIABLE + " = " + Cryptocalc_version);
+				this.MainWindow.webContents.send
+					( "fromMain", [ FromMain_SET_VARIABLE, APP_VERSION, this.cryptocalc_version ] );
+				
+				// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
+				// Open urls in the user's browser
+				// nB: Triggered by 'RendererGUI.OnExploreWallet()'
+				this.MainWindow.webContents.setWindowOpenHandler( (edata) => {
+					shell.openExternal(edata.url);
+					return { action: "deny" };
+				} );
+				
+				
+				this.setCallbacks();
+				this.Options = await this.loadOptions();					
+				
+				// =================== Open file by association ===================
+				let wits_path = this.cmd_line[PATH];
+				//let wits_path =  "D:\\_010_Michel\\_00_Lab\\_11_Daniel Rodet\\_00_Lab\\_01_github\\"
+				//               + "Cryptocalc\\_output\\2024_09_26_0h-6m-11s-5_ADA_EN\\wallet_info.wits";
+				
+				if ( wits_path.endsWith(".wits") ) {
+					Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _RED_ + "'did-finish-load'"
+									 + _CYAN_ + ")> SET_VARIABLE(" + WITS_PATH + ") in Renderer" + _END_ + wits_path);		 
+					// await this.openWits( wits_path ); 
+					await this.MainWindow.webContents.send
+						( "fromMain", [ FromMain_SET_VARIABLE, WITS_PATH, wits_path ] );
 				}
+				// =================== Open file by association					
+				
+				// Note: will require 'Main' to 'Open Wits' if:
+				// - 'wits_path' in Renderer is not empty 
+				// and 
+				// - not 'first_time' in Renderer  
+				await this.doFileNew();						
+
 			} // 'did-finish-load' callback
 		); // ==================== 'did-finish-load' event handler
 		
-		this.MainWindow.loadFile( './index.html' );
+		this.MainWindow.loadFile( './www/index.html' );
 	} // createWindow()
 	
 	async openWits( wits_path ) {

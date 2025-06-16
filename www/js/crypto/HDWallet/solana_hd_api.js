@@ -229,7 +229,7 @@ class SolanaHD_API {
 		null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
 		null_wallet[CRYPTO_NET]      = "Null-NET";
 		null_wallet[UUID]            = "Null-UUID";
-		null_wallet[PRIVATE_KEY] = NULL_HEX;
+		null_wallet[PRIVATE_KEY]     = NULL_HEX;
 		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
 		null_wallet[ADDRESS]         = "Null-ADDRESS";
 		null_wallet[MNEMONICS]       = "Null-MNEMONICS";

@@ -179,17 +179,22 @@ class MainModel {
 				//Skribi.log("private_key: " + private_key);					
 			}				
 			else {
-				//Skribi.log("wallet_keys[" + i + "]: " + current_key);
+				// Skribi.log("wallet_keys[" + i + "]: " + current_key);
 			}
 			
 			if ( current_key == WIF ) {					
 				wif = crypto_info[current_key];					
-			}
+			} 
 
             let current_value = crypto_info[current_key];
 			if ( current_key == ENTROPY_SIZE ) {					
 				current_value += " bits";					
-			}	
+			}
+			else if ( current_key == DERIVATION_PATH ) {					
+				if (! current_value.endsWith("'")) { 
+					current_value += "'"; // NB: switch to systematic Hardened adresses	
+				}				
+			}			
 
 			// *BUG* in crypto_info: current_key == crypto_info[current_key] 
 			if (    current_key != crypto_info[current_key]  
@@ -199,14 +204,17 @@ class MainModel {
 		}
 		// ---------- fill 'wallet_info_str'
 		
+		// 
+		pretty_log( "MMdlSaveWinf> wallet_info_str", wallet_info_str );		
+		
 		wallet_info_str = wallet_info_str.substring( 0, wallet_info_str.length - 1 );
 		
 		fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );
 	
 		this.createQRCode( output_path, "Address.png", crypto_info['address'], 'qrcode' );		
 		
-		//pretty_log( "MMdlSqvWinf> QRcode", "PrivateKey.png" );
-		//pretty_log( "MMdlSqvWinf> private_key", "'" + private_key + "'" );
+		// pretty_log( "MMdlSqvWinf> QRcode", "PrivateKey.png" );
+		// pretty_log( "MMdlSqvWinf> private_key", "'" + private_key + "'" );
 		if (  private_key != undefined  &&  private_key != ""  && private_key != 'undefined' ) {
 			this.createQRCode( output_path, "PrivateKey.png", private_key, 'qrcode' );			
         }	
@@ -306,8 +314,14 @@ class MainModel {
 				//pretty_log( "account", account );
 				json_data[ACCOUNT] = account;
 				
+				// ---------- 'address index' ----------
 				let address_index = derivation_path_items[5];
-				address_index = address_index.replaceAll( "'", "" );
+				// address_index = address_index.replaceAll( "'", "" ); // NB: switch to systematic Hardened adresses
+				if (! address_index.endsWith("'")) { 
+					address_index += "'"; // NB: switch to systematic Hardened adresses	
+				}	
+				// ---------- 'address index'				
+	
 				//pretty_log( "address_index", address_index );				
 				json_data[ADDRESS_INDEX] = address_index;
 			}
