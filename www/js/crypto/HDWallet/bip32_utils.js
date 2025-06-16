@@ -139,6 +139,7 @@ class Bip32Utils {
 		if ( args[ADDRESS_INDEX] != undefined ) { 
 			address_index = args[ADDRESS_INDEX];
 			if ( isString( address_index ) )  address_index = parseInt( address_index );
+			address_index += "'"; // NB: switch to systematic Hardened adresses
 		}
 		// pretty_log( "b32.mnk2wi> address_index", address_index );
 		
@@ -168,14 +169,15 @@ class Bip32Utils {
         // Derive the key for Bitcoin                               (0′)
         // Access the first account                                 (0′)
         // Choose the external chain, used for public addresses     (0)
-        // And finally, generate the first address in this sequence (0)
+        // And finally, generate the first address in this sequence (0') NB: switch to systematic Hardened adresses
 		//                                NB: ref. value is /0'/0/address_index
 		
 		// https://arshbot.medium.com/hd-wallets-explained-from-high-level-to-nuts-and-bolts-9a41545f5b0
 		//let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
-		//let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
 		
+		// NB: Now switch to systematic Hardened adresses
 		let path_options = { [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
+		
 		let master_derivation_path = Bip32Utils.GetDerivationPath( coin_type, path_options );
 		pretty_log( "b32.mnk2wi> master_derivation_path", master_derivation_path );
 		hdwallet_info[DERIVATION_PATH] = master_derivation_path;

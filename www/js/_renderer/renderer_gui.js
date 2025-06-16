@@ -642,13 +642,14 @@ class RendererGUI {
 		this.wallet_info.setAttribute( ADDRESS_INDEX,  address_index );	
 		
 		//---------- Update 'Purpose' in "Wallet" Tab ----------
-		if ( blockchain == CARDANO ) HtmlUtils.SetNodeValue( PURPOSE_ID, ADA_PURPOSE + "'");				
-		else                         HtmlUtils.SetNodeValue( PURPOSE_ID, "44'" );					
+		if ( blockchain == CARDANO ) HtmlUtils.SetNodeValue( PURPOSE_ID, ADA_PURPOSE + "'/");				
+		else                         HtmlUtils.SetNodeValue( PURPOSE_ID, "44'/" );					
 		//---------- Update 'Purpose' in "Wallet" Tab
 		
 		//---------- Update 'Change' in "Wallet" Tab ----------
-		if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( CHANGE_ID, "0'/" );				
-		else                         HtmlUtils.SetNodeValue( CHANGE_ID, "0/" );				
+		// NB: switch to systematic Hardened adresses
+		// if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( CHANGE_ID, "0'/" );				
+		// else                         HtmlUtils.SetNodeValue( CHANGE_ID, "0/" );				
 		//---------- Update 'Change' in "Wallet" Tab
 		
 		//---------- Update 'Address' in "Wallet" Tab ----------
@@ -658,8 +659,9 @@ class RendererGUI {
 		//---------- Update 'Address' in "Wallet" Tab
 		
 		//---------- Update 'Address Hardened Suffix ("" or "'") in "Wallet" Tab ----------
-		if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
-		else                         HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
+		// NB: switch to systematic Hardened adresses
+		// if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
+		// else                         HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
 		//---------- Update 'Address' in "Wallet" Tab
 		
 		//==================== Update 'Derivation Path' in "Wallet" Tab
@@ -1215,14 +1217,14 @@ class RendererGUI {
 		
 		let account = parseInt( HtmlUtils.GetNodeValue( ACCOUNT_ID ) );
 		this.wallet_info.setAttribute( ACCOUNT, account );
-		//trace2Main( pretty_format( "rGUI.uWadr> account", account ) );
+		// trace2Main( pretty_format( "rGUI.uWadr> account", account ) );
 		
 		let address_index = parseInt( HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID ) );
 		this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
-		//trace2Main( pretty_format( "rGUI.uWadr> address_index", address_index) );
+		trace2Main( pretty_format( "rGUI.uWadr> address_index", address_index) );
 		
 		this.setEntropySourceIsUserInput( true );
-		//this.updateStatusbarInfo( true );
+		// this.updateStatusbarInfo( true );
 		
 		await this.updateFields( entropy );	
     } // updateWalletAddress()
@@ -1623,7 +1625,7 @@ class RendererGUI {
 				trace2Main( pretty_format( "img_data_URL", img_data_URL.substring(0,80) ) ); 
 				
 				let img_elt = HtmlUtils.GetNode( img_elt_id );
-				//trace2Main("   img_elt: " + img_elt);
+				trace2Main("   img_elt: " + img_elt);
 				//trace2Main("   img_elt.id: " + img_elt.id);
 				img_elt.src = img_data_URL;
 				
@@ -1775,13 +1777,22 @@ class RendererGUI {
 
 	GuiTogglePasswordVisibility() {
 		trace2Main( pretty_func_header_format( "RendererGUI.GuiTogglePasswordVisibility" ) );	
+		let eye_btn_img_elt = document.getElementById(EYE_BTN_IMG_ID )
+		console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
+		
 		if ( this.password_visible ) { 
 			document.getElementById(PASSWORD_ID).type = 'password';	
-			document.getElementById(EYE_BTN_IMG_ID ).src = 'icons/' + EYE_CLOSED_ICON;	
+			
+			if (eye_btn_img_elt != undefined) {
+				eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;	
+			}
 		}
 		else { 	
 		    document.getElementById(PASSWORD_ID).type = 'text';	
-			document.getElementById(EYE_BTN_IMG_ID ).src = 'icons/' + EYE_OPEN_ICON;	
+
+			if (eye_btn_img_elt != undefined) {
+				eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;	
+			}			
 		}
 		this.password_visible = ! this.password_visible;
 	} // GuiTogglePasswordVisibility()

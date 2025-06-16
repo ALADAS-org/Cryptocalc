@@ -42,10 +42,10 @@ const DERIVATION_PATH           = 'Derivation Path';
 const HARDENED                  = 'hardened';
 
 const ACCOUNT                   = 'account'; 
-const ACCOUNT_MAX               = 9999;
+const ACCOUNT_MAX               = 999999999; // 9999;
 
 const ADDRESS_INDEX             = 'address_index';
-const ADDRESS_INDEX_MAX         = 9999;
+const ADDRESS_INDEX_MAX         = 999999999; // 9999;
 
 const MNEMONICS                 = 'mnemonics';
 const WORD_INDEXES              = 'Word indexes'; //'word_indexes';

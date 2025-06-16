@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.17
+## Cryptocalc 0.3.18
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -48,32 +48,37 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.17`
+    + 3.1. Features in `0.3.18`
+	    * Changed _HD Wallet_ mode so that it the _Derivation Path_ is `Hardened` by default 
+		  and mandatory (for _Security_ reason, see 5.2.3.	
+        * HD Wallet: Augmentation of `account` and `address_index` digits from 4 to 9		  
+		* Fixed bug: useless twice loading of `index.html`
+    + 3.2. Features in `0.3.17`
 	    * Added support of _Russian_ language. 
-    + 3.2. Features in `0.3.16`
+    + 3.3. Features in `0.3.16`
 	    * Changed license to 'BSD-3-Clause' and added support of _Esperanto_ language. 
-    + 3.3. Features in `0.3.15`
+    + 3.4. Features in `0.3.15`
 	    * Added feature 'Internet Connection status' (see 4.1.9) for securing _Offline wallet creation_
-    + 3.4. Features in `0.3.14`
+    + 3.5. Features in `0.3.14`
 	    * Bug fixes on Ripple (XRP) HD Wallet:    
 		    + Bug 1. [Apply] button displayed when password input manually
 		    + Bug 2. WIF and Private Key displayed for Ripple (XRP) HD Wallet
 			+ Bug 3. WIF and Private Key in 'wallet_info.txt'
-    + 3.5. Features in `0.3.11`
+    + 3.6. Features in `0.3.11`
 	    * Added support of _Simplified Chinese_ and _Traditional Chinese_ for the `Seed phrase` 
-    + 3.6. Features in `0.3.8`
+    + 3.7. Features in `0.3.8`
 	    * Added support of _Korean_ for the `Seed phrase` 
-    + 3.7. Features in `0.3.7`
+    + 3.8. Features in `0.3.7`
 	    * Added support of _Japanese_ for the `Seed phrase` (taking into account the _Ideographic Space_
 		  as a separator between words instead of the _Normal Space_).
 		* Code enhancement: in `renderer_gui.js` and `electron_main.js`. The _Singleton_ design pattern
 		  now uses `Symbol()` for the value of the static field `#key`.
-    + 3.8. Features in `0.3.4`
+    + 3.9. Features in `0.3.4`
 	    * Added _password feature_ for `HD Wallet` (see 4.1.5)
 		* `Seed` tab renamed to `Entropy`
 		* Bug fix: crash when saving `SWORD Wallet`
 		* Update of [`Cryptocalc installer`](https://sourceforge.net/projects/aladas-cryptocalc/) on [`SourceForge`](https://sourceforge.net/)
-    + 3.9. Features in `0.3.3`
+    + 3.10. Features in `0.3.3`
 	    * Added `SWORD Wallet` in _Wallet Types_. `SWORD` is an acronym which means 
 		  `Simple Wallet Over Randomized Deterministic`, it's an hybrid between `Simple Wallet` and `HD Wallet`
 		  because it hides the `Derivation Path` logic (which contains `Account` and `Address Index`), thus you 
@@ -111,8 +116,8 @@
 	    * 4.1.3. _Entropy Source_ : `Image` or `Fortunes`    
 		_Entropy Source_ may be switched between `Image` (Default source) 
 		and `Fortunes` (drawn from a compilation of 12803 _Fortune Cookies_). 
-		Please notice that a text is not considered as random enough 
-		for an _Entropy Source_ thus `Image` is now the default _Entropy Source_ 
+		Please notice that a text is not considered as random enough for an _Entropy Source_ 
+		thus `Image` is now the default _Entropy Source_ 
         (Notice that an image is much better in terms of randomness than a text).    
 		    * 4.1.3.a: You can _Drag'n'Drop_ images (`png`, `jpg` or `svg`) from you local folders.		
             * 4.1.3.b: Image samples are provided in `www/js/img` folder.  		
@@ -129,20 +134,24 @@
             multiple wallets (for example to secure your assets by splitting them among many wallets). 			
 			* 4.1.4.b. _HD Wallet_    
 			This _Wallet Mode_ allows to create / manage a whole hierarchy of Wallets (_HD_ is the acronym for 
-			_Hierarchical Deterministic_) of wallets in the same _BIP32 tree_
-            this hierarchy is generated from the _Entropy_ (and optionnaly a _password_, not yet supported).    
-			The `BIP32` HD wallet tree_ is fully by the _Entropy_ or _seed phrase_. 
-			The _Entropy_ is isomorphic with the _Mnemonics Sequence_ which may be called either a _seed phrase_, _Mnemonics_
-            or 	even _SRP_ (_Secret Recovery Passphrase_).    
-			You can generate new wallets (_Address_ + _Private Key_ / _WIF_) 
-			by Pasting a previous _Entropy_ or _seed phrase_ (within the `Entropy` wallet tab). 
-			This will hide the _Entropy Source_ and _Salt_ fields which are meaningless in
-			this situation. You can then change either the _Account_ or _Address Index_
-			fields in the _Wallet_ tab page. This will show a new [Refresh] button
-			to recompute the wallet once you gave finished editing these fields 
-			(you can input a decimal value between 0 and 9999).		
-			Pushing the [Refresh] button (or hitting either [ Return ] or [ Enter ] keys) 
-			will recompute the wallet accordingly.             
+			_Hierarchical Deterministic_) in the same _BIP32 tree_.
+			> Please notice that the `Derivation Path` is now `Hardened` by default and mandatory (since `0.3.18`). 
+			> This is for _Security_ purpose (see 5.2.3)
+			The `BIP32` HD wallet tree_ is fully determined by the _Entropy_ (or _seed phrase_ which is equivalent) 
+			and an optional _Password_.
+			The _Entropy_ may be represented by a more human friendly representation: the _Mnemonics Sequence_ which 
+			may also be called a _seed phrase_, _Mnemonics_ or even _SRP_ (_Secret Recovery Passphrase_).    
+			> How to Generate a new wallet with a given _Entropy_:    
+			> Paste a new _Entropy_ (or _seed phrase_) in the `Entropy` wallet tab. 
+			> Notice that this will hide the _Entropy Source_ and _Salt_ fields 
+			> (meaningless in this situation).    
+			> You can then change either the _Account_ or _Address Index_ fields 
+			> (the maximum number of digits is 9 so you can input a decimal value 
+			> between 0 and 999999999 for each field) in the _Wallet_ tab page. 
+			> This will show a [Refresh] button to recompute the wallet once you have finished.
+			> Pushing the [Refresh] button (or hitting either [Return] or [Enter] keys 
+			> while the cursor is in either _Account_ or _Address Index_ field) will recompute the 
+			> wallet address (and _Private key_ or _WIF_) accordingly.
 			* 4.1.4.c. _SWORD Wallet_    
 			`SWORD` is an acronym which means `Simple Wallet Over Randomized Deterministic`, 
 			it's an hybrid between `Simple Wallet` and `HD Wallet` because it hides the `Derivation Path` logic 
@@ -150,10 +159,10 @@
 			of _Hierarchical Deterministic_ wallets, but it allows to generate all the cryptocurrencies provided by `HD Wallet`.
 			* 4.1.4.d. Please notice that for `Cardano` HD wallets, the `Account` and `Address Index` parameters are not taken 
 			into account by the _Wallet Managers_ which I have tested (namely `Guarda` and `Yoroi`) because they ask for 
-			the `Mnemonics` (`Seed phrase` in _Cryptocalc_). This is why in by _Cryptocalc_, these parameters are _hard-coded_
+			the `Mnemonics` (`Seed phrase` in _Cryptocalc_). This is why in _Cryptocalc_, these parameters are _hard-coded_
 			to Zero (for `Cardano` HD wallets only).			
 			* 4.1.4.e. You can check generated _HD Wallets_ with _Ian Coleman BIP39_ homepage    
-			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (Help / Resources / Ian Coleman BIP39)
+			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
 		* 4.1.5. _Password feature_ (_HD Wallet_ only)    
     	With a _password_ (also called _Passphrase_) a completely different _HD hierarchy_ is generated. 
 		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
@@ -294,16 +303,16 @@
 	or _seed phrase_ (also called the _Secret Recovery Passphrase_).
     A _seed phrase_ of only 12 words is enough is most _Wallet Managers_ but it is much more secure to use a 24 words 
 	_seed phrase_ if possible (e.g. _Ledger_ hardware wallet manager).    
-	    Example: meaning of each part for `m/44'/60'/0'/0/0`:    
+	    Example: meaning of each part for `m/44'/60'/0'/0/0'` (a _Hardened Derivation Path_):    
 	    * Start at the master key                                      (m)    
-        * Follow the `BIP44` specification                             (44′)    
-        * Derive the key for _Ethereum_ (for which _Coin type_ is 60)  (60′)    
-        * Access the first account                                     (0′)    
+        * Follow the `BIP44` specification                             (44')    
+        * Derive the key for _Ethereum_ (for which _Coin type_ is 60)  (60')     
+        * Access the first account                                     (0')    
         * Choose the external chain, used for public addresses         (0)    
-        * And finally, generate the first address in this sequence     (0)    
+        * And finally, generate the first address in this sequence     (0')    
         	
-	* Reference    
-	    + [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))
-		+ [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)
-			
+	* 5.2. References    
+	    + 5.2.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))
+		+ 5.2.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)
+		+ 5.2.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)		
 		
