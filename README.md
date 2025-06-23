@@ -1,4 +1,4 @@
-## Cryptocalc 0.3.18
+## Cryptocalc 0.3.19
 ![](https://github.com/ALADAS-org/Cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _Cryptocalc_ is a standalone desktop application which generates _Crypto wallets_
@@ -10,7 +10,7 @@
    _Ripple_ (`XRP`), _DogeCoin_ (`DOGE`), _Cardano_ (`ADA`), _TRON_ (`TRON`), 
    _Avalanche_ (`AVX`), _Bitcoin Cash_ (`BCH`), _LiteCoin_ (`LTC`), _Dash_ (`DASH`) and _Firo_ (`FIRO`)    
    _Supported Languages_: _English_ (`EN`), _French_ (`FR`), _Spanish_ (`ES`), _Italian_ (`IT`), 
-   _Czech_ (`CS`), _Portuguese_ (`PT`), _Deutsch_ (`DE`), _Esperanto_ (`EO`), _Russian_ (`RU`),	
+   _Czech_ (`CS`), _Portuguese_ (`PT`), _Deutsch_ (`DE`), _Esperanto_ (`EO`), _Russian_ (`RU`),	, _Hindi_ (`HI`),
    _Simplified Chinese_ (`SC`), _Traditional Chinese_ (`TC`), _Japanese_ (`JP`), _Korean_ (`KO`)
    NB: _Cryptocalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron)
@@ -48,44 +48,38 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.18`
+	+ 3.1. Features in `0.3.19`
+	    * Added support of _Hindi_ (`HI`) for the _Seed phrase_.	
+    + 3.2. Features in `0.3.18`
 	    * Changed _HD Wallet_ mode so that it the _Derivation Path_ is `Hardened` by default 
 		  and mandatory (for _Security_ reason, see 5.2.3.	
         * HD Wallet: Augmentation of `account` and `address_index` digits from 4 to 9		  
 		* Fixed bug: useless twice loading of `index.html`
-    + 3.2. Features in `0.3.17`
+    + 3.3. Features in `0.3.17`
 	    * Added support of _Russian_ language. 
-    + 3.3. Features in `0.3.16`
+    + 3.4. Features in `0.3.16`
 	    * Changed license to 'BSD-3-Clause' and added support of _Esperanto_ language. 
-    + 3.4. Features in `0.3.15`
+    + 3.5. Features in `0.3.15`
 	    * Added feature 'Internet Connection status' (see 4.1.9) for securing _Offline wallet creation_
-    + 3.5. Features in `0.3.14`
+    + 3.6. Features in `0.3.14`
 	    * Bug fixes on Ripple (XRP) HD Wallet:    
 		    + Bug 1. [Apply] button displayed when password input manually
 		    + Bug 2. WIF and Private Key displayed for Ripple (XRP) HD Wallet
 			+ Bug 3. WIF and Private Key in 'wallet_info.txt'
-    + 3.6. Features in `0.3.11`
+    + 3.7. Features in `0.3.11`
 	    * Added support of _Simplified Chinese_ and _Traditional Chinese_ for the `Seed phrase` 
-    + 3.7. Features in `0.3.8`
+    + 3.8. Features in `0.3.8`
 	    * Added support of _Korean_ for the `Seed phrase` 
-    + 3.8. Features in `0.3.7`
+    + 3.9. Features in `0.3.7`
 	    * Added support of _Japanese_ for the `Seed phrase` (taking into account the _Ideographic Space_
 		  as a separator between words instead of the _Normal Space_).
 		* Code enhancement: in `renderer_gui.js` and `electron_main.js`. The _Singleton_ design pattern
 		  now uses `Symbol()` for the value of the static field `#key`.
-    + 3.9. Features in `0.3.4`
+    + 3.10. Features in `0.3.4`
 	    * Added _password feature_ for `HD Wallet` (see 4.1.5)
 		* `Seed` tab renamed to `Entropy`
 		* Bug fix: crash when saving `SWORD Wallet`
 		* Update of [`Cryptocalc installer`](https://sourceforge.net/projects/aladas-cryptocalc/) on [`SourceForge`](https://sourceforge.net/)
-    + 3.10. Features in `0.3.3`
-	    * Added `SWORD Wallet` in _Wallet Types_. `SWORD` is an acronym which means 
-		  `Simple Wallet Over Randomized Deterministic`, it's an hybrid between `Simple Wallet` and `HD Wallet`
-		  because it hides the `Derivation Path` logic (which contains `Account` and `Address Index`), thus you 
-		  don't need to care or understand the principles of _Hierarchical Deterministic_ wallets, but it allows
-		  to generate all the cryptocurrencies provided by `HD Wallet`. 		  
-	    * Bug fix: when changing 'Entropy Size' to 224 bits, Cryptocalc was blocked 
-		  while trying to split the `seed phrase` in 2 parts for the traces.  
  	
 4. _Cryptocalc_ User Guide  
     You can launch _Cryptocalc_ either by using the _Cryptocalc Standalone installer_ (see 2.1)
