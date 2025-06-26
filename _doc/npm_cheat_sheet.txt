@@ -25,7 +25,7 @@ npm publish --access=public
    npm whoami
    --> echopraxium
    npm login   --registry=https://registry.npmjs.org --scope=@aladas-org
-   npm config set https://registry/npmjs.org/:_authToken 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
+   npm config set https://registry/npmjs.org/:_authToken AUTH_CODE
    npm publish --access=public
 
 ----------------------------------------------------------------------------------------
