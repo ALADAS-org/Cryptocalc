@@ -5,7 +5,9 @@
 
 class HtmlUtils {
 	// https://stackoverflow.com/questions/2155737/remove-css-class-from-element-with-javascript-no-jquery
-	static HasClass(elt, className) {
+	static HasClass(elt_id, className) {
+		//trace2Main(">> HtmlUtils.HasClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
 		    return false;
 		}		
@@ -19,7 +21,9 @@ class HtmlUtils {
 		return false;
 	} // HtmlUtils.HasClass()
 	
-	static AddClass(elt, className) {
+	static AddClass(elt_id, className) {
+		//trace2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
 		    return;
 		}
@@ -35,7 +39,9 @@ class HtmlUtils {
 		return elt;
 	} // HtmlUtils.AddClass()
 	
-	static RemoveClass(elt, className) {
+	static RemoveClass(elt_id, className) {
+		//trace2Main(">> HtmlUtils.RemoveClass elt_id:" + elt_id);
+		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
 		    return;
 		}
@@ -51,26 +57,32 @@ class HtmlUtils {
 		return elt;
 	} // HtmlUtils.RemoveClass()
 	
-	static HideNode( elt ) {
+	static HideNode( elt_id ) {
+		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
+		//trace2Main(">> HtmlUtils.HideNode elt_id: " + elt_id);
+	  
+		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
 		    //trace2Main(">> " + _RED_ + elt_id + " NOT DEFINED");
 		    return;
 		}
 		
 		// elt.hidden = true;
-		let elt_id = elt.id;
         $("#" + elt_id).hide();	
         	
         //$('#' + elt_id).prop("style", "display:none");		
 	} // HtmlUtils.HideNode()
 	
-	static ShowNode( elt ) {
+	static ShowNode( elt_id ) {
+		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
+		//	trace2Main(">> HtmlUtils.ShowNode elt_id: " + elt_id);
+		
+		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
 		    return;
 		}
 		
 		//elt.hidden = false; 
-		let elt_id = elt.id;
 		$("#" + elt_id).show();	
 	} // HtmlUtils.ShowNode()
 	
@@ -80,7 +92,10 @@ class HtmlUtils {
 		return undefined;
 	} // HtmlUtils.GetNode()
 	
-	static InitializeNode( elt, values, labels ) {
+	static InitializeNode( elt_id, values, labels ) {
+		// trace2Main( pretty_func_header_format( "HtmlUtils.InitializeNode", " elt_id: " + elt_id ) );	
+				 
+		let elt = document.getElementById(elt_id);
 		if (elt != undefined) { 
 		    //trace2Main("   elt.nodeName: " + elt.nodeName);
 			if ( elt.nodeName == "SELECT" ) {	
@@ -98,7 +113,10 @@ class HtmlUtils {
 		// trace2Main( pretty_func_header_format( "<END> HtmlUtils.InitializeNode", " elt_id: " + elt_id ) );
 	} // HtmlUtils.InitializeNode()
 	
-	static GetNodeValue( elt_id ) {  		
+	static GetNodeValue( elt_id ) {
+		// trace2Main( pretty_func_header_format( "HtmlUtils.GetNodeValue() ", elt_id ));
+		let elt = document.getElementById( elt_id );	
+        		
 		if ( elt != undefined ) { 
 			if ( elt.nodeName == "TD" || elt.nodeName == "SPAN" || elt.nodeName == "DIV" ) {
 				return elt.textContent;
@@ -110,7 +128,10 @@ class HtmlUtils {
 		return "Null_String";
 	} // HtmlUtils.GetNodeValue()	
 
-	static SetNodeValue( elt, value_str ) {
+	static SetNodeValue( elt_id, value_str ) {
+		//trace2Main(">> " + _CYAN_ + "HtmlUtils.SetNodeValue() " + _END_ + elt_id);
+		//trace2Main(" elt_id: " + elt_id);
+		let elt = document.getElementById( elt_id );
 		if ( elt != undefined ) {
             //trace2Main(" elt.nodeName: " + elt.nodeName);			
 			if (   elt.nodeName == "TD" 
@@ -124,7 +145,6 @@ class HtmlUtils {
                 // https://www.geeksforgeeks.org/jquery-set-the-value-of-an-input-text-field/
 				// ** Fix **: set value via JQuery and NOT with 'elt.value = value_str'
 				// => $('#' + elt_id).prop("value", value_str);
-				let elt_id = elt.id;
 				$('#' + elt_id).prop("value", value_str);
 			}
 			else {

@@ -30,7 +30,7 @@ const DEFAULT_OPTIONS = {
                                 "DogeCoin","Avalanche","LiteCoin"] 
 	},
 	[LANG]: "EN",
-	[WALLET_SAVE_PATH]:"$CRYPTOCALC/_output",
+	[WALLET_SAVE_PATH]:"$CRYPTOWALLET/_output",
 	[GUI_THEME]: "Default"
 }; // DEFAULT_OPTIONS
 

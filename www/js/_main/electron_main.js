@@ -165,7 +165,7 @@ class ElectronMain {
 			throw new TypeError("ElectronMain constructor is private.");
 		}
 				
-		this.cryptocalc_version        = "x.x.x";
+		this.cryptowallet_version        = "x.x.x";
 		
 		this.app_config                = DEFAULT_APP_CONFIG;
 
@@ -275,7 +275,7 @@ class ElectronMain {
 							   { label: "Setup guide and User's Manual",
 								  click() { 
 									 ElectronMain.GetInstance()
-									     .createBrowserWindow("https://github.com/ALADAS-org/Cryptocalc/blob/master/README.md");
+									     .createBrowserWindow("https://github.com/ALADAS-org/cryptowallet/blob/master/README.md");
 								  }
 							   },
 							   { label: "Ian Coleman BIP39",
@@ -318,7 +318,7 @@ class ElectronMain {
 		this.MainWindow = new BrowserWindow(
 			{ width:  MAIN_WINDOW_WIDTH, 
 			  height: MAIN_WINDOW_HEIGHT,
-			  icon:   path.join(__dirname, "../../icons/Cryptocalc_Icon.png"),
+			  icon:   path.join(__dirname, "../../icons/Cryptowallet_Icon.png"),
 			  webPreferences: {
 				contextIsolation: true, // NB: 'true' is default value but keep it there anyway
 				preload:          path.join(__dirname, "./preload.js")
@@ -346,20 +346,19 @@ class ElectronMain {
 				Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
 								 + _CYAN_ + ")> this.cmd_line[PROGRAM]: " + _END_ + this.cmd_line[PROGRAM]);					
 				
-				//---------- Set 'Cryptocalc_version' in Renderer GUI ----------
-				this.cryptocalc_version = MainModel.GetInstance().getAppVersion();	
+				//---------- Set 'Cryptowallet_version' in Renderer GUI ----------
+				this.cryptowallet_version = MainModel.GetInstance().getAppVersion();	
 				//Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
-				//                 + _CYAN_ + ")> cryptocalc_version: " + _END_ + this.cryptocalc_version);					
+				//                 + _CYAN_ + ")> cryptowallet_version: " + _END_ + this.cryptowallet_version);					
 				this.updateWindowTitle();
-				//---------- Set 'this.cryptocalc_version' in Renderer GUI
+				//---------- Set 'this.cryptowallet_version' in Renderer GUI
 				
 				
 				this.MainWindow.webContents.send
 					( "fromMain", [ FromMain_DID_FINISH_LOAD ] );
 				
-				//Skribi.log("   Send : " + FromMain_SET_VARIABLE + " = " + Cryptocalc_version);
 				this.MainWindow.webContents.send
-					( "fromMain", [ FromMain_SET_VARIABLE, APP_VERSION, this.cryptocalc_version ] );
+					( "fromMain", [ FromMain_SET_VARIABLE, APP_VERSION, this.cryptowallet_version ] );
 				
 				// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
 				// Open urls in the user's browser
@@ -375,8 +374,6 @@ class ElectronMain {
 				
 				// =================== Open file by association ===================
 				let wits_path = this.cmd_line[PATH];
-				//let wits_path =  "D:\\_010_Michel\\_00_Lab\\_11_Daniel Rodet\\_00_Lab\\_01_github\\"
-				//               + "Cryptocalc\\_output\\2024_09_26_0h-6m-11s-5_ADA_EN\\wallet_info.wits";
 				
 				if ( wits_path.endsWith(".wits") ) {
 					Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _RED_ + "'did-finish-load'"
@@ -401,8 +398,7 @@ class ElectronMain {
 	
 	async openWits( wits_path ) {
 		if ( wits_path == undefined ) { 
-		     wits_path =  "D:\\_010_Michel\\_00_Lab\\_11_Daniel Rodet\\_00_Lab\\_01_github\\"
-					    + "Cryptocalc\\_output\\2024_09_26_0h-6m-11s-5_ADA_EN\\wallet_info.wits";		
+		     throw new Error("**ERROR** in Cryptowallet: '.wits' path is undefined");
 		}
 		
 		Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'openWits'"
@@ -421,7 +417,7 @@ class ElectronMain {
 	
 	updateWindowTitle( coin, wallet_mode ) {
 		//pretty_func_header_log( "ElectronMain.updateWindowTitle" );	
-		let window_title = 'Cryptocalc ' + this.cryptocalc_version;
+		let window_title = 'Cryptowallet ' + this.cryptowallet_version;
 		if ( wallet_mode != undefined  &&  wallet_mode != "" )   window_title += " - " + wallet_mode;
 		if ( coin != undefined  &&  coin != "" ) 	             window_title += ": " + coin;
 		

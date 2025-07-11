@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.22
+## CryptoCalc 0.3.23
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -50,9 +50,10 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.22`
+    + 3.1. Features in `0.3.23`
 	    * "Rollback" of _Cryptocalc_ rename to _cryptowallet_. In fact this was motivated by a better visibility
-		   on _SourceForge_ but _cryptowallet_ was rejected by SourceForge backend because it is a category.  
+		   on _SourceForge_ but _cryptowallet_ was rejected by SourceForge backend because it is a category. 
+		* Now using the latest release of _ElectronJS_ (37.2.1)  
     + 3.2. Features in `0.3.21`
 	    * Rename of _Cryptocalc_ (now deprecated) to _cryptowallet_.
 	+ 3.3. Features in `0.3.19`
