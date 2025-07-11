@@ -1,0 +1,543 @@
+/* ================================================================================= */
+/* =================================== style.css =================================== */
+/* ================================================================================= */
+/* https://www.w3schools.com/css/css3_variables.asp */
+:root {
+  --SeedTab_color:       #FFFFF0; /*#FFFFF0;*/
+  --WalletTab_color:     #F1FFFF; /*#F1FFFF;*/
+  --TabLinkHover_color:  #C0FEC0; /*#C0FEC0;*/
+}
+
+.Hidden { visibility: hidden;  display: none; }
+.Shown  { visibility: visible; display: block; }
+
+html, .outer, .inner {
+	height:           100%;
+	width:            100%;
+	margin:           0;
+	font-family:      Arial, Helvetica, sans-serif;
+} 
+
+html, body , .outer, .inner {
+   height:          100%;
+   width:           100%;
+   margin:          0;
+   font-family:     Arial, Helvetica, sans-serif;
+   overflow:        hidden;
+} 
+
+.ui-dialog {
+  /*top:            0px;*/
+  position:         relative;
+  background-color: red;
+  height:           14px;
+  font-size:        18px;
+  font-weight:      normal;
+  margin:           2px;
+  padding:          .2em;
+  border:           2px solid black;
+}
+
+.ui-widget-content
+{
+   border: 2px solid black;
+   background-color: #F2F2F2;
+}
+
+.ui-dialog-titlebar {
+  top:              0px;
+  background:       lightblue;
+  background-color: lightblue;
+  height:           20px;
+  font-size:        16px;
+  font-weight:      bold;
+  margin:           0px;
+  padding:          10x;
+}
+
+hr {
+    border:           none;
+    height:           0.5px;
+    background-color: #333;  /* Modern Browsers */
+}
+
+.SimpleWalletLabel {
+	font-size:     13px;
+}
+
+.HorizontalBar {
+	border:        none;
+	height:        1px;
+}
+
+.SaveButton {
+  font-size:       18px;
+  background:      yellow;
+  padding-top:     3px;
+  padding-left:    20px;
+  padding-right:   20px;
+}
+
+.RestoreButton {
+  font-size:       18px;
+  background:      lightblue;
+  padding-top:     3px;
+  padding-left:    8px;
+  padding-right:   8px;
+}
+
+.ApplyButton {
+  font-size:       20px;
+  font-weight:     bold;
+  background:      lightgreen;
+  padding-top:     3px;
+  padding-left:    20px;
+  padding-right:   20px;
+}
+
+.CancelButton {
+  font-size:       18px;
+  background:      lightgrey;
+  padding-top:     3px;
+  padding-left:    20px;
+  padding-right:   20px;
+}
+
+.SmallButton, .CopyButton {
+	display:           flex;
+	align-items: 	   center;
+	padding:           8px;
+	width:             22px;
+	height:            22px;
+	margin-left:       4px;
+	padding-left:      2px;
+	margin-top:        1px;
+}
+
+.PasswordFielWithApplyButton {
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             79.5%;
+	max-width:         79.5%;
+}
+
+.PasswordFielWithoutApplyButton {
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             85.5%;
+	max-width:         85.5%;
+}
+
+#internet_connection_td_id {
+	position: absolute; 
+    top:   0px; 
+    right: 7px
+}
+
+#password_label_id {
+	margin-top: 5px ;
+}
+
+#apply_password_btn_id {
+	background-color:  lightblue;
+}
+
+.ValueSelector {
+	width:         120px;
+}
+
+.LabelValueSelector
+.EntropySelector {
+	width:         80px;
+}
+
+.MnemonicsSelector {
+	background-color:  lightred;	
+	width:         80px;
+	font-size:     14px;
+}
+
+.DerivationPathFieldAsLabel {
+	background:        lightblue;	
+	background-color:  lightblue;
+	border:            none;
+}
+
+/* ================================= Tab pages ================================= */
+/* https://www.w3schools.com/howto/howto_js_full_page_tabs.asp */
+.SeedTabLayout {
+	/*background-color: #FFFFF0;*/ 
+	background-color: var(--SeedTab_color); 
+	width:            100%; 
+	height:           100%;
+	min-height:       100%;
+}
+
+.WalletTabLayout {
+	/*background-color: #F1FFFF;*/
+	background-color: var(--WalletTab_color); 
+	width:            100%; 
+	height:           100%;
+	min-height:       100%;
+}
+
+.tablink {
+	/*background-color: #FFFFF0;*/ 
+	background-color: var(--SeedTab_color);
+	
+	color:            black;
+	/*float:     	  left;*/
+	border:           none;
+	outline:          none;
+	cursor:           pointer;
+	font-size:        17px;
+	width:            25%;
+	margin-left:      -2px;
+	margin-right:     -3px;
+}
+
+#Seed { 
+	/*background-color: #FFFFF0;*/ 
+	background-color:  var(--SeedTab_color);
+	height:            100%; 
+}
+
+#Wallet { 
+    /*background-color: #F1FFFF;*/
+	background-color:  var(--WalletTab_color); 
+	height:            100%;
+}
+
+.EmptyTabLink { 
+	background-color:  #FDFDFD; 
+	width:             50%;
+	min-width:         50%;
+	margin-right:      0px;
+}
+
+#seed_tab_link_id {
+    /*background-color: #FFFFF0;*/ 
+	background-color:  var(--SeedTab_color);
+}
+#seed_tab_link_id:hover {
+	/*background-color:  #C0FEC0;*/
+	background-color:  var(--TabLinkHover_color); 
+}
+
+#wallet_tab_link_id {
+	/*background-color: #F1FFFF;*/
+	background-color:  var(--WalletTab_color); 
+}
+#wallet_tab_link_id:hover {
+	/*background-color:  #C0FEC0;*/
+	background-color:  var(--TabLinkHover_color); 
+}
+
+.ThreeBordersTabLink {
+	border-top:        1px solid black;
+	border-bottom:     1px solid #FFFFF0;
+    border-right:      1px solid black; 
+    border-left:       1px solid black;
+}
+
+.FourBordersTabLink {
+	border-top:        1px solid black;
+	border-bottom:     1px solid black;
+    border-right:      1px solid black; 
+    border-left:       1px solid black;
+}
+
+.EmptyTabLinkBorders {
+	border-bottom:     1px solid black;
+    border-left:       1px solid black;
+}
+
+/* Style the tab content (and add height:100% for full page content) */
+.tabcontent {
+	color:             black;
+	display:           none;
+	/*padding: 2px 20px;*/
+	/*height:            100%;*/
+}
+/* ================================= Tab pages */
+
+.Button {
+	font-size:         25x;
+	font-weight:       500;
+	height:            30px;
+	margin-bottom:     50px;
+}
+
+.GenerateButton {
+	background-color:  lightgreen;
+	font-size:         19px;
+	font-weight:       500;
+	min-width:         200px;
+	width:             200px;
+	height:            30px;
+	margin-bottom:     80px;
+}
+
+.RefreshButton {
+	background-color:  lightblue;
+	font-size:         19px;
+	font-weight:       500;
+	min-width:         200px;
+	width:             200px;
+	height:            30px;
+	margin-bottom:     80px;
+}
+
+/* https://stackoverflow.com/questions/34439452/blinking-background-color-animation
+*/
+.BlinkingButton {
+  /* width: 50px; */
+  /* height: 50px; */
+  -webkit-animation: REFRESH_ANIMATION 3s infinite; /* Safari 4+ */
+  -moz-animation:    REFRESH_ANIMATION 3s infinite;    /* Fx 5+ */
+  -o-animation:      REFRESH_ANIMATION 3s infinite;      /* Opera 12+ */
+  animation:         REFRESH_ANIMATION 3s infinite;         /* IE 10+, Fx 29+ */
+}
+
+@-webkit-keyframes REFRESH_ANIMATION {
+  0%, 49% {
+    background-color: lightblue;
+    border: 1px solid black;
+  }
+  50%, 100% {
+    background-color: lightblue;
+    border: 3px solid black;
+  }
+}
+
+.WalletButton {
+	height:             20px;
+	margin-top:        -10px;
+}
+
+.EntropyInput:invalid {
+	color:  red;
+}
+
+#entropy_src_img_div_id {
+	background-color:  white;
+	border-top:        1px dashed black;
+	border-bottom:     1px dashed black;
+    border-right:      1px dashed black; 
+    border-left:       1px dashed black;
+}
+
+#entropy_src_fortunes_id {
+	height :           'auto';
+	/* for support of ascii-art fortune cookies
+	font-family: monospace;
+	*/
+}
+
+#entropy_src_img_id, #entropy_src_img_div_id {
+	width:				400px; 
+	height:				130px; 
+	min-width:			400px; 
+	min-height:			130px;
+	align:              middle;
+}
+
+.DataFieldWithButton_Container { 
+	display:           flex;
+	align-items: 	   center;
+}
+
+#entropy_id { 
+	width:             94.5%;
+}
+
+#private_key_id { 
+	width:             94.5%;
+}
+
+.Bip32CellHeader { 
+	background-color:  #E3E3FF;
+}
+
+.Bip32CellValue { 
+	background-color:  white;
+	font-size:         17px;
+	width:             100px; /* 60px; */
+}
+
+.Bip32Cell { 
+	padding-right:     7px; 
+	padding-left:      7px; 
+	padding-top:       4px; 
+	padding-bottom:    4px; 
+	border:            1px solid black;
+    border-collapse:   collapse;
+}
+
+.EyeButton {
+	background-color:  yellow;
+	height: 	       20px;
+	width: 	           25px;
+	min-width: 	       25px;
+}
+
+#update_btn_id {
+	background-color:  lightgreen;
+	width: 	           85px;
+	min-width: 	       85px;
+}
+
+#salt_id {
+	background-color:  #FFFFF0;
+}
+
+#wallet_coin_id {
+	font-size:         14px;
+}
+
+#PRIV_KEY_label_id {
+	font-size:         14px;
+}
+
+#PRIV_KEY_id {
+	font-size:         12.5px;
+}
+
+.ButtonsBar {	
+    /*margin-top:        70px;*/
+	height:            70px;
+	position:          absolute;
+    bottom:            -50px;
+}
+
+.table textarea {
+	max-width:         100%;
+	width:             100%;
+	height:            100px
+}
+
+.EllipsisButton {
+	width:             27px;
+	min-width:         27px;
+}
+
+.Dialog_LabelColumn {
+	font-size:         14px;
+	padding-left:      5px;
+	width:             100px;
+	min-width:         100px;
+	max-width:         100px;
+	height:            25px;
+}
+
+.LabelColumn {
+	/*margin-left:     20px;*/
+	padding-left:      10px;
+	width:             135px;
+	min-width:         135px;
+	max-width:         135px;
+	height:            25px;
+}
+
+.TextArea {
+	width:             100%;
+	min-width:         100%;
+	max-width:         100%;
+	height:            25px;
+}
+
+.Dialog_Form {
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         14px;
+	width:             100%;
+	min-width:         100%;
+	left:              0px;
+}
+
+.Dialog_ButtonBar {
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         14px;
+	width:             100%;
+	min-width:         100%;
+	padding-bottom:    20px;
+}
+
+.Dialog_FieldColumn {
+	font-size:         14px;
+	padding-left:      10px;
+	width:             100%;
+	min-width:         100%;
+	max-width:         100%;
+	height:            25px;
+}
+
+.Dialog_DataField {
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         14px;
+	width:             100%;
+}
+
+.FieldColumn {
+	/*margin-left:     20px;*/
+	padding-left:      5px;
+	width:             100%;
+	min-width:         100%;
+	height:            25px;
+}
+
+.Selector {
+	margin-left:       10px;
+}
+
+.Filler {
+	width:             100%;
+	height:            100%;
+	min-height:        10%;
+}
+
+.ReadOnlyValue {
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         15px;
+}
+
+.DataField {
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             85%;
+}
+
+.NormalAddressField {
+    font-size:        18px;
+}
+
+.LongAddressField {
+    font-size:        15px;
+}
+
+.SaltField {
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             81%;
+}
+
+.RawDataField {
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             98%;
+}
+
+.RawDataFieldWithButton {
+	font-family:       Arial, Helvetica, sans-serif;
+	width:             95%;
+}
+
+.WithFocus {
+	background-color:  #ECFFDC; /* very light green */
+}
+
+.WithoutFocus {
+	background-color:  white;
+}
+
+.ValidValue {
+	color:             black;
+}
+
+.InvalidValue {
+	color:             red;
+}

@@ -1,7 +1,7 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.22",
-  "description": "Cryptocurrency Wallet Generator",
+  "version": "0.3.23",
+  "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
   "// electron . --enable-logging": "",
@@ -18,13 +18,13 @@
   },
   "keywords": [
     "cryptocurrency wallet generator",
-	"cryptocurrency",
-	"wallet generator",
+    "cryptocurrency",
+    "wallet generator",
     "cryptography",
-	"mnemonics",
+    "mnemonics",
     "seed phrase",
-	"secret recovery passphrase",
-    "private key",    
+    "secret recovery passphrase",
+    "private key",
     "QR code",
     "BIP39",
     "BIP32",
@@ -38,7 +38,7 @@
   "homepage": "https://github.com/ALADAS-org/Cryptocalc#readme",
   "devDependencies": {
     "@electron/packager": "^18.3.3",
-    "electron": "^28.2.7"
+    "electron": "^37.2.1"
   },
   "dependencies": {
     "@emurgo/cardano-serialization-lib-nodejs": "^11.5.0",

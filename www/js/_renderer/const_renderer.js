@@ -3,7 +3,7 @@
 // =====================================================================================
 "use strict";
 
-const CRYPTO_CALC_VERSION              = "Cryptocalc_version";
+const CRYPTOWALLET_VERSION             = "Cryptowallet_version";
 
 const TOOLS_OPTIONS_DIALOG_ID          = "tools_options_dialog_id";
 
@@ -160,7 +160,7 @@ const trace2Main = ( msg ) => {
 }; // trace2Main()
 
 if (typeof exports === 'object') {
-	exports.CRYPTO_CALC_VERSION        = CRYPTO_CALC_VERSION
+	exports.CRYPTOWALLET_VERSION        = CRYPTOWALLET_VERSION
 	
 	exports.ENTROPY_LABEL_ID           = ENTROPY_LABEL_ID	
 	exports.ENTROPY_SRC_FORTUNES_ID    = ENTROPY_SRC_FORTUNES_ID

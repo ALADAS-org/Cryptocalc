@@ -21,7 +21,7 @@ const FROM_MAIN                 = 'FromMain';
 const WITS_PATH                 = 'wits_path';
 const PROGRAM                   = 'program';
 const ELECTRON_LAUNCHER         = 'electron.exe';
-const EXE_LAUNCHER              = 'cryptocalc.exe';
+const EXE_LAUNCHER              = 'cryptowallet.exe';
 
 const PATH                      = 'path';
 const ARGS                      = 'args';
