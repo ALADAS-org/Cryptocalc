@@ -127,7 +127,7 @@ class RendererGUI {
     // ** Private constructor **
 	constructor( key ) {
 		if ( key !== RendererGUI.#key ) {
-			throw new TypeError("RendererGUI constructor is private.");
+			throw new TypeError("'RendererGUI' constructor is private");
 		}
 		
 		this.wallet_info = new Wallet( this );
