@@ -6,17 +6,17 @@
 // This wordlist was created from the Monero Esperanto wordlist (1626 words):
 // - https://github.com/monero-project/monero/blob/master/src/mnemonics/esperanto.h
 // This wordlist was then completed to 2048 words with the help of a 
-// custom script (see 'EO_build_wordlist.js' in www/js/lib/mnemonics/Esperanto subfolder.
+// custom script (see 'EO_build_wordlist.js' in assets/mnemonics/Esperanto subfolder.
 // 
 // 1. The completion to 2048 words is under Cryptocalc copyright (BSD-3-Clause license):
-//    - https://github.com/ALADAS-org/Cryptocalc/www/js/lib/mnemonics/EO_2048_mnemonics.js
+//    - https://github.com/ALADAS-org/Cryptocalc/assets/mnemonics/EO_2048_mnemonics.js
 // 
 // 2. The source used by the custom script to find the missing 422 words is: 
 //    a 15000 length wordlist published here (work under LICENSE-CC-BY-SA license)  
 //    - https://github.com/Vanege/esperanto-frequency-list-tekstaro
 // 
 // 3. The "Completion script" is under Cryptocalc copyright (BSD-3-Clause license):
-//    - https://github.com/ALADAS-org/Cryptocalc/www/js/lib/mnemonics/Esperanto/EO_build_wordlist.js
+//    - https://github.com/ALADAS-org/Cryptocalc/assets/mnemonics/Esperanto/EO_build_wordlist.js
 //
 // ---- History ----
 // Initial 1626 wordlist: Word list authored by: dnaleor, Engelberg, ProkhorZ
@@ -27,7 +27,7 @@
 //   - ESPDIC - Paul Denisowski (http://www.denisowski.org/Esperanto/ESPDIC/espdic.txt)
 //
 // "Completion script" (BSD-3-Clause license):
-//   - https://github.com/ALADAS-org/Cryptocalc/www/js/lib/mnemonics/Esperanto/EO_build_wordlist.js
+//   - https://github.com/ALADAS-org/Cryptocalc/assets/mnemonics/Esperanto/EO_build_wordlist.js
 //
 // Source of 15000 Esperanto words (LICENSE-CC-BY-SA license): 
 //   - https://github.com/Vanege/esperanto-frequency-list-tekstaro

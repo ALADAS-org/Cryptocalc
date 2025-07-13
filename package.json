@@ -1,12 +1,11 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.23",
+  "version": "0.3.24",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
   "// electron . --enable-logging": "",
   "// --inspect-brk=9229": "",
-  "// NB: Regression in electron 29.x.x: error with 'AutoFill' (feature added for MacOS it seems)": "",
   "// bs58: keep version 5.0.0 else 'import' needed instead of 'require' (ESM support in ElectronJS)": "",
   "scripts": {
     "start": "electron . --enable-logging",
@@ -37,7 +36,7 @@
   },
   "homepage": "https://github.com/ALADAS-org/Cryptocalc#readme",
   "devDependencies": {
-    "@electron/packager": "^18.3.3",
+    "@electron/packager": "^18.3.6",
     "electron": "^37.2.1"
   },
   "dependencies": {
