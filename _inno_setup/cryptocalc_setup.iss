@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Cryptocalc"
-#define MyAppVersion "0.3.4"
+#define MyAppVersion "0.3.23"
 #define MyAppPublisher "Aladas"
 #define MyAppURL "https://www.npmjs.com/package/@aladas-org/cryptocalc"
 #define MyAppExeName "cryptocalc.exe"
@@ -13,7 +13,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{F4F3408A-BCE2-4E26-9429-B6E45923792B}
+AppId={{10FF723A-9BCD-4218-85AE-58D0F13E021F}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -32,7 +32,7 @@ ArchitecturesAllowed=x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 ChangesAssociations=yes
 DisableProgramGroupPage=yes
-LicenseFile={#SourcePath}\..\LICENSE.txt
+LicenseFile={#SourcePath}\..\LICENSE
 ; To run in 'Administrative install mode' and allow the user to install for 'All users' or 'Current User':
 ; 1. Comment   'PrivilegesRequired' line (install for 'Current User' only)
 ; 2. Uncomment 'PrivilegesRequiredOverridesAllowed' (install for current user only)

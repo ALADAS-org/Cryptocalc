@@ -6,16 +6,16 @@
 // This wordlist was created from the Monero Esperanto wordlist (1626 words):
 // - https://github.com/monero-project/monero/blob/master/src/mnemonics/russian.h
 // This wordlist was then completed to 2048 words with the help of a 
-// custom script (see 'RU_build_wordlist.js' in www/js/lib/mnemonics/Russian subfolder.
+// custom script (see 'RU_build_wordlist.js' in assets/mnemonics/Russian subfolder.
 // 
 // 1. The completion to 2048 words is under Cryptocalc copyright (BSD-3-Clause license):
-//    - https://github.com/ALADAS-org/Cryptocalc/www/js/lib/mnemonics/RU_2048_mnemonics.js
+//    - https://github.com/ALADAS-org/Cryptocalc/assets/mnemonics/RU_2048_mnemonics.js
 // 
 // 2. The source used to find the missing 422 words is a 10000 length wordlist: 
 //    - https://github.com/hingston/russian/blob/master/10000-russian-words-cyrillic-only.txt
 // 
 // 3. The "Completion script" is under Cryptocalc copyright (BSD-3-Clause license):
-//    - https://github.com/ALADAS-org/Cryptocalc/www/js/lib/mnemonics/Russian/RU_build_wordlist.js
+//    - https://github.com/ALADAS-org/Cryptocalc/assets/mnemonics/Russian/RU_build_wordlist.js
 //
 // ---- History ----
 // Initial 1626 wordlist: provided by Monero project
@@ -23,7 +23,7 @@
 //   - https://github.com/monero-project/monero/blob/master/src/mnemonics/russian.h
 //
 // "Completion script" (BSD-3-Clause license):
-//   - https://github.com/ALADAS-org/Cryptocalc/www/js/lib/mnemonics/Russian/RU_build_wordlist.js
+//   - https://github.com/ALADAS-org/Cryptocalc/assets/mnemonics/Russian/RU_build_wordlist.js
 //
 // Source of 10000 Russian words: 
 //   - https://github.com/hingston/russian/blob/master/10000-russian-words-cyrillic-only.txt
