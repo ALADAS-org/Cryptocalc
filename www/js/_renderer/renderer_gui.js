@@ -545,7 +545,7 @@ class RendererGUI {
 		if (   blockchain == ETHEREUM || blockchain == AVALANCHE
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN
 			|| blockchain == CARDANO  || blockchain == SOLANA   
-			|| blockchain == RIPPLE   || blockchain == TRON 
+			|| blockchain == STELLAR  || blockchain == RIPPLE   || blockchain == TRON 
 			|| blockchain == BITCOIN_CASH 
 			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH) {
 				
@@ -588,6 +588,12 @@ class RendererGUI {
 				HtmlUtils.SetNodeValue( PK_LABEL_ID, 'XPRIV' );
 				HtmlUtils.RemoveClass( ADDRESS_ID, 'NormalAddressField' );
                 HtmlUtils.AddClass( ADDRESS_ID,    'LongAddressField' );					
+			}
+			else if ( blockchain == STELLAR ) {
+				HtmlUtils.SetNodeValue( WIF_LABEL_ID, 'Private Key' );
+				HtmlUtils.AddClass( ADDRESS_ID,      'NormalAddressField' );
+                HtmlUtils.RemoveClass( ADDRESS_ID,   'LongAddressField' );
+				wif = new_wallet[WIF];				
 			}
 			else {
 				HtmlUtils.SetNodeValue( PK_LABEL_ID, 'Private Key' );
@@ -671,6 +677,11 @@ class RendererGUI {
 		hd_private_key = new_wallet[PRIVATE_KEY];
 		trace2Main( pretty_format( "rGUI.genHDW> hd_private_key", hd_private_key ) );
 		this.wallet_info.setAttribute(PRIVATE_KEY, hd_private_key);
+		
+		if (blockchain == STELLAR) {
+			wif = this.wallet_info.getAttribute("WIF");
+			this.wallet_info.setAttribute(PRIVATE_KEY, wif);
+		}
 		// HtmlUtils.SetNodeValue( PRIVATE_KEY_ID, hd_private_key );
 		//---------- Update 'Private Key' in "Wallet" Tab
 		
@@ -945,7 +956,7 @@ class RendererGUI {
 
 			if ( blockchain == TRON ) {
 				HtmlUtils.HideNode( TR_PRIV_KEY_ID );			
-			}
+			}				
 			
 			if ( blockchain == CARDANO ) {				
 				HtmlUtils.HideNode(ACCOUNT_ID);
@@ -969,11 +980,16 @@ class RendererGUI {
             HtmlUtils.HideNode( TR_PRIV_KEY_ID );
 
 			if ( blockchain == RIPPLE ) {
-				HtmlUtils.ShowNode( TR_1ST_PK_ID );			
+				HtmlUtils.HideNode( TR_WIF_ID );
+				HtmlUtils.HideNode( TR_1ST_PK_ID );			
 		    }
+			else if ( blockchain == STELLAR ) {				
+				HtmlUtils.ShowNode(TR_1ST_PK_ID);
+			}
 
             if (   blockchain == ETHEREUM || blockchain == AVALANCHE
-                || blockchain == SOLANA	) { 
+                || blockchain == SOLANA	) {   
+				HtmlUtils.HideNode( TR_WIF_ID );
 				HtmlUtils.ShowNode( TR_1ST_PK_ID );
 				// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
 			}			
@@ -982,7 +998,7 @@ class RendererGUI {
 		// ------------------- WIF --------------------
 		let wif = this.wallet_info.getAttribute(WIF);
 		if (   ( wallet_mode == HD_WALLET_TYPE ||  wallet_mode == SWORD_WALLET_TYPE )
-			&& blockchain == SOLANA) {  
+			&& ( blockchain == SOLANA || blockchain == STELLAR ) ) {  
 			HtmlUtils.HideNode( TR_WIF_ID );
 		}
 		else { 
@@ -1350,7 +1366,7 @@ class RendererGUI {
 		
 	updatePrivateKey( blockchain, PRIV_KEY ) {
 		if (      (   blockchain == BITCOIN 
-		           || blockchain == DOGECOIN || blockchain == LITECOIN
+		           || blockchain == DOGECOIN || blockchain == LITECOIN || blockchain == STELLAR
 		           || blockchain == ETHEREUM || blockchain == AVALANCHE 
 				   || blockchain == RIPPLE   || blockchain == BITCOIN_CASH 
 				   || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH  )
@@ -2441,7 +2457,11 @@ class RendererGUI {
             else if ( blockchain == RIPPLE ) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[PRIV_KEY];
-				// crypto_info[PRIVATE_KEY] = PRIV_KEY_value;
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
+			}
+			else if ( blockchain == STELLAR ) {
+				let PRIV_KEY_value = crypto_info[PRIV_KEY];
+				delete crypto_info[WIF];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
 			}
 			else if (    blockchain == TRON 
@@ -2574,7 +2594,7 @@ class RendererGUI {
 	isBlockchainSupported( blockchain ) {
 		if (   blockchain == ETHEREUM || blockchain == AVALANCHE 
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN 
-		    || blockchain == CARDANO  || blockchain == SOLANA
+		    || blockchain == CARDANO  || blockchain == STELLAR  || blockchain == SOLANA
 		    || blockchain == RIPPLE   || blockchain == TRON     || blockchain == BITCOIN_CASH 
 		    || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH ) {
 			return true;	

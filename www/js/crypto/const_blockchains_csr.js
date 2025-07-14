@@ -17,6 +17,7 @@ const BITCOIN         = "Bitcoin";
 const SOLANA          = "Solana";
 
 const CARDANO         = "Cardano";
+const STELLAR         = "Stellar";
 const ADA_PURPOSE     = "1852";
 
 const RIPPLE          = "Ripple";
@@ -39,6 +40,7 @@ const COIN_ABBREVIATIONS = {
 //	[BINANCE]      : "BNB",
 	[SOLANA]       : "SOL",
 	[CARDANO]      : "ADA",
+	[STELLAR]      : "XLM",
 	[RIPPLE]       : "XRP",
 	[AVALANCHE]    : "AVAX",
 	[DOGECOIN]     : "DOGE",
@@ -66,6 +68,7 @@ const COIN_TYPES = {
 	[FIRO]         :  136,
 	[RIPPLE]       :  144,
 	[BITCOIN_CASH] :  145,
+	[STELLAR] 	   :  148,
 	[EOS]          :  194,
 	[TRON]         :  195,
 	[ZILLIQA]      :  313,
@@ -86,6 +89,7 @@ const FAUCET_URLs = {
 //	[BINANCE]    : "Null-URL",
 	[SOLANA]     : "https://solfaucet.com/",
 	[CARDANO]    : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
+	[STELLAR]    : "Null-URL",
 	[RIPPLE]     : "Null-URL",	
 	[AVALANCHE]  : "Null-URL",
 	[DOGECOIN]   : "https://testnet-faucet.com/doge-testnet/",
@@ -102,6 +106,7 @@ const MAINNET_EXPLORER_URLs = {
 //	[BINANCE]:      "Null-URL",
 	[SOLANA]:       "https://explorer.solana.com/address/",
 	[CARDANO]:      "https://blockchair.com/fr/cardano/address/",
+	[STELLAR]:      "https://stellar.expert/explorer/public/account/",
 	[AVALANCHE]:    "https://snowtrace.io/address/",
 	[DOGECOIN]:     "https://dogechain.info/address/",
 	[TRON]:         "https://tronscan.org/#/address/",
