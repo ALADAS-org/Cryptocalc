@@ -15,7 +15,7 @@ const { pretty_func_header_log,
 		
 const { COIN, COIN_TYPE,
 	    ETHEREUM, BITCOIN, DOGECOIN, LITECOIN, 
-		SOLANA, CARDANO, RIPPLE, 
+		SOLANA, CARDANO, STELLAR, RIPPLE, 
 		DASH, FIRO, ZCASH, TRON, 
 		AVALANCHE, BITCOIN_CASH,   
 		MAINNET,
@@ -125,7 +125,7 @@ class HDWallet {
 		
 		if (   blockchain == ETHEREUM     || blockchain == AVALANCHE 
 		    || blockchain == BITCOIN      || blockchain == DOGECOIN || blockchain == LITECOIN 
-            || blockchain == RIPPLE       || blockchain == TRON     
+            || blockchain == STELLAR      || blockchain == RIPPLE   || blockchain == TRON     
             || blockchain == BITCOIN_CASH 
 			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {				
 				

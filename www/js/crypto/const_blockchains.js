@@ -3,7 +3,7 @@
 // =====================================================================================
 "use strict";
 
-// up to 100 (coinmarketcap)
+// up to 50 (coinmarketcap)
 //    ETC : Ethereum Classic
 //    XLM:  Stellar
 //    VET:  VeChain
@@ -29,6 +29,7 @@ const SOLANA       = "Solana";
 const RIPPLE       = "Ripple";
 
 const CARDANO      = "Cardano";
+const STELLAR      = "Stellar";
 const ADA_PURPOSE  = "1852";
 
 const AVALANCHE    = "Avalanche";
@@ -71,6 +72,7 @@ const COIN_ABBREVIATIONS = {
 	[SOLANA]       : "SOL",
 	[RIPPLE]       : "XRP",
 	[CARDANO]      : "ADA",
+	[STELLAR]      : "XLM",
 	[AVALANCHE]    : "AVAX",	
 	[DOGECOIN]     : "DOGE",
 	[TRON]         : "TRX",
@@ -108,6 +110,7 @@ const COIN_TYPES = {
 	[FIRO]         :  136,
 	[RIPPLE]       :  144,
 	[BITCOIN_CASH] :  145,
+	[STELLAR] 	   :  148,
 	[EOS]          :  194,
 	[TRON]         :  195,
 	[ZILLIQA]      :  313,
@@ -127,6 +130,7 @@ const FAUCET_URLs = {
 	[BITCOIN]      : "https://coinfaucet.eu/en/btc-testnet/",
 	[SOLANA]       : "https://solfaucet.com/",
 	[CARDANO]      : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
+	[STELLAR]      : "Null-URL",
 	[DOGECOIN]     : "https://testnet-faucet.com/doge-testnet/",
 	[AVALANCHE]    : "Null-URL",
 	[TRON]         : "Null-URL",
@@ -147,6 +151,7 @@ const MAINNET_EXPLORER_URLs = {
 	[BITCOIN]:      "https://www.blockchain.com/explorer/addresses/btc/",	
 	[SOLANA]:       "https://explorer.solana.com/address/",
 	[CARDANO]:      "https://blockchair.com/fr/cardano/address/",
+	[STELLAR]:		"https://stellar.expert/explorer/public/account/",
 	[DOGECOIN]:     "https://dogechain.info/address/",
 	[AVALANCHE]:    "https://snowtrace.io/address/",
 	[TRON]:         "https://tronscan.org/#/address/",
@@ -165,6 +170,7 @@ const TESTNET_EXPLORER_URLs = {
 	[BITCOIN]:      "https://live.blockcypher.com/btc-testnet/address/%ADDRESS%",	
 	[SOLANA]:       "https://explorer.solana.com/%ADDRESS%/?cluster=testnet",	
 	[CARDANO]:      "https://preprod.cardanoscan.io/address/%ADDRESS%",	
+	[STELLAR]:		"Null-URL",
     [RIPPLE]:       "Null-URL",
 	[DOGECOIN]:     "https://sochain.com/address/DOGETEST/%ADDRESS%",
 	[AVALANCHE]:    "Null-URL",
@@ -194,6 +200,7 @@ if (typeof exports === 'object') {
 	exports.RIPPLE                   = RIPPLE
 	
 	exports.CARDANO                  = CARDANO
+	exports.STELLAR                  = STELLAR
 	exports.ADA_PURPOSE              = ADA_PURPOSE
 	
 	exports.AVALANCHE                = AVALANCHE

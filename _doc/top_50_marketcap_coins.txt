@@ -1,0 +1,50 @@
+* 1 	Bitcoin		BTC
+* 2 	Ethereum	ETH
+* 3 	XRP			XRP
+  4 	Tether      USDT
+  5 	BNB			BNB
+* 6 	SOL			Solana
+  7 	USDC		USDC
+* 8 	DOGE 		Dogecoin
+* 9 	TRX 		TRON
+* 10	ADA			Cardano
+  11	HYPE 		Hyperliquid
+  12	XLM 		Stellar   ******
+  13	SUI 		Sui
+  14	LINK 		Chainlink
+  15	HBAR 		Hedera
+* 16	BCH 		Bitcoin Cash
+* 17	AVAX 		Avalanche
+  18	LEO 		UNUS SED LEO
+  19	SHIB 		Shiba Inu
+  20	TON 		Toncoin
+* 21	LTC 		Litecoin
+  22	DOT 		Polkadot
+  23	XMR 		Monero
+  24	UNI 		Uniswap
+  25	DAI 		Dai
+  26	USDe 		Ethena USDe
+  27	PEPE 		Pepe
+  28	BGB 		Bitget Token
+  29	AAVE 		Aave
+  30	TAO 		Bittensor
+  31	PI 			Pi
+  32	CRO 		Cronos
+  33	APT 		Aptos
+  34	NEAR 		NEAR Protocol
+  35	ONDO 		Ondo
+  36	ICP 		Internet Computer
+  37	OKB 		OKB
+  38	ETC 		Ethereum Classic ****
+  39	POL 		POL (prev. MATIC)
+  40 	MNT 		Mantle
+  41 	ALGO 		Algorand
+  42  	KAS 		Kaspa
+  43 	ENA 		Ethena
+  44  	USD1 		World Liberty Financial USD
+  45  	VET 		VeChain *****
+  46  	BONK 		Bonk
+  47  	ARB 		Arbitrum
+  48 	RENDER 		Render
+  49  	GT 			GateToken
+  50  	TRUMP 		OFFICIAL TRUMP

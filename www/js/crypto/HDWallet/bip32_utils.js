@@ -50,7 +50,7 @@ const { MAINNET, TESTNET,
 		
 	    BITCOIN,  ETHEREUM, 
 		//BINANCE,
-		CARDANO,  RIPPLE, ZCASH, 
+		CARDANO,  STELLAR, RIPPLE, ZCASH, 
 		DOGECOIN, TRON, BITCOIN_CASH,
 		LITECOIN, AVALANCHE, EOS, DASH, FIRO				
       }                    = require('../const_blockchains.js');
@@ -261,12 +261,16 @@ class Bip32Utils {
 		    hdwallet_info[PASSWORD] = password;
 		}	
 		let bip44 = HdAddGen.withMnemonic
-					( mnemonics,  passphrase, coin,    false,   44,  account );
+					( mnemonics,  passphrase, coin,    true,   44,  account );
+		//			( mnemonics,  passphrase, coin,    false,   44,  account );
         //                        passphrase          hardened  bip  account        
 		//*** BIP44 *********************************************************
 
 		// Generates 'expected_address_count' addresse from index 'address_index'
 		let expected_address_count = 1;
+		
+		console.log("   address_index: <" + address_index + ">");
+		address_index = address_index.replaceAll("'","");
 		let addresses = await bip44.generate( expected_address_count, address_index );
 		
 		hdwallet_info[ADDRESS] = addresses[0].address;
@@ -295,9 +299,14 @@ class Bip32Utils {
 		let account_derivation_path = "m/44'/" + coin_type + "'/" + account + "'";
 		pretty_log( "b32.mnk2wi> account_derivation_path", account_derivation_path );	
 		let ACCOUNT_XPRIV = master_node.derivePath( account_derivation_path ).toBase58();
-		//console.log(   "   " + _YELLOW_ 
+		
+		// console.log(   "   " + _YELLOW_ 
 		//             + "Account PRIV_KEY:          " + _END_ + ACCOUNT_XPRIV);
 		hdwallet_info[ACCOUNT_XPRIV] = ACCOUNT_XPRIV;
+		
+		if ( blockchain == STELLAR ) {
+			hdwallet_info[ACCOUNT_XPRIV] = child_private_key; 
+		}
 		//----------------------- Extended Private key
 		
 		//----------------------- Extended Public key ------------------------
@@ -326,9 +335,14 @@ class Bip32Utils {
 		//----------------------- Extended Public key
 					 
 		//--------------------------- WIF ---------------------------
-		let wif = bs58.encode( Buffer.from( child_private_key, 'hex' ) );
-		pretty_log( "b32.mnk2wi>> WIF", wif );
-		hdwallet_info[WIF] = wif;
+		if (blockchain == STELLAR) {
+			hdwallet_info[WIF] = child_private_key; 
+		}
+		else {
+			let wif = bs58.encode( Buffer.from( child_private_key, 'hex' ) );
+			pretty_log( "b32.mnk2wi>> WIF", wif );
+			hdwallet_info[WIF] = wif;		
+		}
 		//--------------------------- WIF	
 
 		return hdwallet_info;
