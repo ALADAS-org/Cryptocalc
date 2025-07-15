@@ -106,7 +106,8 @@ class SimpleWallet {
 			new_wallet = CoinKey_API.GetWallet 
 			             ( private_key, salt_uuid, blockchain, crypto_net );			
 		}
-		else if ( blockchain == ETHEREUM || blockchain == AVALANCHE ) {		
+		else if (   blockchain == ETHEREUM 
+		         || blockchain == AVALANCHE ) {		
 			new_wallet = await Ethereum_API.GetWallet
 			             ( private_key, salt_uuid, blockchain, crypto_net );
 			if ( blockchain	== AVALANCHE ) { 

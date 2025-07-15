@@ -542,8 +542,8 @@ class RendererGUI {
 
         this.wallet_info.setAttribute( BLOCKCHAIN, blockchain );		
 		
-		if (   blockchain == ETHEREUM || blockchain == AVALANCHE
-		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN
+		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC
+		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN
 			|| blockchain == CARDANO  || blockchain == SOLANA   
 			|| blockchain == STELLAR  || blockchain == RIPPLE   || blockchain == TRON 
 			|| blockchain == BITCOIN_CASH 
@@ -987,7 +987,8 @@ class RendererGUI {
 				HtmlUtils.ShowNode(TR_1ST_PK_ID);
 			}
 
-            if (   blockchain == ETHEREUM || blockchain == AVALANCHE
+            if (   blockchain == ETHEREUM 
+				|| blockchain == AVALANCHE || blockchain == BINANCE_BSC
                 || blockchain == SOLANA	) {   
 				HtmlUtils.HideNode( TR_WIF_ID );
 				HtmlUtils.ShowNode( TR_1ST_PK_ID );
@@ -1003,7 +1004,7 @@ class RendererGUI {
 		}
 		else { 
 			if (    wif != undefined  &&  wif != "" 
-				&& blockchain != ETHEREUM  &&  blockchain != AVALANCHE ) {
+				&& blockchain != ETHEREUM  &&  blockchain != AVALANCHE &&  blockchain != BINANCE_BSC ) {
 				HtmlUtils.ShowNode( TR_WIF_ID );
 			}	
 			else {
@@ -1366,8 +1367,8 @@ class RendererGUI {
 		
 	updatePrivateKey( blockchain, PRIV_KEY ) {
 		if (      (   blockchain == BITCOIN 
-		           || blockchain == DOGECOIN || blockchain == LITECOIN || blockchain == STELLAR
-		           || blockchain == ETHEREUM || blockchain == AVALANCHE 
+		           || blockchain == DOGECOIN || blockchain == LITECOIN  || blockchain == STELLAR
+		           || blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 				   || blockchain == RIPPLE   || blockchain == BITCOIN_CASH 
 				   || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH  )
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
@@ -1628,6 +1629,7 @@ class RendererGUI {
 				break;				
 				
 			case FromMain_SEND_IMG_URL:
+			    // console.log("> RendererGUI.onGUIEvent  FromMain_SEND_IMG_URL");
 				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SEND_IMG_URL + _END_ );			
 				let img_elt_id = data[1];
 				// trace2Main("   img_elt_id:             " + img_elt_id);
@@ -1642,7 +1644,9 @@ class RendererGUI {
 				
 				let img_elt = HtmlUtils.GetNode( img_elt_id );
 				trace2Main("   img_elt: " + img_elt);
-				//trace2Main("   img_elt.id: " + img_elt.id);
+				// console.log("   img_elt: " + img_elt);
+				// trace2Main("   img_elt.id: " + img_elt.id);
+				// console.log("   img_data_URL: " + img_data_URL);
 				img_elt.src = img_data_URL;
 				
 				const hashValue = val =>
@@ -1714,16 +1718,21 @@ class RendererGUI {
 				break;	
 				
 			case FromMain_INTERNET_CONNECTED:
+			    // console.log("> RendererGUI.onGUIEvent  FromMain_INTERNET_CONNECTED");
 			    // trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_INTERNET_CONNECTED + _END_ );
 				let internet_connected = data[1];
 				// trace2Main( pretty_format( "Internet connected", internet_connected ) );
 				
 				let internet_connection_elt = HtmlUtils.GetNode(INTERNET_CONNECTION_ICON_ID);
-				if ( internet_connected ) {
-					internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_ON_Red.png";
-				}
-				else {
-					internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_OFF_Green.png";
+				// console.log("   internet_connection_elt: " + internet_connection_elt);
+				
+				if (internet_connection_elt != undefined) {
+					if ( internet_connected ) {
+						internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_ON_Red.png";
+					}
+					else {
+						internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_OFF_Green.png";
+					}
 				}
 			    break;
 				
@@ -2449,7 +2458,8 @@ class RendererGUI {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );		
 				crypto_info[WIF] = WIF_value; 
 			}
-			else if (    blockchain == ETHEREUM || blockchain == AVALANCHE			          
+			else if (    blockchain == ETHEREUM 
+					  || blockchain == AVALANCHE || blockchain == BINANCE_BSC			          
 					  || blockchain == SOLANA ) {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
 				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", crypto_info[PRIVATE_KEY] ) );
@@ -2592,10 +2602,10 @@ class RendererGUI {
     } // async mnemonicsToWordIndexes()
 	
 	isBlockchainSupported( blockchain ) {
-		if (   blockchain == ETHEREUM || blockchain == AVALANCHE 
-		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN 
-		    || blockchain == CARDANO  || blockchain == STELLAR  || blockchain == SOLANA
-		    || blockchain == RIPPLE   || blockchain == TRON     || blockchain == BITCOIN_CASH 
+		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC 
+		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
+		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA
+		    || blockchain == RIPPLE   || blockchain == TRON      || blockchain == BITCOIN_CASH 
 		    || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH ) {
 			return true;	
 		} 

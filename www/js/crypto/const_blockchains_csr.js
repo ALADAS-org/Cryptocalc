@@ -4,7 +4,7 @@
 "use strict";
 
 // cf. capitalization order on https://coinmarketcap.com/
-// BUT Ethereum in First place because of the "ecosystem popularity"l
+// BUT Ethereum in First place because of the "ecosystem popularity"
 const NULL_COIN       = "Null-COIN";
 
 const CRYPTO_NET      = "crypto_net";
@@ -13,7 +13,7 @@ const TESTNET         = "testnet";
 
 const ETHEREUM        = "Ethereum";
 const BITCOIN         = "Bitcoin";
-//const BINANCE         = "Binance";
+const BINANCE_BSC     = "Binance Smart Chain";
 const SOLANA          = "Solana";
 
 const CARDANO         = "Cardano";
@@ -21,6 +21,7 @@ const STELLAR         = "Stellar";
 const ADA_PURPOSE     = "1852";
 
 const RIPPLE          = "Ripple";
+
 const AVALANCHE       = "Avalanche";
 const DOGECOIN        = "DogeCoin";
 const TRON            = "TRON";
@@ -37,7 +38,7 @@ const COIN_ABBREVIATIONS = {
 	[NULL_COIN]    : "Null-Coin",	
 	[ETHEREUM]     : "ETH",
 	[BITCOIN]      : "BTC",
-//	[BINANCE]      : "BNB",
+ 	[BINANCE_BSC]  : "BNB",
 	[SOLANA]       : "SOL",
 	[CARDANO]      : "ADA",
 	[STELLAR]      : "XLM",
@@ -75,7 +76,7 @@ const COIN_TYPES = {
 	[KUSAMA]       :  434,
 	[FILECOIN]     :  461,
 	[SOLANA]       :  501,
-	[BINANCE]      :  714,
+	[BINANCE_BSC]  :  714,
 	[POLYGON]      :  966,	
 	[TEZOS]        : 1729,
 	[CARDANO]      : 1815,
@@ -86,11 +87,12 @@ const FAUCET_URLs = {
     [NULL_COIN]  : "Null-URL",	
 	[ETHEREUM]   : "https://mumbaifaucet.com/",
 	[BITCOIN]    : "https://coinfaucet.eu/en/btc-testnet/",
-//	[BINANCE]    : "Null-URL",
+//	[BINANCE_BSC]    : "Null-URL",
 	[SOLANA]     : "https://solfaucet.com/",
 	[CARDANO]    : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
 	[STELLAR]    : "Null-URL",
 	[RIPPLE]     : "Null-URL",	
+	[BINANCE_BSC]: "Null-URL",
 	[AVALANCHE]  : "Null-URL",
 	[DOGECOIN]   : "https://testnet-faucet.com/doge-testnet/",
 	[TRON]       : "Null-URL",
@@ -102,11 +104,11 @@ const FAUCET_URLs = {
 const MAINNET_EXPLORER_URLs = {	
 	[NULL_COIN]:    "Null-URL",
     [ETHEREUM]:     "https://etherscan.io/address/",
-	[BITCOIN]:      "https://www.blockchain.com/explorer/addresses/btc/",
-//	[BINANCE]:      "Null-URL",
+	[BITCOIN]:      "https://www.blockchain.com/explorer/addresses/btc/",	
 	[SOLANA]:       "https://explorer.solana.com/address/",
 	[CARDANO]:      "https://blockchair.com/fr/cardano/address/",
 	[STELLAR]:      "https://stellar.expert/explorer/public/account/",
+	[BINANCE_BSC]:  "https://bscscan.com/address/",
 	[AVALANCHE]:    "https://snowtrace.io/address/",
 	[DOGECOIN]:     "https://dogechain.info/address/",
 	[TRON]:         "https://tronscan.org/#/address/",

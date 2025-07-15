@@ -3,9 +3,11 @@
 // ====================================================================================
 "use strict";
 
-const bip39 = require('bip39');
-const bs58check = require('bs58check');
-const bs58 = require('bs58');
+const bip39      = require('bip39');
+const bs58check  = require('bs58check');
+const bs58       = require('bs58');
+const bech32_converter = require('bech32-converting');
+const { bech32, bech32m } = require('bech32');
 
 const { _RED_, _CYAN_, _PURPLE_, 
         _YELLOW_, _END_ }  = require('../../util/color/color_console_codes.js');
@@ -17,7 +19,7 @@ const { COIN, COIN_TYPE,
 	    ETHEREUM, BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA, CARDANO, STELLAR, RIPPLE, 
 		DASH, FIRO, ZCASH, TRON, 
-		AVALANCHE, BITCOIN_CASH,   
+		AVALANCHE, BINANCE_BSC, BITCOIN_CASH,   
 		MAINNET,
 		COIN_ABBREVIATIONS
       }                    = require('../const_blockchains.js');
@@ -107,7 +109,8 @@ class HDWallet {
 			pretty_log( "", mnemonics_items[1] );		
 		}
 		
-		//pretty_log( "hdw.gw> blockchain",    blockchain );
+		pretty_log( "hdw.gw> blockchain",    blockchain );
+		
 		//pretty_log( "hdw.gw> account",       account );
 		//pretty_log( "hdw.gw> address_index", address_index );
 		
@@ -123,13 +126,13 @@ class HDWallet {
 		new_wallet[BLOCKCHAIN]  = blockchain;
 		new_wallet[MNEMONICS]   = mnemonics;
 		
-		if (   blockchain == ETHEREUM     || blockchain == AVALANCHE 
-		    || blockchain == BITCOIN      || blockchain == DOGECOIN || blockchain == LITECOIN 
-            || blockchain == STELLAR      || blockchain == RIPPLE   || blockchain == TRON     
+		if (   blockchain == ETHEREUM     || blockchain == AVALANCHE || blockchain == BINANCE_BSC
+		    || blockchain == BITCOIN      || blockchain == DOGECOIN  || blockchain == LITECOIN 
+            || blockchain == STELLAR      || blockchain == RIPPLE    || blockchain == TRON     
             || blockchain == BITCOIN_CASH 
 			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {				
 				
-			if ( blockchain	== AVALANCHE ) { 
+			if ( blockchain	== AVALANCHE || blockchain == BINANCE_BSC ) { 
 				options[BLOCKCHAIN] = ETHEREUM
 			}	
 			
@@ -142,13 +145,15 @@ class HDWallet {
             //console.log("   >> hdwallet_info:\n" + JSON.stringify(hdwallet_info));	
 
             new_wallet[ADDRESS] = hdwallet_info[ADDRESS]; 
-            if (blockchain_was_ZCASH) {
+            if ( blockchain_was_ZCASH ) {
 				new_wallet[ADDRESS] = btc_addr_to_t_zcash_addr(hdwallet_info[ADDRESS]);
-			}				
+			}
+			
+			pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);
 			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);	
 			
-			new_wallet[COIN]            = hdwallet_info[COIN];
-			new_wallet[COIN_TYPE]       = hdwallet_info[COIN_TYPE];
+			new_wallet[COIN]      = hdwallet_info[COIN];
+			new_wallet[COIN_TYPE] = hdwallet_info[COIN_TYPE];
 			
 			if ( hdwallet_info[PASSWORD] != undefined && hdwallet_info[PASSWORD] != "") { 
 				new_wallet[PASSWORD] = hdwallet_info[PASSWORD];
