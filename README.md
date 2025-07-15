@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.25
+## CryptoCalc 0.3.26
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -9,8 +9,10 @@
    NB: Since its first release _CryptoCalc_ has been downloaded 7414 times (even if there is also bots involved 
    in downloads, it seems that there is at least 100 frequent users).      
    
-   _Supported Blockchains_: _Bitcoin_, _Ethereum_, _Solana_, _Ripple_, _DogeCoin_, _Cardano_, _Stellar_, _TRON_, 
-   _Avalanche_, _Bitcoin Cash_, _LiteCoin_, _Dash_ and _Firo_ 
+   _Supported Blockchains_: _Bitcoin_, _Ethereum_, _Binance_, _Solana_, _Ripple_, _DogeCoin_,_Cardano_, _Stellar_,
+   _TRON_, _Avalanche_, _Bitcoin Cash_, _LiteCoin_, _Dash_ and _Firo_    
+   
+   NB: _Binance_ support is for `BNB` on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see reference 5.3.4)    
    
    _Supported Languages_: _English_, _French_, _Spanish_, _Italian_, _Latin_, _Esperanto_, _Czech_, 
    _Portuguese_, _Deutsch_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_, _Korean_, _Hindi_, _Russian_.    
@@ -50,39 +52,42 @@
           * Type `npm install`    
 
 3. Release notes
-	+ 3.1. Features in `0.3.25`
+	+ 3.1. Features in `0.3.26`
+	    * Added support of `BNB` cryptocurrency on _Binance Smart Chain_ Blockchain (see reference 5.3.4)
+	    * Bug fix: Error when setting 'Connection Status' icon while the DOM element is not yet created
+	+ 3.2. Features in `0.3.25`
 	    * Added support of `XLM` (_Stellar_)
-	+ 3.2. Features in `0.3.24`
+	+ 3.3. Features in `0.3.24`
 	    * Experimental support of _Latin_ for the _Seed phrase_
-    + 3.3. Features in `0.3.23`
+    + 3.4. Features in `0.3.23`
 	    * "Rollback" of _Cryptocalc_ rename to _cryptowallet_. In fact this was motivated by a better visibility
 		   on _SourceForge_ but _cryptowallet_ was rejected by SourceForge backend because it is a category. 
 		* Now using the latest release of _ElectronJS_ (37.2.1)  
-    + 3.4. Features in `0.3.21`
+    + 3.5. Features in `0.3.21`
 	    * Rename of _Cryptocalc_ (now deprecated) to _cryptowallet_
-	+ 3.5. Features in `0.3.19`
+	+ 3.6. Features in `0.3.19`
 	    * Added support of _Hindi_ for the _Seed phrase_	
-    + 3.6. Features in `0.3.18`
+    + 3.7. Features in `0.3.18`
 	    * Changed _HD Wallet_ mode so that it the _Derivation Path_ is `Hardened` by default 
 		  and mandatory (for _Security_ reason, see 5.2.3.	
         * HD Wallet: Augmentation of `account` and `address_index` digits from 4 to 9		  
 		* Fixed bug: useless twice loading of `index.html`
-    + 3.7. Features in `0.3.17`
+    + 3.8. Features in `0.3.17`
 	    * Added support of _Russian_ language. 
-    + 3.8. Features in `0.3.16`
+    + 3.9. Features in `0.3.16`
 	    * Changed license to 'BSD-3-Clause' and added support of _Esperanto_ language. 
-    + 3.9. Features in `0.3.15`
+    + 3.10. Features in `0.3.15`
 	    * Added feature 'Internet Connection status' (see 4.1.9) for securing _Offline wallet creation_
-    + 3.10. Features in `0.3.14`
+    + 3.11. Features in `0.3.14`
 	    * Bug fixes on Ripple (XRP) HD Wallet:    
 		    + Bug 1. [Apply] button displayed when password input manually
 		    + Bug 2. WIF and Private Key displayed for Ripple (XRP) HD Wallet
 			+ Bug 3. WIF and Private Key in 'wallet_info.txt'
-    + 3.11. Features in `0.3.11`
+    + 3.12. Features in `0.3.11`
 	    * Added support of _Simplified Chinese_ and _Traditional Chinese_ for the `Seed phrase` 
-    + 3.12. Features in `0.3.8`
+    + 3.13. Features in `0.3.8`
 	    * Added support of _Korean_ for the `Seed phrase` 
-    + 3.13. Features in `0.3.7`
+    + 3.14. Features in `0.3.7`
 	    * Added support of _Japanese_ for the `Seed phrase` (taking into account the _Ideographic Space_
 		  as a separator between words instead of the _Normal Space_).
 		* Code enhancement: in `renderer_gui.js` and `electron_main.js`. The _Singleton_ design pattern
@@ -297,6 +302,7 @@
 			is 4 bits long then the 4 bits at the end are removed.
 		* Reference    
 		[BIP39 — Mnemonic Generation with detailed explanation](https://medium.com/@sundar.sat84/bip39-mnemonic-generation-with-detailed-explanation-84abde9da4c1)
+	
 	+ 5.2. `BIP32`: Hierarchic Deterministic wallets
 	`BIP32` specifies how to generate wallets with are all derived from the same _Entropy_
 	or _seed phrase_ (also called the _Secret Recovery Passphrase_).
@@ -310,7 +316,8 @@
         * Choose the external chain, used for public addresses         (0)    
         * And finally, generate the first address in this sequence     (0')    
         	
-	* 5.2. References    
-	    + 5.2.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))
-		+ 5.2.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)
-		+ 5.2.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)
+	* 5.3. References    
+	    + 5.3.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))
+		+ 5.3.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)
+		+ 5.3.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)
+		+ 5.3.4. [The evolution of the Binance Smart Chain](https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain)

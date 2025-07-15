@@ -24,7 +24,7 @@ const TESTNET_COIN = "Testnet";
 
 const BITCOIN      = "Bitcoin";
 const ETHEREUM     = "Ethereum";
-const BINANCE      = "Binance";
+const BINANCE_BSC  = "Binance Smart Chain";
 const SOLANA       = "Solana";
 const RIPPLE       = "Ripple";
 
@@ -68,7 +68,7 @@ const COIN_ABBREVIATIONS = {
 	// ------------ https://coinmarketcap.com/ ------------
 	[BITCOIN]      : "BTC",
 	[ETHEREUM]     : "ETH",
-	[BINANCE]      : "BNB",
+	[BINANCE_BSC]  : "BNB",
 	[SOLANA]       : "SOL",
 	[RIPPLE]       : "XRP",
 	[CARDANO]      : "ADA",
@@ -117,7 +117,7 @@ const COIN_TYPES = {
 	[KUSAMA]       :  434,
 	[FILECOIN]     :  461,
 	[SOLANA]       :  501,
-	[BINANCE]      :  714,
+	[BINANCE_BSC]  :  714,
 	[POLYGON]      :  966,	
 	[TEZOS]        : 1729,
 	[CARDANO]      : 1815,
@@ -132,6 +132,7 @@ const FAUCET_URLs = {
 	[CARDANO]      : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
 	[STELLAR]      : "Null-URL",
 	[DOGECOIN]     : "https://testnet-faucet.com/doge-testnet/",
+	[BINANCE_BSC]  : "Null-URL",
 	[AVALANCHE]    : "Null-URL",
 	[TRON]         : "Null-URL",
 	[DASH]         : "Null-URL",
@@ -153,6 +154,7 @@ const MAINNET_EXPLORER_URLs = {
 	[CARDANO]:      "https://blockchair.com/fr/cardano/address/",
 	[STELLAR]:		"https://stellar.expert/explorer/public/account/",
 	[DOGECOIN]:     "https://dogechain.info/address/",
+	[BINANCE_BSC]:  "https://bscscan.com/address/",
 	[AVALANCHE]:    "https://snowtrace.io/address/",
 	[TRON]:         "https://tronscan.org/#/address/",
 	[BITCOIN_CASH]: "https://explorer.btc.com/bch/address/",
@@ -173,6 +175,7 @@ const TESTNET_EXPLORER_URLs = {
 	[STELLAR]:		"Null-URL",
     [RIPPLE]:       "Null-URL",
 	[DOGECOIN]:     "https://sochain.com/address/DOGETEST/%ADDRESS%",
+	[BINANCE_BSC]:		"Null-URL",
 	[AVALANCHE]:    "Null-URL",
     [TRON]:         "Null-URL",
 	[BITCOIN_CASH]: "Null-URL",
@@ -195,7 +198,7 @@ if (typeof exports === 'object') {
 	
 	exports.BITCOIN                  = BITCOIN
 	exports.ETHEREUM                 = ETHEREUM
-	exports.BINANCE                  = BINANCE
+	exports.BINANCE_BSC                  = BINANCE_BSC
 	exports.SOLANA                   = SOLANA
 	exports.RIPPLE                   = RIPPLE
 	

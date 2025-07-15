@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -41,12 +41,14 @@
   },
   "dependencies": {
     "@emurgo/cardano-serialization-lib-nodejs": "^11.5.0",
+    "@jackallabs/bech32": "^1.2.1",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.2.2",
     "@solana/web3.js": "^1.91.1",
     "@stricahq/bip32ed25519": "^1.1.0",
     "app-root-path": "^3.1.0",
     "bchaddrjs": "^0.5.2",
+    "bech32-converting": "^1.0.9",
     "bip32": "^4.0.0",
     "bip39": "^3.1.0",
     "bitcoinjs-lib": "^6.1.6",

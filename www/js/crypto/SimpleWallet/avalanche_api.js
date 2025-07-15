@@ -31,8 +31,8 @@ class Avalanche_API {
 		console.log("   entropy_hex: " + entropy_hex);
 		
 		let new_wallet = await HD_Wallet_API.GetWallet( entropy_hex, salt_uuid, ETHEREUM, crypto_net);			
-	    new_wallet[BLOCKCHAIN]      = AVALANCHE;
-		new_wallet[ADDRESS]         = new_wallet[ADDRESS].toLowerCase();
+	    new_wallet[BLOCKCHAIN]  = AVALANCHE;
+		new_wallet[ADDRESS]     = new_wallet[ADDRESS].toLowerCase();
 		new_wallet[PRIVATE_KEY] = hexWithoutPrefix(new_wallet[PRIVATE_KEY]);
 		return new_wallet;
 	} // Avalanche_API.GetWallet()

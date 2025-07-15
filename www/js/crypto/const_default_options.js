@@ -18,11 +18,11 @@ const DEFAULT_OPTIONS = {
     [ENTROPY_SIZE]:       { [HD_WALLET_TYPE]:"128", [SWORD_WALLET_TYPE]: "128",
 		                    [SIMPLE_WALLET_TYPE]: "256" },
 	"Blockchains": { 
-		[HD_WALLET_TYPE]:     [ "Bitcoin","Ethereum","Solana",
+		[HD_WALLET_TYPE]:     [ "Bitcoin","Ethereum","BINANCE_BSC","Solana","Stellar",
                                 "Ripple","DogeCoin","Cardano","TRON",
 					            "Avalanche","Bitcoin Cash",
 								"LiteCoin","Dash","Firo", "ZCASH" ], 
-		[SWORD_WALLET_TYPE]:  [ "Bitcoin","Ethereum","Solana",
+		[SWORD_WALLET_TYPE]:  [ "Bitcoin","Ethereum","BINANCE_BSC","Solana","Stellar",
 								"Ripple","DogeCoin","Cardano","TRON",
 								"Avalanche","Bitcoin Cash",
 								"LiteCoin","Dash","Firo", "ZCASH" ], 

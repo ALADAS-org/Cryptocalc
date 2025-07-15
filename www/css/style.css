@@ -353,6 +353,14 @@ hr {
 	width:             94.5%;
 }
 
+#wallet_mode_select_id { 
+	width:             150px;
+}
+
+#wallet_blockchain_id { 
+	width:             150px;
+}
+
 .Bip32CellHeader { 
 	background-color:  #E3E3FF;
 }

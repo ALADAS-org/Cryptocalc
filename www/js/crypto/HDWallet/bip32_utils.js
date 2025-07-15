@@ -49,10 +49,9 @@ const { MAINNET, TESTNET,
 		COIN_TYPE, COIN_TYPES,				
 		
 	    BITCOIN,  ETHEREUM, 
-		//BINANCE,
 		CARDANO,  STELLAR, RIPPLE, ZCASH, 
 		DOGECOIN, TRON, BITCOIN_CASH,
-		LITECOIN, AVALANCHE, EOS, DASH, FIRO				
+		LITECOIN, AVALANCHE, BINANCE_BSC, EOS, DASH, FIRO				
       }                    = require('../const_blockchains.js');
 	  
 const { NULL_HEX,
