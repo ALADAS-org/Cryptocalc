@@ -14,6 +14,7 @@ const TESTNET         = "testnet";
 const ETHEREUM        = "Ethereum";
 const BITCOIN         = "Bitcoin";
 const BINANCE_BSC     = "Binance Smart Chain";
+const TON             = "Toncoin";
 const SOLANA          = "Solana";
 
 const CARDANO         = "Cardano";
@@ -39,6 +40,7 @@ const COIN_ABBREVIATIONS = {
 	[ETHEREUM]     : "ETH",
 	[BITCOIN]      : "BTC",
  	[BINANCE_BSC]  : "BNB",
+	[TON]          : "TON",
 	[SOLANA]       : "SOL",
 	[CARDANO]      : "ADA",
 	[STELLAR]      : "XLM",
@@ -76,6 +78,7 @@ const COIN_TYPES = {
 	[KUSAMA]       :  434,
 	[FILECOIN]     :  461,
 	[SOLANA]       :  501,
+	[TON]          :  607,
 	[BINANCE_BSC]  :  714,
 	[POLYGON]      :  966,	
 	[TEZOS]        : 1729,
@@ -93,6 +96,7 @@ const FAUCET_URLs = {
 	[STELLAR]    : "Null-URL",
 	[RIPPLE]     : "Null-URL",	
 	[BINANCE_BSC]: "Null-URL",
+	[TON]        : "Null-URL",
 	[AVALANCHE]  : "Null-URL",
 	[DOGECOIN]   : "https://testnet-faucet.com/doge-testnet/",
 	[TRON]       : "Null-URL",
@@ -109,6 +113,7 @@ const MAINNET_EXPLORER_URLs = {
 	[CARDANO]:      "https://blockchair.com/fr/cardano/address/",
 	[STELLAR]:      "https://stellar.expert/explorer/public/account/",
 	[BINANCE_BSC]:  "https://bscscan.com/address/",
+	[TON]:          "https://tonscan.org/address/",
 	[AVALANCHE]:    "https://snowtrace.io/address/",
 	[DOGECOIN]:     "https://dogechain.info/address/",
 	[TRON]:         "https://tronscan.org/#/address/",

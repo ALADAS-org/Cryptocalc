@@ -440,8 +440,8 @@ class RendererGUI {
 			 throw new Error("RendererGUI.generateSimpleWalletAddress 'private_key' NOT DEFINED");
 		}
 		
-		if (   blockchain == ETHEREUM || blockchain == AVALANCHE
-		    || blockchain == BITCOIN  || blockchain == DOGECOIN || blockchain == LITECOIN
+		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == TON
+		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN
 			|| blockchain == SOLANA ) { 
 			
 			let crypto_net = MAINNET;
@@ -924,6 +924,9 @@ class RendererGUI {
 			HtmlUtils.ShowNode( SW_WORD_COUNT_ID );
 
 			HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
+			if ( blockchain == TON ) {				
+				HtmlUtils.HideNode(TR_SW_MNEMONICS_ID);
+			}
 			
 			HtmlUtils.HideNode( PASSWORD_ROW_ID );
 			
@@ -2464,7 +2467,7 @@ class RendererGUI {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
 				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", crypto_info[PRIVATE_KEY] ) );
 			}	
-            else if ( blockchain == RIPPLE ) {
+            else if ( blockchain == RIPPLE || blockchain == TON ) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[PRIV_KEY];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
@@ -2604,7 +2607,7 @@ class RendererGUI {
 	isBlockchainSupported( blockchain ) {
 		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC 
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
-		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA
+		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
 		    || blockchain == RIPPLE   || blockchain == TRON      || blockchain == BITCOIN_CASH 
 		    || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH ) {
 			return true;	

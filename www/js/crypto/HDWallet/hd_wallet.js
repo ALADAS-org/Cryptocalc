@@ -6,8 +6,6 @@
 const bip39      = require('bip39');
 const bs58check  = require('bs58check');
 const bs58       = require('bs58');
-const bech32_converter = require('bech32-converting');
-const { bech32, bech32m } = require('bech32');
 
 const { _RED_, _CYAN_, _PURPLE_, 
         _YELLOW_, _END_ }  = require('../../util/color/color_console_codes.js');
@@ -38,13 +36,16 @@ const { BLOCKCHAIN, NULL_BLOCKCHAIN,
 	  
 	  
 const { hexWithoutPrefix,  
-        uint8ArrayToHex 
+        uint8ArrayToHex, hexToUint8Array 
 	  }                    = require('../hex_utils.js');
 
 const { Bip39Utils }       = require('../bip39_utils.js');
 const { Bip32Utils }       = require('./bip32_utils.js');
 const { CardanoHD_API }    = require('./cardano_hd_api.js');
 const { SolanaHD_API }     = require('./solana_hd_api.js');
+
+const { mnemonicNew, mnemonicToWalletKey } = require('@ton/crypto');
+const { WalletContractV4, Address }        = require('@ton/core');
 
 // https://runkit.com/gojomo/baddr2taddr
 /**
@@ -125,7 +126,7 @@ class HDWallet {
 		new_wallet[WALLET_MODE] = HD_WALLET_TYPE;
 		new_wallet[BLOCKCHAIN]  = blockchain;
 		new_wallet[MNEMONICS]   = mnemonics;
-		
+				
 		if (   blockchain == ETHEREUM     || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 		    || blockchain == BITCOIN      || blockchain == DOGECOIN  || blockchain == LITECOIN 
             || blockchain == STELLAR      || blockchain == RIPPLE    || blockchain == TRON     
@@ -149,9 +150,38 @@ class HDWallet {
 				new_wallet[ADDRESS] = btc_addr_to_t_zcash_addr(hdwallet_info[ADDRESS]);
 			}
 			
+			// https://stackoverflow.com/questions/78303632/how-to-generate-ton-wallet-using-javascript
+
+
+			// Async function to generate wallet address
+			async function generateTonWallet() {
+			  // 1. Generate a new 24-word mnemonic
+			  const mnemonic = await mnemonicNew();
+
+			  // 2. Derive wallet key from mnemonic
+			  const key = await mnemonicToWalletKey(mnemonic);
+
+			  // 3. Create a wallet (v4) using the public key
+			  const wallet = WalletContractV4.create({
+				workchain: 0,               // Workchain 0 is default
+				publicKey: key.publicKey,
+			  });
+
+			  // 4. Get the address of the wallet
+			  const address = wallet.address.toString();
+
+			  // Output
+			  console.log('Mnemonic:', mnemonic.join(' '));
+			  console.log('Public Key:', key.publicKey.toString('hex'));
+			  console.log('Secret Key:', key.secretKey.toString('hex'));
+			  console.log('Wallet Address:', address);
+			}
+
+			await generateTonWallet();
+							
 			pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);
-			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);	
-			
+			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);				
+
 			new_wallet[COIN]      = hdwallet_info[COIN];
 			new_wallet[COIN_TYPE] = hdwallet_info[COIN_TYPE];
 			

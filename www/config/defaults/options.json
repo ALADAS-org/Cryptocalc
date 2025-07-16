@@ -10,7 +10,7 @@
                        "TRON","Avalanche","Bitcoin Cash","LiteCoin","Dash","Firo" ],
     "SWORD Wallet":  [ "Bitcoin","Ethereum","Binance Smart Chain","Solana","Ripple","DogeCoin","Cardano", "Stellar",
                        "TRON","Avalanche","Bitcoin Cash","LiteCoin","Dash","Firo" ],
-    "Simple Wallet": ["Bitcoin","Ethereum","Solana","DogeCoin","Avalanche","LiteCoin" ] 
+    "Simple Wallet": ["Bitcoin","Ethereum","Solana","DogeCoin","Avalanche","LiteCoin","Toncoin" ] 
   },
   "lang": "EN",
   "Wallet Save Path": "$CRYPTOCALC/_output"

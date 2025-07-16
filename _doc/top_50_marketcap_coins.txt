@@ -2,14 +2,14 @@
 * 2 	Ethereum	ETH
 * 3 	XRP			XRP
   4 	Tether      USDT
-  5 	BNB			BNB ****** cf Avalanche
+* 5 	BNB			BNB 		NB: sur 'BSC' (Binance Smart Chain)t
 * 6 	SOL			Solana
   7 	USDC		USDC
 * 8 	DOGE 		Dogecoin
 * 9 	TRX 		TRON
 * 10	ADA			Cardano
   11	HYPE 		Hyperliquid
-* 12	XLM 		Stellar   ******
+* 12	XLM 		Stellar
   13	SUI 		Sui
   14	LINK 		Chainlink
   15	HBAR 		Hedera
