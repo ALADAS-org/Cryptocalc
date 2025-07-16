@@ -51,7 +51,7 @@ const { COIN,
 	    ETHEREUM, 
 		BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA,  
-		AVALANCHE,
+		AVALANCHE, TON,
 		COIN_ABBREVIATIONS,
 		BLOCKCHAIN
       }                    = require('../const_blockchains.js');
@@ -74,8 +74,9 @@ const { uint8ArrayToHex
 const { Bip39Utils }       = require('../bip39_utils.js');
 	
 const { CoinKey_API }      = require('./coinkey_api.js'); 
-const { Ethereum_API }     = require('./ethereum_api.js'); 
+const { Ethereum_API }     = require('./ethereum_api.js');
 const { SolanaSW_API }     = require('./solana_sw_api.js');
+const { TON_API }          = require('./ton_sw_api.js');
 
 class SimpleWallet {	
     static async GetWallet( private_key, salt_uuid, blockchain, crypto_net ) {
@@ -113,10 +114,13 @@ class SimpleWallet {
 			if ( blockchain	== AVALANCHE ) { 
 				new_wallet[BLOCKCHAIN] = AVALANCHE;
 				new_wallet[COIN]       = coin;
-			}	
+			}		
 		}
 		else if ( blockchain == SOLANA ) {		
 			new_wallet = SolanaSW_API.GetWallet( private_key, salt_uuid );
+		}
+		else if ( blockchain == TON ) {		
+			new_wallet = TON_API.GetWallet( private_key, salt_uuid );
 		}
 
 		return new_wallet;
