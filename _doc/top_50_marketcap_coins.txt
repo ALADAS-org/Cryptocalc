@@ -17,7 +17,7 @@
 * 17	AVAX 		Avalanche
   18	LEO 		UNUS SED LEO
   19	SHIB 		Shiba Inu
-  20	TON 		Toncoin
+* 20	TON 		Toncoin
 * 21	LTC 		Litecoin
   22	DOT 		Polkadot
   23	XMR 		Monero
