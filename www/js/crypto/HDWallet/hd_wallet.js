@@ -44,9 +44,6 @@ const { Bip32Utils }       = require('./bip32_utils.js');
 const { CardanoHD_API }    = require('./cardano_hd_api.js');
 const { SolanaHD_API }     = require('./solana_hd_api.js');
 
-const { mnemonicNew, mnemonicToWalletKey } = require('@ton/crypto');
-const { WalletContractV4, Address }        = require('@ton/core');
-
 // https://runkit.com/gojomo/baddr2taddr
 /**
  * Converts a Bitcoin "Pay To Public Key Hash" (P2PKH) public 
@@ -150,35 +147,6 @@ class HDWallet {
 				new_wallet[ADDRESS] = btc_addr_to_t_zcash_addr(hdwallet_info[ADDRESS]);
 			}
 			
-			// https://stackoverflow.com/questions/78303632/how-to-generate-ton-wallet-using-javascript
-
-
-			// Async function to generate wallet address
-			async function generateTonWallet() {
-			  // 1. Generate a new 24-word mnemonic
-			  const mnemonic = await mnemonicNew();
-
-			  // 2. Derive wallet key from mnemonic
-			  const key = await mnemonicToWalletKey(mnemonic);
-
-			  // 3. Create a wallet (v4) using the public key
-			  const wallet = WalletContractV4.create({
-				workchain: 0,               // Workchain 0 is default
-				publicKey: key.publicKey,
-			  });
-
-			  // 4. Get the address of the wallet
-			  const address = wallet.address.toString();
-
-			  // Output
-			  console.log('Mnemonic:', mnemonic.join(' '));
-			  console.log('Public Key:', key.publicKey.toString('hex'));
-			  console.log('Secret Key:', key.secretKey.toString('hex'));
-			  console.log('Wallet Address:', address);
-			}
-
-			await generateTonWallet();
-							
 			pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);
 			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);				
 
