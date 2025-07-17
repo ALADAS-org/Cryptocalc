@@ -1,3 +1,11 @@
+2025/07/17
+ 1. Fixed : Missing: Blockchain Explorer for "Bitcoin Cash"
+ 2. Fixed : Regression in display of mnemonic indexes in Binary
+ 3. KO    : When setting 'Entropy Size' to 256 bits (but OK by changing word count) 
+ 4. KO    : Drag and Drop of an image as an 'Entropy Source'
+ 5. KO    : Inconsistencies (eg: between display and 'wallet_infos.txt') for 'Cryptocurrencies' compatibles with Ethereum 
+	        (eg: BNB on Binance Smart Chain) as '60' should be displayed as 'coin type' in GUI and not the cryptocurrenct 'coin type' (eg: '714' for 'BNB')
+
 2024/10/26
 - HD Wallet / SWORD Wallet: when setting 'Entropy Size' to 224 bits, 'Wallet tab' cannot no more be activated 
 

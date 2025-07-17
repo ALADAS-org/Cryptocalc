@@ -1,50 +1,74 @@
-* 1 	Bitcoin		BTC
-* 2 	Ethereum	ETH
-* 3 	XRP			XRP
-  4 	Tether      USDT
-* 5 	BNB			BNB 		NB: sur 'BSC' (Binance Smart Chain)t
-* 6 	SOL			Solana
-  7 	USDC		USDC
-* 8 	DOGE 		Dogecoin
-* 9 	TRX 		TRON
-* 10	ADA			Cardano
-  11	HYPE 		Hyperliquid
-* 12	XLM 		Stellar
-  13	SUI 		Sui
-  14	LINK 		Chainlink
-  15	HBAR 		Hedera
-* 16	BCH 		Bitcoin Cash
-* 17	AVAX 		Avalanche
-  18	LEO 		UNUS SED LEO
-  19	SHIB 		Shiba Inu
-* 20	TON 		Toncoin
-* 21	LTC 		Litecoin
-  22	DOT 		Polkadot
-  23	XMR 		Monero
-  24	UNI 		Uniswap
-  25	DAI 		Dai
-  26	USDe 		Ethena USDe
-  27	PEPE 		Pepe
-  28	BGB 		Bitget Token
-  29	AAVE 		Aave
-  30	TAO 		Bittensor
-  31	PI 			Pi
-  32	CRO 		Cronos
-  33	APT 		Aptos
-  34	NEAR 		NEAR Protocol
-  35	ONDO 		Ondo
-  36	ICP 		Internet Computer
-  37	OKB 		OKB
-  38	ETC 		Ethereum Classic ****
-  39	POL 		POL (prev. MATIC)
-  40 	MNT 		Mantle
-  41 	ALGO 		Algorand
-  42  	KAS 		Kaspa
-  43 	ENA 		Ethena
-  44  	USD1 		World Liberty Financial USD
-  45  	VET 		VeChain *****
-  46  	BONK 		Bonk
-  47  	ARB 		Arbitrum
-  48 	RENDER 		Render
-  49  	GT 			GateToken
-  50  	TRUMP 		OFFICIAL TRUMP
+------+------+-------+-------+--------------+
+ Rank | Coin | !Eth  | HD ok |  Blockchain  |
+------+------+-------+-------+--------------+
+* 1 	BTC		*		*  		Bitcoin
+* 2 	ETH				*		Ethereum	
+* 3 	XRP		*		*		XRP
+  4 	USDT					Tether      
+* 5 	BNB						BNB 		NB: sur 'Binance Smart Chain'
+* 6 	SOL		*				Solana
+  7 	USDC					USDC
+* 8 	DOGE 	*		*		Dogecoin
+* 9 	TRX 	*		*		TRON
+* 10	ADA		*				Cardano
+  11	HYPE 					Hyperliquid
+* 12	XLM 	*		*		Stellar
+  13	SUI 					Sui
+  14	LINK 					Chainlink
+  15	HBAR 	*				Hedera
+* 16	BCH 	*		*		Bitcoin Cash
+* 17	AVAX 	*				Avalanche 
+  18	SHIB 					Shiba Inu
+  19	LEO 					UNUS SED LEO
+* 20	TON 	*				Toncoin
+* 21	LTC 	*		*		Litecoin
+  22	DOT 	*				Polkadot
+  23	XMR 	*				Monero
+  24	PEPE 					Pepe
+  25	UNI 					Uniswap
+  26    BGB  					Bitget Token
+  27	DAI 					Dai
+  28	USDe 					Ethena USDe 
+  29	AAVE 					Aave
+  30	TAO 					Bittensor
+  31	APT 	*				Aptos
+  32	NEAR 	*				NEAR Protocol  
+  33	PI 						Pi
+  34	CRO 					Cronos   
+  35	ONDO 					Ondo
+  36	ETC 			*		Ethereum Classic ****
+  37  	BONK 					Bonk  
+  38	ICP 	*				Internet Computer
+  39	OKB 					OKB  
+  40 	ALGO 	*				Algorand
+  41 	MNT 					Mantle  
+  42	POL 					POL (prev. MATIC) 
+  43  	KAS 					Kaspa
+  44 	ENA 					Ethena
+  45  	ARB 					Arbitrum  
+  46  	USD1 					World Liberty Financial USD  
+  47  	VET 	*	    *		VeChain *****  
+  48  	PUMP 					Pump.fun 
+  49  	SEI 					Sei  
+  50 	RENDER 					Render
+  51 	PENGU 					Pudgy Penguins
+  52  	TRUMP 					OFFICIAL TRUMP
+  53  	WLD 					Worldcoin  
+  54  	GT 						GateToken
+  55  	ATOM			*		Cosmos
+  56  	FET						Artificial Superintelligence Alliance
+  57  	FIL 					Filecoin
+  ...   ...						...
+  67  	STX 					Stacks
+  97  	ZEC 			*		Zcash
+  100  	XTZ 					Tezos
+  114  	BSV 			*		Bitcoin SV
+  140  	XEC 					eCash  
+  254  	KDA 					Kadena
+  317 	LUNA 			*		Terra Luna
+  
+        DASH            *
+		FIRO            *
+		NAMECOIN        *
+		VTC	        	*		Vertcoin
+		RUNE	        *		THORChain

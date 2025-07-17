@@ -542,10 +542,11 @@ class RendererGUI {
 
         this.wallet_info.setAttribute( BLOCKCHAIN, blockchain );		
 		
-		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC
-		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN
-			|| blockchain == CARDANO  || blockchain == SOLANA   
-			|| blockchain == STELLAR  || blockchain == RIPPLE   || blockchain == TRON 
+		if (   blockchain == ETHEREUM  || blockchain == ETHEREUM_CLASSIC
+		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
+		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN
+			|| blockchain == CARDANO   || blockchain == SOLANA   
+			|| blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON 
 			|| blockchain == BITCOIN_CASH 
 			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH) {
 				
@@ -835,7 +836,8 @@ class RendererGUI {
 		this.setEventHandler( SW_WIF_COPY_BTN_ID,       'click',    
 		    (evt) => { if (this.cb_enabled) this.onCopyButton(SW_WIF_COPY_BTN_ID); } );
 		
-		//this.setEventHandler( WORD_INDEXES_BASE_ID,     'change',   async (evt) => { await this.updateWordIndexes(); } );			
+		// Regression Fix: '_00_todo.txt' 2025/07/17 Bug 2
+		this.setEventHandler( WORD_INDEXES_BASE_ID,     'change', async (evt) => { await this.updateWordIndexes(); } );			
 				
 		this.setEventHandler( RANDOM_BTN_ID,            'click',    
 		    async (evt) => { if (this.cb_enabled) await this.generateRandomFields(); } );				
@@ -959,9 +961,8 @@ class RendererGUI {
 
 			if ( blockchain == TRON ) {
 				HtmlUtils.HideNode( TR_PRIV_KEY_ID );			
-			}				
-			
-			if ( blockchain == CARDANO ) {				
+			}			
+			else if ( blockchain == CARDANO ) {				
 				HtmlUtils.HideNode(ACCOUNT_ID);
 				HtmlUtils.HideNode(ACCOUNT_SUFFIX_ID);
 				HtmlUtils.HideNode(ADDRESS_INDEX_ID);				
@@ -990,19 +991,24 @@ class RendererGUI {
 				HtmlUtils.ShowNode(TR_1ST_PK_ID);
 			}
 
-            if (   blockchain == ETHEREUM 
+            if (   blockchain == ETHEREUM
 				|| blockchain == AVALANCHE || blockchain == BINANCE_BSC
                 || blockchain == SOLANA	) {   
 				HtmlUtils.HideNode( TR_WIF_ID );
 				HtmlUtils.ShowNode( TR_1ST_PK_ID );
 				// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
-			}			
+			}	
+
+            if (   blockchain == ETHEREUM_CLASSIC ) {   
+				HtmlUtils.ShowNode( TR_1ST_PK_ID );
+				// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
+			}				
 		}	
 
 		// ------------------- WIF --------------------
 		let wif = this.wallet_info.getAttribute(WIF);
 		if (   ( wallet_mode == HD_WALLET_TYPE ||  wallet_mode == SWORD_WALLET_TYPE )
-			&& ( blockchain == SOLANA || blockchain == STELLAR ) ) {  
+			&& ( blockchain == SOLANA || blockchain == STELLAR || blockchain == ETHEREUM_CLASSIC) ) {  
 			HtmlUtils.HideNode( TR_WIF_ID );
 		}
 		else { 
@@ -2472,7 +2478,7 @@ class RendererGUI {
 				delete crypto_info[PRIV_KEY];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
 			}
-			else if ( blockchain == STELLAR ) {
+			else if ( blockchain == STELLAR || blockchain == ETHEREUM_CLASSIC) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[WIF];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
@@ -2605,7 +2611,8 @@ class RendererGUI {
     } // async mnemonicsToWordIndexes()
 	
 	isBlockchainSupported( blockchain ) {
-		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC 
+		if (   blockchain == ETHEREUM || blockchain == ETHEREUM_CLASSIC || blockchain == AVALANCHE 
+		    || blockchain == BINANCE_BSC 
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
 		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
 		    || blockchain == RIPPLE   || blockchain == TRON      || blockchain == BITCOIN_CASH 

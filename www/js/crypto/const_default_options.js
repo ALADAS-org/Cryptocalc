@@ -18,13 +18,14 @@ const DEFAULT_OPTIONS = {
     [ENTROPY_SIZE]:       { [HD_WALLET_TYPE]:"128", [SWORD_WALLET_TYPE]: "128",
 		                    [SIMPLE_WALLET_TYPE]: "256" },
 	"Blockchains": { 
-		[HD_WALLET_TYPE]:     [ "Bitcoin", "Ethereum", "BINANCE_BSC", "Solana", "Stellar",
+		[HD_WALLET_TYPE]:     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Stellar",
                                 "Ripple", "DogeCoin", "Cardano", "TRON",
 					            "Avalanche", "Bitcoin Cash",
-								"LiteCoin", "Dash", "Firo", "ZCASH" ], 
-		[SWORD_WALLET_TYPE]:  [ "Bitcoin", "Ethereum", "BINANCE_BSC", "Solana", "Stellar",
+								"LiteCoin", "Ethereum Classic", "Dash", "Firo", "ZCASH" ], 
+		[SWORD_WALLET_TYPE]:  [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Stellar",
 								"Ripple", "DogeCoin", "Cardano", "TRON",
-								"Avalanche", "Bitcoin Cash", "LiteCoin","Dash", "Firo", "ZCASH" ], 
+								"Avalanche", "Bitcoin Cash", 
+								"LiteCoin", "Ethereum Classic", "Dash", "Firo", "ZCASH" ], 
 		[SIMPLE_WALLET_TYPE]: [ "Bitcoin", "Ethereum", "Solana",
                                 "DogeCoin", "Avalanche", "LiteCoin", "Toncoin"] 
 	},

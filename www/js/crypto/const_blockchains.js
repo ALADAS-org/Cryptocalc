@@ -23,7 +23,10 @@ const TESTNET      = "testnet";
 const TESTNET_COIN = "Testnet";
 
 const BITCOIN      = "Bitcoin";
-const ETHEREUM     = "Ethereum";
+
+const ETHEREUM         = "Ethereum";
+const ETHEREUM_CLASSIC = "Ethereum Classic";
+
 const BINANCE_BSC  = "Binance Smart Chain";
 const TON          = "Toncoin";
 
@@ -68,31 +71,32 @@ const COIN_ABBREVIATIONS = {
 	[TESTNET_COIN] : "Testnet-Coin",
 	
 	// ------------ https://coinmarketcap.com/ ------------
-	[BITCOIN]      : "BTC",
-	[ETHEREUM]     : "ETH",
-	[TON]          : "TON",
-	[BINANCE_BSC]  : "BNB",
-	[SOLANA]       : "SOL",
-	[RIPPLE]       : "XRP",
-	[CARDANO]      : "ADA",
-	[STELLAR]      : "XLM",
-	[AVALANCHE]    : "AVAX",	
-	[DOGECOIN]     : "DOGE",
-	[TRON]         : "TRX",
-	[BITCOIN_CASH] : "BCH",
-	[POLKADOT]     : "DOT",
-	[POLYGON]      : "MATIC",
-	[LITECOIN]     : "LTC",
-    [FILECOIN]     : "FIL",	
-	[MONERO]       : "XMR",	
-	[TEZOS]        : "XTZ",	
-	[ZILLIQA]      : "ZIL",
-	[ZCASH]        : "ZEC",
-	[KUSAMA]       : "KSM",
-	[DASH]         : "DASH",
-	[EOS]          : "EOS",
-	[FIRO]         : "FIRO",
-	[ZCASH]        : "ZEC",	
+	[BITCOIN]         : "BTC",
+	[ETHEREUM]        : "ETH",
+	[ETHEREUM_CLASSIC]: "ETC",
+	[TON]             : "TON",
+	[BINANCE_BSC]     : "BNB",
+	[SOLANA]          : "SOL",
+	[RIPPLE]          : "XRP",
+	[CARDANO]         : "ADA",
+	[STELLAR]         : "XLM",
+	[AVALANCHE]       : "AVAX",	
+	[DOGECOIN]        : "DOGE",
+	[TRON]            : "TRX",
+	[BITCOIN_CASH]    : "BCH",
+	[POLKADOT]        : "DOT",
+	[POLYGON]         : "MATIC",
+	[LITECOIN]        : "LTC",
+    [FILECOIN]        : "FIL",	
+	[MONERO]          : "XMR",	
+	[TEZOS]           : "XTZ",	
+	[ZILLIQA]         : "ZIL",
+	[ZCASH]           : "ZEC",
+	[KUSAMA]          : "KSM",
+	[DASH]            : "DASH",
+	[EOS]             : "EOS",
+	[FIRO]            : "FIRO",
+	[ZCASH]           : "ZEC",	
 	// ------------ https://coinmarketcap.com/			
 	
 	[NAMECOIN]     : "NMC"	
@@ -100,97 +104,100 @@ const COIN_ABBREVIATIONS = {
 
 // coin_types: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 const COIN_TYPES = {
-	[NULL_COIN]    :   -1,	
-	[BITCOIN]      :    0,	
-	[TESTNET_COIN] :    1,	
-	[LITECOIN]     :    2,
-	[DOGECOIN]     :    3,
-	[DASH]         :    5,
-	[NAMECOIN]     :    7,
-	[ETHEREUM]     :   60,
-	[MONERO]       :  128,
-	[ZCASH]        :  133,
-	[FIRO]         :  136,
-	[RIPPLE]       :  144,
-	[BITCOIN_CASH] :  145,
-	[STELLAR] 	   :  148,
-	[EOS]          :  194,
-	[TRON]         :  195,
-	[ZILLIQA]      :  313,
-	[KUSAMA]       :  434,
-	[FILECOIN]     :  461,
-	[SOLANA]       :  501,
-	[TON]          :  607,	
-	[BINANCE_BSC]  :  714,
-	[POLYGON]      :  966,	
-	[TEZOS]        : 1729,
-	[CARDANO]      : 1815,
-	[AVALANCHE]    : 9000
+	[NULL_COIN]       :   -1,	
+	[BITCOIN]         :    0,	
+	[TESTNET_COIN]    :    1,	
+	[LITECOIN]        :    2,
+	[DOGECOIN]        :    3,
+	[DASH]            :    5,
+	[NAMECOIN]        :    7,
+	[ETHEREUM]        :   60,
+	[ETHEREUM_CLASSIC]:   61,
+	[MONERO]          :  128,
+	[ZCASH]           :  133,
+	[FIRO]            :  136,
+	[RIPPLE]          :  144,
+	[BITCOIN_CASH]    :  145,
+	[STELLAR]    	  :  148,
+	[EOS]             :  194,
+	[TRON]            :  195,
+	[ZILLIQA]         :  313,
+	[KUSAMA]          :  434,
+	[FILECOIN]        :  461,
+	[SOLANA]          :  501,
+	[TON]             :  607,	
+	[BINANCE_BSC]     :  714,
+	[POLYGON]         :  966,	
+	[TEZOS]           : 1729,
+	[CARDANO]         : 1815,
+	[AVALANCHE]       : 9000
 }; // COIN_TYPES
 
 const FAUCET_URLs = {
-    [NULL_COIN]    : "Null-URL",	
-	[ETHEREUM]     : "https://mumbaifaucet.com/",
-	[BITCOIN]      : "https://coinfaucet.eu/en/btc-testnet/",
-	[SOLANA]       : "https://solfaucet.com/",
-	[CARDANO]      : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
-	[STELLAR]      : "Null-URL",
-	[DOGECOIN]     : "https://testnet-faucet.com/doge-testnet/",
-	[BINANCE_BSC]  : "Null-URL",
-	[TON]          : "Null-URL",
-	[AVALANCHE]    : "Null-URL",
-	[TRON]         : "Null-URL",
-	[DASH]         : "Null-URL",
-	[FIRO]         : "Null-URL",
-	[ZCASH]        : "Null-URL",
-	[BITCOIN_CASH] : "Null-URL",
-	[LITECOIN]     : "https://litecointf.salmen.website/"
+    [NULL_COIN]       : "Null-URL",	
+	[ETHEREUM]        : "https://mumbaifaucet.com/",
+	[ETHEREUM_CLASSIC]: "Null-URL",
+	[BITCOIN]         : "https://coinfaucet.eu/en/btc-testnet/",
+	[SOLANA]          : "https://solfaucet.com/",
+	[CARDANO]         : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
+	[STELLAR]         : "Null-URL",
+	[DOGECOIN]        : "https://testnet-faucet.com/doge-testnet/",
+	[BINANCE_BSC]     : "Null-URL",
+	[TON]             : "Null-URL",
+	[AVALANCHE]       : "Null-URL",
+	[TRON]            : "Null-URL",
+	[DASH]            : "Null-URL",
+	[FIRO]            : "Null-URL",
+	[ZCASH]           : "Null-URL",
+	[BITCOIN_CASH]    : "Null-URL",
+	[LITECOIN]        : "https://litecointf.salmen.website/"
 }; // FAUCET_URLs
 
 // https://shardeum.org/blog/best-blockchain-explorers/
 // 1. Blockchain
 // 1. BlockCypher
 const MAINNET_EXPLORER_URLs = {	
-	[NULL_COIN]:    "Null-URL",
-	
-	[ETHEREUM]:     "https://etherscan.io/address/",	
-	[BITCOIN]:      "https://www.blockchain.com/explorer/addresses/btc/",	
-	[SOLANA]:       "https://explorer.solana.com/address/",
-	[CARDANO]:      "https://blockchair.com/fr/cardano/address/",
-	[STELLAR]:		"https://stellar.expert/explorer/public/account/",
-	[DOGECOIN]:     "https://dogechain.info/address/",
-	[BINANCE_BSC]:  "https://bscscan.com/address/",
-	[TON]:          "https://tonscan.org/address/",
-	[AVALANCHE]:    "https://snowtrace.io/address/",
-	[TRON]:         "https://tronscan.org/#/address/",
-	[BITCOIN_CASH]: "https://explorer.btc.com/bch/address/",
-	[DASH]:         "https://explorer.dash.org/insight/address/",
-	[RIPPLE]:       "https://livenet.xrpl.org/accounts/",
-	[EOS]:          "Null-URL",
-	[FIRO]:         "https://explorer.firo.org/address/",
-	[ZCASH]:        "Null-URL",
-	[LITECOIN]:     "https://live.blockcypher.com/ltc/address/"
+	[NULL_COIN]:         "Null-URL",	
+	[ETHEREUM]:          "https://etherscan.io/address/",
+    [ETHEREUM_CLASSIC]:  "https://www.oklink.com/fr/etc/address/",	
+	[BITCOIN]:           "https://www.blockchain.com/explorer/addresses/btc/",	
+	[SOLANA]:            "https://explorer.solana.com/address/",
+	[CARDANO]:           "https://blockchair.com/fr/cardano/address/",
+	[STELLAR]:    		 "https://stellar.expert/explorer/public/account/",
+	[DOGECOIN]:          "https://dogechain.info/address/",
+	[BINANCE_BSC]:       "https://bscscan.com/address/",
+	[TON]:               "https://tonscan.org/address/",
+	[AVALANCHE]:         "https://snowtrace.io/address/",
+	[TRON]:              "https://tronscan.org/#/address/",
+	[BITCOIN_CASH]:      "https://www.blockchain.com/fr/explorer/addresses/bch/",
+	[DASH]:              "https://explorer.dash.org/insight/address/",
+	[RIPPLE]:            "https://livenet.xrpl.org/accounts/",
+	[EOS]:               "Null-URL",
+	[FIRO]:              "https://explorer.firo.org/address/",
+	[ZCASH]:             "Null-URL",
+	[LITECOIN]:          "https://live.blockcypher.com/ltc/address/"
 }; // MAINNET_EXPLORER_URLs
 
 const TESTNET_EXPLORER_URLs = {
-	[NULL_COIN]:    "Null-URL",	
-	[ETHEREUM]:     "https://sepolia.etherscan.io/address/%ADDRESS%",	
-	[BITCOIN]:      "https://live.blockcypher.com/btc-testnet/address/%ADDRESS%",	
-	[SOLANA]:       "https://explorer.solana.com/%ADDRESS%/?cluster=testnet",	
-	[CARDANO]:      "https://preprod.cardanoscan.io/address/%ADDRESS%",	
-	[STELLAR]:		"Null-URL",
-    [RIPPLE]:       "Null-URL",
-	[DOGECOIN]:     "https://sochain.com/address/DOGETEST/%ADDRESS%",
-	[BINANCE_BSC]:	"Null-URL",
-	[TON]:		    "Null-URL",
-	[AVALANCHE]:    "Null-URL",
-    [TRON]:         "Null-URL",
-	[BITCOIN_CASH]: "Null-URL",
-	[DASH]:         "Null-URL",
-	[EOS]:          "Null-URL",
-	[FIRO]:         "Null-URL",
-	[ZCASH]:        "Null-URL",
-    [LITECOIN]:     "https://sochain.com/address/LTCTEST/%ADDRESS%"	
+	[NULL_COIN]:         "Null-URL",	
+	[ETHEREUM]:          "https://sepolia.etherscan.io/address/%ADDRESS%",
+    [ETHEREUM_CLASSIC]:  "Null-URL",		
+	[BITCOIN]:           "https://live.blockcypher.com/btc-testnet/address/%ADDRESS%",	
+	[SOLANA]:            "https://explorer.solana.com/%ADDRESS%/?cluster=testnet",	
+	[CARDANO]:           "https://preprod.cardanoscan.io/address/%ADDRESS%",	
+	[STELLAR]:	     	 "Null-URL",
+    [RIPPLE]:            "Null-URL",
+	[DOGECOIN]:          "https://sochain.com/address/DOGETEST/%ADDRESS%",
+	[BINANCE_BSC]:	     "Null-URL",
+	[TON]:		         "Null-URL",
+	[AVALANCHE]:         "Null-URL",
+    [TRON]:              "Null-URL",
+	[BITCOIN_CASH]:      "Null-URL",
+	[DASH]:              "Null-URL",
+	[EOS]:               "Null-URL",
+	[FIRO]:              "Null-URL",
+	[ZCASH]:             "Null-URL",
+    [LITECOIN]:          "https://sochain.com/address/LTCTEST/%ADDRESS%"	
 }; // TESTNET_EXPLORER_URLs
 
 if (typeof exports === 'object') {
@@ -205,6 +212,7 @@ if (typeof exports === 'object') {
 	
 	exports.BITCOIN                  = BITCOIN
 	exports.ETHEREUM                 = ETHEREUM
+	exports.ETHEREUM_CLASSIC         = ETHEREUM_CLASSIC
 	exports.BINANCE_BSC              = BINANCE_BSC
 	exports.TON                      = TON
 	exports.SOLANA                   = SOLANA
