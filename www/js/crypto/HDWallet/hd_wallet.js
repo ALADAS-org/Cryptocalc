@@ -14,7 +14,8 @@ const { pretty_func_header_log,
         pretty_log }       = require('../../util/log/log_utils.js');
 		
 const { COIN, COIN_TYPE,
-	    ETHEREUM, BITCOIN, DOGECOIN, LITECOIN, 
+	    ETHEREUM, ETHEREUM_CLASSIC, 
+		BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA, CARDANO, STELLAR, RIPPLE, 
 		DASH, FIRO, ZCASH, TRON, 
 		AVALANCHE, BINANCE_BSC, BITCOIN_CASH,   
@@ -124,7 +125,8 @@ class HDWallet {
 		new_wallet[BLOCKCHAIN]  = blockchain;
 		new_wallet[MNEMONICS]   = mnemonics;
 				
-		if (   blockchain == ETHEREUM     || blockchain == AVALANCHE || blockchain == BINANCE_BSC
+		if (   blockchain == ETHEREUM     || blockchain == ETHEREUM_CLASSIC 
+		    || blockchain == AVALANCHE    || blockchain == BINANCE_BSC
 		    || blockchain == BITCOIN      || blockchain == DOGECOIN  || blockchain == LITECOIN 
             || blockchain == STELLAR      || blockchain == RIPPLE    || blockchain == TRON     
             || blockchain == BITCOIN_CASH 
