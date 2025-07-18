@@ -24,6 +24,7 @@
 // * async  propagateFields( entropy, wif )
 //
 //          updateFieldsVisibility()
+//
 // * async  updateOptionsFields( json_data )
 // * async  updateFields()
 // * async  updateWalletMode( wallet_mode )
@@ -41,7 +42,9 @@
 //
 // * async  generateSalt()
 // * async  generateRandomFields()
+//
 // * async  getWalletInfo()
+//
 // * 	    clearFields( field_ids )
 //
 // * async  onGUIEvent( data )
@@ -70,7 +73,7 @@
 //
 //          setSaveCmdState();
 //          setRefreshCmdState();
-//
+//          isBlockchainSupported();
 // *        setEventHandler( elt_id, event_name, handler_function )//
 // *        openTabPage( pageName, elt, color )
 // *        setFocus( elt_id )
@@ -548,7 +551,8 @@ class RendererGUI {
 			|| blockchain == CARDANO   || blockchain == SOLANA   
 			|| blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON 
 			|| blockchain == BITCOIN_CASH 
-			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH) {
+			|| blockchain == DASH || blockchain == VECHAIN
+			|| blockchain == FIRO || blockchain == ZCASH) {
 				
 			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
 
@@ -999,7 +1003,7 @@ class RendererGUI {
 				// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
 			}	
 
-            if (   blockchain == ETHEREUM_CLASSIC ) {   
+            if (   blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {   
 				HtmlUtils.ShowNode( TR_1ST_PK_ID );
 				// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
 			}				
@@ -1008,7 +1012,8 @@ class RendererGUI {
 		// ------------------- WIF --------------------
 		let wif = this.wallet_info.getAttribute(WIF);
 		if (   ( wallet_mode == HD_WALLET_TYPE ||  wallet_mode == SWORD_WALLET_TYPE )
-			&& ( blockchain == SOLANA || blockchain == STELLAR || blockchain == ETHEREUM_CLASSIC) ) {  
+			&& (    blockchain == SOLANA || blockchain == STELLAR 
+		         || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) ) {  
 			HtmlUtils.HideNode( TR_WIF_ID );
 		}
 		else { 
@@ -2415,14 +2420,9 @@ class RendererGUI {
 		evt.preventDefault();
 		evt.stopPropagation();
 
-		let file_path = [];
-		for (const f of evt.dataTransfer.files) {
-			// Using the path attribute to get absolute file path
-			//console.log('File Path of dragged files: ', f.path)
-			file_path.push(f.path); // assemble array for main.js
-		}
-		let img_file_path = file_path[0];
-		trace2Main("   " + img_file_path);
+		let img_file_path = event.dataTransfer.files[0].path;
+		console.log(">   img_file_path: " + img_file_path);
+		
 		let img_data_asURL = await window.ipcMain.LoadImageFromFile( img_file_path );
 		this.img_data_asURL = img_data_asURL; 
 	} // onDropImage()
@@ -2478,7 +2478,7 @@ class RendererGUI {
 				delete crypto_info[PRIV_KEY];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
 			}
-			else if ( blockchain == STELLAR || blockchain == ETHEREUM_CLASSIC) {
+			else if ( blockchain == STELLAR || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[WIF];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
@@ -2616,7 +2616,7 @@ class RendererGUI {
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
 		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
 		    || blockchain == RIPPLE   || blockchain == TRON      || blockchain == BITCOIN_CASH 
-		    || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH ) {
+		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO || blockchain == ZCASH ) {
 			return true;	
 		} 
 		return false;

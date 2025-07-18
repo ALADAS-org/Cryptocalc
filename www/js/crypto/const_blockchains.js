@@ -44,6 +44,9 @@ const BITCOIN_CASH = "Bitcoin Cash";
 const POLKADOT     = "Polkadot";
 const POLYGON      = "Polygon";
 const LITECOIN     = "LiteCoin";
+
+const VECHAIN      = "VeChain";
+
 const FILECOIN     = "Filecoin";
 const EOS          = "EOS";
 const FIRO         = "Firo";
@@ -87,6 +90,7 @@ const COIN_ABBREVIATIONS = {
 	[POLKADOT]        : "DOT",
 	[POLYGON]         : "MATIC",
 	[LITECOIN]        : "LTC",
+	[VECHAIN]         : "VET",
     [FILECOIN]        : "FIL",	
 	[MONERO]          : "XMR",	
 	[TEZOS]           : "XTZ",	
@@ -99,10 +103,11 @@ const COIN_ABBREVIATIONS = {
 	[ZCASH]           : "ZEC",	
 	// ------------ https://coinmarketcap.com/			
 	
-	[NAMECOIN]     : "NMC"	
+	[NAMECOIN]        : "NMC"	
 }; // COIN_ABBREVIATIONS
 
-// coin_types: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+// coin_types:
+// https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 const COIN_TYPES = {
 	[NULL_COIN]       :   -1,	
 	[BITCOIN]         :    0,	
@@ -127,6 +132,7 @@ const COIN_TYPES = {
 	[SOLANA]          :  501,
 	[TON]             :  607,	
 	[BINANCE_BSC]     :  714,
+	[VECHAIN]	      :  818,
 	[POLYGON]         :  966,	
 	[TEZOS]           : 1729,
 	[CARDANO]         : 1815,
@@ -145,6 +151,7 @@ const FAUCET_URLs = {
 	[BINANCE_BSC]     : "Null-URL",
 	[TON]             : "Null-URL",
 	[AVALANCHE]       : "Null-URL",
+	[VECHAIN]		  : "Null-URL",
 	[TRON]            : "Null-URL",
 	[DASH]            : "Null-URL",
 	[FIRO]            : "Null-URL",
@@ -173,6 +180,7 @@ const MAINNET_EXPLORER_URLs = {
 	[DASH]:              "https://explorer.dash.org/insight/address/",
 	[RIPPLE]:            "https://livenet.xrpl.org/accounts/",
 	[EOS]:               "Null-URL",
+	[VECHAIN]:           "https://explore.vechain.org/accounts/",
 	[FIRO]:              "https://explorer.firo.org/address/",
 	[ZCASH]:             "Null-URL",
 	[LITECOIN]:          "https://live.blockcypher.com/ltc/address/"
@@ -195,6 +203,7 @@ const TESTNET_EXPLORER_URLs = {
 	[BITCOIN_CASH]:      "Null-URL",
 	[DASH]:              "Null-URL",
 	[EOS]:               "Null-URL",
+	[VECHAIN]:           "Null-URL",
 	[FIRO]:              "Null-URL",
 	[ZCASH]:             "Null-URL",
     [LITECOIN]:          "https://sochain.com/address/LTCTEST/%ADDRESS%"	
@@ -229,6 +238,9 @@ if (typeof exports === 'object') {
 	exports.POLKADOT                 = POLKADOT
     exports.POLYGON                  = POLYGON
 	exports.LITECOIN                 = LITECOIN
+	
+	exports.VECHAIN                  = VECHAIN
+	
 	exports.FILECOIN                 = FILECOIN
 	exports.MONERO                   = MONERO
 	exports.TEZOS                    = TEZOS
