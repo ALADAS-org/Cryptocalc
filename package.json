@@ -1,11 +1,12 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.29",
+  "version": "0.3.30",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
   "// electron . --enable-logging": "",
   "// --inspect-brk=9229": "",
+  "// ElectronJS <= 31 because after, for security reasons, path of dropped file is no longer accessible": "",
   "// bs58: keep version 5.0.0 else 'import' needed instead of 'require' (ESM support in ElectronJS)": "",
   "scripts": {
     "start": "electron . --enable-logging",
@@ -37,7 +38,7 @@
   "homepage": "https://github.com/ALADAS-org/Cryptocalc#readme",
   "devDependencies": {
     "@electron/packager": "^18.3.6",
-    "electron": "^37.2.1"
+    "electron": "^31.0.0"
   },
   "dependencies": {
     "@emurgo/cardano-serialization-lib-nodejs": "^11.5.0",

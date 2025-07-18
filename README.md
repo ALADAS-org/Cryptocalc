@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.29
+## CryptoCalc 0.3.30
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,11 +6,11 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _seed phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 8020 times (even if there is also bots involved 
+   NB: Since its first release _CryptoCalc_ has been downloaded 8114 times (even if there is also bots involved 
    in downloads, it seems that there is between 100 and 150 frequent users).      
    
-   _Supported Blockchains_: _Bitcoin_, _Ethereum_, _Binance_, _Solana_, _Ripple_, _DogeCoin_,_Cardano_, 
-   _Stellar_, _Toncoin_, _TRON_, _Avalanche_, _Bitcoin Cash_, _LiteCoin_, _Ethereum Classic_, _Dash_ and _Firo_    
+   _Supported Blockchains_: _Bitcoin_, _Ethereum_, _Binance_, _Solana_, _Ripple_, _DogeCoin_,_Cardano_, _Stellar_,
+   _Toncoin_, _TRON_, _Avalanche_, _Bitcoin Cash_, _LiteCoin_, _Ethereum Classic_, _VeChain_, _Dash_ and _Firo_    
    
    NB: _Binance_ support is for `BNB` on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see reference 5.3.4)    
    
@@ -29,7 +29,7 @@
 	  will require that you validate yourself the application source. 
 	  If you don't trust the installer (because it is not signed as this is a 350$ cost per year), you can either:
 	      + 2.1.1.a. Rebuild yourself the _Installer_ by downloading `Inno Setup` and following the _Howto_ 
-          provided in the `_inno_setup` subfolder (`Howto build cryptowallet_setup.txt`) 		  
+          provided in the `_inno_setup` subfolder (`Howto build cryptocalc_setup.txt`) 		  
           + 2.1.1.b. Else you can proceed to _Wizard's Lair_ setup instead (see 2.2)	  
       + 2.1.2. Default setup folder is `C:\Users\$CURRENT_USER\AppData\Local\Programs\Cryptocalc`
       + 2.1.3. Default subfolder where _Wallet informations_ are saved:    
@@ -52,47 +52,44 @@
           * Type `npm install`    
 
 3. Release notes
-	+ 3.1. Features in `0.3.29`
+	+ 3.1. Features in `0.3.30`
+	    * Added `VET` cryptocurrency (_VeChain_) in _HD Wallet_ mode
+	+ 3.2. Features in `0.3.29`
 	    * Added `ETC` cryptocurrency (_Ethereum Classic_) in _HD Wallet_ mode
 		* Bug/Regression fixes:  
 			+ Regression: Changing 'Word Indexes' Base to Binary / Decimal was not working
 			+ Bug: Blockchain Explorer link for 'Bitcoin Cash' was KO
-	+ 3.2. Features in `0.3.28`
+	+ 3.3. Features in `0.3.28`
 	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
-	+ 3.3. Features in `0.3.27`
+	+ 3.4. Features in `0.3.27`
 	    * Added `TON` cryptocurrency (_Toncoin_ blockchain) but supported only in _Simple Wallet_ mode 
-	+ 3.4. Features in `0.3.26`
+	+ 3.5. Features in `0.3.26`
 	    * Added support of `BNB` cryptocurrency on _Binance Smart Chain_ Blockchain (see reference 5.3.4)
 	    * Bug fix: Error when setting 'Connection Status' icon while the DOM element is not yet created
-	+ 3.5. Features in `0.3.25`
+	+ 3.6. Features in `0.3.25`
 	    * Added support of `XLM` (_Stellar_)
-	+ 3.6. Features in `0.3.24`
+	+ 3.7. Features in `0.3.24`
 	    * Experimental support of _Latin_ for the _Seed phrase_
-    + 3.7. Features in `0.3.23`
+    + 3.8. Features in `0.3.23`
 	    * "Rollback" of _Cryptocalc_ rename to _cryptowallet_. In fact this was motivated by a better visibility
 		   on _SourceForge_ but _cryptowallet_ was rejected by SourceForge backend because it is a category. 
 		* Now using the latest release of _ElectronJS_ (37.2.1)  
-    + 3.8. Features in `0.3.21`
+    + 3.9. Features in `0.3.21`
 	    * Rename of _Cryptocalc_ (now deprecated) to _cryptowallet_
-	+ 3.9. Features in `0.3.19`
+	+ 3.10. Features in `0.3.19`
 	    * Added support of _Hindi_ for the _Seed phrase_	
-    + 3.10. Features in `0.3.18`
+    + 3.11. Features in `0.3.18`
 	    * Changed _HD Wallet_ mode so that it the _Derivation Path_ is `Hardened` by default 
 		  and mandatory (for _Security_ reason, see 5.2.3.	
         * HD Wallet: Augmentation of `account` and `address_index` digits from 4 to 9		  
 		* Fixed bug: useless twice loading of `index.html`
-    + 3.11. Features in `0.3.17`
+    + 3.12. Features in `0.3.17`
 	    * Added support of _Russian_ language. 
-    + 3.12. Features in `0.3.16`
+    + 3.13. Features in `0.3.16`
 	    * Changed license to 'BSD-3-Clause' and added support of _Esperanto_ language. 
-    + 3.13. Features in `0.3.15`
+    + 3.14. Features in `0.3.15`
 	    * Added feature 'Internet Connection status' (see 4.1.9) for securing _Offline wallet creation_
-    + 3.14. Features in `0.3.14`
-	    * Bug fixes on Ripple (XRP) HD Wallet:    
-		    + Bug 1. [Apply] button displayed when password input manually
-		    + Bug 2. WIF and Private Key displayed for Ripple (XRP) HD Wallet
-			+ Bug 3. WIF and Private Key in 'wallet_info.txt'
-   
+  
 4. _CryptoCalc_ User Guide  
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 2.1)
 	or by downloading the `npm package` (see 2.2) then double clicking on `_run.bat`.

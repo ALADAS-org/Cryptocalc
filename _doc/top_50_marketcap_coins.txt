@@ -36,7 +36,7 @@
   33	PI 						Pi
   34	CRO 					Cronos   
   35	ONDO 					Ondo
-  36	ETC 			*		Ethereum Classic ****
+* 36	ETC 			*		Ethereum Classic
   37  	BONK 					Bonk  
   38	ICP 	*				Internet Computer
   39	OKB 					OKB  
@@ -47,7 +47,7 @@
   44 	ENA 					Ethena
   45  	ARB 					Arbitrum  
   46  	USD1 					World Liberty Financial USD  
-  47  	VET 	*	    *		VeChain *****  
+* 47  	VET 	*	    *		VeChain  
   48  	PUMP 					Pump.fun 
   49  	SEI 					Sei  
   50 	RENDER 					Render

@@ -17,7 +17,7 @@ const { COIN, COIN_TYPE,
 	    ETHEREUM, ETHEREUM_CLASSIC, 
 		BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA, CARDANO, STELLAR, RIPPLE, 
-		DASH, FIRO, ZCASH, TRON, 
+		DASH, VECHAIN, FIRO, ZCASH, TRON, 
 		AVALANCHE, BINANCE_BSC, BITCOIN_CASH,   
 		MAINNET,
 		COIN_ABBREVIATIONS
@@ -129,7 +129,7 @@ class HDWallet {
 		    || blockchain == AVALANCHE    || blockchain == BINANCE_BSC
 		    || blockchain == BITCOIN      || blockchain == DOGECOIN  || blockchain == LITECOIN 
             || blockchain == STELLAR      || blockchain == RIPPLE    || blockchain == TRON     
-            || blockchain == BITCOIN_CASH 
+            || blockchain == BITCOIN_CASH || blockchain == VECHAIN
 			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {				
 				
 			if ( blockchain	== AVALANCHE || blockchain == BINANCE_BSC ) { 
