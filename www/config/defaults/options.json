@@ -4,13 +4,15 @@
     "Simple Wallet": "Bitcoin" 
   },
   "Wallet Mode": "Simple Wallet",
-  "Entropy Size": { "HD Wallet": 128, "SWORD Wallet": 128, "Simple Wallet": 256 },
+  "Entropy Size": { "HD Wallet": 256, "SWORD Wallet": 256, "Simple Wallet": 256 },
   "Blockchains": 
-  { "HD Wallet":     [ "Bitcoin","Ethereum","Binance Smart Chain","Solana","Ripple","DogeCoin","Cardano", "Stellar",
-                       "TRON","Avalanche","Bitcoin Cash","LiteCoin","Dash","Firo" ],
-    "SWORD Wallet":  [ "Bitcoin","Ethereum","Binance Smart Chain","Solana","Ripple","DogeCoin","Cardano", "Stellar",
-                       "TRON","Avalanche","Bitcoin Cash","LiteCoin","Dash","Firo" ],
-    "Simple Wallet": ["Bitcoin","Ethereum","Solana","DogeCoin","Avalanche","LiteCoin","Toncoin" ] 
+  { "HD Wallet":     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
+                       "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
+					   "VeChain", "Dash", "ZCASH", "Bitcoin SV", "Firo" ],
+    "SWORD Wallet":  [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
+                       "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
+					   "VeChain", "Dash",  "ZCASH", "Bitcoin SV", "Firo" ],
+    "Simple Wallet": ["Bitcoin", "Ethereum", "Solana", "DogeCoin", "Avalanche", "LiteCoin", "Toncoin" ] 
   },
   "lang": "EN",
   "Wallet Save Path": "$CRYPTOCALC/_output"
