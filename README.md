@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.30
+## CryptoCalc 0.3.31
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,11 +6,11 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _seed phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 8114 times (even if there is also bots involved 
+   NB: Since its first release _CryptoCalc_ has been downloaded 8216 times (even if there is also bots involved 
    in downloads, it seems that there is between 100 and 150 frequent users).      
    
-   _Supported Blockchains_: _Bitcoin_, _Ethereum_, _Binance_, _Solana_, _Ripple_, _DogeCoin_,_Cardano_, _Stellar_,
-   _Toncoin_, _TRON_, _Avalanche_, _Bitcoin Cash_, _LiteCoin_, _Ethereum Classic_, _VeChain_, _Dash_ and _Firo_    
+   _Supported Blockchains_: _Bitcoin_, _Ethereum_, _Binance_, _Solana_, _Ripple_, _DogeCoin_,_Cardano_, _Stellar_, _Toncoin_,
+   _TRON_, _Avalanche_, _Bitcoin Cash_, _LiteCoin_, _Ethereum Classic_, _VeChain_, _Dash_, _Bitcoin SV_ and _Firo_    
    
    NB: _Binance_ support is for `BNB` on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see reference 5.3.4)    
    
@@ -52,42 +52,44 @@
           * Type `npm install`    
 
 3. Release notes
-	+ 3.1. Features in `0.3.30`
+	+ 3.1. Features in `0.3.31`
+	    * Added `BSV` cryptocurrency (_Bitcoin SV_) in _HD Wallet_ mode
+	+ 3.2. Features in `0.3.30`
 	    * Added `VET` cryptocurrency (_VeChain_) in _HD Wallet_ mode
-	+ 3.2. Features in `0.3.29`
+	+ 3.3. Features in `0.3.29`
 	    * Added `ETC` cryptocurrency (_Ethereum Classic_) in _HD Wallet_ mode
 		* Bug/Regression fixes:  
 			+ Regression: Changing 'Word Indexes' Base to Binary / Decimal was not working
 			+ Bug: Blockchain Explorer link for 'Bitcoin Cash' was KO
-	+ 3.3. Features in `0.3.28`
+	+ 3.4. Features in `0.3.28`
 	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
-	+ 3.4. Features in `0.3.27`
+	+ 3.5. Features in `0.3.27`
 	    * Added `TON` cryptocurrency (_Toncoin_ blockchain) but supported only in _Simple Wallet_ mode 
-	+ 3.5. Features in `0.3.26`
+	+ 3.6. Features in `0.3.26`
 	    * Added support of `BNB` cryptocurrency on _Binance Smart Chain_ Blockchain (see reference 5.3.4)
 	    * Bug fix: Error when setting 'Connection Status' icon while the DOM element is not yet created
-	+ 3.6. Features in `0.3.25`
+	+ 3.7. Features in `0.3.25`
 	    * Added support of `XLM` (_Stellar_)
-	+ 3.7. Features in `0.3.24`
+	+ 3.8. Features in `0.3.24`
 	    * Experimental support of _Latin_ for the _Seed phrase_
-    + 3.8. Features in `0.3.23`
+    + 3.9. Features in `0.3.23`
 	    * "Rollback" of _Cryptocalc_ rename to _cryptowallet_. In fact this was motivated by a better visibility
 		   on _SourceForge_ but _cryptowallet_ was rejected by SourceForge backend because it is a category. 
 		* Now using the latest release of _ElectronJS_ (37.2.1)  
-    + 3.9. Features in `0.3.21`
+    + 3.10. Features in `0.3.21`
 	    * Rename of _Cryptocalc_ (now deprecated) to _cryptowallet_
-	+ 3.10. Features in `0.3.19`
+	+ 3.11. Features in `0.3.19`
 	    * Added support of _Hindi_ for the _Seed phrase_	
-    + 3.11. Features in `0.3.18`
+    + 3.12. Features in `0.3.18`
 	    * Changed _HD Wallet_ mode so that it the _Derivation Path_ is `Hardened` by default 
 		  and mandatory (for _Security_ reason, see 5.2.3.	
         * HD Wallet: Augmentation of `account` and `address_index` digits from 4 to 9		  
 		* Fixed bug: useless twice loading of `index.html`
-    + 3.12. Features in `0.3.17`
+    + 3.13. Features in `0.3.17`
 	    * Added support of _Russian_ language. 
-    + 3.13. Features in `0.3.16`
+    + 3.14. Features in `0.3.16`
 	    * Changed license to 'BSD-3-Clause' and added support of _Esperanto_ language. 
-    + 3.14. Features in `0.3.15`
+    + 3.15. Features in `0.3.15`
 	    * Added feature 'Internet Connection status' (see 4.1.9) for securing _Offline wallet creation_
   
 4. _CryptoCalc_ User Guide  
@@ -95,7 +97,7 @@
 	or by downloading the `npm package` (see 2.2) then double clicking on `_run.bat`.
     + 4.1. Features 
         * 4.1.1. _Cryptocalc Standalone installer_    
-		    + 4.1.1.a: Downloadlc [CryptoCalc installer](https://sourceforge.net/projects/aladas-cryptocalc/files/latest/download)
+		    + 4.1.1.a: Downloadlc [CryptoCalc installer](https://sourceforge.net/projects/aladas-cryptocalc/)
 		    + 4.1.1.b. Default subfolder where _Wallet informations_ are saved:    
 	        `$DEFAULT_SETUP_FOLDER\resources\app\_output`: Notice that this folder won't be automatically deleted if you uninstall _CryptoCalc_	
 		* 4.1.2. Generate _Entropy_ from _Entropy Source_    
@@ -127,14 +129,16 @@
             * 4.1.3.c: When using [Generate], _Cryptocurrency logos_ are drawn 
 			from the `www/js/img/CryptoCurrency` folder and the first image 
 			is always our logo (`Zilver_64px.svg`).
-        * 4.1.4. Choose _Wallet_Mode_: _Simple Wallet_, _HD Wallet_ or _SWORD Wallet_ (choice is in the `Wallet` tab)  	
+        * 4.1.4. Choose _Wallet_Mode_: _Simple Wallet_, _HD Wallet_ or _SWORD Wallet_ (choice is in the `Wallet` tab page)  	
             * 4.1.4.a. _Simple Wallet_    
             This is the default _Wallet Mode_. In this mode, each wallet is separated. 
-			and there is no need to understand the principles of the _HD Wallet Wallet Tree_
-			and the purpose of the `Derivation Path` used by _HD Wallets_. So a  it's a good fit to 
+			(no need to understand the principles of the _HD Wallet Wallet Tree_
+			and the purpose of the `Derivation Path` used by _HD Wallets_). So a  it's a good fit to 
 			_Give it a Try_ and start creating your _Cryptocurrency Wallets_ with minimum knowledge.    
-			On the other hand it's less secure than _HD Wallets_ and it becomes clumsy if you need to manage 
-            multiple wallets (for example to secure your assets by splitting them among many wallets). 			
+			On the other hand it's less secure than _HD Wallets_ (especially if you use low security entropy
+			text like you firstname, city/birth year etc.... Indeed its will be vulnarable 
+			to [_dictionary attacks_](https://en.wikipedia.org/wiki/Dictionary_attack) )	
+			and it becomes clumsy if you need to split your assets between many wallets. 			
 			* 4.1.4.b. _HD Wallet_    
 			This _Wallet Mode_ allows to create / manage a whole hierarchy of Wallets (_HD_ is the acronym for 
 			_Hierarchical Deterministic_) in the same _BIP32 tree_.

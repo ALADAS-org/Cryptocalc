@@ -23,6 +23,8 @@ const TESTNET      = "testnet";
 const TESTNET_COIN = "Testnet";
 
 const BITCOIN      = "Bitcoin";
+const BITCOIN_CASH = "Bitcoin Cash";
+const BITCOIN_SV   = "Bitcoin SV";
 
 const ETHEREUM         = "Ethereum";
 const ETHEREUM_CLASSIC = "Ethereum Classic";
@@ -40,7 +42,7 @@ const ADA_PURPOSE  = "1852";
 const AVALANCHE    = "Avalanche";
 const DOGECOIN     = "DogeCoin";
 const TRON         = "TRON";
-const BITCOIN_CASH = "Bitcoin Cash";
+
 const POLKADOT     = "Polkadot";
 const POLYGON      = "Polygon";
 const LITECOIN     = "LiteCoin";
@@ -87,6 +89,7 @@ const COIN_ABBREVIATIONS = {
 	[DOGECOIN]        : "DOGE",
 	[TRON]            : "TRX",
 	[BITCOIN_CASH]    : "BCH",
+	[BITCOIN_SV]      : "BSV",
 	[POLKADOT]        : "DOT",
 	[POLYGON]         : "MATIC",
 	[LITECOIN]        : "LTC",
@@ -101,8 +104,6 @@ const COIN_ABBREVIATIONS = {
 	[EOS]             : "EOS",
 	[FIRO]            : "FIRO",
 	[ZCASH]           : "ZEC",	
-	// ------------ https://coinmarketcap.com/			
-	
 	[NAMECOIN]        : "NMC"	
 }; // COIN_ABBREVIATIONS
 
@@ -126,6 +127,7 @@ const COIN_TYPES = {
 	[STELLAR]    	  :  148,
 	[EOS]             :  194,
 	[TRON]            :  195,
+	[BITCOIN_SV]      :  236,
 	[ZILLIQA]         :  313,
 	[KUSAMA]          :  434,
 	[FILECOIN]        :  461,
@@ -152,6 +154,8 @@ const FAUCET_URLs = {
 	[TON]             : "Null-URL",
 	[AVALANCHE]       : "Null-URL",
 	[VECHAIN]		  : "Null-URL",
+	[BITCOIN_SV]	  : "Null-URL",
+	[NAMECOIN]        : "Null-URL",
 	[TRON]            : "Null-URL",
 	[DASH]            : "Null-URL",
 	[FIRO]            : "Null-URL",
@@ -177,10 +181,12 @@ const MAINNET_EXPLORER_URLs = {
 	[AVALANCHE]:         "https://snowtrace.io/address/",
 	[TRON]:              "https://tronscan.org/#/address/",
 	[BITCOIN_CASH]:      "https://www.blockchain.com/fr/explorer/addresses/bch/",
+	[BITCOIN_SV]:        "https://whatsonchain.com/address/",
 	[DASH]:              "https://explorer.dash.org/insight/address/",
 	[RIPPLE]:            "https://livenet.xrpl.org/accounts/",
 	[EOS]:               "Null-URL",
 	[VECHAIN]:           "https://explore.vechain.org/accounts/",
+	[NAMECOIN]:          "https://www.blockexplorer.com/namecoin/address/",
 	[FIRO]:              "https://explorer.firo.org/address/",
 	[ZCASH]:             "Null-URL",
 	[LITECOIN]:          "https://live.blockcypher.com/ltc/address/"
@@ -201,9 +207,11 @@ const TESTNET_EXPLORER_URLs = {
 	[AVALANCHE]:         "Null-URL",
     [TRON]:              "Null-URL",
 	[BITCOIN_CASH]:      "Null-URL",
+	[BITCOIN_SV]:        "Null-URL",
 	[DASH]:              "Null-URL",
 	[EOS]:               "Null-URL",
 	[VECHAIN]:           "Null-URL",
+	[NAMECOIN]:          "Null-URL",
 	[FIRO]:              "Null-URL",
 	[ZCASH]:             "Null-URL",
     [LITECOIN]:          "https://sochain.com/address/LTCTEST/%ADDRESS%"	
@@ -235,6 +243,7 @@ if (typeof exports === 'object') {
 	exports.DOGECOIN                 = DOGECOIN
 	exports.TRON                     = TRON
 	exports.BITCOIN_CASH             = BITCOIN_CASH
+	exports.BITCOIN_SV               = BITCOIN_SV
 	exports.POLKADOT                 = POLKADOT
     exports.POLYGON                  = POLYGON
 	exports.LITECOIN                 = LITECOIN

@@ -16,9 +16,10 @@ const { pretty_func_header_log,
 const { COIN, COIN_TYPE,
 	    ETHEREUM, ETHEREUM_CLASSIC, 
 		BITCOIN, DOGECOIN, LITECOIN, 
-		SOLANA, CARDANO, STELLAR, RIPPLE, 
+		SOLANA, CARDANO, STELLAR, RIPPLE, TON,
 		DASH, VECHAIN, FIRO, ZCASH, TRON, 
-		AVALANCHE, BINANCE_BSC, BITCOIN_CASH,   
+		AVALANCHE, BINANCE_BSC, 
+		BITCOIN_CASH, BITCOIN_SV,  
 		MAINNET,
 		COIN_ABBREVIATIONS
       }                    = require('../const_blockchains.js');
@@ -33,8 +34,7 @@ const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
         PASSWORD, ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
-	  }                    = require('../../const_keywords.js');
-	  
+	  }                    = require('../../const_keywords.js');	  
 	  
 const { hexWithoutPrefix,  
         uint8ArrayToHex, hexToUint8Array 
@@ -125,12 +125,13 @@ class HDWallet {
 		new_wallet[BLOCKCHAIN]  = blockchain;
 		new_wallet[MNEMONICS]   = mnemonics;
 				
-		if (   blockchain == ETHEREUM     || blockchain == ETHEREUM_CLASSIC 
-		    || blockchain == AVALANCHE    || blockchain == BINANCE_BSC
-		    || blockchain == BITCOIN      || blockchain == DOGECOIN  || blockchain == LITECOIN 
-            || blockchain == STELLAR      || blockchain == RIPPLE    || blockchain == TRON     
-            || blockchain == BITCOIN_CASH || blockchain == VECHAIN
-			|| blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {				
+		if (   blockchain == ETHEREUM  || blockchain == ETHEREUM_CLASSIC 
+		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
+		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
+            || blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON     
+            || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+			|| blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO
+			|| blockchain == ZCASH ) {				
 				
 			if ( blockchain	== AVALANCHE || blockchain == BINANCE_BSC ) { 
 				options[BLOCKCHAIN] = ETHEREUM

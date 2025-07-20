@@ -73,7 +73,9 @@
 //
 //          setSaveCmdState();
 //          setRefreshCmdState();
+//
 //          isBlockchainSupported();
+//
 // *        setEventHandler( elt_id, event_name, handler_function )//
 // *        openTabPage( pageName, elt, color )
 // *        setFocus( elt_id )
@@ -550,9 +552,9 @@ class RendererGUI {
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN
 			|| blockchain == CARDANO   || blockchain == SOLANA   
 			|| blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON 
-			|| blockchain == BITCOIN_CASH 
-			|| blockchain == DASH || blockchain == VECHAIN
-			|| blockchain == FIRO || blockchain == ZCASH) {
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+			|| blockchain == DASH      || blockchain == VECHAIN
+			|| blockchain == FIRO      || blockchain == ZCASH) {
 				
 			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
 
@@ -607,7 +609,7 @@ class RendererGUI {
 			}			
 
 			if (    blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN
-			     || blockchain == BITCOIN_CASH
+			     || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
                  || blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {
                 wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
                 trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
@@ -1383,7 +1385,8 @@ class RendererGUI {
 		if (      (   blockchain == BITCOIN 
 		           || blockchain == DOGECOIN || blockchain == LITECOIN  || blockchain == STELLAR
 		           || blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC
-				   || blockchain == RIPPLE   || blockchain == BITCOIN_CASH 
+				   || blockchain == RIPPLE   || blockchain == VECHAIN
+				   || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
 				   || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH  )
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
 			
@@ -2615,8 +2618,10 @@ class RendererGUI {
 		    || blockchain == BINANCE_BSC 
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
 		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
-		    || blockchain == RIPPLE   || blockchain == TRON      || blockchain == BITCOIN_CASH 
-		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO || blockchain == ZCASH ) {
+		    || blockchain == RIPPLE   || blockchain == TRON      
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO 
+			|| blockchain == ZCASH ) {
 			return true;	
 		} 
 		return false;

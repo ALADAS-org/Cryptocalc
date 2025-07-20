@@ -60,7 +60,7 @@
   57  	FIL 					Filecoin
   ...   ...						...
   67  	STX 					Stacks
-  97  	ZEC 			*		Zcash
+* 97  	ZEC 			*		Zcash
   100  	XTZ 					Tezos
   114  	BSV 			*		Bitcoin SV
   140  	XEC 					eCash  
