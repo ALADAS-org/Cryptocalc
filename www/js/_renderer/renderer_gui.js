@@ -447,7 +447,7 @@ class RendererGUI {
 		
 		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == TON
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN
-			|| blockchain == SOLANA ) { 
+			|| blockchain == SOLANA   || blockchain == TERRA_LUNA ) { 
 			
 			let crypto_net = MAINNET;
 			let data = { private_key, salt_uuid, blockchain, crypto_net }; // NB: take care of field names and order
@@ -609,7 +609,7 @@ class RendererGUI {
 			}			
 
 			if (    blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN
-			     || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+			     || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
                  || blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {
                 wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
                 trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
@@ -932,7 +932,7 @@ class RendererGUI {
 			HtmlUtils.ShowNode( SW_WORD_COUNT_ID );
 
 			HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
-			if ( blockchain == TON ) {				
+			if ( blockchain == TON || blockchain == TERRA_LUNA ) {				
 				HtmlUtils.HideNode(TR_SW_MNEMONICS_ID);
 			}
 			
@@ -945,7 +945,7 @@ class RendererGUI {
 			// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
 		    HtmlUtils.ShowNode( TR_1ST_PK_ID );	
 		}
-		else if ( wallet_mode == HD_WALLET_TYPE  || wallet_mode == SWORD_WALLET_TYPE ) {
+		else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
             HtmlUtils.ShowNode( PASSWORD_ROW_ID );
 			
 			HtmlUtils.ShowNode( ENTROPY_SIZE_SELECT_ID );
@@ -1026,7 +1026,7 @@ class RendererGUI {
 			else {
 				HtmlUtils.HideNode( TR_WIF_ID );
 			}
-		}
+		}			
 		// ------------------- WIF
 		
 		
@@ -1386,7 +1386,7 @@ class RendererGUI {
 		           || blockchain == DOGECOIN || blockchain == LITECOIN  || blockchain == STELLAR
 		           || blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 				   || blockchain == RIPPLE   || blockchain == VECHAIN
-				   || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+				   || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
 				   || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH  )
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
 			
@@ -2476,7 +2476,7 @@ class RendererGUI {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
 				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", crypto_info[PRIVATE_KEY] ) );
 			}	
-            else if ( blockchain == RIPPLE || blockchain == TON ) {
+            else if ( blockchain == RIPPLE || blockchain == TON || blockchain == TERRA_LUNA ) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[PRIV_KEY];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
@@ -2619,7 +2619,7 @@ class RendererGUI {
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
 		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
 		    || blockchain == RIPPLE   || blockchain == TRON      
-			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
 		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO 
 			|| blockchain == ZCASH ) {
 			return true;	

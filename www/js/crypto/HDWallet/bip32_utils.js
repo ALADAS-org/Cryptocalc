@@ -51,7 +51,7 @@ const { MAINNET, TESTNET,
 	    BITCOIN,  ETHEREUM, 
 		CARDANO,  STELLAR, RIPPLE, ZCASH,ETHEREUM_CLASSIC,
 		DOGECOIN, TRON, VECOIN,
-		BITCOIN_CASH, BITCOIN_SV,
+		BITCOIN_CASH, BITCOIN_SV, TERRA_LUNA,
 		LITECOIN, AVALANCHE, BINANCE_BSC, EOS, DASH, FIRO				
       }                    = require('../const_blockchains.js');
 	  
@@ -259,7 +259,8 @@ class Bip32Utils {
 		if ( password != "" ) {
 			passphrase = password;
 		    hdwallet_info[PASSWORD] = password;
-		}	
+		}
+        pretty_log( "b32.mnk2wi> coin", coin );		
 		let bip44 = HdAddGen.withMnemonic
 					( mnemonics,  passphrase, coin,    true,   44,  account );
 		//			( mnemonics,  passphrase, coin,    false,   44,  account );

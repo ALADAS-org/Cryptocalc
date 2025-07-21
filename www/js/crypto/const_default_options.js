@@ -20,14 +20,16 @@ const DEFAULT_OPTIONS = {
 	"Blockchains": { 
 		[HD_WALLET_TYPE]:     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Stellar",
                                 "Ripple", "DogeCoin", "Cardano", "TRON",
-					            "Avalanche", "Bitcoin Cash",
-								"LiteCoin", "Ethereum Classic", "Dash",  "VeChain", "Firo", "ZCASH" ], 
+					            "Avalanche", "Bitcoin Cash", 
+								"LiteCoin", "Ethereum Classic", 
+								"Bitcoin SV", "Dash",  "VeChain", "Firo", "ZCASH" ], 
 		[SWORD_WALLET_TYPE]:  [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Stellar",
 								"Ripple", "DogeCoin", "Cardano", "TRON",
 								"Avalanche", "Bitcoin Cash", 
-								"LiteCoin", "Ethereum Classic", "Dash", "VeChain", "Firo", "ZCASH" ], 
+								"LiteCoin", "Ethereum Classic", 
+								"Bitcoin SV", "Dash", "VeChain", "Firo", "ZCASH" ], 
 		[SIMPLE_WALLET_TYPE]: [ "Bitcoin", "Ethereum", "Solana",
-                                "DogeCoin", "Avalanche", "LiteCoin", "Toncoin"] 
+                                "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", "Terra" ] 
 	},
 	[LANG]: "EN",
 	[WALLET_SAVE_PATH]:"$CRYPTOWALLET/_output",

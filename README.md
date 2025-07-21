@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.31
+## CryptoCalc 0.3.32
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -9,10 +9,11 @@
    NB: Since its first release _CryptoCalc_ has been downloaded 8216 times (even if there is also bots involved 
    in downloads, it seems that there is between 100 and 150 frequent users).      
    
-   _Supported Blockchains_: _Bitcoin_, _Ethereum_, _Binance_, _Solana_, _Ripple_, _DogeCoin_,_Cardano_, _Stellar_, _Toncoin_,
-   _TRON_, _Avalanche_, _Bitcoin Cash_, _LiteCoin_, _Ethereum Classic_, _VeChain_, _Dash_, _Bitcoin SV_ and _Firo_    
+   _Supported Cryptocurrencies_: BTC, ETH, XRP, BNB, SOL, DOGE, TRX, ADA, XLM, BCH, AVAX, TON, 
+   LTC, ETC, VET, ZEC, BSV, DASH, LUNA and FIRO    
    
-   NB: _Binance_ support is for `BNB` on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see reference 5.3.4)    
+   + Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see reference 5.3.4)
+   + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`   
    
    _Supported Languages_: _English_, _French_, _Spanish_, _Italian_, _Latin_, _Esperanto_, _Czech_, 
    _Portuguese_, _Deutsch_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_, _Korean_, _Hindi_, _Russian_.    
@@ -52,44 +53,46 @@
           * Type `npm install`    
 
 3. Release notes
-	+ 3.1. Features in `0.3.31`
+	+ 3.1. Features in `0.3.32`
+	    * Added `LUNA` cryptocurrency (_Terra_, it's `LUNA 2.O` not `LUNA Classic`) in _Simple Wallet_ mode
+	+ 3.2. Features in `0.3.31`
 	    * Added `BSV` cryptocurrency (_Bitcoin SV_) in _HD Wallet_ mode
-	+ 3.2. Features in `0.3.30`
+	+ 3.3. Features in `0.3.30`
 	    * Added `VET` cryptocurrency (_VeChain_) in _HD Wallet_ mode
-	+ 3.3. Features in `0.3.29`
+	+ 3.4. Features in `0.3.29`
 	    * Added `ETC` cryptocurrency (_Ethereum Classic_) in _HD Wallet_ mode
 		* Bug/Regression fixes:  
 			+ Regression: Changing 'Word Indexes' Base to Binary / Decimal was not working
 			+ Bug: Blockchain Explorer link for 'Bitcoin Cash' was KO
-	+ 3.4. Features in `0.3.28`
+	+ 3.5. Features in `0.3.28`
 	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
-	+ 3.5. Features in `0.3.27`
+	+ 3.6. Features in `0.3.27`
 	    * Added `TON` cryptocurrency (_Toncoin_ blockchain) but supported only in _Simple Wallet_ mode 
-	+ 3.6. Features in `0.3.26`
+	+ 3.7. Features in `0.3.26`
 	    * Added support of `BNB` cryptocurrency on _Binance Smart Chain_ Blockchain (see reference 5.3.4)
 	    * Bug fix: Error when setting 'Connection Status' icon while the DOM element is not yet created
-	+ 3.7. Features in `0.3.25`
+	+ 3.8. Features in `0.3.25`
 	    * Added support of `XLM` (_Stellar_)
-	+ 3.8. Features in `0.3.24`
+	+ 3.9. Features in `0.3.24`
 	    * Experimental support of _Latin_ for the _Seed phrase_
-    + 3.9. Features in `0.3.23`
+    + 3.10. Features in `0.3.23`
 	    * "Rollback" of _Cryptocalc_ rename to _cryptowallet_. In fact this was motivated by a better visibility
 		   on _SourceForge_ but _cryptowallet_ was rejected by SourceForge backend because it is a category. 
 		* Now using the latest release of _ElectronJS_ (37.2.1)  
-    + 3.10. Features in `0.3.21`
+    + 3.11. Features in `0.3.21`
 	    * Rename of _Cryptocalc_ (now deprecated) to _cryptowallet_
-	+ 3.11. Features in `0.3.19`
+	+ 3.12. Features in `0.3.19`
 	    * Added support of _Hindi_ for the _Seed phrase_	
-    + 3.12. Features in `0.3.18`
+    + 3.13. Features in `0.3.18`
 	    * Changed _HD Wallet_ mode so that it the _Derivation Path_ is `Hardened` by default 
 		  and mandatory (for _Security_ reason, see 5.2.3.	
         * HD Wallet: Augmentation of `account` and `address_index` digits from 4 to 9		  
 		* Fixed bug: useless twice loading of `index.html`
-    + 3.13. Features in `0.3.17`
+    + 3.14. Features in `0.3.17`
 	    * Added support of _Russian_ language. 
-    + 3.14. Features in `0.3.16`
+    + 3.15. Features in `0.3.16`
 	    * Changed license to 'BSD-3-Clause' and added support of _Esperanto_ language. 
-    + 3.15. Features in `0.3.15`
+    + 3.16. Features in `0.3.15`
 	    * Added feature 'Internet Connection status' (see 4.1.9) for securing _Offline wallet creation_
   
 4. _CryptoCalc_ User Guide  
