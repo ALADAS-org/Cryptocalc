@@ -23,17 +23,21 @@ const TESTNET      = "testnet";
 const TESTNET_COIN = "Testnet";
 
 const BITCOIN      = "Bitcoin";
+
+const ETHEREUM     = "Ethereum";
+
+const SOLANA       = "Solana";
+const RIPPLE       = "Ripple";
+
 const BITCOIN_CASH = "Bitcoin Cash";
 const BITCOIN_SV   = "Bitcoin SV";
 
-const ETHEREUM         = "Ethereum";
+const TERRA_LUNA   = "Terra";
+
 const ETHEREUM_CLASSIC = "Ethereum Classic";
 
 const BINANCE_BSC  = "Binance Smart Chain";
 const TON          = "Toncoin";
-
-const SOLANA       = "Solana";
-const RIPPLE       = "Ripple";
 
 const CARDANO      = "Cardano";
 const STELLAR      = "Stellar";
@@ -100,6 +104,7 @@ const COIN_ABBREVIATIONS = {
 	[ZILLIQA]         : "ZIL",
 	[ZCASH]           : "ZEC",
 	[KUSAMA]          : "KSM",
+	[TERRA_LUNA]      : "LUNA",
 	[DASH]            : "DASH",
 	[EOS]             : "EOS",
 	[FIRO]            : "FIRO",
@@ -129,6 +134,7 @@ const COIN_TYPES = {
 	[TRON]            :  195,
 	[BITCOIN_SV]      :  236,
 	[ZILLIQA]         :  313,
+	[TERRA_LUNA]      :  330,
 	[KUSAMA]          :  434,
 	[FILECOIN]        :  461,
 	[SOLANA]          :  501,
@@ -155,6 +161,7 @@ const FAUCET_URLs = {
 	[AVALANCHE]       : "Null-URL",
 	[VECHAIN]		  : "Null-URL",
 	[BITCOIN_SV]	  : "Null-URL",
+	[TERRA_LUNA]      : "Null-URL",
 	[NAMECOIN]        : "Null-URL",
 	[TRON]            : "Null-URL",
 	[DASH]            : "Null-URL",
@@ -182,6 +189,7 @@ const MAINNET_EXPLORER_URLs = {
 	[TRON]:              "https://tronscan.org/#/address/",
 	[BITCOIN_CASH]:      "https://www.blockchain.com/fr/explorer/addresses/bch/",
 	[BITCOIN_SV]:        "https://whatsonchain.com/address/",
+	[TERRA_LUNA]:        "https://atomscan.com/terra2/accounts/",
 	[DASH]:              "https://explorer.dash.org/insight/address/",
 	[RIPPLE]:            "https://livenet.xrpl.org/accounts/",
 	[EOS]:               "Null-URL",
@@ -208,6 +216,7 @@ const TESTNET_EXPLORER_URLs = {
     [TRON]:              "Null-URL",
 	[BITCOIN_CASH]:      "Null-URL",
 	[BITCOIN_SV]:        "Null-URL",
+	[TERRA_LUNA]:        "Null-URL",
 	[DASH]:              "Null-URL",
 	[EOS]:               "Null-URL",
 	[VECHAIN]:           "Null-URL",
@@ -249,6 +258,7 @@ if (typeof exports === 'object') {
 	exports.LITECOIN                 = LITECOIN
 	
 	exports.VECHAIN                  = VECHAIN
+	exports.TERRA_LUNA 		         = TERRA_LUNA
 	
 	exports.FILECOIN                 = FILECOIN
 	exports.MONERO                   = MONERO
