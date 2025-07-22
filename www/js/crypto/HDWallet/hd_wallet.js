@@ -19,7 +19,7 @@ const { COIN, COIN_TYPE,
 		SOLANA, CARDANO, STELLAR, RIPPLE, TON,
 		DASH, VECHAIN, FIRO, ZCASH, TRON, 
 		AVALANCHE, BINANCE_BSC, 
-		BITCOIN_CASH, BITCOIN_SV, 
+		BITCOIN_CASH, BITCOIN_SV, RAVENCOIN,
 		MAINNET, COIN_ABBREVIATIONS
       }                    = require('../const_blockchains.js');
 	  
@@ -128,7 +128,7 @@ class HDWallet {
 		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
             || blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON     
-            || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+            || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == RAVENCOIN
 			|| blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO
 			|| blockchain == ZCASH ) {				
 				

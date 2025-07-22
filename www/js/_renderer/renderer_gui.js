@@ -552,7 +552,7 @@ class RendererGUI {
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN
 			|| blockchain == CARDANO   || blockchain == SOLANA   
 			|| blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON 
-			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == RAVENCOIN
 			|| blockchain == DASH      || blockchain == VECHAIN
 			|| blockchain == FIRO      || blockchain == ZCASH) {
 				
@@ -2619,7 +2619,8 @@ class RendererGUI {
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
 		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
 		    || blockchain == RIPPLE   || blockchain == TRON      
-			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
+			|| blockchain == TERRA_LUNA   || blockchain == RAVENCOIN
 		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO 
 			|| blockchain == ZCASH ) {
 			return true;	

@@ -66,7 +66,9 @@
    115	 RUNE	        *		THORChain
    140   XEC 					eCash 
 *  167   DASH           *  
+*  193   RVN 			*		Ravencoin
    254   KDA 					Kadena
+   283   ZEN 			*		Horizen
 *  317 	 LUNA 			*		Terra Luna
  
 x  904	 NAMECOIN       * 

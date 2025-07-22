@@ -33,6 +33,7 @@ const BITCOIN_CASH = "Bitcoin Cash";
 const BITCOIN_SV   = "Bitcoin SV";
 
 const TERRA_LUNA   = "Terra";
+const RAVENCOIN    = "Ravencoin";
 
 const ETHEREUM_CLASSIC = "Ethereum Classic";
 
@@ -105,6 +106,7 @@ const COIN_ABBREVIATIONS = {
 	[ZCASH]           : "ZEC",
 	[KUSAMA]          : "KSM",
 	[TERRA_LUNA]      : "LUNA",
+	[RAVENCOIN]       : "RVN",	
 	[DASH]            : "DASH",
 	[EOS]             : "EOS",
 	[FIRO]            : "FIRO",
@@ -130,6 +132,7 @@ const COIN_TYPES = {
 	[RIPPLE]          :  144,
 	[BITCOIN_CASH]    :  145,
 	[STELLAR]    	  :  148,
+	[RAVENCOIN]    	  :  175,
 	[EOS]             :  194,
 	[TRON]            :  195,
 	[BITCOIN_SV]      :  236,
@@ -162,6 +165,7 @@ const FAUCET_URLs = {
 	[VECHAIN]		  : "Null-URL",
 	[BITCOIN_SV]	  : "Null-URL",
 	[TERRA_LUNA]      : "Null-URL",
+	[RAVENCOIN]       : "Null-URL",
 	[NAMECOIN]        : "Null-URL",
 	[TRON]            : "Null-URL",
 	[DASH]            : "Null-URL",
@@ -190,6 +194,7 @@ const MAINNET_EXPLORER_URLs = {
 	[BITCOIN_CASH]:      "https://www.blockchain.com/fr/explorer/addresses/bch/",
 	[BITCOIN_SV]:        "https://whatsonchain.com/address/",
 	[TERRA_LUNA]:        "https://atomscan.com/terra2/accounts/",
+	[RAVENCOIN]:         "https://explorer.rvn.zelcore.io/address/",
 	[DASH]:              "https://explorer.dash.org/insight/address/",
 	[RIPPLE]:            "https://livenet.xrpl.org/accounts/",
 	[EOS]:               "Null-URL",
@@ -217,6 +222,7 @@ const TESTNET_EXPLORER_URLs = {
 	[BITCOIN_CASH]:      "Null-URL",
 	[BITCOIN_SV]:        "Null-URL",
 	[TERRA_LUNA]:        "Null-URL",
+	[RAVENCOIN]:         "Null-URL",
 	[DASH]:              "Null-URL",
 	[EOS]:               "Null-URL",
 	[VECHAIN]:           "Null-URL",
@@ -253,6 +259,7 @@ if (typeof exports === 'object') {
 	exports.TRON                     = TRON
 	exports.BITCOIN_CASH             = BITCOIN_CASH
 	exports.BITCOIN_SV               = BITCOIN_SV
+	exports.RAVENCOIN                = RAVENCOIN
 	exports.POLKADOT                 = POLKADOT
     exports.POLYGON                  = POLYGON
 	exports.LITECOIN                 = LITECOIN
