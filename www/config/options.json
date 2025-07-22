@@ -8,10 +8,10 @@
   "Blockchains": 
   { "HD Wallet":     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
                        "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
-					   "VeChain", "Dash", "ZCASH", "Bitcoin SV", "Ravencoin", "Firo" ],
+					   "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
     "SWORD Wallet":  [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
                        "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
-					   "VeChain", "Dash",  "ZCASH", "Bitcoin SV", "Ravencoin", "Firo" ],
+					   "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
     "Simple Wallet": ["Bitcoin", "Ethereum", "Solana", "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", "Terra" ] 
   },
   "lang": "EN",

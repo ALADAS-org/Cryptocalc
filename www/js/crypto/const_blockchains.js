@@ -110,7 +110,6 @@ const COIN_ABBREVIATIONS = {
 	[DASH]            : "DASH",
 	[EOS]             : "EOS",
 	[FIRO]            : "FIRO",
-	[ZCASH]           : "ZEC",	
 	[NAMECOIN]        : "NMC"	
 }; // COIN_ABBREVIATIONS
 

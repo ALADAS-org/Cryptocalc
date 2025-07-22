@@ -553,8 +553,7 @@ class RendererGUI {
 			|| blockchain == CARDANO   || blockchain == SOLANA   
 			|| blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON 
 			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == RAVENCOIN
-			|| blockchain == DASH      || blockchain == VECHAIN
-			|| blockchain == FIRO      || blockchain == ZCASH) {
+			|| blockchain == DASH      || blockchain == VECHAIN	|| blockchain == FIRO ) {
 				
 			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
 
@@ -610,7 +609,7 @@ class RendererGUI {
 
 			if (    blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN
 			     || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
-                 || blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {
+                 || blockchain == DASH || blockchain == FIRO ) {
                 wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
                 trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
 			}
@@ -1387,7 +1386,7 @@ class RendererGUI {
 		           || blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 				   || blockchain == RIPPLE   || blockchain == VECHAIN
 				   || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
-				   || blockchain == DASH     || blockchain == FIRO || blockchain == ZCASH  )
+				   || blockchain == DASH     || blockchain == FIRO )
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
 			
 			if (   blockchain == BITCOIN 
@@ -2488,7 +2487,7 @@ class RendererGUI {
 			}
 			else if (    blockchain == TRON 
 			          || blockchain == BITCOIN_CASH 
-					  || blockchain == DASH || blockchain == FIRO || blockchain == ZCASH ) {
+					  || blockchain == DASH || blockchain == FIRO ) {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
 			}            		
 		}
@@ -2621,8 +2620,7 @@ class RendererGUI {
 		    || blockchain == RIPPLE   || blockchain == TRON      
 			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
 			|| blockchain == TERRA_LUNA   || blockchain == RAVENCOIN
-		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO 
-			|| blockchain == ZCASH ) {
+		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO ) {
 			return true;	
 		} 
 		return false;
