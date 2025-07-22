@@ -17,7 +17,7 @@ const { COIN, COIN_TYPE,
 	    ETHEREUM, ETHEREUM_CLASSIC, 
 		BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA, CARDANO, STELLAR, RIPPLE, TON,
-		DASH, VECHAIN, FIRO, ZCASH, TRON, 
+		DASH, VECHAIN, FIRO, TRON, 
 		AVALANCHE, BINANCE_BSC, 
 		BITCOIN_CASH, BITCOIN_SV, RAVENCOIN,
 		MAINNET, COIN_ABBREVIATIONS
@@ -44,6 +44,45 @@ const { Bip32Utils }       = require('./bip32_utils.js');
 const { CardanoHD_API }    = require('./cardano_hd_api.js');
 const { SolanaHD_API }     = require('./solana_hd_api.js');
 
+const btcToZec = (btcAddress) => {
+    // Decode the BTC address
+    // const decoded = bs58check.decode(btcAddress);
+	const decoded = bs58.decode(btcAddress); 
+    
+    // Get the payload (without the BTC version byte)
+    const payload = decoded.slice(1);
+    
+    // Determine the ZEC version byte based on BTC address type
+    let zecVersion;
+    
+    // P2PKH (starts with '1')
+    if (btcAddress.startsWith('1')) {
+        zecVersion = 0x1cb8; // ZEC P2PKH version bytes
+    } 
+    // P2SH (starts with '3')
+    else if (btcAddress.startsWith('3')) {
+        zecVersion = 0x1cbd; // ZEC P2SH version bytes
+    } 
+    // Bech32 (starts with 'bc1') - not supported in ZEC
+    else if (btcAddress.startsWith('bc1')) {
+        throw new Error('Bech32 addresses cannot be converted to ZEC');
+    } else {
+        throw new Error('Unrecognized BTC address format');
+    }
+    
+    // Create a buffer with ZEC version bytes
+    // Note: ZEC uses 2-byte version prefixes
+    const versionBuffer = Buffer.alloc(2);
+    versionBuffer.writeUInt16BE(zecVersion, 0);
+    
+    // Combine the version and payload
+    const zecData = Buffer.concat([versionBuffer, payload]);
+    
+    // Encode to Base58Check
+	return bs58.encode(zecData);
+    // return bs58check.encode(zecData);
+}; // btcToZec()
+
 // https://runkit.com/gojomo/baddr2taddr
 /**
  * Converts a Bitcoin "Pay To Public Key Hash" (P2PKH) public 
@@ -54,7 +93,7 @@ const { SolanaHD_API }     = require('./solana_hd_api.js');
  * the Bitcoin address can be used to control funds associated
  * with the ZCash t-address. (This requires a ZCash wallet system 
  * which allows that private key to be imported. For example, 
- * zcashd with its `importprivkey` function.)
+ * zcashd with its `importprivkey` function)
  */
 const btc_addr_to_t_zcash_addr = ( btc_addr_str ) => {
     if ( ! btc_addr_str[0] == '1' ) throw new Error("not a supported Bitcoin address");
@@ -66,15 +105,15 @@ const btc_addr_to_t_zcash_addr = ( btc_addr_str ) => {
 	btc_addr = btc_addr.slice(1); // discard type byte
 	console.log("> btc_addr_to_t_zcash_addr:   B btc_addr: JSON " + JSON.stringify(btc_addr));
 	
-	//btc_addr = btc_addr.slice(2); // discard 2 bytes
-	//btc_addr = btc_addr.slice(2); // discard 2 bytes
+	// btc_addr = btc_addr.slice(2); // discard 2 bytes
+	// btc_addr = btc_addr.slice(2); // discard 2 bytes
 	btc_addr = btc_addr.slice(2,22); // discard 2 bytes
 	console.log("> btc_addr_to_t_zcash_addr:   C btc_addr: JSON " + JSON.stringify(btc_addr));
 	
     let zcash_t_addr = new Uint8Array(22);
 	console.log("> btc_addr_to_t_zcash_addr:   1  zcash_t_addr: " + JSON.stringify(zcash_t_addr));	
 		
-    //zcash_t_addr.set(btc_addr, 2);
+    // zcash_t_addr.set(btc_addr, 2);
 	zcash_t_addr.set(btc_addr,2);
 	console.log("> btc_addr_to_t_zcash_addr:   2  zcash_t_addr: " + JSON.stringify(zcash_t_addr));
     zcash_t_addr.set([0x1c,0xb8], 0);  // set zcash type bytes
@@ -129,25 +168,25 @@ class HDWallet {
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
             || blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON     
             || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == RAVENCOIN
-			|| blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO
-			|| blockchain == ZCASH ) {				
+			|| blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO ) {				
 				
 			if ( blockchain	== AVALANCHE || blockchain == BINANCE_BSC ) { 
 				options[BLOCKCHAIN] = ETHEREUM
 			}	
 			
-			let blockchain_was_ZCASH = false;
-			if (blockchain == ZCASH) { 
-				options[BLOCKCHAIN] = BITCOIN;
-				blockchain_was_ZCASH = true;
-			}	
+			//let blockchain_was_ZCASH = false;
+			//if (blockchain == ZCASH) { 
+			//	options[BLOCKCHAIN] = BITCOIN;
+			//	blockchain_was_ZCASH = true;
+			//}	
 			let hdwallet_info = await Bip32Utils.MnemonicsToHDWalletInfo( mnemonics, options );	
             //console.log("   >> hdwallet_info:\n" + JSON.stringify(hdwallet_info));	
 
             new_wallet[ADDRESS] = hdwallet_info[ADDRESS]; 
-            if ( blockchain_was_ZCASH ) {
-				new_wallet[ADDRESS] = btc_addr_to_t_zcash_addr(hdwallet_info[ADDRESS]);
-			}
+            //if ( blockchain_was_ZCASH ) {
+			//	// new_wallet[ADDRESS] = btc_addr_to_t_zcash_addr(hdwallet_info[ADDRESS]);
+			//	new_wallet[ADDRESS] = btcToZec(hdwallet_info[ADDRESS]);
+			//}
 			
 			pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);
 			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);				
