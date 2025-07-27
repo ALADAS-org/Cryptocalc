@@ -1,76 +1,76 @@
 -------+------+-------+-------+--------------+
   Rank | Coin | !Eth  | HD ok |  Blockchain  |
 -------+------+-------+-------+--------------+
-*    1 	 BTC	  *		  *  	Bitcoin
-*    2 	 ETH			  *		Ethereum	
-*    3 	 XRP	  *		  *		XRP
-     4   USDT					Tether      
-*    5 	 BNB					BNB 		NB: sur 'Binance Smart Chain'
-*    6   SOL	  *				Solana
-     7 	 USDC					USDC
-*    8   DOGE 	  *		  *		Dogecoin
-*    9 	 TRX 	  *		  *		TRON
-*   10	 ADA	  *				Cardano
-    11	 HYPE 					Hyperliquid
-*   12	 XLM 	  *		  *		Stellar
-    13	 SUI 					Sui
-    14	 LINK 					Chainlink
-    15	 HBAR 	  *				Hedera
-*   16	 BCH 	  *		  *		Bitcoin Cash
-*   17	 AVAX 	  *				Avalanche 
-    18	 SHIB 					Shiba Inu
-    19	 LEO 					UNUS SED LEO
-*   20	 TON 	  *				Toncoin
-*   21	 LTC 	  *		  *		Litecoin
-    22	 DOT 	  *				Polkadot
-    23	 XMR 	  *				Monero
-    24	 PEPE 					Pepe
-    25	 UNI 					Uniswap
-    26   BGB  					Bitget Token
-    27	 DAI 					Dai
-    28	 USDe 					Ethena USDe 
-    29	 AAVE 					Aave
-    30	 TAO 					Bittensor
-    31	 APT 	  *				Aptos
-    32	 NEAR 	  *				NEAR Protocol  
-    33	 PI 					Pi
-    34	 CRO 					Cronos   
-    35	 ONDO 					Ondo
-*   36	 ETC 			 *		Ethereum Classic
-    37   BONK 					Bonk  
-    38	 ICP 	  *				Internet Computer
-    39	 OKB 					OKB  
-    40 	 ALGO 	  *				Algorand
-    41 	 MNT 					Mantle  
-    42	 POL 					POL (prev. MATIC) 
-    43   KAS 					Kaspa
-    44 	 ENA 					Ethena
-    45 	 ARB 					Arbitrum  
-    46   USD1 					World Liberty Financial USD  
-*   47   VET 	  *	     *		VeChain  
-    48   PUMP 					Pump.fun 
-    49   SEI 					Sei  
-    50 	 RENDER 				Render
-    51 	 PENGU 					Pudgy Penguins
-    52   TRUMP 					OFFICIAL TRUMP
-    53   WLD 					Worldcoin  
-    54   GT 					GateToken
-    55   ATOM			*		Cosmos
-    56   FET					Artificial Superintelligence Alliance
-    57 	 FIL 					Filecoin
-   ...   ...					...
-    67   STX 					Stacks
-    97 	 ZEC 			*		Zcash
-   100   XTZ 					Tezos
-*  114   BSV 			*		Bitcoin SV
-   115	 RUNE	        *		THORChain
-   140   XEC 					eCash 
+*    1 	 BTC	  *		  *  	 Bitcoin
+*    2 	 ETH			  *		 Ethereum	
+*    3 	 XRP	  *		  *		 XRP
+     4   USDT					 Tether      
+*    5 	 BNB			 		 BNB 		NB: sur 'Binance Smart Chain'
+*    6   SOL	  *		   		 Solana
+     7 	 USDC			 		 USDC
+*    8   DOGE 	  *		  *		 Dogecoin
+*    9 	 TRX 	  *		  *		 TRON
+*   10	 ADA	  *				 Cardano
+    11	 HYPE 					 Hyperliquid
+*   12	 XLM 	  *		  *		 Stellar
+    13	 SUI 					 Sui
+    14	 LINK 					 Chainlink
+    15	 HBAR 	  *				 Hedera
+*   16	 BCH 	  *		  *		 Bitcoin Cash
+*   17	 AVAX 	  *				 Avalanche 
+    18	 SHIB 			 		 Shiba Inu
+    19	 LEO 					 UNUS SED LEO
+*   20	 TON 	  *				 Toncoin
+*   21	 LTC 	  *		  *		 Litecoin
+    22	 DOT 	  *				 Polkadot
+    23	 XMR 	  *				 Monero
+    24	 PEPE 					 Pepe
+    25	 UNI 					 Uniswap
+    26   BGB  					 Bitget Token
+    27	 DAI 					 Dai
+    28	 USDe 					 Ethena USDe 
+    29	 AAVE 					 Aave
+    30	 TAO 					 Bittensor
+    31	 APT 	  *				 Aptos
+    32	 NEAR 	  *				 NEAR Protocol  
+    33	 PI 					 Pi
+    34	 CRO 					 Cronos   
+    35	 ONDO 					 Ondo
+*   36	 ETC 			 *		 Ethereum Classic
+    37   BONK 					 Bonk  
+    38	 ICP 	  *				 Internet Computer
+    39	 OKB 					 OKB  
+    40 	 ALGO 	  *				 Algorand
+    41 	 MNT 					 Mantle  
+    42	 POL 					 POL (prev. MATIC) 
+    43   KAS 					 Kaspa
+    44 	 ENA 					 Ethena
+    45 	 ARB 					 Arbitrum  
+    46   USD1 					 World Liberty Financial USD  
+*   47   VET 	  *	     *		 VeChain  
+    48   PUMP 					 Pump.fun 
+    49   SEI 					 Sei  
+    50 	 RENDER 				 Render
+    51 	 PENGU 					 Pudgy Penguins
+    52   TRUMP 					 OFFICIAL TRUMP
+    53   WLD 					 Worldcoin  
+    54   GT 					 GateToken
+    55   ATOM			*		 Cosmos
+    56   FET					 Artificial Superintelligence Alliance
+    57 	 FIL 					 Filecoin
+   ...   ...					 ...
+    67   STX 					 Stacks
+    97 	 ZEC 			*		 Zcash
+   100   XTZ 					 Tezos
+*  114   BSV 			*		 Bitcoin SV
+   115	 RUNE	        *		 THORChain
+   140   XEC 					 eCash 
 *  167   DASH           *  
-*  193   RVN 			*		Ravencoin
-   254   KDA 					Kadena
-   283   ZEN 			*		Horizen
-*  317 	 LUNA 			*		Terra Luna
+*  193   RVN 			*		 Ravencoin
+   254   KDA 					 Kadena
+   283   ZEN 			*		 Horizen
+*  317 	 LUNA 			*		 Terra Luna
  
 x  904	 NAMECOIN       * 
 * 1050	 FIRO           *
-  1361	 VTC	       	*		Vertcoin
+  1361	 VTC	       	*		 Vertcoin

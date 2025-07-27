@@ -29,7 +29,7 @@ const DEFAULT_OPTIONS = {
 								"LiteCoin", "Ethereum Classic", 
 								"Bitcoin SV", "Dash", "VeChain", "Ravencoin", "Firo" ], 
 		[SIMPLE_WALLET_TYPE]: [ "Bitcoin", "Ethereum", "Solana",
-                                "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", "Terra" ] 
+                                "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", "Horizen", "Terra" ] 
 	},
 	[LANG]: "EN",
 	[WALLET_SAVE_PATH]:"$CRYPTOWALLET/_output",

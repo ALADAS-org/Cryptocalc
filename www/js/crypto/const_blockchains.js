@@ -32,9 +32,6 @@ const RIPPLE       = "Ripple";
 const BITCOIN_CASH = "Bitcoin Cash";
 const BITCOIN_SV   = "Bitcoin SV";
 
-const TERRA_LUNA   = "Terra";
-const RAVENCOIN    = "Ravencoin";
-
 const ETHEREUM_CLASSIC = "Ethereum Classic";
 
 const BINANCE_BSC  = "Binance Smart Chain";
@@ -52,11 +49,8 @@ const POLKADOT     = "Polkadot";
 const POLYGON      = "Polygon";
 const LITECOIN     = "LiteCoin";
 
-const VECHAIN      = "VeChain";
-
 const FILECOIN     = "Filecoin";
 const EOS          = "EOS";
-const FIRO         = "Firo";
 
 // Monero mnemonic library (https://github.com/pywallet-cli/bip-utils)
 // If you use the official Monero wallet, you'll probably notice that Monero generates 
@@ -67,12 +61,18 @@ const MONERO       = "Monero";
 
 const TEZOS        = "Tezos";
 
+const VECHAIN      = "VeChain";
+const HORIZEN      = "Horizen";
 const DASH         = "Dash";
+const TERRA_LUNA   = "Terra";
+const RAVENCOIN    = "Ravencoin";
+const ZCASH        = "ZCASH";
+const FIRO         = "Firo";
+
 const ZILLIQA      = "Zilliqa";
 const KUSAMA       = "Kusama";
-const ZCASH        = "ZCASH";
 
-const NAMECOIN     = "Namecoin";
+const NAMECOIN     = "Namecoin";  // Dead project
 
 // NB: [NULL_COIN] syntax means NULL_COIN const is interpreted as its value ("None")
 //     else it would be interpreted as the const name "NULL_COIN" 8((
@@ -99,6 +99,7 @@ const COIN_ABBREVIATIONS = {
 	[POLYGON]         : "MATIC",
 	[LITECOIN]        : "LTC",
 	[VECHAIN]         : "VET",
+	[HORIZEN]         : "ZEN",
     [FILECOIN]        : "FIL",	
 	[MONERO]          : "XMR",	
 	[TEZOS]           : "XTZ",	
@@ -110,7 +111,8 @@ const COIN_ABBREVIATIONS = {
 	[DASH]            : "DASH",
 	[EOS]             : "EOS",
 	[FIRO]            : "FIRO",
-	[NAMECOIN]        : "NMC"	
+	
+	[NAMECOIN]        : "NMC"   // Deas project	
 }; // COIN_ABBREVIATIONS
 
 // coin_types:
@@ -125,6 +127,7 @@ const COIN_TYPES = {
 	[NAMECOIN]        :    7,
 	[ETHEREUM]        :   60,
 	[ETHEREUM_CLASSIC]:   61,
+	[HORIZEN]         :  121, 
 	[MONERO]          :  128,
 	[ZCASH]           :  133,
 	[FIRO]            :  136,
@@ -165,6 +168,7 @@ const FAUCET_URLs = {
 	[BITCOIN_SV]	  : "Null-URL",
 	[TERRA_LUNA]      : "Null-URL",
 	[RAVENCOIN]       : "Null-URL",
+	[HORIZEN]         : "Null-URL",
 	[NAMECOIN]        : "Null-URL",
 	[TRON]            : "Null-URL",
 	[DASH]            : "Null-URL",
@@ -194,6 +198,7 @@ const MAINNET_EXPLORER_URLs = {
 	[BITCOIN_SV]:        "https://whatsonchain.com/address/",
 	[TERRA_LUNA]:        "https://atomscan.com/terra2/accounts/",
 	[RAVENCOIN]:         "https://explorer.rvn.zelcore.io/address/",
+	[HORIZEN]:           "https://explorer.horizen.io/address/",
 	[DASH]:              "https://explorer.dash.org/insight/address/",
 	[RIPPLE]:            "https://livenet.xrpl.org/accounts/",
 	[EOS]:               "Null-URL",
@@ -222,6 +227,7 @@ const TESTNET_EXPLORER_URLs = {
 	[BITCOIN_SV]:        "Null-URL",
 	[TERRA_LUNA]:        "Null-URL",
 	[RAVENCOIN]:         "Null-URL",
+	[HORIZEN]:           "Null-URL",
 	[DASH]:              "Null-URL",
 	[EOS]:               "Null-URL",
 	[VECHAIN]:           "Null-URL",
@@ -257,27 +263,31 @@ if (typeof exports === 'object') {
 	exports.DOGECOIN                 = DOGECOIN
 	exports.TRON                     = TRON
 	exports.BITCOIN_CASH             = BITCOIN_CASH
-	exports.BITCOIN_SV               = BITCOIN_SV
-	exports.RAVENCOIN                = RAVENCOIN
+
 	exports.POLKADOT                 = POLKADOT
     exports.POLYGON                  = POLYGON
-	exports.LITECOIN                 = LITECOIN
+	exports.LITECOIN                 = LITECOIN	
 	
-	exports.VECHAIN                  = VECHAIN
-	exports.TERRA_LUNA 		         = TERRA_LUNA
-	
-	exports.FILECOIN                 = FILECOIN
 	exports.MONERO                   = MONERO
 	exports.TEZOS                    = TEZOS
 	exports.ZILLIQA                  = ZILLIQA
-	exports.KUSAMA                   = KUSAMA
-	exports.DASH                     = DASH
+	exports.KUSAMA                   = KUSAMA	
 	exports.EOS                      = EOS
-	exports.FIRO                     = FIRO
 	
-	exports.ZCASH                    = ZCASH
+	exports.VECHAIN                  = VECHAIN
+	exports.TERRA_LUNA 		         = TERRA_LUNA	
+	exports.BITCOIN_SV               = BITCOIN_SV
+	exports.RAVENCOIN                = RAVENCOIN
+	exports.HORIZEN                  = HORIZEN
+	exports.DASH                     = DASH
+	exports.FILECOIN                 = FILECOIN
 	
-	exports.NAMECOIN                 = NAMECOIN
+	exports.ZCASH                    = ZCASH  	// Not supported ATM
+	
+	exports.FIRO                     = FIRO	
+	
+	exports.NAMECOIN                 = NAMECOIN // Dead project
+	
 	
 	exports.MAINNET                  = MAINNET
 	exports.TESTNET                  = TESTNET

@@ -8,10 +8,10 @@ const bs58check  = require('bs58check');
 const bs58       = require('bs58');
 
 const { _RED_, _CYAN_, _PURPLE_, 
-        _YELLOW_, _END_ }  = require('../../util/color/color_console_codes.js');
+        _YELLOW_, _END_ } = require('../../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log,
-        pretty_log }       = require('../../util/log/log_utils.js');
+        pretty_log }      = require('../../util/log/log_utils.js');
 		
 const { COIN, COIN_TYPE,
 	    ETHEREUM, ETHEREUM_CLASSIC, 
@@ -19,30 +19,30 @@ const { COIN, COIN_TYPE,
 		SOLANA, CARDANO, STELLAR, RIPPLE, TON,
 		DASH, VECHAIN, FIRO, TRON, 
 		AVALANCHE, BINANCE_BSC, 
-		BITCOIN_CASH, BITCOIN_SV, RAVENCOIN,
+		BITCOIN_CASH, BITCOIN_SV, RAVENCOIN, HORIZEN,
 		MAINNET, COIN_ABBREVIATIONS
-      }                    = require('../const_blockchains.js');
+      }                   = require('../const_blockchains.js');
 	  
 const { NULL_HEX, CRYPTO_NET, 
         ADDRESS, 
 		PRIVATE_KEY, PUBLIC_KEY_HEX,
 		PRIV_KEY
-	  }                    = require('../const_wallet.js');
+	  }                   = require('../const_wallet.js');
 	  
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
         PASSWORD, ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
-	  }                    = require('../../const_keywords.js');	  
+	  }                   = require('../../const_keywords.js');	  
 	  
 const { hexWithoutPrefix,  
         uint8ArrayToHex, hexToUint8Array 
-	  }                    = require('../hex_utils.js');
+	  }                   = require('../hex_utils.js');
 
-const { Bip39Utils }       = require('../bip39_utils.js');
-const { Bip32Utils }       = require('./bip32_utils.js');
-const { CardanoHD_API }    = require('./cardano_hd_api.js');
-const { SolanaHD_API }     = require('./solana_hd_api.js');
+const { Bip39Utils }      = require('../bip39_utils.js');
+const { Bip32Utils }      = require('./bip32_utils.js');
+const { CardanoHD_API }   = require('./cardano_hd_api.js');
+const { SolanaHD_API }    = require('./solana_hd_api.js');
 
 const btcToZec = (btcAddress) => {
     // Decode the BTC address
@@ -105,8 +105,7 @@ const btc_addr_to_t_zcash_addr = ( btc_addr_str ) => {
 	btc_addr = btc_addr.slice(1); // discard type byte
 	console.log("> btc_addr_to_t_zcash_addr:   B btc_addr: JSON " + JSON.stringify(btc_addr));
 	
-	// btc_addr = btc_addr.slice(2); // discard 2 bytes
-	// btc_addr = btc_addr.slice(2); // discard 2 bytes
+		// btc_addr = btc_addr.slice(2); // discard 2 bytes
 	btc_addr = btc_addr.slice(2,22); // discard 2 bytes
 	console.log("> btc_addr_to_t_zcash_addr:   C btc_addr: JSON " + JSON.stringify(btc_addr));
 	
@@ -148,8 +147,8 @@ class HDWallet {
 		
 		pretty_log( "hdw.gw> blockchain",    blockchain );
 		
-		//pretty_log( "hdw.gw> account",       account );
-		//pretty_log( "hdw.gw> address_index", address_index );
+		// pretty_log( "hdw.gw> account",       account );
+		// pretty_log( "hdw.gw> address_index", address_index );
 		
 		let options = { [BLOCKCHAIN]:    blockchain, 
 		                [PASSWORD]:      password,
@@ -167,29 +166,30 @@ class HDWallet {
 		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
             || blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON     
-            || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == RAVENCOIN
+            || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
+			|| blockchain == RAVENCOIN 
 			|| blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO ) {				
 				
 			if ( blockchain	== AVALANCHE || blockchain == BINANCE_BSC ) { 
 				options[BLOCKCHAIN] = ETHEREUM
 			}	
 			
-			//let blockchain_was_ZCASH = false;
-			//if (blockchain == ZCASH) { 
-			//	options[BLOCKCHAIN] = BITCOIN;
-			//	blockchain_was_ZCASH = true;
-			//}	
+			// let blockchain_was_ZCASH = false;
+			// if (blockchain == ZCASH) { 
+			//	 options[BLOCKCHAIN] = BITCOIN;
+			//	 blockchain_was_ZCASH = true;
+			// }	
 			let hdwallet_info = await Bip32Utils.MnemonicsToHDWalletInfo( mnemonics, options );	
             //console.log("   >> hdwallet_info:\n" + JSON.stringify(hdwallet_info));	
 
             new_wallet[ADDRESS] = hdwallet_info[ADDRESS]; 
-            //if ( blockchain_was_ZCASH ) {
-			//	// new_wallet[ADDRESS] = btc_addr_to_t_zcash_addr(hdwallet_info[ADDRESS]);
-			//	new_wallet[ADDRESS] = btcToZec(hdwallet_info[ADDRESS]);
-			//}
+            // if ( blockchain_was_ZCASH ) {
+			//	 // new_wallet[ADDRESS] = btc_addr_to_t_zcash_addr(hdwallet_info[ADDRESS]);
+			//	 new_wallet[ADDRESS] = btcToZec(hdwallet_info[ADDRESS]);
+			// }
 			
 			pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);
-			//pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);				
+			// pretty_log("hdw.gw> wallet address", new_wallet[ADDRESS]);				
 
 			new_wallet[COIN]      = hdwallet_info[COIN];
 			new_wallet[COIN_TYPE] = hdwallet_info[COIN_TYPE];
@@ -200,7 +200,7 @@ class HDWallet {
 			
 			new_wallet[PRIVATE_KEY]     = hdwallet_info[PRIVATE_KEY]; 
 			new_wallet[DERIVATION_PATH] = hdwallet_info[DERIVATION_PATH];
-			//pretty_log("hdw.gw> derivation_path", new_wallet[DERIVATION_PATH]);
+			// pretty_log("hdw.gw> derivation_path", new_wallet[DERIVATION_PATH]);
 			
 			new_wallet[WIF]             = hdwallet_info[WIF];
 			pretty_log("hdw.gw> WIF", new_wallet[WIF]);

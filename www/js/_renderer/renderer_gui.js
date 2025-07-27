@@ -445,9 +445,9 @@ class RendererGUI {
 			 throw new Error("RendererGUI.generateSimpleWalletAddress 'private_key' NOT DEFINED");
 		}
 		
-		if (   blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == TON
-		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN
-			|| blockchain == SOLANA   || blockchain == TERRA_LUNA ) { 
+		if (   blockchain == ETHEREUM || blockchain == AVALANCHE  || blockchain == TON
+		    || blockchain == BITCOIN  || blockchain == DOGECOIN   || blockchain == LITECOIN
+			|| blockchain == SOLANA   || blockchain == TERRA_LUNA || blockchain == HORIZEN ) { 
 			
 			let crypto_net = MAINNET;
 			let data = { private_key, salt_uuid, blockchain, crypto_net }; // NB: take care of field names and order
@@ -552,7 +552,8 @@ class RendererGUI {
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN
 			|| blockchain == CARDANO   || blockchain == SOLANA   
 			|| blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON 
-			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == RAVENCOIN
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
+			|| blockchain == RAVENCOIN || blockchain == HORIZEN 
 			|| blockchain == DASH      || blockchain == VECHAIN	|| blockchain == FIRO ) {
 				
 			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
@@ -931,7 +932,7 @@ class RendererGUI {
 			HtmlUtils.ShowNode( SW_WORD_COUNT_ID );
 
 			HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
-			if ( blockchain == TON || blockchain == TERRA_LUNA ) {				
+			if ( blockchain == TON || blockchain == TERRA_LUNA || blockchain == HORIZEN ) {				
 				HtmlUtils.HideNode(TR_SW_MNEMONICS_ID);
 			}
 			
@@ -1025,7 +1026,11 @@ class RendererGUI {
 			else {
 				HtmlUtils.HideNode( TR_WIF_ID );
 			}
-		}			
+		}
+
+		if ( wallet_mode == SIMPLE_WALLET_TYPE && blockchain == HORIZEN ) {				
+			HtmlUtils.ShowNode( TR_WIF_ID );
+		}		
 		// ------------------- WIF
 		
 		
@@ -2619,7 +2624,7 @@ class RendererGUI {
 		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
 		    || blockchain == RIPPLE   || blockchain == TRON      
 			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
-			|| blockchain == TERRA_LUNA   || blockchain == RAVENCOIN
+			|| blockchain == TERRA_LUNA   || blockchain == RAVENCOIN || blockchain == HORIZEN
 		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO ) {
 			return true;	
 		} 
