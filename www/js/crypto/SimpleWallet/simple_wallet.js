@@ -51,7 +51,7 @@ const { COIN,
 	    ETHEREUM, 
 		BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA,  
-		AVALANCHE, TON, TERRA_LUNA,
+		AVALANCHE, TON, TERRA_LUNA, HORIZEN,
 		COIN_ABBREVIATIONS,
 		BLOCKCHAIN
       }                    = require('../const_blockchains.js');
@@ -78,6 +78,7 @@ const { Ethereum_API }     = require('./ethereum_api.js');
 const { SolanaSW_API }     = require('./solana_sw_api.js');
 const { TON_API }          = require('./ton_sw_api.js');
 const { LUNA_API }         = require('./luna_sw_api.js');
+const { Zen_SW_API }       = require('./zen_sw_api.js');
 
 class SimpleWallet {	
     static async GetWallet( private_key, salt_uuid, blockchain, crypto_net ) {
@@ -122,6 +123,9 @@ class SimpleWallet {
 		}
 		else if ( blockchain == TON ) {		
 			new_wallet = TON_API.GetWallet( private_key, salt_uuid );
+		}
+		else if ( blockchain == HORIZEN ) {		
+			new_wallet = Zen_SW_API.GetWallet( private_key, salt_uuid );
 		}
 		else if ( blockchain == TERRA_LUNA ) {		
 			new_wallet = LUNA_API.GetWallet( private_key, salt_uuid );

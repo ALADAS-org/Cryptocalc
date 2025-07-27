@@ -51,7 +51,7 @@ const { MAINNET, TESTNET,
 	    BITCOIN,  ETHEREUM, 
 		CARDANO,  STELLAR, RIPPLE, ETHEREUM_CLASSIC,
 		DOGECOIN, TRON, VECOIN,
-		BITCOIN_CASH, BITCOIN_SV, TERRA_LUNA, RAVENCOIN,
+		BITCOIN_CASH, BITCOIN_SV, TERRA_LUNA, RAVENCOIN, HORIZEN,
 		LITECOIN, AVALANCHE, BINANCE_BSC, EOS, DASH, FIRO				
       }                    = require('../const_blockchains.js');
 	  
@@ -260,9 +260,10 @@ class Bip32Utils {
 			passphrase = password;
 		    hdwallet_info[PASSWORD] = password;
 		}
-        pretty_log( "b32.mnk2wi> coin", coin );		
+        pretty_log( "b32.mnk2wi> coin", coin );	
+		
 		let bip44 = HdAddGen.withMnemonic
-					( mnemonics,  passphrase, coin,    true,   44,  account );
+					( mnemonics,  passphrase, coin,    true,    44,  account );
 		//			( mnemonics,  passphrase, coin,    false,   44,  account );
         //                        passphrase          hardened  bip  account        
 		//*** BIP44 *********************************************************
@@ -270,8 +271,14 @@ class Bip32Utils {
 		// Generates 'expected_address_count' addresse from index 'address_index'
 		let expected_address_count = 1;
 		
-		console.log("   address_index: <" + address_index + ">");
+		console.log("   address_index: <" + address_index + "> " + typeof address_index);
 		address_index = address_index.replaceAll("'","");
+		
+		// if ( blockchain == HORIZEN && typeof address_index == "string" ) {
+		// 	address_index = parseInt(address_index);
+		// 	console.log("   address_index 2: <" + address_index + "> " + typeof address_index);
+		// }
+		
 		let addresses = await bip44.generate( expected_address_count, address_index );
 		
 		hdwallet_info[ADDRESS] = addresses[0].address;
@@ -282,9 +289,9 @@ class Bip32Utils {
 		
 		let child_private_key = hexWithoutPrefix( addresses[0]["privKey"] );
 					 
-		//if ( blockchain == BITCOIN_CASH ) {
-		//	hdwallet_info[PRIV_KEY] = child_private_key;
-		//}
+		// if ( blockchain == BITCOIN_CASH ) {
+		//	 hdwallet_info[PRIV_KEY] = child_private_key;
+		// }
 		if ( ! isHexString( child_private_key ) ) { 
 			if ( isBase58String( child_private_key ) ) {
 				hdwallet_info[PRIV_KEY] = child_private_key;
