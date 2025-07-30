@@ -38,8 +38,10 @@ const BINANCE_BSC  = "Binance Smart Chain";
 const TON          = "Toncoin";
 
 const CARDANO      = "Cardano";
-const STELLAR      = "Stellar";
 const ADA_PURPOSE  = "1852";
+
+const STELLAR      = "Stellar";
+const SUI          = "Sui";
 
 const AVALANCHE    = "Avalanche";
 const DOGECOIN     = "DogeCoin";
@@ -90,6 +92,7 @@ const COIN_ABBREVIATIONS = {
 	[RIPPLE]          : "XRP",
 	[CARDANO]         : "ADA",
 	[STELLAR]         : "XLM",
+	[SUI]             : "SUI",
 	[AVALANCHE]       : "AVAX",	
 	[DOGECOIN]        : "DOGE",
 	[TRON]            : "TRX",
@@ -145,6 +148,7 @@ const COIN_TYPES = {
 	[SOLANA]          :  501,
 	[TON]             :  607,	
 	[BINANCE_BSC]     :  714,
+	[SUI]             :  784,
 	[VECHAIN]	      :  818,
 	[POLYGON]         :  966,	
 	[TEZOS]           : 1729,
@@ -160,6 +164,7 @@ const FAUCET_URLs = {
 	[SOLANA]          : "https://solfaucet.com/",
 	[CARDANO]         : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
 	[STELLAR]         : "Null-URL",
+	[SUI]             : "Null-URL",
 	[DOGECOIN]        : "https://testnet-faucet.com/doge-testnet/",
 	[BINANCE_BSC]     : "Null-URL",
 	[TON]             : "Null-URL",
@@ -189,6 +194,7 @@ const MAINNET_EXPLORER_URLs = {
 	[SOLANA]:            "https://explorer.solana.com/address/",
 	[CARDANO]:           "https://blockchair.com/fr/cardano/address/",
 	[STELLAR]:    		 "https://stellar.expert/explorer/public/account/",
+	[SUI]:               "https://mainnet.suivision.xyz/account/",
 	[DOGECOIN]:          "https://dogechain.info/address/",
 	[BINANCE_BSC]:       "https://bscscan.com/address/",
 	[TON]:               "https://tonscan.org/address/",
@@ -217,6 +223,7 @@ const TESTNET_EXPLORER_URLs = {
 	[SOLANA]:            "https://explorer.solana.com/%ADDRESS%/?cluster=testnet",	
 	[CARDANO]:           "https://preprod.cardanoscan.io/address/%ADDRESS%",	
 	[STELLAR]:	     	 "Null-URL",
+	[SUI]:               "Null-URL",
     [RIPPLE]:            "Null-URL",
 	[DOGECOIN]:          "https://sochain.com/address/DOGETEST/%ADDRESS%",
 	[BINANCE_BSC]:	     "Null-URL",
@@ -256,8 +263,10 @@ if (typeof exports === 'object') {
 	exports.RIPPLE                   = RIPPLE
 	
 	exports.CARDANO                  = CARDANO
-	exports.STELLAR                  = STELLAR
 	exports.ADA_PURPOSE              = ADA_PURPOSE
+	
+	exports.STELLAR                  = STELLAR
+	exports.SUI                      = SUI
 	
 	exports.AVALANCHE                = AVALANCHE
 	exports.DOGECOIN                 = DOGECOIN
@@ -286,8 +295,7 @@ if (typeof exports === 'object') {
 	
 	exports.FIRO                     = FIRO	
 	
-	exports.NAMECOIN                 = NAMECOIN // Dead project
-	
+	exports.NAMECOIN                 = NAMECOIN // Dead project	
 	
 	exports.MAINNET                  = MAINNET
 	exports.TESTNET                  = TESTNET

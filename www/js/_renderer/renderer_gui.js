@@ -551,7 +551,8 @@ class RendererGUI {
 		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN
 			|| blockchain == CARDANO   || blockchain == SOLANA   
-			|| blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON 
+			|| blockchain == STELLAR   || blockchain == SUI
+			|| blockchain == RIPPLE    || blockchain == TRON 
 			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
 			|| blockchain == RAVENCOIN || blockchain == HORIZEN 
 			|| blockchain == DASH      || blockchain == VECHAIN	|| blockchain == FIRO ) {
@@ -993,7 +994,7 @@ class RendererGUI {
 				HtmlUtils.HideNode( TR_WIF_ID );
 				HtmlUtils.HideNode( TR_1ST_PK_ID );			
 		    }
-			else if ( blockchain == STELLAR ) {				
+			else if ( blockchain == STELLAR || blockchain == SUI) {				
 				HtmlUtils.ShowNode(TR_1ST_PK_ID);
 			}
 
@@ -2485,7 +2486,8 @@ class RendererGUI {
 				delete crypto_info[PRIV_KEY];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
 			}
-			else if ( blockchain == STELLAR || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {
+			else if (   blockchain == STELLAR || blockchain == SUI
+			         || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[WIF];
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
@@ -2621,7 +2623,8 @@ class RendererGUI {
 		if (   blockchain == ETHEREUM || blockchain == ETHEREUM_CLASSIC || blockchain == AVALANCHE 
 		    || blockchain == BINANCE_BSC 
 		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
-		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SOLANA || blockchain == TON
+		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SUI
+			|| blockchain == SOLANA   || blockchain == TON
 		    || blockchain == RIPPLE   || blockchain == TRON      
 			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
 			|| blockchain == TERRA_LUNA   || blockchain == RAVENCOIN || blockchain == HORIZEN
