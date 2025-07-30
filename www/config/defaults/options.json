@@ -7,10 +7,10 @@
   "Entropy Size": { "HD Wallet": 256, "SWORD Wallet": 256, "Simple Wallet": 256 },
   "Blockchains": 
   { "HD Wallet":     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
-                       "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
+                       "Sui", "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
 					   "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
     "SWORD Wallet":  [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
-                       "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
+                       "Sui", "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
 					   "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
     "Simple Wallet": [ "Bitcoin", "Ethereum", "Solana", "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", "Horizen", "Terra" ] 
   },

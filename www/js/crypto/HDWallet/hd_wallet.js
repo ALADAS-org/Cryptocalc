@@ -16,7 +16,7 @@ const { pretty_func_header_log,
 const { COIN, COIN_TYPE,
 	    ETHEREUM, ETHEREUM_CLASSIC, 
 		BITCOIN, DOGECOIN, LITECOIN, 
-		SOLANA, CARDANO, STELLAR, RIPPLE, TON,
+		SOLANA, CARDANO, STELLAR, SUI, RIPPLE, TON,
 		DASH, VECHAIN, FIRO, TRON, 
 		AVALANCHE, BINANCE_BSC, 
 		BITCOIN_CASH, BITCOIN_SV, RAVENCOIN, HORIZEN,
@@ -43,6 +43,7 @@ const { Bip39Utils }      = require('../bip39_utils.js');
 const { Bip32Utils }      = require('./bip32_utils.js');
 const { CardanoHD_API }   = require('./cardano_hd_api.js');
 const { SolanaHD_API }    = require('./solana_hd_api.js');
+const { Sui_HD_API }      = require('./sui_hd_api.js');
 
 const btcToZec = (btcAddress) => {
     // Decode the BTC address
@@ -165,7 +166,8 @@ class HDWallet {
 		if (   blockchain == ETHEREUM  || blockchain == ETHEREUM_CLASSIC 
 		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
 		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
-            || blockchain == STELLAR   || blockchain == RIPPLE    || blockchain == TRON     
+            || blockchain == STELLAR 
+			|| blockchain == RIPPLE    || blockchain == TRON     
             || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
 			|| blockchain == RAVENCOIN 
 			|| blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO ) {				
@@ -213,6 +215,10 @@ class HDWallet {
 		}		
 		else if ( blockchain == SOLANA ) {	
 			new_wallet = await SolanaHD_API.GetWallet
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );		
+		}
+		else if ( blockchain == SUI ) {	
+			new_wallet = await Sui_HD_API.GetWallet
 			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );		
 		}
 		return new_wallet;
