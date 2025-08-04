@@ -43,12 +43,14 @@ const ADA_PURPOSE  = "1852";
 const STELLAR      = "Stellar";
 const SUI          = "Sui";
 
+const POLYGON      = "Polygon";
+
 const AVALANCHE    = "Avalanche";
 const DOGECOIN     = "DogeCoin";
 const TRON         = "TRON";
 
 const POLKADOT     = "Polkadot";
-const POLYGON      = "Polygon";
+
 const LITECOIN     = "LiteCoin";
 
 const FILECOIN     = "Filecoin";
@@ -93,13 +95,14 @@ const COIN_ABBREVIATIONS = {
 	[CARDANO]         : "ADA",
 	[STELLAR]         : "XLM",
 	[SUI]             : "SUI",
+	[POLYGON]         : "POL",
 	[AVALANCHE]       : "AVAX",	
 	[DOGECOIN]        : "DOGE",
 	[TRON]            : "TRX",
 	[BITCOIN_CASH]    : "BCH",
 	[BITCOIN_SV]      : "BSV",
 	[POLKADOT]        : "DOT",
-	[POLYGON]         : "MATIC",
+	[POLYGON]         : "POL",
 	[LITECOIN]        : "LTC",
 	[VECHAIN]         : "VET",
 	[HORIZEN]         : "ZEN",
@@ -115,7 +118,7 @@ const COIN_ABBREVIATIONS = {
 	[EOS]             : "EOS",
 	[FIRO]            : "FIRO",
 	
-	[NAMECOIN]        : "NMC"   // Deas project	
+	[NAMECOIN]        : "NMC"   // Dead project	
 }; // COIN_ABBREVIATIONS
 
 // coin_types:
@@ -165,6 +168,7 @@ const FAUCET_URLs = {
 	[CARDANO]         : "https://docs.cardano.org/cardano-testnet/tools/faucet/",
 	[STELLAR]         : "Null-URL",
 	[SUI]             : "Null-URL",
+	[POLYGON]         : "Null-URL",
 	[DOGECOIN]        : "https://testnet-faucet.com/doge-testnet/",
 	[BINANCE_BSC]     : "Null-URL",
 	[TON]             : "Null-URL",
@@ -194,6 +198,7 @@ const MAINNET_EXPLORER_URLs = {
 	[SOLANA]:            "https://explorer.solana.com/address/",
 	[CARDANO]:           "https://blockchair.com/fr/cardano/address/",
 	[STELLAR]:    		 "https://stellar.expert/explorer/public/account/",
+	[POLYGON]:           "https://polygonscan.com/address/",
 	[SUI]:               "https://mainnet.suivision.xyz/account/",
 	[DOGECOIN]:          "https://dogechain.info/address/",
 	[BINANCE_BSC]:       "https://bscscan.com/address/",
@@ -224,6 +229,7 @@ const TESTNET_EXPLORER_URLs = {
 	[CARDANO]:           "https://preprod.cardanoscan.io/address/%ADDRESS%",	
 	[STELLAR]:	     	 "Null-URL",
 	[SUI]:               "Null-URL",
+	[POLYGON]:           "Null-URL",
     [RIPPLE]:            "Null-URL",
 	[DOGECOIN]:          "https://sochain.com/address/DOGETEST/%ADDRESS%",
 	[BINANCE_BSC]:	     "Null-URL",
@@ -244,6 +250,36 @@ const TESTNET_EXPLORER_URLs = {
     [LITECOIN]:          "https://sochain.com/address/LTCTEST/%ADDRESS%"	
 }; // TESTNET_EXPLORER_URLs
 
+const COINMARKETCAP_URLs = {	
+	[NULL_COIN]:         "Null-URL",	
+	[ETHEREUM]:          "https://coinmarketcap.com/currencies/ethereum/",
+    [ETHEREUM_CLASSIC]:  "https://coinmarketcap.com/currencies/ethereum-classic/",	
+	[BITCOIN]:           "https://coinmarketcap.com/currencies/bitcoin/",	
+	[SOLANA]:            "https://coinmarketcap.com/currencies/solana/",
+	[CARDANO]:           "https://coinmarketcap.com/currencies/cardano/",
+	[STELLAR]:    		 "https://coinmarketcap.com/currencies/stellar/",
+	[SUI]:               "https://coinmarketcap.com/currencies/sui/",
+	[POLYGON]:		     "https://coinmarketcap.com/currencies/polygon-ecosystem-token/",
+	[DOGECOIN]:          "https://coinmarketcap.com/currencies/dogecoin/",
+	[BINANCE_BSC]:       "https://coinmarketcap.com/currencies/bnb/",
+	[TON]:               "https://coinmarketcap.com/currencies/toncoin/",
+	[AVALANCHE]:         "https://coinmarketcap.com/currencies/avalanche/",
+	[TRON]:              "https://coinmarketcap.com/currencies/tron/",
+	[BITCOIN_CASH]:      "https://coinmarketcap.com/currencies/bitcoin-cash/",
+	[BITCOIN_SV]:        "https://coinmarketcap.com/currencies/bitcoin-sv/",
+	[TERRA_LUNA]:        "https://coinmarketcap.com/currencies/terra-luna-v2/",
+	[RAVENCOIN]:         "https://coinmarketcap.com/currencies/ravencoin/",
+	[HORIZEN]:           "https://coinmarketcap.com/currencies/horizen/",
+	[DASH]:              "https://coinmarketcap.com/currencies/dash/",
+	[RIPPLE]:            "https://coinmarketcap.com/currencies/xrp/",
+	[EOS]:               "https://coinmarketcap.com/currencies/eos/",
+	[VECHAIN]:           "https://coinmarketcap.com/currencies/vechain/",
+	[NAMECOIN]:          "https://coinmarketcap.com/currencies/namecoin/",
+	[FIRO]:              "https://coinmarketcap.com/currencies/firo/",
+	[ZCASH]:             "https://coinmarketcap.com/currencies/zcash/",
+	[LITECOIN]:          "https://coinmarketcap.com/currencies/litecoin/"
+}; // COINMARKETCAP_URLs
+
 if (typeof exports === 'object') {
 	exports.NULL_COIN                = NULL_COIN	
 	exports.COIN                     = COIN
@@ -256,17 +292,18 @@ if (typeof exports === 'object') {
 	
 	exports.BITCOIN                  = BITCOIN
 	exports.ETHEREUM                 = ETHEREUM
-	exports.ETHEREUM_CLASSIC         = ETHEREUM_CLASSIC
 	exports.BINANCE_BSC              = BINANCE_BSC
-	exports.TON                      = TON
 	exports.SOLANA                   = SOLANA
 	exports.RIPPLE                   = RIPPLE
-	
 	exports.CARDANO                  = CARDANO
 	exports.ADA_PURPOSE              = ADA_PURPOSE
 	
+	exports.ETHEREUM_CLASSIC         = ETHEREUM_CLASSIC	
+	exports.TON                      = TON
+	
 	exports.STELLAR                  = STELLAR
 	exports.SUI                      = SUI
+	exports.POLYGON                  = POLYGON
 	
 	exports.AVALANCHE                = AVALANCHE
 	exports.DOGECOIN                 = DOGECOIN
@@ -274,7 +311,6 @@ if (typeof exports === 'object') {
 	exports.BITCOIN_CASH             = BITCOIN_CASH
 
 	exports.POLKADOT                 = POLKADOT
-    exports.POLYGON                  = POLYGON
 	exports.LITECOIN                 = LITECOIN	
 	
 	exports.MONERO                   = MONERO
@@ -303,4 +339,5 @@ if (typeof exports === 'object') {
 	exports.FAUCET_URLs              = FAUCET_URLs
 	exports.MAINNET_EXPLORER_URLs    = MAINNET_EXPLORER_URLs
 	exports.TESTNET_EXPLORER_URLs    = TESTNET_EXPLORER_URLs
+	exports.COINMARKETCAP_URLs       = COINMARKETCAP_URLs
 } // exports of const_blockchains.js

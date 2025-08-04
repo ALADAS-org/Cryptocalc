@@ -47,11 +47,9 @@ const { _RED_, _CYAN_, _PURPLE_,
 const { pretty_func_header_log,
         pretty_log }       = require('../../util/log/log_utils.js');
 		
-const { COIN,
-	    ETHEREUM, 
-		BITCOIN, DOGECOIN, LITECOIN, 
-		SOLANA,  
-		AVALANCHE, TON, TERRA_LUNA, HORIZEN,
+const { COIN,	    
+		BITCOIN, ETHEREUM, DOGECOIN, LITECOIN, 
+		SOLANA, AVALANCHE, POLYGON, TON, TERRA_LUNA, HORIZEN,
 		COIN_ABBREVIATIONS,
 		BLOCKCHAIN
       }                    = require('../const_blockchains.js');
@@ -110,13 +108,17 @@ class SimpleWallet {
 			             ( private_key, salt_uuid, blockchain, crypto_net );			
 		}
 		else if (   blockchain == ETHEREUM 
-		         || blockchain == AVALANCHE ) {		
+		         || blockchain == AVALANCHE || blockchain == POLYGON ) {		
 			new_wallet = await Ethereum_API.GetWallet
 			             ( private_key, salt_uuid, blockchain, crypto_net );
 			if ( blockchain	== AVALANCHE ) { 
 				new_wallet[BLOCKCHAIN] = AVALANCHE;
 				new_wallet[COIN]       = coin;
-			}		
+			}	
+			else if ( blockchain == POLYGON ) { 
+				new_wallet[BLOCKCHAIN] = POLYGON;
+				new_wallet[COIN]       = coin;
+			}			
 		}
 		else if ( blockchain == SOLANA ) {		
 			new_wallet = SolanaSW_API.GetWallet( private_key, salt_uuid );

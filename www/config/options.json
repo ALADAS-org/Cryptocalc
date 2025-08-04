@@ -8,11 +8,12 @@
   "Blockchains": 
   { "HD Wallet":     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
                        "Sui", "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
-					   "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
+					   "Polygon", "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
     "SWORD Wallet":  [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Ripple", "DogeCoin", "Cardano", "Stellar",
                        "Sui", "TRON", "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
-					   "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
-    "Simple Wallet": [ "Bitcoin", "Ethereum", "Solana", "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", "Horizen", "Terra" ] 
+					   "Polygon", "VeChain", "Dash", "Bitcoin SV", "Ravencoin", "Firo" ],
+    "Simple Wallet": [ "Bitcoin", "Ethereum", "Solana", "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", 
+	                   "Polygon", "Horizen", "Terra" ] 
   },
   "lang": "EN",
   "Wallet Save Path": "$CRYPTOCALC/_output"

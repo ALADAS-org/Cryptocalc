@@ -20,16 +20,14 @@ const DEFAULT_OPTIONS = {
 	"Blockchains": { 
 		[HD_WALLET_TYPE]:     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Stellar",
                                 "Sui", "Ripple", "DogeCoin", "Cardano", "TRON",
-					            "Avalanche", "Bitcoin Cash", 
-								"LiteCoin", "Ethereum Classic", 
-								"Bitcoin SV", "Dash",  "VeChain", "Ravencoin", "Firo" ], 
+					            "Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
+								"Bitcoin SV", "Dash", "Polygon", "VeChain", "Ravencoin", "Firo" ], 
 		[SWORD_WALLET_TYPE]:  [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Stellar",
-								"Sui", "Ripple", "DogeCoin", "Cardano", "TRON",
-								"Avalanche", "Bitcoin Cash", 
-								"LiteCoin", "Ethereum Classic", 
-								"Bitcoin SV", "Dash", "VeChain", "Ravencoin", "Firo" ], 
-		[SIMPLE_WALLET_TYPE]: [ "Bitcoin", "Ethereum", "Solana",
-                                "DogeCoin", "Avalanche", "LiteCoin", "Toncoin", "Horizen", "Terra" ] 
+								"Polygon", "Sui", "Ripple", "DogeCoin", "Cardano", "TRON",
+								"Avalanche", "Bitcoin Cash", "LiteCoin", "Ethereum Classic", 
+								"Bitcoin SV", "Dash", "Polygon", "VeChain", "Ravencoin", "Firo" ], 
+		[SIMPLE_WALLET_TYPE]: [ "Bitcoin", "Ethereum", "Solana", "DogeCoin", "Avalanche", "LiteCoin", 
+		                        "Toncoin", "Horizen", "Polygon", "Terra" ] 
 	},
 	[LANG]: "EN",
 	[WALLET_SAVE_PATH]:"$CRYPTOWALLET/_output",
