@@ -1,3 +1,4 @@
+2025/08/04
 -------+------+-------+-------+--------------+
   Rank | Coin | !Eth  | HD ok |  Blockchain  |
 -------+------+-------+-------+--------------+
@@ -8,69 +9,75 @@
 *    5 	 BNB			 		 BNB 		NB: sur 'Binance Smart Chain'
 *    6   SOL	  *		   		 Solana
      7 	 USDC			 		 USDC
-*    8   DOGE 	  *		  *		 Dogecoin
 *    9 	 TRX 	  *		  *		 TRON
+*    9   DOGE 	  *		  *		 Dogecoin
 *   10	 ADA	  *				 Cardano
-    11	 HYPE 					 Hyperliquid
-*   12	 XLM 	  *		  *		 Stellar
+*   11	 XLM 	  *		  *		 Stellar
+    12	 HYPE 					 Hyperliquid
 *   13	 SUI 					 Sui
     14	 LINK 					 Chainlink
-    15	 HBAR 	  *				 Hedera
-*   16	 BCH 	  *		  *		 Bitcoin Cash
-*   17	 AVAX 	  *				 Avalanche 
-    18	 SHIB 			 		 Shiba Inu
-    19	 LEO 					 UNUS SED LEO
-*   20	 TON 	  *				 Toncoin
-*   21	 LTC 	  *		  *		 Litecoin
-    22	 DOT 	  *				 Polkadot
-    23	 XMR 	  *				 Monero
-    24	 PEPE 					 Pepe
-    25	 UNI 					 Uniswap
-    26   BGB  					 Bitget Token
-    27	 DAI 					 Dai
-    28	 USDe 					 Ethena USDe 
-    29	 AAVE 					 Aave
-    30	 TAO 					 Bittensor
-    31	 APT 	  *				 Aptos
-    32	 NEAR 	  *				 NEAR Protocol  
-    33	 PI 					 Pi
-    34	 CRO 					 Cronos   
-    35	 ONDO 					 Ondo
-*   36	 ETC 			 *		 Ethereum Classic
-    37   BONK 					 Bonk  
-    38	 ICP 	  *				 Internet Computer
-    39	 OKB 					 OKB  
-    40 	 ALGO 	  *				 Algorand
-    41 	 MNT 					 Mantle  
-    42	 POL 					 POL (prev. MATIC) 
-    43   KAS 					 Kaspa
-    44 	 ENA 					 Ethena
-    45 	 ARB 					 Arbitrum  
-    46   USD1 					 World Liberty Financial USD  
-*   47   VET 	  *	     *		 VeChain  
-    48   PUMP 					 Pump.fun 
-    49   SEI 					 Sei  
-    50 	 RENDER 				 Render
-    51 	 PENGU 					 Pudgy Penguins
-    52   TRUMP 					 OFFICIAL TRUMP
-    53   WLD 					 Worldcoin  
-    54   GT 					 GateToken
-    55   ATOM			*		 Cosmos
-    56   FET					 Artificial Superintelligence Alliance
-    57 	 FIL 					 Filecoin
-   ...   ...					 ...
-    67   STX 					 Stacks
-    97 	 ZEC 			*		 Zcash
-   100   XTZ 					 Tezos
-*  114   BSV 			*		 Bitcoin SV
-   115	 RUNE	        *		 THORChain
-   140   XEC 					 eCash 
-*  167   DASH           *  
-*  193   RVN 			*		 Ravencoin
-   254   KDA 					 Kadena
-*  283   ZEN 			*		 Horizen
-*  317 	 LUNA 			*		 Terra Luna
- 
-x  904	 NAMECOIN       * 
-* 1050	 FIRO           *
-  1361	 VTC	       	*		 Vertcoin
+*   15	 BCH 	  *		  *		 Bitcoin Cash	
+    16	 HBAR 	  *				 Hedera
+	17	 USDe 					 Ethena USDe
+*   18	 AVAX 	  *				 Avalanche 
+*   19	 TON 	  *				 Toncoin
+*   20	 LTC 	  *		  *		 Litecoin
+    21	 LEO 					 UNUS SED LEO	
+    22	 SHIB 			 		 Shiba Inu
+	23	 UNI 					 Uniswap
+    24	 DOT 	  *				 Polkadot	
+    25	 XMR 	  *				 Monero
+	26	 DAI 					 Dai 
+	27   BGB  					 Bitget Token	
+    28	 PEPE 					 Pepe     
+	29	 CRO 					 Cronos    
+    30	 AAVE 					 Aave
+	31 	 ENA 					 Ethena	
+    32	 TAO 					 Bittensor
+*   33	 ETC 			 *		 Ethereum Classic
+	34	 NEAR 	  *				 NEAR Protocol 
+	35	 ONDO 					 Ondo	
+    36	 APT 	  *				 Aptos
+    37	 OKB 					 OKB 
+	38	 ICP 	  *				 Internet Computer	
+    39	 PI 					 Pi    
+    40 	 MNT 					 Mantle 
+    41   KAS 					 Kaspa
+    42 	 PENGU 					 Pudgy Penguins
+    43   USD1 					 World Liberty Financial USD	
+    44   BONK 					 Bonk 
+*	45	 POL 					 POL (prev. MATIC)	
+    46 	 ALGO 	  *				 Algorand
+    47   GT 					 GateToken	
+    48 	 ARB 					 Arbitrum	
+*   49   VET 	  *	     *		 VeChain  
+    50   ATOM			 *		 Cosmos
+    51 	 RENDER 				 Render
+	52   WLD 					 Worldcoin
+    53   TRUMP 					 OFFICIAL TRUMP
+	54   IP 					 Story
+	55   SKY 					 Sky
+	56   FLR 					 Flare
+    57   SEI 					 Sei
+    58 	 FIL 					 Filecoin
+    59   XDC					 XDC Network
+    60   SPX					 SPX6900
+    61   FET					 Artificial Superintelligence alliance
+	...   ...					 ...	
+    73   PUMP 					 Pump.fun   
+    69   STX 					 Stacks
+	89   XTZ 					 Tezos	
+   105 	 ZEC 			*		 Zcash
+*  115   BSV 			*		 Bitcoin SV
+   124	 RUNE	        *		 THORChain
+   139   XEC 					 eCash
+*  174   DASH           *     
+*  195   RVN 			*		 Ravencoin
+*  284   ZEN 			*		 Horizen
+   291   KDA 					 Kadena
+*  333 	 LUNA 			*		 Terra Luna 
+x  900	 NMC            * 	  	 NAMECOIN
+* 1102	 FIRO           *
+  1393	 VTC	       	*		 Vertcoin
+  
+   ???   ???   					 ???

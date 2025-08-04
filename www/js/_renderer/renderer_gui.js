@@ -445,9 +445,10 @@ class RendererGUI {
 			 throw new Error("RendererGUI.generateSimpleWalletAddress 'private_key' NOT DEFINED");
 		}
 		
-		if (   blockchain == ETHEREUM || blockchain == AVALANCHE  || blockchain == TON
-		    || blockchain == BITCOIN  || blockchain == DOGECOIN   || blockchain == LITECOIN
-			|| blockchain == SOLANA   || blockchain == TERRA_LUNA || blockchain == HORIZEN ) { 
+		if (     blockchain == BITCOIN   || blockchain == ETHEREUM 
+		      || blockchain == AVALANCHE || blockchain == POLYGON    || blockchain == TON
+		      || blockchain == DOGECOIN  || blockchain == LITECOIN
+			  || blockchain == SOLANA    || blockchain == TERRA_LUNA || blockchain == HORIZEN ) { 
 			
 			let crypto_net = MAINNET;
 			let data = { private_key, salt_uuid, blockchain, crypto_net }; // NB: take care of field names and order
@@ -547,12 +548,12 @@ class RendererGUI {
 
         this.wallet_info.setAttribute( BLOCKCHAIN, blockchain );		
 		
-		if (   blockchain == ETHEREUM  || blockchain == ETHEREUM_CLASSIC
-		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
-		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN
+		if (   blockchain == BITCOIN   || blockchain == ETHEREUM  || blockchain == BINANCE_BSC 
+		    || blockchain == AVALANCHE || blockchain == POLYGON       
+		    || blockchain == DOGECOIN  || blockchain == LITECOIN
 			|| blockchain == CARDANO   || blockchain == SOLANA   
 			|| blockchain == STELLAR   || blockchain == SUI
-			|| blockchain == RIPPLE    || blockchain == TRON 
+			|| blockchain == RIPPLE    || blockchain == TRON || blockchain == ETHEREUM_CLASSIC
 			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
 			|| blockchain == RAVENCOIN || blockchain == HORIZEN 
 			|| blockchain == DASH      || blockchain == VECHAIN	|| blockchain == FIRO ) {
@@ -998,8 +999,8 @@ class RendererGUI {
 				HtmlUtils.ShowNode(TR_1ST_PK_ID);
 			}
 
-            if (   blockchain == ETHEREUM
-				|| blockchain == AVALANCHE || blockchain == BINANCE_BSC
+            if (   blockchain == ETHEREUM  || blockchain == BINANCE_BSC
+				|| blockchain == AVALANCHE || blockchain == POLYGON				
                 || blockchain == SOLANA	) {   
 				HtmlUtils.HideNode( TR_WIF_ID );
 				HtmlUtils.ShowNode( TR_1ST_PK_ID );
@@ -1021,7 +1022,8 @@ class RendererGUI {
 		}
 		else { 
 			if (    wif != undefined  &&  wif != "" 
-				&& blockchain != ETHEREUM  &&  blockchain != AVALANCHE &&  blockchain != BINANCE_BSC ) {
+				&& blockchain != ETHEREUM  &&  blockchain != AVALANCHE &&  blockchain != POLYGON 
+				&&  blockchain != BINANCE_BSC ) {
 				HtmlUtils.ShowNode( TR_WIF_ID );
 			}	
 			else {
@@ -1387,12 +1389,12 @@ class RendererGUI {
 	} // updateWIF()
 		
 	updatePrivateKey( blockchain, PRIV_KEY ) {
-		if (      (   blockchain == BITCOIN 
-		           || blockchain == DOGECOIN || blockchain == LITECOIN  || blockchain == STELLAR
-		           || blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == BINANCE_BSC
-				   || blockchain == RIPPLE   || blockchain == VECHAIN
+		if (      (   blockchain == BITCOIN   || blockchain == ETHEREUM || blockchain == BINANCE_BSC
+		           || blockchain == DOGECOIN  || blockchain == LITECOIN || blockchain == STELLAR
+		           || blockchain == AVALANCHE || blockchain == POLYGON
+				   || blockchain == RIPPLE    || blockchain == VECHAIN
 				   || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
-				   || blockchain == DASH     || blockchain == FIRO )
+				   || blockchain == DASH      || blockchain == FIRO )
   		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
 			
 			if (   blockchain == BITCOIN 
@@ -2475,8 +2477,8 @@ class RendererGUI {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );		
 				crypto_info[WIF] = WIF_value; 
 			}
-			else if (    blockchain == ETHEREUM 
-					  || blockchain == AVALANCHE || blockchain == BINANCE_BSC			          
+			else if (    blockchain == ETHEREUM  || blockchain == BINANCE_BSC
+					  || blockchain == AVALANCHE || blockchain == POLYGON			          
 					  || blockchain == SOLANA ) {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
 				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", crypto_info[PRIVATE_KEY] ) );
@@ -2620,15 +2622,15 @@ class RendererGUI {
     } // async mnemonicsToWordIndexes()
 	
 	isBlockchainSupported( blockchain ) {
-		if (   blockchain == ETHEREUM || blockchain == ETHEREUM_CLASSIC || blockchain == AVALANCHE 
-		    || blockchain == BINANCE_BSC 
-		    || blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN 
-		    || blockchain == CARDANO  || blockchain == STELLAR   || blockchain == SUI
-			|| blockchain == SOLANA   || blockchain == TON
-		    || blockchain == RIPPLE   || blockchain == TRON      
+		if (   blockchain == ETHEREUM  || blockchain == ETHEREUM_CLASSIC || blockchain == BINANCE_BSC
+		    || blockchain == AVALANCHE || blockchain == POLYGON 		     
+		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
+		    || blockchain == CARDANO   || blockchain == STELLAR   || blockchain == SUI
+			|| blockchain == SOLANA    || blockchain == TON
+		    || blockchain == RIPPLE    || blockchain == TRON      
 			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
 			|| blockchain == TERRA_LUNA   || blockchain == RAVENCOIN || blockchain == HORIZEN
-		    || blockchain == DASH     || blockchain == VECHAIN   || blockchain == FIRO ) {
+		    || blockchain == DASH      || blockchain == VECHAIN   || blockchain == FIRO ) {
 			return true;	
 		} 
 		return false;

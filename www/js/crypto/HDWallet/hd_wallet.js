@@ -14,12 +14,11 @@ const { pretty_func_header_log,
         pretty_log }      = require('../../util/log/log_utils.js');
 		
 const { COIN, COIN_TYPE,
-	    ETHEREUM, ETHEREUM_CLASSIC, 
+	    ETHEREUM,  BINANCE_BSC, ETHEREUM_CLASSIC, 
 		BITCOIN, DOGECOIN, LITECOIN, 
 		SOLANA, CARDANO, STELLAR, SUI, RIPPLE, TON,
 		DASH, VECHAIN, FIRO, TRON, 
-		AVALANCHE, BINANCE_BSC, 
-		BITCOIN_CASH, BITCOIN_SV, RAVENCOIN, HORIZEN,
+		AVALANCHE, POLYGON, BITCOIN_CASH, BITCOIN_SV, RAVENCOIN, HORIZEN,
 		MAINNET, COIN_ABBREVIATIONS
       }                   = require('../const_blockchains.js');
 	  
@@ -163,16 +162,14 @@ class HDWallet {
 		new_wallet[BLOCKCHAIN]  = blockchain;
 		new_wallet[MNEMONICS]   = mnemonics;
 				
-		if (   blockchain == ETHEREUM  || blockchain == ETHEREUM_CLASSIC 
-		    || blockchain == AVALANCHE || blockchain == BINANCE_BSC
-		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
-            || blockchain == STELLAR 
-			|| blockchain == RIPPLE    || blockchain == TRON     
+		if (   blockchain == BITCOIN   || blockchain == ETHEREUM || blockchain == BINANCE_BSC
+			|| blockchain == AVALANCHE || blockchain == POLYGON	
+   		    || blockchain == DOGECOIN  || blockchain == LITECOIN || blockchain == ETHEREUM_CLASSIC
+            || blockchain == STELLAR   || blockchain == RIPPLE   || blockchain == TRON     
             || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
-			|| blockchain == RAVENCOIN 
-			|| blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO ) {				
+			|| blockchain == RAVENCOIN || blockchain == VECHAIN   || blockchain == DASH || blockchain == FIRO ) {				
 				
-			if ( blockchain	== AVALANCHE || blockchain == BINANCE_BSC ) { 
+			if ( blockchain	== AVALANCHE || blockchain == POLYGON || blockchain == BINANCE_BSC ) { 
 				options[BLOCKCHAIN] = ETHEREUM
 			}	
 			

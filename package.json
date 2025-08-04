@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.37",
+  "version": "0.3.38",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
