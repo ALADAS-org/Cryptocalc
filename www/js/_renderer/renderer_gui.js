@@ -570,16 +570,20 @@ class RendererGUI {
 			// ---------- get 'Account' ----------
 			if ( wallet_mode == HD_WALLET_TYPE )
 				account = this.wallet_info.getAttribute(ACCOUNT);
-			else if ( wallet_mode == SWORD_WALLET_TYPE )
-			    account = Math.floor( Math.random() * (ACCOUNT_MAX + 1) );
+			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
+			    // account = Math.floor( Math.random() * (ACCOUNT_MAX + 1) );
+				account = getRandomInt(ACCOUNT_MAX);
+			}
 			// trace2Main( pretty_format( "rGUI.genHDW> account", account ) );
 			// ---------- get 'Account'
 
 			// ---------- get 'Address Index' ----------
 			if ( wallet_mode == HD_WALLET_TYPE )
 				address_index = this.wallet_info.getAttribute(ADDRESS_INDEX);
-			else if ( wallet_mode == SWORD_WALLET_TYPE )
-				address_index = Math.floor( Math.random() * (ADDRESS_INDEX_MAX + 1) );
+			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
+				// address_index = Math.floor( Math.random() * (ADDRESS_INDEX_MAX + 1) );
+				address_index = getRandomInt(ADDRESS_INDEX_MAX);
+			}
 			// trace2Main( pretty_format( "rGUI.genHDW> address_index", address_index ) );
 			// ---------- get 'Address Index'			
 			
