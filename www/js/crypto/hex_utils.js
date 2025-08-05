@@ -148,8 +148,47 @@ const b64ToHex = ( b64_str ) => {
     return buffer.toString('hex');
 }; // b64ToHex
 
+/**
+ * Cryptographically secure random number generator
+ * Works in both Node.js and browser environments
+ * 
+ * @param {number} min - Minimum value (inclusive)
+ * @param {number} max - Maximum value (exclusive)
+ * @returns {number} Random number between min (inclusive) and max (exclusive)
+ */
+const secureRandom = (min, max) => {
+  // Validate input
+  if (min >= max) {
+    throw new Error('Max must be greater than min');
+  }
+  
+  // Calculate the range
+  const range = max - min;
+  
+  // Create a typed array for crypto random values
+  const byteArray = new Uint32Array(1);
+  
+  // Get crypto module - works in both Node and browser
+  let crypto = undefined;
+  if (typeof exports === 'object') {
+		crypto = require('crypto');
+  }
+  else crypto = window.crypto || window.msCrypto;
+  
+  // console.log("secureRandom crypto: " + crypto);
+  
+  // Generate random values
+  crypto.getRandomValues(byteArray);
+  
+  // Convert to float between 0 (inclusive) and 1 (exclusive)
+  const randomFloat = byteArray[0] / (0xFFFFFFFF + 1);
+  
+  // Scale to desired range and return
+  return Math.floor(randomFloat * range) + min;
+}; // secureRandom()
+
 function getRandomInt(max) {
-  return Math.floor(Math.random() * max);
+	return secureRandom(0, max+1);
 }; // getRandomInt()
 
 const getRandomHexValue = (byte_count) => {
@@ -165,6 +204,31 @@ const getRandomHexValue = (byte_count) => {
 
 	return hex_str;
 }; // getRandomHexValue()
+
+const testRandomInt = () => {
+	let max = 255;
+	
+	let min_1 = max;
+	let min_2 = max;
+	
+	let max_1 = 0;
+	let max_2 = 0;
+	
+	for (let i=0; i<1000; i++) {
+		let random_1 = getRandomInt(max);
+		min_1 = random_1 < min_1 ? random_1 : min_1;
+		max_1 = random_1 > max_1 ? random_1 : max_1;
+		
+		let random_2 = Math.floor(Math.random() * max);
+		min_2 = random_2 < min_2 ? random_2 : min_2;
+		max_2 = random_2 > max_2 ? random_2 : max_2;
+		
+		console.log("secureRandom R1: " + random_1 + " (min:" + min_1 + " max:" + max_1 + ")   " +    
+		                         "R2: " + random_2 + " (min:" + min_2 + " max:" + max_2 + ")  ");
+	}
+}; // testRandomInt()
+
+// testRandomInt();
 
 if (typeof exports === 'object') {
 	exports.hexToBytes        = hexToBytes
