@@ -98,6 +98,9 @@ const ADDRESS_ID                       = "address_id";
 const WALLET_EXPLORE_BTN_ID            = "wallet_explore_btn_id";
 const WALLET_URL_LINK_ID               = "wallet_URL_link_id";
 
+const COINMARKETCAP_BTN_ID             = "marketcap_btn_id";
+const MARKETCAP_URL_LINK_ID            = "marketcap_URL_link_id";
+
 const PRIVATE_KEY_ID                   = "private_key_id";
 const PK_LABEL_ID                      = "pk_label_id";
 const PK_COPY_BTN_ID                   = "pk_copy_btn_id";

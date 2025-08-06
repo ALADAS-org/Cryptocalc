@@ -309,8 +309,18 @@ hr {
 }
 
 .WalletButton {
-	height:             20px;
-	margin-top:        -10px;
+	background-color: #cefad0;
+	height:           20px;
+	margin-top:       -10px;
+}
+
+.WalletButtonLink {
+	 text-decoration: none;
+}
+
+.MarketcapButton {	
+	height:      20px;
+	margin-top:  -10px;
 }
 
 .EntropyInput:invalid {
