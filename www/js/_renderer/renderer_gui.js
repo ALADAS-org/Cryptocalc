@@ -32,7 +32,10 @@
 // * async  updateEntropySize( entropy_size )
 // * async  updateEntropy( entropy )
 // *        updateBlockchain( blockchain )
+//
 // *        updateWalletURL( blockchain, wallet_address )
+//          updateMarketcapURL( blockchain )
+//
 // *        updateWIF( blockchain, wif )
 // *        updatePrivateKey( blockchain, PRIV_KEY )
 // * async  updateChecksum( entropy )
@@ -491,6 +494,7 @@ class RendererGUI {
 			}
 			
 			this.updateWalletURL( blockchain, wallet_address );
+			this.updateMarketcapURL( blockchain );
 		}
 		
 		this.updateFieldsVisibility();
@@ -699,6 +703,7 @@ class RendererGUI {
 		//---------- Update 'Private Key' in "Wallet" Tab
 		
 		this.updateWalletURL( blockchain, wallet_address );
+		this.updateMarketcapURL( blockchain );
 		
 		this.updateFieldsVisibility();
 		
@@ -1384,6 +1389,19 @@ class RendererGUI {
 			wallet_URL_elt.href = explorer_URL;
 		}
 	} // updateWalletURL()
+	
+	updateMarketcapURL( blockchain ) {
+		trace2Main( pretty_func_header_format( "RendererGUI.updateMarketcapURL" ) );
+		
+		let marketcap_URL = COINMARKETCAP_URLs[blockchain];
+		// trace2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
+		
+		let marketcap_URL_elt = HtmlUtils.GetNode( MARKETCAP_URL_LINK_ID );
+		//trace2Main("   wallet_URL_elt: " + wallet_URL_elt);
+		if ( marketcap_URL_elt != undefined ) {
+			marketcap_URL_elt.href = marketcap_URL;
+		}
+	} // updateMarketcapURL()
 	
 	updateWIF( blockchain, wif ) {
 		trace2Main( pretty_func_header_format( "RendererGUI.updateWIF", "WIF:" + wif ) );
