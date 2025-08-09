@@ -342,6 +342,15 @@ hr {
 	*/
 }
 
+#entropy_src_100d6_div_id {
+	height: 'auto';
+}
+
+#entropy_src_UserMove_div_id {
+	/* background-color: red; */
+	height: 'auto';
+}
+
 #entropy_src_img_id, #entropy_src_img_div_id {
 	width:				400px; 
 	height:				130px; 

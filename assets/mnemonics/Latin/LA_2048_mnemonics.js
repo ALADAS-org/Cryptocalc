@@ -182,6 +182,14 @@ const LATIN_MNEMONICS = [
 	"vita","vitium","vitrum","vivere","vivus","vix","vocatus","volare","voluptas","volvendo","vos","vox","vtinam",
 	"vulgares","vultus","warantizare","zona"
 ];
+
+const toText = () => {
+	for (let i=0; i<LATIN_MNEMONICS.length; i++) {
+			console.log(LATIN_MNEMONICS[i]);
+	}
+} // toText
+
+// toText();
 	
 if (typeof exports === 'object') {
 	exports.LATIN_MNEMONICS = LATIN_MNEMONICS	

@@ -203,6 +203,14 @@ const GREEK_MNEMONICS = [
 	"ψωμί","ψώνια","ωκεανός","ωραίος","ωστόσο","όγκος","όλα","όλοι","όμηρος","όμορφη","όνειρο","όνομα",
 	"όπλο","όποιος","όραμα","όργανο","όριο","όρμος","όροι","όρος","ότι","όφελος","όχημα","όχι","ύλη","ύπαρξη",
 	"ύπνος","ύποπτος","ύφασμα","ύφεση","ύψος","ώθηση","ώμος","ώρα" ];
+	
+const toText = () => {
+	for (let i=0; i<GREEK_MNEMONICS.length; i++) {
+			console.log(GREEK_MNEMONICS[i]);
+	}
+} // toText
+
+// toText();
 
 if (typeof exports === 'object') {
 	exports.GREEK_MNEMONICS = GREEK_MNEMONICS	
