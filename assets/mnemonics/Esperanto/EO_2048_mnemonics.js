@@ -247,6 +247,14 @@ const ESPERANTO_MNEMONICS = [
 
 //console.log("ESPERANTO: " + ESPERANTO_MNEMONICS.length);
 
+const toText = () => {
+	for (let i=0; i<ESPERANTO_MNEMONICS.length; i++) {
+			console.log(ESPERANTO_MNEMONICS[i]);
+	}
+} // toText
+
+// toText();
+
 if (typeof exports === 'object') {
 	exports.ESPERANTO_MNEMONICS = ESPERANTO_MNEMONICS	
 } // exports of 'EO_mnemonics.js'

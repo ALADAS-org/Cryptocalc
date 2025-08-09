@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.41
+## CryptoCalc 0.3.42
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_15_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -57,56 +57,56 @@
           * Type `npm install`    
 
 3. Release notes
-	+ 3.1. Features in `0.3.41`
+	+ 3.1. Features in `0.3.42`
+	    * Conversion of new wordlists (DE, RU, EO, LA, EL, HI) in .txt format to submit as proposals for official BIP39 repository
+	+ 3.2. Features in `0.3.41`
 	    * Added support of _Greek_ for the _Seed phrase_
-	+ 3.2. Features in `0.3.40`
+	+ 3.3. Features in `0.3.40`
 	    * Added `Marketcap` button (after `Explore` button) in _Wallet Tab Page_ to show the relevant [coinmarketcap](https://coinmarketcap.com/) URL
-	+ 3.3. Features in `0.3.39`
+	+ 3.4. Features in `0.3.39`
 	    * Replaced default random generator `Math.random` with a more secure for cryptography usage (see `secureRandom()` in `hex_utils.js`) 
-	+ 3.4. Features in `0.3.38`
+	+ 3.5. Features in `0.3.38`
 	    * Added `POL` cryptocurrency (_POL_) in _Simple Wallet_,  _HD Wallet_ and _SWORD Wallet_ modes
 	    * Documentation missing: added note on how `SUI` support was validated
-	+ 3.5. Features in `0.3.37`
+	+ 3.6. Features in `0.3.37`
 	    * Added `SUI` cryptocurrency (_Sui_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.6. Features in `0.3.36`
+	+ 3.7. Features in `0.3.36`
 	    * Documentation Fix: missing `ZEN` (_Horizen_) in the kist of supported cryptocurrencies
-	+ 3.7. Features in `0.3.35`
+	+ 3.8. Features in `0.3.35`
 	    * Added `ZEN` cryptocurrency (_Horizen_) in _Simple Wallet_ mode
-	+ 3.8. Features in `0.3.34`
+	+ 3.9. Features in `0.3.34`
 	    * Documentation Fix: indeed `ZEC` (ZCASH) is not supported ATM
-	+ 3.9. Features in `0.3.33`
+	+ 3.10. Features in `0.3.33`
 	    * Added `RVN` cryptocurrency (_Ravencoin_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.10. Features in `0.3.32`
+	+ 3.11. Features in `0.3.32`
 	    * Added `LUNA` cryptocurrency (_Terra_, it's `LUNA 2.O` not `LUNA Classic`) in _Simple Wallet_ mode
-	+ 3.11. Features in `0.3.31`
+	+ 3.12. Features in `0.3.31`
 	    * Added `BSV` cryptocurrency (_Bitcoin SV_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.12. Features in `0.3.30`
+	+ 3.13. Features in `0.3.30`
 	    * Added `VET` cryptocurrency (_VeChain_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.13. Features in `0.3.29`
+	+ 3.14. Features in `0.3.29`
 	    * Added `ETC` cryptocurrency (_Ethereum Classic_) in _HD Wallet_ / _SWORD Wallet_ modes
 		* Bug/Regression fixes:  
 			+ Regression: Changing 'Word Indexes' Base to Binary / Decimal was not working
 			+ Bug: Blockchain Explorer link for 'Bitcoin Cash' was KO
-	+ 3.14. Features in `0.3.28`
+	+ 3.15. Features in `0.3.28`
 	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
-	+ 3.15. Features in `0.3.27`
+	+ 3.16. Features in `0.3.27`
 	    * Added `TON` cryptocurrency (_Toncoin_ blockchain) but supported only in _Simple Wallet_ mode 
-	+ 3.16. Features in `0.3.26`
+	+ 3.17. Features in `0.3.26`
 	    * Added support of `BNB` cryptocurrency on _Binance Smart Chain_ Blockchain (see reference 5.3.4)
 	    * Bug fix: Error when setting 'Connection Status' icon while the DOM element is not yet created
-	+ 3.17. Features in `0.3.25`
+	+ 3.18. Features in `0.3.25`
 	    * Added support of `XLM` (_Stellar_)
-	+ 3.18. Features in `0.3.24`
+	+ 3.19. Features in `0.3.24`
 	    * Experimental support of _Latin_ for the _Seed phrase_
-    + 3.19. Features in `0.3.23`
+    + 3.20. Features in `0.3.23`
 	    * "Rollback" of _Cryptocalc_ rename to _cryptowallet_. In fact this was motivated by a better visibility
 		   on _SourceForge_ but _cryptowallet_ was rejected by SourceForge backend because it is a category. 
 		* Now using the latest release of _ElectronJS_ (37.2.1)  
-    + 3.20. Features in `0.3.21`
+    + 3.21. Features in `0.3.21`
 	    * Rename of _Cryptocalc_ (now deprecated) to _cryptowallet_
-	+ 3.21. Features in `0.3.19`
-	    * Added support of _Hindi_ for the _Seed phrase_	
-  
+
 4. _CryptoCalc_ User Guide  
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 2.1)
 	or by downloading the `npm package` (see 2.2) then double clicking on `_run.bat`.

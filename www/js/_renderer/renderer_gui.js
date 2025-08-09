@@ -121,7 +121,6 @@ const getWordCount = ( entropy_size ) => {
 
 // ==============================  RendererGUI class   ==============================
 class RendererGUI {	
-	//static #key = {};
 	static #key = Symbol();
 	static #_Singleton = new RendererGUI( this.#key );
 	
@@ -1046,14 +1045,24 @@ class RendererGUI {
 		// ------------------- WIF
 		
 		
+		HtmlUtils.HideNode( ENTROPY_SRC_IMG_CONTAINER_ID );
+		HtmlUtils.HideNode( ENTROPY_SRC_FORTUNES_ID );
+		HtmlUtils.HideNode( ENTROPY_SRC_USER_MOVE_CONTAINER_ID );
+		HtmlUtils.HideNode( ENTROPY_SRC_100d6_CONTAINER_ID );
+			
 		// ------------------- Entropy Source -------------------
-		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE) {
-			HtmlUtils.ShowNode( ENTROPY_SRC_FORTUNES_ID );
-			HtmlUtils.HideNode( ENTROPY_SRC_IMG_CONTAINER_ID );
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowNode( ENTROPY_SRC_FORTUNES_ID );			
 		}
-		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE) {
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
 			HtmlUtils.ShowNode( ENTROPY_SRC_IMG_CONTAINER_ID );
-			HtmlUtils.HideNode( ENTROPY_SRC_FORTUNES_ID );
+		}
+		else if ( this.entropy_source_type == USER_MOVE_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowNode( ENTROPY_SRC_USER_MOVE_CONTAINER_ID );
+			DrawEntropy_UserMove.GetInstance().clear();
+		}
+		else if ( this.entropy_source_type == DICE_100d6_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowNode( ENTROPY_SRC_100d6_CONTAINER_ID );
 		}
 		// ------------------- Entropy Source
 		
@@ -1570,6 +1579,12 @@ class RendererGUI {
 		else if ( entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
 			// Draw image in "www/img/CryptoCurrency" folder
 			this.img_data_asURL = await window.ipcMain.DrawRandomCryptoLogo();
+		}
+		else if ( entropy_source_type == USER_MOVE_ENTROPY_SRC_TYPE ) {
+			trace2Main(">> drawEntropySource UserMove: ");
+		}
+		else if ( entropy_source_type == DICE_100d6_ENTROPY_SRC_TYPE ) {
+			trace2Main(">> drawEntropySource 100d6: ");
 		}
 		
 		await this.updateFields();

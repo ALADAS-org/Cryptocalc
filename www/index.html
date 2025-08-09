@@ -41,6 +41,9 @@
 			
 			<script type="text/javascript" src="./js/_renderer/wallet.js"></script>
 			<script type="text/javascript" src="./js/_renderer/renderer_gui.js"></script>
+			
+			<script type="text/javascript" src="./js/_renderer/draw_entropy/draw_entropy_user_move.js"></script>
+			<script type="text/javascript" src="./js/_renderer/draw_entropy/draw_entropy_100d6.js"></script>			
 			<!-- ----------------- Renderer prerequisite modules -->
 			
 			<link rel="stylesheet" type="text/css" href="css/style.css">
@@ -75,8 +78,12 @@
 							<span id="entropy_src_label_id" class="LabelColumn">Entropy Source</span>
 							<select id="entropy_src_type_selector_id" 
 									class="InputField EntropySelector"> 
-								<option value="Image" selected>Image</option>	
-								<!-- <option value="100d6">100 d6</option> -->
+								<option value="Image" selected>Image</option>
+								
+								<option value="UserMove">User Drawing</option>
+								
+								<option value="100d6" hidden>100 d6</option>
+								
 								<option value="Fortunes">Fortunes</option>			
 							</select>
 						</td>
@@ -108,14 +115,19 @@
 												</td>
 											</tr>
 										</table>
-										<!-- ======== Entropy source: Images -->
+										<!-- ======== Entropy source: Images -->										
+				
+										<!-- ======== Entropy source: UserMove ======== -->
+										<div id="entropy_src_UserMove_container_id" hidden> <!-- hidden -->
+											<div id="entropy_src_UserMove_div_id">														 
+											</div>												
+										</div>
+										<!-- ======== Entropy source: UserMove -->
 										
 										<!-- ======== Entropy source: 100d6 ======== -->
-										<div id="entropy_src_100d6_container_id">
-											<tr><td>
-												<div id="entropy_src_100d6_div_id">														 
-												</div>												
-											</td></tr>
+										<div id="entropy_src_100d6_container_id" hidden> <!-- hidden -->
+											<div id="entropy_src_100d6_div_id">														 
+											</div>												
 										</div>
 										<!-- ======== Entropy source: 100d6 -->
 									</td>
