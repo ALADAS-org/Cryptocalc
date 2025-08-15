@@ -119,21 +119,32 @@ const getWordCount = ( entropy_size ) => {
 	} // entropy_size
 }; // getWordCount()
 
+const wordCount2BitsSize = ( word_count ) => {
+	switch ( word_count ) { 
+		case 12: 	return 128;	break;						
+		case 15: 	return 160;	break;						
+		case 18: 	return 192;	break;						
+		case 21: 	return 224;	break;						
+		case 24: 	return 256;	break;
+		default:	return 256;	break;
+	} // word_count
+}; // wordCount2BitsSize()
+
 // ==============================  RendererGUI class   ==============================
 class RendererGUI {	
-	static #key = Symbol();
-	static #_Singleton = new RendererGUI( this.#key );
+	static #Key = Symbol();
+	static #Singleton = new RendererGUI( this.#Key );
 	
 	static GetInstance() {
-		if ( RendererGUI.#_Singleton == undefined ) {
-			RendererGUI.#_Singleton = new RendererGUI();
+		if ( RendererGUI.#Singleton == undefined ) {
+			RendererGUI.#Singleton = new RendererGUI();
         }
-        return RendererGUI.#_Singleton;
+        return RendererGUI.#Singleton;
     } // RendererGUI.GetInstance() 
 	
     // ** Private constructor **
 	constructor( key ) {
-		if ( key !== RendererGUI.#key ) {
+		if ( key !== RendererGUI.#Key ) {
 			throw new TypeError("RendererGUI constructor is private.");
 		}
 		
@@ -1048,7 +1059,7 @@ class RendererGUI {
 		HtmlUtils.HideNode( ENTROPY_SRC_IMG_CONTAINER_ID );
 		HtmlUtils.HideNode( ENTROPY_SRC_FORTUNES_ID );
 		HtmlUtils.HideNode( ENTROPY_SRC_USER_MOVE_CONTAINER_ID );
-		HtmlUtils.HideNode( ENTROPY_SRC_100d6_CONTAINER_ID );
+		HtmlUtils.HideNode( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
 			
 		// ------------------- Entropy Source -------------------
 		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
@@ -1057,12 +1068,13 @@ class RendererGUI {
 		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
 			HtmlUtils.ShowNode( ENTROPY_SRC_IMG_CONTAINER_ID );
 		}
-		else if ( this.entropy_source_type == USER_MOVE_ENTROPY_SRC_TYPE ) {
-			HtmlUtils.ShowNode( ENTROPY_SRC_USER_MOVE_CONTAINER_ID );
-			DrawEntropy_UserMove.GetInstance().clear();
-		}
-		else if ( this.entropy_source_type == DICE_100d6_ENTROPY_SRC_TYPE ) {
-			HtmlUtils.ShowNode( ENTROPY_SRC_100d6_CONTAINER_ID );
+		// else if ( this.entropy_source_type == USER_MOVE_ENTROPY_SRC_TYPE ) {
+		//	 HtmlUtils.ShowNode( ENTROPY_SRC_USER_MOVE_CONTAINER_ID );
+		//	 DrawEntropy_UserMove.GetInstance().clear();
+		// }
+		else if ( this.entropy_source_type == DICE_D6_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowNode( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
+			DrawEntropyDiceD6.GetInstance().clear();
 		}
 		// ------------------- Entropy Source
 		
@@ -1353,7 +1365,7 @@ class RendererGUI {
 		let word_count = getWordCount( entropy_size );
 		this.wallet_info.setAttribute( WORD_COUNT, word_count );
 			
-		this.expected_entropy_bytes  = entropy_size / 8;
+		this.expected_entropy_bytes = entropy_size / 8;
 		// trace2Main( pretty_format("rGUI.upEsz> expected_entropy_bytes", this.expected_entropy_bytes ) );
 		
 		let expected_entropy_digits = this.expected_entropy_bytes * 2; 
@@ -1535,8 +1547,17 @@ class RendererGUI {
 		else if ( entropy_source == IMAGE_ENTROPY_SRC_TYPE ) {
 		    entropy_src_value = this.img_data_asURL;
 		}
+		else if ( entropy_source == DICE_D6_ENTROPY_SRC_TYPE ) {
+			let words_count = this.wallet_info.getAttribute( WORD_COUNT );
+			let entropy_bits_size = wordCount2BitsSize(words_count);
+		    entropy_src_value = DrawEntropyDiceD6.GetInstance().generateEntropy(entropy_bits_size);
+			// console.log("rGUI.saltE> entropy_src_value: " + entropy_src_value);
+		}
+		// else if ( entropy_source == USER_MOVE_ENTROPY_SRC_TYPE ) {
+		//    entropy_src_value = this.img_data_asURL;
+		// }
 		
-		trace2Main( pretty_format( "rGUI.saltE> entropy_src_value", getShortenedString( entropy_src_value ) ) );
+		trace2Main( pretty_format( "rGUI.saltE> entropy_src_value", getShortenedString( entropy_src_value ) ) );		
 		
 		let salt               = salt_elt.textContent;				
 		let salted_entropy_src = salt + entropy_src_value;
@@ -1583,8 +1604,8 @@ class RendererGUI {
 		else if ( entropy_source_type == USER_MOVE_ENTROPY_SRC_TYPE ) {
 			trace2Main(">> drawEntropySource UserMove: ");
 		}
-		else if ( entropy_source_type == DICE_100d6_ENTROPY_SRC_TYPE ) {
-			trace2Main(">> drawEntropySource 100d6: ");
+		else if ( entropy_source_type == DICE_D6_ENTROPY_SRC_TYPE ) {
+			trace2Main(">> drawEntropySource DiceD6: ");
 		}
 		
 		await this.updateFields();

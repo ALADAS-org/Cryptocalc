@@ -19,8 +19,8 @@ const ENTROPY_SRC_IMG_CONTAINER_ID     = "entropy_src_img_container_id";
 const ENTROPY_SOURCE_IMG_DIV_ID        = "entropy_src_img_div_id";
 const ENTROPY_SOURCE_IMG_ID            = "entropy_src_img_id";
 
-const ENTROPY_SRC_100d6_CONTAINER_ID   = "entropy_src_100d6_container_id"
-const ENTROPY_SRC_100d6_DIV_ID         = "entropy_src_100d6_div_id"
+const ENTROPY_SRC_DICE_D6_CONTAINER_ID = "entropy_src_dice_d6_container_id"
+const ENTROPY_SRC_DICE_D6_DIV_ID       = "entropy_src_dice_d6_div_id"
 
 const ENTROPY_SRC_USER_MOVE_CONTAINER_ID = "entropy_src_UserMove_container_id"
 const ENTROPY_SRC_USER_MOVE_DIV_ID       = "entropy_src_UserMove_div_id";

@@ -154,7 +154,7 @@ class ToolsOptionsDialog {
 	static UpdateFields( options_data ) {
 		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.UpdateFields" ) );
 		
-		ToolsOptionsDialog.Options= options_data;
+		ToolsOptionsDialog.Options = options_data;
 		
 		let wallet_mode = options_data[WALLET_MODE];
 		
