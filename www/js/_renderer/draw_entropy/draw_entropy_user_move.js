@@ -12,6 +12,8 @@ class DrawEntropy_UserMove {
 	static BACKGROUND_COLOR  = 220;
 	static ENTER_AREA_MARGIN = 30;
 	
+	static DEFAULT_ENTROPY   = "0xff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00ff00";
+	
 	static GetInstance() {
 		if ( DrawEntropy_UserMove.#Singleton == undefined ) {
 			DrawEntropy_UserMove.#Singleton = new DrawEntropy_UserMove();
@@ -48,13 +50,23 @@ class DrawEntropy_UserMove {
 		// this.p5_obj.background(220);
 	} // clear()
 	
+	async generateEntropy(required_byte_count_arg) {
+		console.log(">> [DrawEntropy_UserMove] generateEntropy");
+		if ( required_byte_count_arg == undefined ) required_byte_count_arg = 32;
+		
+		this.random_values = [];		
+		this.required_byte_count = required_byte_count_arg;	
+
+		return DrawEntropy_UserMove.DEFAULT_ENTROPY;			
+	} // async generateEntropy()
+	
 	getValues() {
 		console.log(">> [DrawEntropy_UserMove] getValues");
 		return this.random_values;
 	} // getValues()
 	
 	isHidden() {
-		// console.log(">> [DrawEntropy_UserMove] isHidden " + ENTROPY_SRC_100d6_CONTAINER_ID);
+		// console.log(">> [DrawEntropy_UserMove] isHidden " + ENTROPY_SRC_USER_MOVE_CONTAINER_ID);
 		let container_elt = document.getElementById(ENTROPY_SRC_USER_MOVE_CONTAINER_ID);
 		// console.log(">> [DrawEntropy_UserMove] container_elt " + container_elt);
 		if ( container_elt != undefined ) {

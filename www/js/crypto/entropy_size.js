@@ -5,7 +5,7 @@
 
 const { NULL_HEX, NULL_WORD_COUNT 
 	  }                    = require('./const_wallet.js');
-	  
+		  
 const { isHexString, hexWithoutPrefix 
 	  }                    = require('./hex_utils.js');
 

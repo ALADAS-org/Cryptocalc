@@ -336,13 +336,13 @@ hr {
 }
 
 #entropy_src_fortunes_id {
-	height :           'auto';
+	height: 'auto';
 	/* for support of ascii-art fortune cookies
 	font-family: monospace;
 	*/
 }
 
-#entropy_src_100d6_div_id {
+#entropy_src_dice_d6_div_id {
 	height: 'auto';
 }
 
