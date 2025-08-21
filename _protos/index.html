@@ -1,0 +1,258 @@
+	<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Racines Cubiques - Cryptographie Elliptique</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-sha256/0.9.0/sha256.min.js"></script>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background-color: #0f0f23;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+            overflow: hidden;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            background-color: #1a1a2e;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            width: 300px;
+            font-family: 'Courier New', monospace;
+        }
+        button {
+            background-color: #00ff00;
+            color: #0f0f23;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+        .info {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualisation des Racines Cubiques</h1>
+        <h2>Cryptographie Elliptique - Courbe secp256k1</h2>
+        
+        <div class="input-group">
+            <label for="privateKey">Clé Privée (64 digits hexadécimaux):</label><br>
+            <input type="text" id="privateKey" placeholder="Entrez une clé privée hexadécimale">
+            <button onclick="generateVisualization()">Générer la Visualisation</button>
+        </div>
+
+        <div id="canvasContainer"></div>
+        
+        <div class="info">
+            <p><strong>Équation de la courbe:</strong> y² = x³ + 7 (mod p)</p>
+            <p><strong>Prime:</strong> 2²⁵⁶ - 2³² - 2⁹ - 2⁸ - 2⁷ - 2⁶ - 2⁴ - 1</p>
+            <p>Les points représentent les solutions de l'équation cubique sur le corps fini</p>
+        </div>
+    </div>
+
+    <script>
+        // Paramètres de la courbe elliptique secp256k1 (Bitcoin/ETH)
+        const P = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F');
+        const A = BigInt(0);
+        const B = BigInt(7);
+
+        let points = [];
+        let currentPrivateKey = '';
+
+        function setup() {
+            const canvas = createCanvas(800, 600);
+            canvas.parent('canvasContainer');
+            background(15, 15, 35);
+            noLoop();
+        }
+
+        function draw() {
+            background(15, 15, 35);
+            drawGrid();
+            drawPoints();
+            drawInfo();
+        }
+
+        function generateVisualization() {
+            const privateKeyInput = document.getElementById('privateKey').value;
+            const hexRegex = /^[0-9A-Fa-f]{64}$/;
+            
+            if (!hexRegex.test(privateKeyInput)) {
+                alert('Veuillez entrer une clé privée hexadécimale valide de 64 digits');
+                return;
+            }
+
+            currentPrivateKey = privateKeyInput;
+            generatePointsFromPrivateKey(privateKeyInput);
+            redraw();
+        }
+
+        function generatePointsFromPrivateKey(privateKeyHex) {
+            points = [];
+            
+            // Convertir la clé privée en nombre BigInt
+            const privateKeyNum = BigInt('0x' + privateKeyHex);
+            
+            // Générer des points sur la courbe en utilisant la clé privée comme seed
+            const seed = parseInt(privateKeyNum.toString().slice(-8), 16);
+            randomSeed(seed);
+            
+            // Générer 1000 points pour la visualisation
+            for (let i = 0; i < 1000; i++) {
+                // Générer x aléatoire dans le champ fini
+                let x = BigInt(Math.floor(random(Number(P))));
+                
+                // Calculer x³ + 7 mod P
+                let ySquared = mod((x * x * x + B), P);
+                
+                // Vérifier si ySquared est un résidu quadratique
+                if (isQuadraticResidue(ySquared, P)) {
+                    // Calculer y (racine carrée modulaire)
+                    let y = modSqrt(ySquared, P);
+                    
+                    points.push({
+                        x: Number(mod(x, P)),
+                        y: Number(mod(y, P)),
+                        valid: true
+                    });
+                    
+                    // Ajouter aussi le point symétrique
+                    points.push({
+                        x: Number(mod(x, P)),
+                        y: Number(mod(P - y, P)),
+                        valid: true
+                    });
+                }
+            }
+        }
+
+        // Fonctions mathématiques modulaires
+        function mod(a, b) {
+            const result = a % b;
+            return result >= 0 ? result : result + b;
+        }
+
+        function modInverse(a, m) {
+            a = mod(a, m);
+            for (let x = BigInt(1); x < m; x++) {
+                if (mod((a * x), m) === BigInt(1)) {
+                    return x;
+                }
+            }
+            return BigInt(1);
+        }
+
+        function modSqrt(a, p) {
+            // Algorithme de Tonelli-Shanks simplifié
+            if (mod(a, p) === BigInt(0)) return BigInt(0);
+            if (p % BigInt(4) === BigInt(3)) {
+                return modPow(a, (p + BigInt(1)) / BigInt(4), p);
+            }
+            return modPow(a, (p + BigInt(1)) / BigInt(4), p);
+        }
+
+        function modPow(base, exponent, modulus) {
+            let result = BigInt(1);
+            base = mod(base, modulus);
+            
+            while (exponent > 0) {
+                if (exponent % BigInt(2) === BigInt(1)) {
+                    result = mod((result * base), modulus);
+                }
+                exponent = exponent / BigInt(2);
+                base = mod((base * base), modulus);
+            }
+            return result;
+        }
+
+        function isQuadraticResidue(a, p) {
+            if (a === BigInt(0)) return true;
+            return modPow(a, (p - BigInt(1)) / BigInt(2), p) === BigInt(1);
+        }
+
+        function drawGrid() {
+            stroke(0, 100, 0);
+            strokeWeight(0.5);
+            
+            // Grille
+            for (let x = 0; x < width; x += 50) {
+                line(x, 0, x, height);
+            }
+            for (let y = 0; y < height; y += 50) {
+                line(0, y, width, y);
+            }
+        }
+
+        function drawPoints() {
+            if (points.length === 0) return;
+            
+            // Dessiner les points
+            for (let point of points) {
+                // Normaliser les coordonnées pour l'affichage
+                const displayX = map(point.x, 0, Number(P), 50, width - 50);
+                const displayY = map(point.y, 0, Number(P), height - 50, 50);
+                
+                if (point.valid) {
+                    fill(0, 255, 0, 150);
+                    stroke(0, 200, 0);
+                } else {
+                    fill(255, 0, 0, 100);
+                    stroke(200, 0, 0);
+                }
+                
+                strokeWeight(1);
+                ellipse(displayX, displayY, 6, 6);
+            }
+        }
+
+        function drawInfo() {
+            fill(0, 255, 0);
+            noStroke();
+            textSize(14);
+            textAlign(LEFT, TOP);
+            
+            text(`Clé privée: ${currentPrivateKey || 'Non définie'}`, 20, 20);
+            text(`Points générés: ${points.length}`, 20, 40);
+            text(`Prime: ${P.toString().substring(0, 20)}...`, 20, 60);
+            
+            // Dessiner l'équation
+            textAlign(RIGHT, TOP);
+            textSize(16);
+            text('y² = x³ + 7 mod p', width - 20, 20);
+        }
+
+        // Fonction pour générer une clé privée aléatoire
+        function generateRandomPrivateKey() {
+            let randomKey = '';
+            const hexChars = '0123456789ABCDEF';
+            
+            for (let i = 0; i < 64; i++) {
+                randomKey += hexChars[Math.floor(Math.random() * 16)];
+            }
+            
+            document.getElementById('privateKey').value = randomKey;
+            generateVisualization();
+        }
+
+        // Initialisation
+        window.onload = function() {
+            generateRandomPrivateKey();
+        };
+    </script>
+</body>
+</html>

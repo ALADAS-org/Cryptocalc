@@ -19,11 +19,13 @@ const ENTROPY_SRC_IMG_CONTAINER_ID     = "entropy_src_img_container_id";
 const ENTROPY_SOURCE_IMG_DIV_ID        = "entropy_src_img_div_id";
 const ENTROPY_SOURCE_IMG_ID            = "entropy_src_img_id";
 
-const ENTROPY_SRC_DICE_D6_CONTAINER_ID = "entropy_src_dice_d6_container_id"
-const ENTROPY_SRC_DICE_D6_DIV_ID       = "entropy_src_dice_d6_div_id"
+const ENTROPY_SRC_DICE_D6_CONTAINER_ID = "entropy_src_dice_d6_container_id";
+const ENTROPY_SRC_DICE_D6_DIV_ID       = "entropy_src_dice_d6_div_id";
+                                           
+const ENTROPY_SRC_MOUSE_MOVE_NEW_BTN_ID = "entropy_mouse_move_new_btn_id";
 
-const ENTROPY_SRC_USER_MOVE_CONTAINER_ID = "entropy_src_UserMove_container_id"
-const ENTROPY_SRC_USER_MOVE_DIV_ID       = "entropy_src_UserMove_div_id";
+const ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID = "entropy_src_mouse_move_container_id"
+const ENTROPY_SRC_MOUSE_MOVE_DIV_ID       = "entropy_src_mouse_move_div_id";
 
 const ENTROPY_SRC_TYPE_SELECTOR_ID     = "entropy_src_type_selector_id";
 
