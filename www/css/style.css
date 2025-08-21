@@ -114,6 +114,16 @@ hr {
 	margin-top:        1px;
 }
 
+.UserMoveButton{
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         15px;
+	background:        lightblue;
+	border-radius:     3px;	
+	text-align:        center;
+	padding-left:      10px;
+	padding-right:     13px;
+}
+
 .PasswordFielWithApplyButton {
 	font-family:       Arial, Helvetica, sans-serif;
 	width:             79.5%;

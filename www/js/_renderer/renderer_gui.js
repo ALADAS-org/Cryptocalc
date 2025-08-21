@@ -765,6 +765,14 @@ class RendererGUI {
 	registerCallbacks() {
 		trace2Main( pretty_func_header_format( "RendererGUI.registerCallbacks" ) );
 		
+		// CUSTOM_EVT_UPDATE_ENTROPY
+		document.body.addEventListener( CUSTOM_EVT_UPDATE_ENTROPY, async (evt) => { 
+			    trace2Main( pretty_format( "rGUI.evtHandler> " + CUSTOM_EVT_UPDATE_ENTROPY ) );
+				if ( this.cb_enabled )  { 
+					await this.onCustomEntropyUpdate( evt );  
+				}
+		} );
+		
 		// -------------------- Toolbar icon buttons -------------------- 
 		this.setEventHandler( FILE_NEW_ICON_ID, 'click', 
 			async (evt) => { 
@@ -1058,7 +1066,7 @@ class RendererGUI {
 		
 		HtmlUtils.HideNode( ENTROPY_SRC_IMG_CONTAINER_ID );
 		HtmlUtils.HideNode( ENTROPY_SRC_FORTUNES_ID );
-		HtmlUtils.HideNode( ENTROPY_SRC_USER_MOVE_CONTAINER_ID );
+		HtmlUtils.HideNode( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
 		HtmlUtils.HideNode( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
 			
 		// ------------------- Entropy Source -------------------
@@ -1068,10 +1076,13 @@ class RendererGUI {
 		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
 			HtmlUtils.ShowNode( ENTROPY_SRC_IMG_CONTAINER_ID );
 		}
-		// else if ( this.entropy_source_type == USER_MOVE_ENTROPY_SRC_TYPE ) {
-		//	 HtmlUtils.ShowNode( ENTROPY_SRC_USER_MOVE_CONTAINER_ID );
-		//	 DrawEntropy_UserMove.GetInstance().clear();
-		// }
+		else if ( this.entropy_source_type == MOUSE_MOVE_ENTROPY_SRC_TYPE ) {
+			 HtmlUtils.ShowNode( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
+			 
+			 let words_count = this.wallet_info.getAttribute( WORD_COUNT );
+			 let entropy_bytes_count = wordCount2BitsSize(words_count) / 8;
+			 DrawEntropyMouseMove.GetInstance().init(entropy_bytes_count);
+		}
 		else if ( this.entropy_source_type == DICE_D6_ENTROPY_SRC_TYPE ) {
 			HtmlUtils.ShowNode( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
 			DrawEntropyDiceD6.GetInstance().clear();
@@ -1538,7 +1549,10 @@ class RendererGUI {
 		
 		let new_uuid = await window.ipcMain.GetUUID();
 		let salt_elt = HtmlUtils.GetNode( SALT_ID );
-		salt_elt.textContent = new_uuid;		
+		salt_elt.textContent = new_uuid;
+
+		let words_count = this.wallet_info.getAttribute( WORD_COUNT );	
+		let entropy_bits_size = wordCount2BitsSize(words_count);		
 		
 		let entropy_src_value = "";
 		if ( entropy_source == FORTUNES_ENTROPY_SRC_TYPE ) {
@@ -1547,21 +1561,38 @@ class RendererGUI {
 		else if ( entropy_source == IMAGE_ENTROPY_SRC_TYPE ) {
 		    entropy_src_value = this.img_data_asURL;
 		}
-		else if ( entropy_source == DICE_D6_ENTROPY_SRC_TYPE ) {
-			let words_count = this.wallet_info.getAttribute( WORD_COUNT );
-			let entropy_bits_size = wordCount2BitsSize(words_count);
+		else if ( entropy_source == DICE_D6_ENTROPY_SRC_TYPE ) {			
 		    entropy_src_value = DrawEntropyDiceD6.GetInstance().generateEntropy(entropy_bits_size);
 			// console.log("rGUI.saltE> entropy_src_value: " + entropy_src_value);
 		}
-		// else if ( entropy_source == USER_MOVE_ENTROPY_SRC_TYPE ) {
-		//    entropy_src_value = this.img_data_asURL;
-		// }
+		else if ( entropy_source == MOUSE_MOVE_ENTROPY_SRC_TYPE ) {
+			let entropy_bytes_count = entropy_bits_size / 8;
+			let entropy_required_digits = entropy_bytes_count * 2;
+			
+			let DrawE_Mouse_obj = DrawEntropyMouseMove.GetInstance();
+			let drawE_mouse_entropy = DrawE_Mouse_obj.getEntropy();
+			
+			if ( drawE_mouse_entropy != '' ) {
+				console.log("rGUI.saltE> drawE_mouse_entropy:\n   " + drawE_mouse_entropy);
+			}
+			// console.log("rGUI.saltE> entropy_required_digits: " + entropy_required_digits);
+			
+			if ( drawE_mouse_entropy != "" && drawE_mouse_entropy.length == entropy_required_digits ) {
+				// console.log("rGUI.saltE> " + MOUSE_MOVE_ENTROPY_SRC_TYPE + " input OK !!");
+				entropy_src_value = drawE_mouse_entropy;
+			}
+			else {				
+				entropy_src_value = await DrawE_Mouse_obj.generateEntropy( entropy_bytes_count );
+				console.log("rGUI.saltE> entropy_src_value: " + entropy_src_value);
+			}
+		}				
 		
-		trace2Main( pretty_format( "rGUI.saltE> entropy_src_value", getShortenedString( entropy_src_value ) ) );		
-		
-		let salt               = salt_elt.textContent;				
-		let salted_entropy_src = salt + entropy_src_value;
-                                                        
+		let salted_entropy_src = '';
+		if ( entropy_src_value != '' ) {
+			trace2Main( pretty_format( "rGUI.saltE> entropy_src_value", getShortenedString( entropy_src_value ) ) );
+			let salt           = salt_elt.textContent;				
+			salted_entropy_src = salt + entropy_src_value;
+        }                                                
 		return salted_entropy_src;	
 	} // getSaltedEntropySource()
 	
@@ -1573,7 +1604,7 @@ class RendererGUI {
 			new_uuid = await window.ipcMain.GetUUID();
 			//HtmlUtils.SetNodeValue(SALT_ID, new_uuid);
 			//let salt_elt = HtmlUtils.GetNode( SALT_ID );
-			//salt_elt.textContent = new_uuid;
+			//salt_elt.textContent = new_uuid; 
 			HtmlUtils.SetNodeValue(SALT_ID, new_uuid);
         }
 		return new_uuid;
@@ -1601,7 +1632,7 @@ class RendererGUI {
 			// Draw image in "www/img/CryptoCurrency" folder
 			this.img_data_asURL = await window.ipcMain.DrawRandomCryptoLogo();
 		}
-		else if ( entropy_source_type == USER_MOVE_ENTROPY_SRC_TYPE ) {
+		else if ( entropy_source_type == MOUSE_MOVE_ENTROPY_SRC_TYPE ) {
 			trace2Main(">> drawEntropySource UserMove: ");
 		}
 		else if ( entropy_source_type == DICE_D6_ENTROPY_SRC_TYPE ) {
@@ -1825,7 +1856,7 @@ class RendererGUI {
 				break;
 		} // switch ( event_name )
 	} // onGUIEvent()
-
+	
 	onGuiChangePassword( evt ) {
 		let password = HtmlUtils.GetNodeValue( PASSWORD_ID );
 		// trace2Main( pretty_func_header_format( "RendererGUI.onGuiChangePassword", "'" + password + "'" ) );
@@ -2200,6 +2231,15 @@ class RendererGUI {
 			}	
 		} 
 	} // onEntropyPaste()
+	
+	async onCustomEntropyUpdate( evt ) {
+		let entropy = evt.detail["entropy"];
+		console.log( "RendererGUI.onCustomEntropyUpdate  entropy:\n   " + entropy);	
+
+		HtmlUtils.SetNodeValue( ENTROPY_ID, entropy );	
+					
+		await this.updateFields( entropy );			
+	} // onCustomEntropyUpdate()
 	
 	async onMnemonicsPaste( evt ) {
 		trace2Main( pretty_func_header_format( "RendererGUI.onMnemonicsPaste" ) );

@@ -63,7 +63,7 @@ const WALLET_SAVE_PATH            = 'Wallet Save Path';
 
 const IMAGE_ENTROPY_SRC_TYPE      = 'Image';
 const FORTUNES_ENTROPY_SRC_TYPE   = 'Fortunes';
-const USER_MOVE_ENTROPY_SRC_TYPE  = 'UserMove';
+const MOUSE_MOVE_ENTROPY_SRC_TYPE  = 'UserMove';
 const DICE_D6_ENTROPY_SRC_TYPE    = 'DiceD6';
 
 const WIF                         = 'WIF';

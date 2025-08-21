@@ -3,6 +3,8 @@
 // =====================================================================================
 "use strict";
 
+const CUSTOM_EVT_UPDATE_ENTROPY                   = "CustomEvent:UpdateEntropy";
+
 const CMD_NONE                                    = "cmd:None";
 
 const CMD_NEW_WALLET                              = "cmd:NewWallet";
@@ -72,24 +74,24 @@ const ToMain_RQ_DRAW_RND_CRYPTO_LOGO              = "ToMain:Request/draw_rnd_cry
 const FromMain_DID_FINISH_LOAD                    = "FromMain:did-finish-load";
 
 // Note: File/New: ElectronMain.GetInstance().doFileNew() => ElectronMain.GetInstance().loadOptions()
-const FromMain_EXEC_CMD                         = "FromMain:ExecCmd";
-const FromMain_FILE_NEW                         = "FromMain:File/New";
-const FromMain_FILE_OPEN                        = "FromMain:File/Open";
-const FromMain_FILE_SAVE                        = "FromMain:File/Save";
-const FromMain_FILE_SAVE_AS                     = "FromMain:File/SaveAs";
-const FromMain_HELP_ABOUT                       = "FromMain:Help/About";
+const FromMain_EXEC_CMD                           = "FromMain:ExecCmd";
+const FromMain_FILE_NEW                           = "FromMain:File/New";
+const FromMain_FILE_OPEN                          = "FromMain:File/Open";
+const FromMain_FILE_SAVE                          = "FromMain:File/Save";
+const FromMain_FILE_SAVE_AS                       = "FromMain:File/SaveAs";
+const FromMain_HELP_ABOUT                         = "FromMain:Help/About";
 
-const FromMain_SHOW_ERROR_DIALOG                = "FromMain:ShowErrorDialog";
-const FromMain_SHOW_MSG_DIALOG                  = "FromMain:ShowMessage";
-const FromMain_TOOLS_OPTIONS_DIALOG             = "FromMain:ToolsOptionsDialog";
+const FromMain_SHOW_ERROR_DIALOG                  = "FromMain:ShowErrorDialog";
+const FromMain_SHOW_MSG_DIALOG                    = "FromMain:ShowMessage";
+const FromMain_TOOLS_OPTIONS_DIALOG               = "FromMain:ToolsOptionsDialog";
 
-const FromMain_SET_FORTUNE_COOKIE               = "FromMain:File/Import/Random Fortune Cookie";
-const FromMain_UPDATE_OPTIONS                   = "FromMain:UpdateOptions";
+const FromMain_SET_FORTUNE_COOKIE                 = "FromMain:File/Import/Random Fortune Cookie";
+const FromMain_UPDATE_OPTIONS                     = "FromMain:UpdateOptions";
 
-const FromMain_SET_VARIABLE                     = "FromMain:SetVariable";
-const FromMain_SEND_IMG_URL                     = "FromMain:SendImageURL";
+const FromMain_SET_VARIABLE                       = "FromMain:SetVariable";
+const FromMain_SEND_IMG_URL                       = "FromMain:SendImageURL";
 
-const FromMain_INTERNET_CONNECTED               = "FromMain:InternetConnected";
+const FromMain_INTERNET_CONNECTED                 = "FromMain:InternetConnected";
 
 if ( typeof exports === 'object' ) {
 	exports.CMD_NONE                                   = CMD_NONE
