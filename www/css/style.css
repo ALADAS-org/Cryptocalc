@@ -136,6 +136,11 @@ hr {
 	max-width:         85.5%;
 }
 
+.MouseMoveInfo{
+	font-family:       Arial, Helvetica, sans-serif;
+	font-size:         14px;
+}
+
 #internet_connection_td_id {
 	position: absolute; 
     top:   0px; 
