@@ -61,6 +61,7 @@ const { RUSSIAN_MNEMONICS }   = require('../../../assets/mnemonics/RU_2048_mnemo
 const { HINDI_MNEMONICS }     = require('../../../assets/mnemonics/HI_2048_mnemonics.js');
 const { LATIN_MNEMONICS }     = require('../../../assets/mnemonics/LA_2048_mnemonics.js');
 const { GREEK_MNEMONICS }     = require('../../../assets/mnemonics/EL_2048_mnemonics.js');
+const { GUJARATI_MNEMONICS }  = require('../../../assets/mnemonics/GU_2048_mnemonics.js');
 
 // NB: Separator for Japanese
 // https://bitcoin.stackexchange.com/questions/37780/bip39-japanese-mnemonic-vector-unit-test-process
@@ -69,7 +70,7 @@ const { GREEK_MNEMONICS }     = require('../../../assets/mnemonics/EL_2048_mnemo
 const { JAPANESE_MNEMONICS }  = require('../../../assets/mnemonics/JP_2048_mnemonics.js');
 
 const SUPPORTED_LANGS = 
-	  [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "EO", "RU", "JP", "KO", "SC", "TC", "HI", "LA", "EL" ];
+	  [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "EO", "RU", "JP", "KO", "SC", "TC", "HI", "LA", "EL", "GU" ];
 
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, 
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
@@ -517,7 +518,9 @@ class Bip39Utils {
 			case "TC":  mnemonics_dictionary = TC_WORDLIST; break;                 // Traditional Chinese				
 			case "JP":  mnemonics_dictionary = JAPANESE_MNEMONICS; break;          // Japanese						
 			case "KO":  mnemonics_dictionary = KO_WORDLIST; break;                 // Korean	
+			
 			case "HI":  mnemonics_dictionary = HINDI_MNEMONICS; break;             // Hindi	
+			case "GU":  mnemonics_dictionary = GUJARATI_MNEMONICS; break;          // Gujarati
 			
 			case "EL":  mnemonics_dictionary = GREEK_MNEMONICS; break;             // Greek
 
