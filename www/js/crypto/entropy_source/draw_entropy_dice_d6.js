@@ -51,7 +51,7 @@ class DrawEntropyDiceD6 {
 		
 		// required_dice_count = 100;
 		let rolls_needed = this.calculateDiceRollsForEntropy( required_entropy_bits ) 
-		console.log(">> [DrawEntropyDiceD6] rolls(" + required_entropy_bits + "bits): " + rolls_needed );
+		// console.log(">> [DrawEntropyDiceD6] rolls(" + required_entropy_bits + "bits): " + rolls_needed );
 		
 		// required_dice_count = 6;
 		let dice_rolls = [];

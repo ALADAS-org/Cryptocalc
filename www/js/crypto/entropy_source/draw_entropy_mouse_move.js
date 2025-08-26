@@ -4,12 +4,12 @@
 "use strict";
 
 const DrawE_Mouse = {
-	CANVAS_WIDTH:  500, 
-	CANVAS_HEIGHT: 150,
+	CANVAS_WIDTH:      500, 
+	CANVAS_HEIGHT:     150,
 	
-	DOT_SIZE:        9,
+	DOT_SIZE:            9,
 	
-	BG_COLOR:      220,
+	BG_COLOR:          220,
 	
 	DRAW_AREA_MARGIN:   10,
 	MIN_BOTTOM_MARGIN:  10,
@@ -23,6 +23,23 @@ const DrawE_Mouse = {
 	STATE_INPUT: "STATE_INPUT",
 	STATE_END:   "STATE_END"
 }; // DrawE_Mouse
+
+const decimalToHex = (decimal) => {
+    if (decimal < 0 || decimal > 255) {
+        throw new Error('Number must be between 0 and 255');
+    }
+    
+    // Convert to hex and pad with leading zero if needed
+    const hex = decimal.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+}; // decimalToHex() 
+
+const xor_bytes = (a, b) => {
+	// Ensure values are within byte range (0-255)
+	const byte_A = a & 0xFF;
+	const byte_B = b & 0xFF;
+	return byte_A ^ byte_B;
+}; // xor_bytes()
 
 const draw_progress_bar = ( p, current_point_count, max_points ) => {			
 	let pbar_x      = 5;
@@ -96,24 +113,26 @@ class DrawEntropyMouseMove {
 		this.canvas = undefined;
 		this.p5_obj = new p5(this.pattern_generator_sketch, 'DrawEntropyMouseMove');
 		
-		this.points       = [];
-		this.random_bytes = [];
+		this.points          = [];
+		this.random_bytes    = [];
+		
 		this.threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE);
 		
 		this.entropy = "";
 		
 		this.WHITE_COLOR  = this.p5_obj.color(255, 255, 255);
-		this.RED_COLOR    = this.p5_obj.color(255, 0, 0);
-		this.YELLOW_COLOR = this.p5_obj.color(255, 255, 0);
+		this.BLACK_COLOR  = this.p5_obj.color(0,     0,   0);
+		this.RED_COLOR    = this.p5_obj.color(255,   0,   0);
+		this.YELLOW_COLOR = this.p5_obj.color(255, 255,   0);
 		
 		this.init(32);
 	} // ** Private constructor **
 	
 	init( required_byte_count_arg ) {
 		// console.log(">> [DrawE_Mouse] init");
-		this.points       = [];
-		this.random_bytes = [];
-		this.entropy      = "";
+		this.points          = [];
+		this.random_bytes    = [];
+		this.entropy         = "";
 		
 		DrawE_Mouse.MARGINS["bottom"] = DrawE_Mouse.MAX_BOTTOM_MARGIN;	
 		
@@ -128,7 +147,21 @@ class DrawEntropyMouseMove {
 		// this.p5_obj.background(DrawE_Mouse.BACKGROUND_COLOR);
 	} // init()
 	
-	async generateEntropy( required_byte_count ) {
+	// 'Mouse move' XOR crypto.random()
+	computeMixedEntropy() {
+		let mixed_bytes = [];
+		for ( let i=0; i < this.random_bytes.length; i++ ) {	
+			let random_byte    = this.random_bytes[i];
+			let mixed_byte_hex = decimalToHex( getRandomByte() );
+			mixed_bytes.push( mixed_byte_hex );			
+		}
+		
+		// let entropy = this.random_byte.join('').toString();
+		let mixed_entropy = mixed_bytes.join('').toString(); 
+		return mixed_entropy; 
+	} // computeMixedEntropy()
+	
+	generateEntropy( required_byte_count ) {
 		if (required_byte_count == undefined) required_byte_count = 32;
 		this.required_byte_count = required_byte_count;
 		
@@ -145,11 +178,32 @@ class DrawEntropyMouseMove {
 		this.previous_position = generate_random_point();		
 		 
 		this.p5_obj.fill( this.YELLOW_COLOR );
-		this.p5_obj.circle( this.previous_position.x, this.previous_position.y, DrawE_Mouse.DOT_SIZE );		
+		this.p5_obj.circle( this.previous_position.x, this.previous_position.y, DrawE_Mouse.DOT_SIZE );
+		this.p5_obj.circle( this.previous_position.x, this.previous_position.y, DrawE_Mouse.DOT_SIZE - 2 );	
+
+		const drawLineBetweenCircles = (circle1, circle2, radius) => {
+		  // Calculate the angle between centers
+		  let angle = Math.atan2(circle2.y - circle1.y, circle2.x - circle1.x);
+		  
+		  // Calculate intersection points
+		  let startPoint = {
+			x: circle1.x + Math.cos(angle) * radius,
+			y: circle1.y + Math.sin(angle) * radius
+		  };
+		  
+		  let endPoint = {
+			x: circle2.x - Math.cos(angle) * radius,
+			y: circle2.y - Math.sin(angle) * radius
+		  }; // drawLineBetweenCircles()
+		  
+		  // Draw the line
+		  this.p5_obj.line(startPoint.x, startPoint.y, endPoint.x, endPoint.y);
+		  
+		  return { start: startPoint, end: endPoint };
+		}; // drawLineBetweenCircles() 		
 			
 		for ( let i=0; i < this.required_byte_count; i++ ) {		
 			// console.log("> generateEntropy(" + i + ")" );
-			
 			let threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE);
 			let hypotenuse = 0;
 			
@@ -159,11 +213,10 @@ class DrawEntropyMouseMove {
 			let rand_y = 0;
 
 			let delta      = { x: 0, y: 0 };	
-			let rand_point = { x: 0, y: 0 };			
+			let rand_point = { x: 0, y: 0 };						
 			
 			while ( hypotenuse < threshold ) {
-				// console.log("> generateEntropy(" + i + ") : hypotenuse: " + hypotenuse);
-				
+				// console.log("> generateEntropy(" + i + ") : hypotenuse: " + hypotenuse);				
 				rand_point = generate_random_point(); 
 				
 				delta.x = Math.abs(rand_point.x - this.previous_position.x);	
@@ -171,21 +224,21 @@ class DrawEntropyMouseMove {
 				hypotenuse = Math.round(Math.sqrt(delta.x*delta.x + delta.y*delta.y));	
 			}
 			
-			// const random_byte = pointTo2DigitHex
-			//                     (ranged_point, DrawE_Mouse.CANVAS_WIDTH - 2*margin, DrawE_Mouse.CANVAS_HEIGHT- 2*margin); 
-			// this.random_bytes.push(random_byte);
-			
 			this.addPoint( rand_point );
-				
-			this.p5_obj.line( rand_point.x, rand_point.y, this.previous_position.x, this.previous_position.y );				
+
+			// this.p5_obj.line( rand_point.x, rand_point.y, this.previous_position.x, this.previous_position.y );	
+			drawLineBetweenCircles(rand_point, this.previous_position, DrawE_Mouse.DOT_SIZE / 2);			
 			
-			this.p5_obj.fill( this.YELLOW_COLOR );
+			this.p5_obj.fill(this.YELLOW_COLOR);
 			this.p5_obj.circle( rand_point.x, rand_point.y, DrawE_Mouse.DOT_SIZE );
+			this.p5_obj.circle( rand_point.x, rand_point.y, DrawE_Mouse.DOT_SIZE - 2 );
 			
 			this.previous_position = { x: rand_point.x, y: rand_point.y };			
-		}		
+		}	
+
+		// let entropy = this.random_bytes.join('').toString();		
+		let entropy = this.computeMixedEntropy(); // NB: seems "not enuff entropy" indeed
 		
-		let entropy = this.random_bytes.join('').toString(); 
 		// console.log("> DrawE_Mouse.generateEntropy:\n   " + entropy);
 		return entropy;
 	} // generateEntropy()
@@ -205,12 +258,10 @@ class DrawEntropyMouseMove {
 		let margin_X = margins["left"] + margins["right"];
 		let margin_Y = margins["top"]  + margins["bottom"];
 		let ranged_point = { x: this.previous_position.x, y: this.previous_position.y };
-		const random_byte = pointTo2DigitHex
-							( ranged_point, DrawE_Mouse.CANVAS_WIDTH - margin_X, DrawE_Mouse.CANVAS_HEIGHT - margin_Y ); 
-								
-		// const random_byte = pack_2Numbers_scaled_to_byte( this.previous_position.x, this.previous_position.y );
-		// this.random_bytes.push(random_byte);
 		
+		// const random_byte = pointTo2DigitHex
+		//					( ranged_point, DrawE_Mouse.CANVAS_WIDTH - margin_X, DrawE_Mouse.CANVAS_HEIGHT - margin_Y ); 
+								
 		this.addPoint( this.previous_position );		
 		  
 		this.p5_obj.fill( this.WHITE_COLOR );
@@ -223,7 +274,7 @@ class DrawEntropyMouseMove {
 	
 	addPoint( new_point ) {
 		this.points.push( new_point );
-
+		
 		let margins = DrawE_Mouse.MARGINS;
 		let margins_HORIZONTAL = margins["left"] + margins["right"];
 		let margins_VERTICAL   = margins["top"]  + margins["bottom"];
@@ -232,22 +283,12 @@ class DrawEntropyMouseMove {
 		
 		const new_byte = pointTo2DigitHex( origin_point, DrawE_Mouse.CANVAS_WIDTH - margins_HORIZONTAL, 
 						                                 DrawE_Mouse.CANVAS_HEIGHT- margins_VERTICAL ); 
-		this.random_bytes.push( new_byte );
+		this.random_bytes.push( new_byte );		
 	} // addPoint()
 	
-	getState() {
-		return this.state;
-	} // getState()
-	
-	getBytes() {
-		console.log(">> [DrawE_Mouse] getBytes");
-		return this.random_bytes;
-	} // getBytes()
-	
 	getEntropy() {
-		if ( this.entropy == '' ) return '';
-		
-		console.log(">> [DrawE_Mouse] getEntropy:\n  " + this.entropy);
+		if ( this.entropy == '' ) return '';		
+		// console.log(">> [DrawE_Mouse] getEntropy:\n  " + this.entropy);
 		return this.entropy;
 	} // getEntropy()
 	
@@ -297,14 +338,6 @@ class DrawEntropyMouseMove {
 			let hypotenuse = Math.round(Math.sqrt(dX*dX + dY*dY));				
 			
 			if ( hypotenuse >= this.threshold ) {
-				// console.log(  ">> DrawE_Mouse.onMouseMoved: " 
-				//  			+ "(bytes: " + this.random_bytes.length + ")  hypotenuse: " + hypotenuse);	
-				// console.log(  ">> DrawE_Mouse.onMouseMoved max: " + this.required_byte_count);								
-				
-				// const random_byte = pointTo2DigitHex
-				//                     (mouse_point, DrawE_Mouse.CANVAS_WIDTH - 2*margin, DrawE_Mouse.CANVAS_HEIGHT- 2*margin); 
-				// this.random_bytes.push(random_byte);
-				
 				this.addPoint( mouse_point );
 				
 				this.threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE);
@@ -319,7 +352,13 @@ class DrawEntropyMouseMove {
 				draw_progress_bar( this.p5_obj );
 				
 				if ( this.random_bytes.length >= this.required_byte_count ) {
-					this.entropy = this.random_bytes.join('').toString(); 
+					this.entropy = this.random_bytes.join('').toString();
+					
+					let mixed_entropy = this.computeMixedEntropy();					
+					// console.log(">> DrawE_Mouse.onMouseMoved >>>>>> mixed_entropy\n: " + mixed_entropy);
+					
+					this.entropy = mixed_entropy;
+					
 					console.log(">> DrawE_Mouse.onMouseMoved Entropy\n: " + this.entropy);
 					
 					for (let i=0; i < this.points.length; i++) {

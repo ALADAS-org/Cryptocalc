@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.47
+## CryptoCalc 0.3.48
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -58,61 +58,64 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.47`
+    + 3.1. Features in `0.3.48`
+		* Improvements in `Mouse moves` _Entropy source_ :
+		    + In _manual_ mode: more entropy data in _Entropy source_ by 'mixing' (`XOR` operation) each mouse point 
+			(provided by the user) with a random byte (generated with `Crypto.getRandomValues()`) 
+			+ Consistent graphics between _manual_ ([New points...]) and _automatic_ ([Generate]) mode 
+    + 3.2. Features in `0.3.47`
 		* Fixed _Gujarati_ wordlist to remove words containing ':', '-', or '/'
-    + 3.2. Features in `0.3.46`
+    + 3.3. Features in `0.3.46`
 		* Added support of _Gujarati_ for the _Seed phrase_
 		* Default _Entropy source_ is now `D6 dices`
-	+ 3.3. Features in `0.3.45`
+	+ 3.4. Features in `0.3.45`
 	    * Added informations for `Mouse moves` Entropy source: 
 			+ Renamed [New Entropy] to [New points...]
 			+ Explanations for manual (with [New points...]) vs automatic generation (with [Generate])
 		* Updated screenshots from `0.3.15` to `0.3.45`
-	+ 3.4. Features in `0.3.44`
+	+ 3.5. Features in `0.3.44`
 	    * New _Entropy source_: `Mouse moves`
-	+ 3.5. Features in `0.3.43`
+	+ 3.6. Features in `0.3.43`
 	    * New _Entropy source_: `D6 dices` (e.g. 100 rolls for 256 bits of Entropy)  
-	+ 3.6. Features in `0.3.42`
+	+ 3.7. Features in `0.3.42`
 	    * Conversion of new wordlists (DE, RU, EO, LA, EL, HI) in .txt format to submit as proposals for official BIP39 repository
-	+ 3.7. Features in `0.3.41`
+	+ 3.8. Features in `0.3.41`
 	    * Added support of _Greek_ for the _Seed phrase_
-	+ 3.8. Features in `0.3.40`
+	+ 3.9. Features in `0.3.40`
 	    * Added `Marketcap` button (after `Explore` button) in _Wallet Tab Page_ to show the relevant [coinmarketcap](https://coinmarketcap.com/) URL
-	+ 3.9. Features in `0.3.39`
+	+ 3.10. Features in `0.3.39`
 	    * Replaced default random generator `Math.random` with a more secure for cryptography usage (see `secureRandom()` in `hex_utils.js`) 
-	+ 3.10. Features in `0.3.38`
+	+ 3.11. Features in `0.3.38`
 	    * Added `POL` cryptocurrency (_POL_) in _Simple Wallet_,  _HD Wallet_ and _SWORD Wallet_ modes
 	    * Documentation missing: added note on how `SUI` support was validated
-	+ 3.11. Features in `0.3.37`
+	+ 3.12. Features in `0.3.37`
 	    * Added `SUI` cryptocurrency (_Sui_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.12. Features in `0.3.36`
+	+ 3.13. Features in `0.3.36`
 	    * Documentation Fix: missing `ZEN` (_Horizen_) in the kist of supported cryptocurrencies
-	+ 3.13. Features in `0.3.35`
+	+ 3.14. Features in `0.3.35`
 	    * Added `ZEN` cryptocurrency (_Horizen_) in _Simple Wallet_ mode
-	+ 3.14. Features in `0.3.34`
+	+ 3.15. Features in `0.3.34`
 	    * Documentation Fix: indeed `ZEC` (ZCASH) is not supported ATM
-	+ 3.15. Features in `0.3.33`
+	+ 3.16. Features in `0.3.33`
 	    * Added `RVN` cryptocurrency (_Ravencoin_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.16. Features in `0.3.32`
+	+ 3.17. Features in `0.3.32`
 	    * Added `LUNA` cryptocurrency (_Terra_, it's `LUNA 2.O` not `LUNA Classic`) in _Simple Wallet_ mode
-	+ 3.17. Features in `0.3.31`
+	+ 3.18. Features in `0.3.31`
 	    * Added `BSV` cryptocurrency (_Bitcoin SV_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.18. Features in `0.3.30`
+	+ 3.19. Features in `0.3.30`
 	    * Added `VET` cryptocurrency (_VeChain_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.19. Features in `0.3.29`
+	+ 3.20. Features in `0.3.29`
 	    * Added `ETC` cryptocurrency (_Ethereum Classic_) in _HD Wallet_ / _SWORD Wallet_ modes
 		* Bug/Regression fixes:  
 			+ Regression: Changing 'Word Indexes' Base to Binary / Decimal was not working
 			+ Bug: Blockchain Explorer link for 'Bitcoin Cash' was KO
-	+ 3.20. Features in `0.3.28`
+	+ 3.21. Features in `0.3.28`
 	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
-	+ 3.21. Features in `0.3.27`
+	+ 3.22. Features in `0.3.27`
 	    * Added `TON` cryptocurrency (_Toncoin_ blockchain) but supported only in _Simple Wallet_ mode 
-	+ 3.22. Features in `0.3.26`
+	+ 3.23. Features in `0.3.26`
 	    * Added support of `BNB` cryptocurrency on _Binance Smart Chain_ Blockchain (see reference 5.3.4)
 	    * Bug fix: Error when setting 'Connection Status' icon while the DOM element is not yet created
-	+ 3.23. Features in `0.3.25`
-	    * Added support of `XLM` (_Stellar_)
 
 4. _CryptoCalc_ User Guide  
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 2.1)
