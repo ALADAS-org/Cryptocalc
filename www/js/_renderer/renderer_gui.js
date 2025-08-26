@@ -1582,8 +1582,8 @@ class RendererGUI {
 				entropy_src_value = drawE_mouse_entropy;
 			}
 			else {				
-				entropy_src_value = await DrawE_Mouse_obj.generateEntropy( entropy_bytes_count );
-				console.log("rGUI.saltE> entropy_src_value: " + entropy_src_value);
+				entropy_src_value = DrawE_Mouse_obj.generateEntropy( entropy_bytes_count );
+				console.log("rGUI.saltE> [Generate] entropy_src_value: " + entropy_src_value);
 			}
 		}				
 		

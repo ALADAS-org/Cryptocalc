@@ -191,6 +191,10 @@ function getRandomInt(max) {
 	return secureRandom(0, max+1);
 }; // getRandomInt()
 
+function getRandomByte() {
+	return getRandomInt(255);
+}; // getRandomByte()
+
 const getRandomHexValue = (byte_count) => {
     let hex_str = "";
 	for (let i=0; i < byte_count; i++) {
@@ -242,5 +246,6 @@ if (typeof exports === 'object') {
 	exports.hexToB64          = hexToB64
 	exports.b64ToHex          = b64ToHex
 	exports.getRandomInt      = getRandomInt
+	exports.getRandomByte     = getRandomByte
 	exports.getRandomHexValue = getRandomHexValue
 } // exports of 'hex_utils.js'
