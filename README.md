@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.48
+## CryptoCalc 0.3.49
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -18,9 +18,9 @@
    + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`
    + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension   
    
-   _Supported Languages_: _English_, _French_, _Spanish_, _Italian_, _Latin_, _Esperanto_, _Czech_, 
-   _Portuguese_, _Deutsch_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_, _Korean_, 
-   _Hindi_, _Gujarati_, _Russian_, _Greek_.    
+   _Supported Languages_: _English_, _French_, _Spanish_, _Italian_, _Czech_, 
+   _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_, _Korean_,
+   _Deutsch_, _Russian_, _Esperanto_, _Latin_, _Greek_, _Hindi_, _Gujarati_, _Bengali_.    
    
    NB: _CryptoCalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular
        [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) 
@@ -58,62 +58,65 @@
           * Type `npm install`    
 
 3. Release notes
-    + 3.1. Features in `0.3.48`
+    + 3.1. Features in `0.3.49`
+		* Added support of _Bengali_ for the _Seed phrase_
+		* Fixes in the documentation (this `README.md`)
+    + 3.2. Features in `0.3.48`
 		* Improvements in `Mouse moves` _Entropy source_ :
 		    + In _manual_ mode: more entropy data in _Entropy source_ by 'mixing' (`XOR` operation) each mouse point 
 			(provided by the user) with a random byte (generated with `Crypto.getRandomValues()`) 
 			+ Consistent graphics between _manual_ ([New points...]) and _automatic_ ([Generate]) mode 
-    + 3.2. Features in `0.3.47`
+    + 3.3. Features in `0.3.47`
 		* Fixed _Gujarati_ wordlist to remove words containing ':', '-', or '/'
-    + 3.3. Features in `0.3.46`
+    + 3.4. Features in `0.3.46`
 		* Added support of _Gujarati_ for the _Seed phrase_
 		* Default _Entropy source_ is now `D6 dices`
-	+ 3.4. Features in `0.3.45`
+	+ 3.5. Features in `0.3.45`
 	    * Added informations for `Mouse moves` Entropy source: 
 			+ Renamed [New Entropy] to [New points...]
 			+ Explanations for manual (with [New points...]) vs automatic generation (with [Generate])
 		* Updated screenshots from `0.3.15` to `0.3.45`
-	+ 3.5. Features in `0.3.44`
+	+ 3.6. Features in `0.3.44`
 	    * New _Entropy source_: `Mouse moves`
-	+ 3.6. Features in `0.3.43`
+	+ 3.7. Features in `0.3.43`
 	    * New _Entropy source_: `D6 dices` (e.g. 100 rolls for 256 bits of Entropy)  
-	+ 3.7. Features in `0.3.42`
+	+ 3.8. Features in `0.3.42`
 	    * Conversion of new wordlists (DE, RU, EO, LA, EL, HI) in .txt format to submit as proposals for official BIP39 repository
-	+ 3.8. Features in `0.3.41`
+	+ 3.9. Features in `0.3.41`
 	    * Added support of _Greek_ for the _Seed phrase_
-	+ 3.9. Features in `0.3.40`
+	+ 3.10. Features in `0.3.40`
 	    * Added `Marketcap` button (after `Explore` button) in _Wallet Tab Page_ to show the relevant [coinmarketcap](https://coinmarketcap.com/) URL
-	+ 3.10. Features in `0.3.39`
+	+ 3.11. Features in `0.3.39`
 	    * Replaced default random generator `Math.random` with a more secure for cryptography usage (see `secureRandom()` in `hex_utils.js`) 
-	+ 3.11. Features in `0.3.38`
+	+ 3.12. Features in `0.3.38`
 	    * Added `POL` cryptocurrency (_POL_) in _Simple Wallet_,  _HD Wallet_ and _SWORD Wallet_ modes
 	    * Documentation missing: added note on how `SUI` support was validated
-	+ 3.12. Features in `0.3.37`
+	+ 3.13. Features in `0.3.37`
 	    * Added `SUI` cryptocurrency (_Sui_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.13. Features in `0.3.36`
+	+ 3.14. Features in `0.3.36`
 	    * Documentation Fix: missing `ZEN` (_Horizen_) in the kist of supported cryptocurrencies
-	+ 3.14. Features in `0.3.35`
+	+ 3.15. Features in `0.3.35`
 	    * Added `ZEN` cryptocurrency (_Horizen_) in _Simple Wallet_ mode
-	+ 3.15. Features in `0.3.34`
+	+ 3.16. Features in `0.3.34`
 	    * Documentation Fix: indeed `ZEC` (ZCASH) is not supported ATM
-	+ 3.16. Features in `0.3.33`
+	+ 3.17. Features in `0.3.33`
 	    * Added `RVN` cryptocurrency (_Ravencoin_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.17. Features in `0.3.32`
+	+ 3.18. Features in `0.3.32`
 	    * Added `LUNA` cryptocurrency (_Terra_, it's `LUNA 2.O` not `LUNA Classic`) in _Simple Wallet_ mode
-	+ 3.18. Features in `0.3.31`
+	+ 3.19. Features in `0.3.31`
 	    * Added `BSV` cryptocurrency (_Bitcoin SV_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.19. Features in `0.3.30`
+	+ 3.20. Features in `0.3.30`
 	    * Added `VET` cryptocurrency (_VeChain_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 3.20. Features in `0.3.29`
+	+ 3.21. Features in `0.3.29`
 	    * Added `ETC` cryptocurrency (_Ethereum Classic_) in _HD Wallet_ / _SWORD Wallet_ modes
 		* Bug/Regression fixes:  
 			+ Regression: Changing 'Word Indexes' Base to Binary / Decimal was not working
 			+ Bug: Blockchain Explorer link for 'Bitcoin Cash' was KO
-	+ 3.21. Features in `0.3.28`
+	+ 3.22. Features in `0.3.28`
 	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
-	+ 3.22. Features in `0.3.27`
+	+ 3.23. Features in `0.3.27`
 	    * Added `TON` cryptocurrency (_Toncoin_ blockchain) but supported only in _Simple Wallet_ mode 
-	+ 3.23. Features in `0.3.26`
+	+ 3.24. Features in `0.3.26`
 	    * Added support of `BNB` cryptocurrency on _Binance Smart Chain_ Blockchain (see reference 5.3.4)
 	    * Bug fix: Error when setting 'Connection Status' icon while the DOM element is not yet created
 
@@ -249,14 +252,15 @@
         * 4.1.13. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
-        Changing _Wordlist Language_ is indeed a mean to add a scramble step in order 
-		to make it harder to steal your _Secret Recovery Passphrase_ because 
+        Changing _Wordlist Language_ is indeed a mean to add an "obfuscation/information hiding" step  
+		in order to make it harder to steal your _Secret Recovery Passphrase_ because 
         it should be translated to _English_ to be used with a _Wallet Manager_.   
-		NB: the translation between languages is native in _CryptoCalc_
-		because the reference is the _Word Indexes_ (see 4.1.10) not the words.
+		NB: it is important to highlight that indeed the crucial information is the list of _Word Indexes_.
+		Thats's why translation between languages is easy in _CryptoCalc_ because 
+		the reference is the _Word Indexes_ (see 4.1.14) not the words.
 		* 4.1.14. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
-		_Seed phrase_ words in the `BIP39` dictionary (see also 6.1.1). 
+		_Seed phrase_ words in the `BIP39` wordlist (see also 5.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).

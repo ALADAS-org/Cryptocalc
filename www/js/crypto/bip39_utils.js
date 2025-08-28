@@ -57,11 +57,15 @@ const TC_WORDLIST      = TC_WORDLIST_JSON['wordlist'];
 
 const { GERMAN_MNEMONICS }    = require('../../../assets/mnemonics/DE_mnemonics.js');
 const { ESPERANTO_MNEMONICS } = require('../../../assets/mnemonics/EO_2048_mnemonics.js');
+
 const { RUSSIAN_MNEMONICS }   = require('../../../assets/mnemonics/RU_2048_mnemonics.js');
-const { HINDI_MNEMONICS }     = require('../../../assets/mnemonics/HI_2048_mnemonics.js');
+
 const { LATIN_MNEMONICS }     = require('../../../assets/mnemonics/LA_2048_mnemonics.js');
 const { GREEK_MNEMONICS }     = require('../../../assets/mnemonics/EL_2048_mnemonics.js');
+
+const { HINDI_MNEMONICS }     = require('../../../assets/mnemonics/HI_2048_mnemonics.js');
 const { GUJARATI_MNEMONICS }  = require('../../../assets/mnemonics/GU_2048_mnemonics.js');
+const { BENGALI_MNEMONICS }   = require('../../../assets/mnemonics/BN_2048_mnemonics.js');
 
 // NB: Separator for Japanese
 // https://bitcoin.stackexchange.com/questions/37780/bip39-japanese-mnemonic-vector-unit-test-process
@@ -70,7 +74,7 @@ const { GUJARATI_MNEMONICS }  = require('../../../assets/mnemonics/GU_2048_mnemo
 const { JAPANESE_MNEMONICS }  = require('../../../assets/mnemonics/JP_2048_mnemonics.js');
 
 const SUPPORTED_LANGS = 
-	  [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "EO", "RU", "JP", "KO", "SC", "TC", "HI", "LA", "EL", "GU" ];
+	  [ "EN", "DE", "FR", "ES", "IT", "CS", "PT", "JP", "KO", "SC", "TC", "EO", "RU", "LA", "EL", "HI", "GU", "BN" ];
 
 const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, 
         _GREEN_, _RED_HIGH_, _BLUE_HIGH_,       
@@ -508,23 +512,26 @@ class Bip39Utils {
 			case "ES":  mnemonics_dictionary = Bip39Mnemonic.Words.SPANISH; break; // Spanish		
 			case "IT":  mnemonics_dictionary = Bip39Mnemonic.Words.ITALIAN; break; // Italian				
 			case "CS":  mnemonics_dictionary = CS_WORDLIST; break;                 // Czech		
-			case "PT":  mnemonics_dictionary = PT_WORDLIST; break;                 // Portuguese	
+			case "PT":  mnemonics_dictionary = PT_WORDLIST; break;                 // Portuguese
 			
-			case "DE":  mnemonics_dictionary = GERMAN_MNEMONICS; break;		       // German (non official in BIP39)	
-            case "EO":  mnemonics_dictionary = ESPERANTO_MNEMONICS; break;		   // Esperanto (non official in BIP39)	
-            case "RU":  mnemonics_dictionary = RUSSIAN_MNEMONICS; break;		   // Russian (non official in BIP39)						
-
 			case "SC":  mnemonics_dictionary = SC_WORDLIST; break;                 // Simplified Chinese		
 			case "TC":  mnemonics_dictionary = TC_WORDLIST; break;                 // Traditional Chinese				
 			case "JP":  mnemonics_dictionary = JAPANESE_MNEMONICS; break;          // Japanese						
 			case "KO":  mnemonics_dictionary = KO_WORDLIST; break;                 // Korean	
 			
-			case "HI":  mnemonics_dictionary = HINDI_MNEMONICS; break;             // Hindi	
-			case "GU":  mnemonics_dictionary = GUJARATI_MNEMONICS; break;          // Gujarati
+			// ------------------ Added 'Non official in BIP39' languages ------------------						
+			case "DE":  mnemonics_dictionary = GERMAN_MNEMONICS; break;		       // German			
+			case "EO":  mnemonics_dictionary = ESPERANTO_MNEMONICS; break;		   // Esperanto
+			
+            case "RU":  mnemonics_dictionary = RUSSIAN_MNEMONICS; break;		   // Russian	
 			
 			case "EL":  mnemonics_dictionary = GREEK_MNEMONICS; break;             // Greek
-
-			case "LA":  mnemonics_dictionary = LATIN_MNEMONICS; break;             // Latin 			
+			case "LA":  mnemonics_dictionary = LATIN_MNEMONICS; break;             // Latin 
+			
+			case "HI":  mnemonics_dictionary = HINDI_MNEMONICS; break;             // Hindi	
+			case "GU":  mnemonics_dictionary = GUJARATI_MNEMONICS; break;          // Gujarati			
+			case "BN":  mnemonics_dictionary = BENGALI_MNEMONICS; break;           // Bengali
+			// ------------------ Added 'beyond BIP39 standard' languages
 		
 			default:	mnemonics_dictionary = Bip39Mnemonic.Words.ENGLISH;
 						break;
