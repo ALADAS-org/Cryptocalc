@@ -1,0 +1,10 @@
+	JW 	Javanese
+	MS 	Malay
+	TE	Telugu
+	VI	Vietnamese
+	MR	Marathi
+	TA	Tamil
+	TR	Turkish
+	TH	Thai
+* 	GU	Gujarati
+	IS	Icelandic

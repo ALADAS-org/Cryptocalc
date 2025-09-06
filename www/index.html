@@ -200,9 +200,9 @@
 					<!-- ----------------------- Entropy (128/256 bits) -->
 					
 					
-					<!-- -----------------------  Password  ----------------------- -->
+					<!-- -----------------------  Passphrase  ----------------------- -->
 					<tr id="password_row_id"><td class="LabelColumn">
-							<span id="password_label_id">Password</span>
+							<span id="password_label_id">Passphrase</span>
 						</td>
 						<td colspan="2" class="FieldColumn">
                             <div class="DataFieldWithButton_Container"
@@ -212,23 +212,23 @@
 									   minlength="4" maxlength="128"
 									   value=""/>
 								<button class="SmallButton" id="eye_btn_id"
-								        title="Show/Hide password">
+								        title="Show/Hide passphrase">
 										<img id="eye_btn_img_id" src="icons/eye_closed_16px.png" 
 											  border="0"/>
 								</button><span id="apply_btn_separator_id" hidden>&nbsp;</span>
 								<input id="apply_password_btn_id" type="button" 
 								       title="Recompute HD Hierarchy" value="Apply" hidden/>&nbsp;								
 								<button class="SmallButton" id="generate_password_btn_id"
-								        title="Regenerate password">
+								        title="Regenerate passphrase">
 									<img id="apply_btn_img_id" src="icons/regenerate_16px_icn.png" 
 										 border="0"/>
 							    </button>&nbsp;
 								<input id="clear_password_btn_id" type="button" 
-								       title="Clear password" value="Clear"/>
+								       title="Clear passphrase" value="Clear"/>
 							</div>
 						</td>
 					</tr>
-					<!-- ----------------------- Password -->
+					<!-- ----------------------- Passphrase -->
 					
 					
 					<!-- -----------------------  Checksum  ----------------------- -->
@@ -401,10 +401,15 @@
 							   <input class="WalletButton" type="button" 
 									  id="wallet_explore_btn_id" value=" Explore ">
 							</a>
-							<a id="marketcap_URL_link_id"
+							<a id="marketcap_URL_link_id" class="WalletButtonLink"
 							   href="https://etherscan.io" target="_blank" rel="noreferrer">
 							   <input class="MarketcapButton" type="button" 
 									  id="marketcap_btn_id" value="Marketcap">
+							</a>
+							<a id="cryptoshape_URL_link_id"
+							   href="https://aladas-org.github.io/aladas.github.io/" target="_blank" rel="noreferrer">
+							   <input class="CryptoshapeButton" type="button" 
+									  id="cryptoshape_btn_id" value="3D">
 							</a>
 						</td>
 					</tr>

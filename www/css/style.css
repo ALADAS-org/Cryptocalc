@@ -330,12 +330,18 @@ hr {
 }
 
 .WalletButtonLink {
-	 text-decoration: none;
+	text-decoration: none;
 }
 
 .MarketcapButton {	
 	height:      20px;
 	margin-top:  -10px;
+}
+
+.CryptoshapeButton {	
+	height:           20px;
+	margin-top:      -10px;
+	text-decoration: none;
 }
 
 .EntropyInput:invalid {

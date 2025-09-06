@@ -505,6 +505,7 @@ class RendererGUI {
 			
 			this.updateWalletURL( blockchain, wallet_address );
 			this.updateMarketcapURL( blockchain );
+			this.updateCryptoshapeURL();
 		}
 		
 		this.updateFieldsVisibility();
@@ -714,6 +715,7 @@ class RendererGUI {
 		
 		this.updateWalletURL( blockchain, wallet_address );
 		this.updateMarketcapURL( blockchain );
+		this.updateCryptoshapeURL();
 		
 		this.updateFieldsVisibility();
 		
@@ -1434,6 +1436,28 @@ class RendererGUI {
 			marketcap_URL_elt.href = marketcap_URL;
 		}
 	} // updateMarketcapURL()
+	
+	updateCryptoshapeURL() {
+		trace2Main( pretty_func_header_format( "RendererGUI.updateCryptoshapeURL" ) );
+		
+		let mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+		
+		let cryptoshape_URL = 'https://aladas-org.github.io/aladas.github.io/';
+		if ( mnemonics != undefined && mnemonics != '') {
+			let mnemonics_items = mnemonics.split(' ');
+			// console.log('> mnemonics(' + mnemonics_items.length +'):\n' + mnemonics); 
+			
+			if (mnemonics_items.length >= 12 && mnemonics_items.length <= 24) {
+				let mnemonics_parameter_value_cgi = mnemonics.replaceAll(' ', '%20');
+				// console.log('> mnemonics_parameter_value_cgi:\n' + mnemonics_parameter_value_cgi);
+				cryptoshape_URL += 'index.html?mnemonics=' + mnemonics_parameter_value_cgi;
+			}
+		}
+		let cryptoshape_URL_elt = HtmlUtils.GetNode( CRYPTOSHAPE_URL_LINK_ID );
+		if ( cryptoshape_URL_elt != undefined ) {
+			cryptoshape_URL_elt.href = cryptoshape_URL;
+		}
+	} // updateCryptoshapeURL()
 	
 	updateWIF( blockchain, wif ) {
 		trace2Main( pretty_func_header_format( "RendererGUI.updateWIF", "WIF:" + wif ) );
