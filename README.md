@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.50
+## CryptoCalc 0.3.51
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -14,49 +14,54 @@
    
    [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
 
-2. Features
-   2.1. Support of HD / Bip32 (multiple wallets)
+2. Features    
+   2.1. Support of HD / Bip32 (multiple wallets)    
    
-   2.2. Selection of `Entropy size` (between 128 and 256 bits)
+   2.2. Selection of `Entropy size` (between 128 and 256 bits)    
    
-   2.3. Dynamic conversion of between `Entropy` and `Seed phrase`
+   2.3. Dynamic conversion of between `Entropy` and `Seed phrase`    
    
-   2.4. `File/Save/Open..` operations which allow edition of _Wallet informations_ (saved as a `.wits` file, which uses `JSON` format) 
+   2.4. `File/Save/Open..` commands    
+   These commands allow edition of _Wallet informations_ after saving (these informations are saved as a `.wits`, a `JSON` format file) 
    
-   2.5. Multiple Entropy sources
-   `Entropy` is indeed computed by combining a `Salt` (currenly a dynamically generated `UUID`) with the value provided by the `Entropy source` 
+   2.5. Salted Entropy source    
+   `Entropy` value is indeed computed by combining the `Salt` (currenly a dynamically generated `UUID`) with the value provided by the `Entropy source`    
+   + The formula is applying the `SHA256` hash function to this concatenated string: `Salt + Entropy source`.   
    
-   2.6. Salted Entropy source
+   2.6. Multiple Entropy sources    
    `100 d6 dices`, `Mouse moves`, `Images` and `Fortune cookies`
    
-   2.7. QR code generation
-   For _Wallet address_, _Private Key_ (also _WIF_ if applicable) and _Mnemonics_ 
+   2.7. QR code generation    
+   For _Wallet address_, _Private Key_ (also _WIF_ if applicable) and _Mnemonics_. There is also an `xtras` folder with the
+   SVG versions of these QR codes as well as more _experimental_ QR code formats (_rectangular Micro QR code_ and _Ultracode_ which has colored modules) 
    
-   2.8. Customizable options
-   Options includes `Blockchain`, `Wallet mode` (eg: Simple / HD) and `Entropy size`
+   2.8. Customizable options    
+   Options includes `Blockchain`, `Wallet mode` (eg: Simple / HD / SWORD) and `Entropy size`
    
-   2.9. List of `Word indexes`
-   Because the crucial data in the `Seed phrase` is indeed the list of `Word indexes`, it is explicitly displayed
-   and if the language is changed these word indexes are the same.
+   2.9. List of `Word indexes`    
+   The crucial data in the `Seed phrase` is indeed the list of `Word indexes` (indexes in the `BIP39` wordlist ), 
+   is explicitly displayed so if the language is changed these word indexes are the same.
    
-   2.10. Internet connection status
+   2.10. Internet connection status    
    Because of the _Cold wallet_ / _Non custodial_ purpose of Cryptocalc, it is not recommended to generate
    cryptocurrency wallets while being online. The status is displayed on the right of the main horizontal toolbar,
    it's a red "connected" icon when online and a green "disconnected" icon when offline (the highly recommended way to use Cryptocalc).   
    
-   2.11. Localization
+   2.11. Localization    
    Translations of GUI labels in the user's language (only English anf French translations files provided but this
    feature allows translations in other languages as well).
    
-   2.12. Dynamic links
+   2.12. Dynamic links    
 	   2.12.1: To the balance of generated wallet in the appropriate `Blockchain Explorer`
        2.12.2: Informations in `Coinmarketcap.com` for the wallet's cryptocurrency
 	   2.12.3: Dynamic link to (https://aladas-org.github.io/aladas.github.io/) with the `Seed phrase`
 	   
-   2.13. An auto-installer (published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/))
-   to use it as a `.exe` local standalone desktop application (see 3.1.1)
+   2.13. Standalone installer    
+   It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
+   installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
+   This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
 	   
-   2.14. Supported Cryptocurrencies
+   2.14. 23 Supported Cryptocurrencies    
    BTC (Bitcoin), ETH (Ethereum), XRP (Ripple), BNB (Binance Smart Chain), SOL (Solana), 
    DOGE (Dogecoin), TRX (TRON), ADA (Cardano), XLM (Stellar), SUI (Sui), BCH (Bitcoin Cash), AVAX (Avalanche), TON (Toncoin), 
    LTC (Litecoin), ETC (Ethereum Classic), POL (Polygon), VET (VeChain), BSV (Bitcoin SV), DASH (Dash), RVN (Ravencoin), 
@@ -66,18 +71,19 @@
    + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`
    + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension   
    
-   2.15. Supported Languages 
-   + Officially supported in `Bip49`: 
+   2.15. 18 Supported Languages    
+   + Officially supported in `Bip49`    
    _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.
 
-   + Non official languages:   
+   + Non official languages    
    _Deutsch_, _Russian_, _Esperanto_, _Latin_, _Greek_, _Hindi_, _Gujarati_ and _Bengali_.
 
-   2.16. Developed in `Javascript` with [ElectronJS](https://www.electronjs.org/)     
-   _CryptoCalc_ uses [ElectronJS](https://www.electronjs.org/) as well as many modern and popular 
-   [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) (e.g. [Visual Studio Code](https://code.visualstudio.com/)) 
+   2.16. Developed with in `ElectronJS`    
+   _CryptoCalc_ iw written in `Javascript` (both _client side_ and _server side_) and is built on top of [ElectronJS](https://www.electronjs.org/).     
+   _ElectronJS_ is used in many modern and popular [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) 
+   (e.g. [Visual Studio Code](https://code.visualstudio.com/)) 
    
-3. Setup 
+3. Setup    
    + 3.1. _Fast and Furious_ (advised for end users)
       + 3.1.1. Download [CryptoCalc installer](https://sourceforge.net/projects/aladas-cryptocalc/files/latest/download)
 	  from _SourceForge_ (NB: the installer was generated with [electron packager](https://www.npmjs.com/package/@electron/packager)
@@ -108,12 +114,12 @@
           * Type `cd cryptocalc`	
           * Type `npm install`    
 
-4. Release notes
-    + 4.1. Features in `0.3.50`	
+4. Release notes    
+    + 4.1. Features in `0.3.50`    
 	    * Added a dynamic link button [3D] to display a 3D representation of the `Seed phrase` (this is a web page
-		 which is indeed a copy of a companion project ([_CryptoShape](https://www.npmjs.com/package/@aladas-org/cryptoshape))
-	    * Added a link for donations
-	    * Updates in this README
+		which is indeed a copy of a companion project ([_CryptoShape](https://www.npmjs.com/package/@aladas-org/cryptoshape))
+	    * Added a link for _Donations_
+	    * Rewrite/Updates in this README
 	    * Replaced `Password` with `Passphrase` in _HD Wallet_ mode
     + 4.2. Features in `0.3.49`
 		* Added support of _Bengali_ for the _Seed phrase_
@@ -172,8 +178,8 @@
 	+ 4.23. Features in `0.3.28`
 	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
 
-5. _CryptoCalc_ User Guide  
-    You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 2.1)
+5. User's Guide    
+    You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
 	or by downloading the `npm package` (see 3.2) then double clicking on `_run.bat`.
     + 5.1. Features 
         * 5.1.1. _Cryptocalc Standalone installer_    
@@ -231,7 +237,7 @@
 			> (meaningless in this situation).    
 			> You can then change either the _Account_ or _Address Index_ fields 
 			> (the maximum number of digits is 9 so you can input a decimal value 
-			> between 0 and 999999999 for each field) in the _Wallet_ tab page. 
+			> between 0 and 999999999, 100.000 possible values for each field) in the _Wallet_ tab page. 
 			> This will show a [Refresh] button to recompute the wallet once you have finished.
 			> Pushing the [Refresh] button (or hitting either [Return] or [Enter] keys 
 			> while the cursor is in either _Account_ or _Address Index_ field) will recompute the 
@@ -247,15 +253,15 @@
 			to Zero (for `Cardano` HD wallets only).			
 			* 5.1.4.e. You can check generated _HD Wallets_ with _Ian Coleman BIP39_ homepage    
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
-		* 5.1.5. _Password feature_ (_HD Wallet_ only)    
-    	With a _password_ (also called _Passphrase_) a completely different _HD hierarchy_ is generated. 
+		* 5.1.5. _Passphrase feature_ (_HD Wallet_ only)    
+    	With a _passphrase_ a completely different _HD hierarchy_ is generated. 
 		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
 		**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
 		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button. 			
 		* 5.1.6. _Salted Entropy_    
-		_Entropy_ is generated from _Entropy Source_ (either _Image_ or _Fortune Cookie_ ATM) and adding
-		a _Salt_ (`UUID`) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ 
-		is the same. Thus the _Entropy_ will be unique at each press of [Generate] button.
+		_Entropy_ is generated from _Entropy Source_ and adding a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) to ensure that 
+		the _Entropy_ will be different at each Generation even if the _Entropy Source_ value is the same 
+		(e.g. reusing the same image or fortune cookie). Thus the _Entropy_ value will be unique at each press of [Generate] button.
 		* 5.1.7. Choose _Entropy Size_    
 		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). This is equivalent to a _Seedphrase size_ 
 		between 12 and 24 words. Changing _Entropy Size_ impacts the _Seedphrase size_ and conversely.
@@ -354,16 +360,16 @@
 		can be used as a _Master password_ for a _Password Manager_ or for tools like
 		[_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption of your documents.    
 		
-A. Appendix  
-    + A.1. `BIP39`: a _Dictionary_ of 2048 words    
+6. Appendix    
+    + 6.1. `BIP39`: a _Dictionary_ of 2048 words    
 	`BIP39` (`BIP` is the acronym of _Bitcoin Improvement Proposal_) is a specification regarding:
-		* A.1.1. A _Dictionary_ of 2048 words    
+		* 6.1.1. A _Dictionary_ of 2048 words    
 		The _Dictionary_ contains 2048 _English_ words each with a their unique 4 starting characters 
 		(or 3 if the word is 3 characters long). This dictionary exists also in other languages 
 		(e.g. _French_, _Deutsh_, _Spanish_, Italian_, _Portuguese_, etc...) but _Wallet Managers_ 
 		(e.g. _Guarda_, _Metamask_, _Atomic Wallet_, etc...) and _Hardware Wallets_ 
 		(eg. _Ledger_, _Trezor_, _Tangem_, etc...) will most probably accept only _English_ words.
-	    * A.1.2. Conversion of _seed phrase_ from and to _Entropy_		
+	    * 6.1.2. Conversion of _seed phrase_ from and to _Entropy_		
         The _seed phrase_ is obtained by drawing words (also called or _menemonics_) from the dictionary.
         Drawing a word is indeed choosing an index between 0 and 2047. This index can be represented
         by 11 bits in _Binary_ (because 2^11 = 2048). 
@@ -383,7 +389,7 @@ A. Appendix
 		* Reference    
 		[BIP39 — Mnemonic Generation with detailed explanation](https://medium.com/@sundar.sat84/bip39-mnemonic-generation-with-detailed-explanation-84abde9da4c1)
 	
-	+ A.2. `BIP32`: Hierarchic Deterministic wallets
+	+ 6.2. `BIP32`: Hierarchic Deterministic wallets    
 	`BIP32` specifies how to generate wallets with are all derived from the same _Entropy_
 	or _seed phrase_ (also called the _Secret Recovery Passphrase_).
     A _seed phrase_ of only 12 words is enough is most _Wallet Managers_ but it is much more secure to use a 24 words 
@@ -396,8 +402,8 @@ A. Appendix
         * Choose the external chain, used for public addresses         (0)    
         * And finally, generate the first address in this sequence     (0')    
         	
-	* A.3. References    
-	    + A.3.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))
-		+ A.3.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)
-		+ A.3.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)
-		+ A.3.4. [The evolution of the Binance Smart Chain](https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain)
+	* 6.3. References    
+	    + 6.3.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))
+		+ 6.3.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)
+		+ 6.3.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)
+		+ 6.3.4. [The evolution of the Binance Smart Chain](https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain)
