@@ -318,7 +318,7 @@ class ElectronMain {
 		this.MainWindow = new BrowserWindow(
 			{ width:  MAIN_WINDOW_WIDTH, 
 			  height: MAIN_WINDOW_HEIGHT,
-			  icon:   path.join(__dirname, "../../icons/Cryptowallet_Icon.png"),
+			  icon:   path.join(__dirname, "../../icons/Cryptocalc_Icon.png"),
 			  webPreferences: {
 				contextIsolation: true, // NB: 'true' is default value but keep it there anyway
 				preload:          path.join(__dirname, "./preload.js")

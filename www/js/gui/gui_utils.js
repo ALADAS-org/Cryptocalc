@@ -9,7 +9,7 @@ class GuiUtils {
 		iziToast.destroy();
 		
 		let options = {
-			iconUrl:         './icons/cryptowallet_Icon.png',
+			iconUrl:         './icons/Cryptocalc_Icon.png',
 			position:        'center',
 			backgroundColor: 'lightblue',
 			message:         msg,
@@ -64,7 +64,7 @@ class GuiUtils {
 		}
 		
 		let options = {
-			iconUrl:         './icons/cryptowallet_Icon.png',
+			iconUrl:         './icons/Cryptocalc_Icon.png',
 			timeout: false, progressBar: false, overlay: true, close: false,
 			backgroundColor: bg_color,
 			displayMode:     'once',

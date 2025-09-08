@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.51
+## CryptoCalc 0.3.52
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,10 +6,9 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _seed phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 10205 times on [npm](https://www.npmjs.com/) (even though there is also bots involved,
-   our estimation is that there is between 100 and 150 frequent users).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 10357 times on [npm](https://www.npmjs.com/).   
    
-   You can support this project by opening issues, provide localization files (see  5.1.17) or even by donating to 
+   You can support this project by opening issues, provide localization files (see 5.1.17) or even by donating to 
    [Aladas](https://aladas.org/?page_id=61), a non profit organization whose primary goal is to protect wild bees.
    
    [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
@@ -26,7 +25,7 @@
    
    2.5. Salted Entropy source    
    `Entropy` value is indeed computed by combining the `Salt` (currenly a dynamically generated `UUID`) with the value provided by the `Entropy source`    
-   + The formula is applying the `SHA256` hash function to this concatenated string: `Salt + Entropy source`.   
+   + The formula applies the `SHA256` hash function to this concatenated string: `Salt + Entropy source`.       
    
    2.6. Multiple Entropy sources    
    `100 d6 dices`, `Mouse moves`, `Images` and `Fortune cookies`
@@ -48,20 +47,20 @@
    it's a red "connected" icon when online and a green "disconnected" icon when offline (the highly recommended way to use Cryptocalc).   
    
    2.11. Localization    
-   Translations of GUI labels in the user's language (only English anf French translations files provided but this
-   feature allows translations in other languages as well).
+   Translations of GUI labels in the user's language (only _English_ and _French_ files provided currently but the localization
+   feature allows translations in other languages as well, they are in `JSON` format eg. `gui-msg-en.json`).
    
    2.12. Dynamic links    
-	   2.12.1: To the balance of generated wallet in the appropriate `Blockchain Explorer`
-       2.12.2: Informations in `Coinmarketcap.com` for the wallet's cryptocurrency
-	   2.12.3: Dynamic link to (https://aladas-org.github.io/aladas.github.io/) with the `Seed phrase`
+       2.12.1: To the balance of generated wallet in the appropriate `Blockchain Explorer`    
+       2.12.2: Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
+       2.12.3: Dynamic link to (https://aladas-org.github.io/aladas.github.io/) with the `Seed phrase`    
 	   
    2.13. Standalone installer    
    It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
    installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
    This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
 	   
-   2.14. 23 Supported Cryptocurrencies    
+   2.14. Supported Cryptocurrencies   
    BTC (Bitcoin), ETH (Ethereum), XRP (Ripple), BNB (Binance Smart Chain), SOL (Solana), 
    DOGE (Dogecoin), TRX (TRON), ADA (Cardano), XLM (Stellar), SUI (Sui), BCH (Bitcoin Cash), AVAX (Avalanche), TON (Toncoin), 
    LTC (Litecoin), ETC (Ethereum Classic), POL (Polygon), VET (VeChain), BSV (Bitcoin SV), DASH (Dash), RVN (Ravencoin), 
@@ -69,12 +68,13 @@
    
    + Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see reference 5.3.4)
    + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`
-   + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension   
+   + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
-   2.15. 18 Supported Languages    
-   + Officially supported in `Bip49`    
-   _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.
-
+   2.15. Supported Languages    
+   + Officially supported in `Bip39`    
+   _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
+   Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
+   
    + Non official languages    
    _Deutsch_, _Russian_, _Esperanto_, _Latin_, _Greek_, _Hindi_, _Gujarati_ and _Bengali_.
 
@@ -114,69 +114,60 @@
           * Type `cd cryptocalc`	
           * Type `npm install`    
 
-4. Release notes    
-    + 4.1. Features in `0.3.50`    
+4. Release notes  
+    + `0.3.52`: This version  
+	    * Fixes in this README
+		* First tests on `Linux Mint 2.2`: problem with icon filenames
+		* Fix in icon filenames for `Linux` compatibility 
+    + `0.3.50`    
 	    * Added a dynamic link button [3D] to display a 3D representation of the `Seed phrase` (this is a web page
-		which is indeed a copy of a companion project ([_CryptoShape](https://www.npmjs.com/package/@aladas-org/cryptoshape))
+		which is indeed a copy of a companion project ([CryptoShape](https://www.npmjs.com/package/@aladas-org/cryptoshape))
 	    * Added a link for _Donations_
 	    * Rewrite/Updates in this README
 	    * Replaced `Password` with `Passphrase` in _HD Wallet_ mode
-    + 4.2. Features in `0.3.49`
+    + `0.3.49`
 		* Added support of _Bengali_ for the _Seed phrase_
 		* Fixes in the documentation (this `README.md`)
-    + 4.3. Features in `0.3.48`
+    + `0.3.48`
 		* Improvements in `Mouse moves` _Entropy source_ :
 		    + In _manual_ mode: more entropy data in _Entropy source_ by 'mixing' (`XOR` operation) each mouse point 
 			(provided by the user) with a random byte (generated with `Crypto.getRandomValues()`) 
 			+ Consistent graphics between _manual_ ([New points...]) and _automatic_ ([Generate]) mode 
-    + 4.4. Features in `0.3.47`
+    + `0.3.47`
 		* Fixed _Gujarati_ wordlist to remove words containing ':', '-', or '/'
-    + 4.5. Features in `0.3.46`
+    + `0.3.46`
 		* Added support of _Gujarati_ for the _Seed phrase_
 		* Default _Entropy source_ is now `D6 dices`
-	+ 4.6. Features in `0.3.45`
+	+ `0.3.45`
 	    * Added informations for `Mouse moves` Entropy source: 
 			+ Renamed [New Entropy] to [New points...]
 			+ Explanations for manual (with [New points...]) vs automatic generation (with [Generate])
 		* Updated screenshots from `0.3.15` to `0.3.45`
-	+ 4.7. Features in `0.3.44`
+	+ `0.3.44`
 	    * New _Entropy source_: `Mouse moves`
-	+ 4.8. Features in `0.3.43`
+	+ `0.3.43`
 	    * New _Entropy source_: `D6 dices` (e.g. 100 rolls for 256 bits of Entropy)  
-	+ 4.9. Features in `0.3.42`
+	+ `0.3.42`
 	    * Conversion of new wordlists (DE, RU, EO, LA, EL, HI) in .txt format to submit as proposals for official BIP39 repository
-	+ 4.10. Features in `0.3.41`
+	+ `0.3.41`
 	    * Added support of _Greek_ for the _Seed phrase_
-	+ 4.11. Features in `0.3.40`
+	+ `0.3.40`
 	    * Added `Marketcap` button (after `Explore` button) in _Wallet Tab Page_ to show the relevant [coinmarketcap](https://coinmarketcap.com/) URL
-	+ 4.12. Features in `0.3.39`
+	+ `0.3.39`
 	    * Replaced default random generator `Math.random` with a more secure for cryptography usage (see `secureRandom()` in `hex_utils.js`) 
-	+ 4.13. Features in `0.3.38`
+	+ `0.3.38`
 	    * Added `POL` cryptocurrency (_POL_) in _Simple Wallet_,  _HD Wallet_ and _SWORD Wallet_ modes
 	    * Documentation missing: added note on how `SUI` support was validated
-	+ 4.14. Features in `0.3.37`
+	+ `0.3.37`
 	    * Added `SUI` cryptocurrency (_Sui_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 4.15. Features in `0.3.36`
+	+ `0.3.36`
 	    * Documentation Fix: missing `ZEN` (_Horizen_) in the kist of supported cryptocurrencies
-	+ 4.16. Features in `0.3.35`
+	+ `0.3.35`
 	    * Added `ZEN` cryptocurrency (_Horizen_) in _Simple Wallet_ mode
-	+ 4.17. Features in `0.3.34`
+	+ `0.3.34`
 	    * Documentation Fix: indeed `ZEC` (ZCASH) is not supported ATM
-	+ 4.18. Features in `0.3.33`
+	+ `0.3.33`
 	    * Added `RVN` cryptocurrency (_Ravencoin_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 4.19. Features in `0.3.32`
-	    * Added `LUNA` cryptocurrency (_Terra_, it's `LUNA 2.O` not `LUNA Classic`) in _Simple Wallet_ mode
-	+ 4.20. Features in `0.3.31`
-	    * Added `BSV` cryptocurrency (_Bitcoin SV_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 4.21. Features in `0.3.30`
-	    * Added `VET` cryptocurrency (_VeChain_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ 4.22. Features in `0.3.29`
-	    * Added `ETC` cryptocurrency (_Ethereum Classic_) in _HD Wallet_ / _SWORD Wallet_ modes
-		* Bug/Regression fixes:  
-			+ Regression: Changing 'Word Indexes' Base to Binary / Decimal was not working
-			+ Bug: Blockchain Explorer link for 'Bitcoin Cash' was KO
-	+ 4.23. Features in `0.3.28`
-	    * Bug fix: Regression in `0.3.27` induced by incomplete clean after prototyping `TON` support
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
