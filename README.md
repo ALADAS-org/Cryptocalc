@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.55
+## CryptoCalc 0.3.56
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -69,20 +69,20 @@
    `DOGE` (Dogecoin), `TRX` (TRON), `ADA` (Cardano), `XLM` (Stellar), `SUI` (Sui), `BCH` (Bitcoin Cash), `AVAX` (Avalanche), `TON` (Toncoin), 
    `LTC` (Litecoin), `ETC` (Ethereum Classic), `POL` (Polygon), `VET` (VeChain), `BSV` (Bitcoin SV), `DASH` (Dash), `RVN` (Ravencoin), 
    `ZEN` (Horizen), `LUNA` (Terra) and `FIRO` (Firo).    
-       + A list of the _Top 50 market cap_ cryptocurrencies is provided (`_doc/top_50_marketcap_coins.txt`), 
-	   the fist column a indicates (with `*`) if it is supported in _CryptoCalc_.    
+   + A list of the _Top 50 market cap_ cryptocurrencies is provided (`_doc/top_50_marketcap_coins.txt`), 
+   the fist column a indicates (with `*`) if it is supported in _CryptoCalc_.    
    
-       + Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see 6.3.4)
-       + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`
-       + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
+   + Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see 6.3.4)    
+   + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`    
+   + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
    2.16. Languages: 18 supported languages     
-       + Officially supported in `Bip39`    
-       _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
-       Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
+   + Officially supported in `Bip39`    
+   _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
+   Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
    
-       + Non official languages    
-       _Deutsch_, _Russian_, _Esperanto_, _Latin_, _Greek_, _Hindi_, _Gujarati_ and _Bengali_.
+   + Non official languages    
+   _Deutsch_, _Russian_, _Esperanto_, _Latin_, _Greek_, _Hindi_, _Gujarati_ and _Bengali_.
    
    Notice that _English_ has around 1.5 billion speakers, _Mandarin_ has around 1.1 billion speakers
    while the _India triad_ (_Hindi_, _Bengali_ and _Gujarati_) has around 1 billion speakers.
@@ -152,7 +152,7 @@
 			  * You can launch _CryptoCalc_ with `npm start` (or `chmod +x _runX.sh` then `./_runX.sh`)    
 			  
 4. Release notes  
-    + `0.3.55`: This version
+    + `0.3.56`: This version
 	    * Rewrite/Updates in this README: 
 		    + Instructions to install on `Linux` (see 3.2.b)
 			+ More explanations on the usage of [Guarda](https://guarda.com/) 
