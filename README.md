@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.53
+## CryptoCalc 0.3.54
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,9 +6,9 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _seed phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 10357 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 10483 times on [npm](https://www.npmjs.com/).   
    
-   You can support this project by opening issues, provide localization files (see 5.1.17) or even by donating to 
+   You can support this project by opening issues, provide localization files (see 5.1.18) or even by donating to 
    [Aladas](https://aladas.org/?page_id=61), a non profit organization whose primary goal is to protect wild bees.
    
    [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
@@ -51,34 +51,43 @@
    feature allows translations in other languages as well, they are in `JSON` format eg. `gui-msg-en.json`).
    
    2.12. Dynamic links    
-       2.12.1: To the balance of generated wallet in the appropriate `Blockchain Explorer`    
-       2.12.2: Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
-       2.12.3: Dynamic link to (https://aladas-org.github.io/aladas.github.io/) with the `Seed phrase`    
+       + Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
+       + Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
+       + 3D representation of the `Seed phrase` (see an example here: [Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
 	   
    2.13. Standalone installer    
    It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
    installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
    This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
+   
+   2.14. Works on `Windows` and `Linux`    
+       + For `Windows`: tested on `Windows 10`
+	   + For `Linux`: tested on [Linux Mint 2.2](running as https://linuxmint.com/) (and tested indeed on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
 	   
-   2.14. Supported Cryptocurrencies   
-   BTC (Bitcoin), ETH (Ethereum), XRP (Ripple), BNB (Binance Smart Chain), SOL (Solana), 
-   DOGE (Dogecoin), TRX (TRON), ADA (Cardano), XLM (Stellar), SUI (Sui), BCH (Bitcoin Cash), AVAX (Avalanche), TON (Toncoin), 
-   LTC (Litecoin), ETC (Ethereum Classic), POL (Polygon), VET (VeChain), BSV (Bitcoin SV), DASH (Dash), RVN (Ravencoin), 
-   ZEN (Horizen), LUNA (Terra) and FIRO (Firo)    
+   2.15. Cryptocurrencies: 23 supported Cryptocurrencies   
+   `BTC` (Bitcoin), `ETH` (Ethereum), `XRP` (Ripple), `BNB` (Binance Smart Chain), `SOL` (Solana), 
+   `DOGE` (Dogecoin), `TRX` (TRON), `ADA` (Cardano), `XLM` (Stellar), `SUI` (Sui), `BCH` (Bitcoin Cash), `AVAX` (Avalanche), `TON` (Toncoin), 
+   `LTC` (Litecoin), `ETC` (Ethereum Classic), `POL` (Polygon), `VET` (VeChain), `BSV` (Bitcoin SV), `DASH` (Dash), `RVN` (Ravencoin), 
+   `ZEN` (Horizen), `LUNA` (Terra) and `FIRO` (Firo).    
+       + A list of the _Top 50 market cap_ cryptocurrencies is provided (`_doc/top_50_marketcap_coins.txt`), 
+	   the fist column a indicates (with `*`) if it is supported in _CryptoCalc_.    
    
-   + Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see reference 5.3.4)
-   + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`
-   + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
+       + Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see 6.3.4)
+       + Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`
+       + Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
-   2.15. Supported Languages    
-   + Officially supported in `Bip39`    
-   _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
-   Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
+   2.16. Languages: 18 supported languages     
+       + Officially supported in `Bip39`    
+       _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
+       Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
    
-   + Non official languages    
-   _Deutsch_, _Russian_, _Esperanto_, _Latin_, _Greek_, _Hindi_, _Gujarati_ and _Bengali_.
+       + Non official languages    
+       _Deutsch_, _Russian_, _Esperanto_, _Latin_, _Greek_, _Hindi_, _Gujarati_ and _Bengali_.
+   
+   Notice that _English_ has around 1.5 billion speakers, _Mandarin_ has around 1.1 billion speakers
+   while the _India triad_ (_Hindi_, _Bengali_ and _Gujarati_) has around 1 billion speakers.
 
-   2.16. Developed with in `ElectronJS`    
+   2.17. Developed with `Javascript` and `ElectronJS`    
    _CryptoCalc_ iw written in `Javascript` (both _client side_ and _server side_) and is built on top of [ElectronJS](https://www.electronjs.org/).     
    _ElectronJS_ is used in many modern and popular [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) 
    (e.g. [Visual Studio Code](https://code.visualstudio.com/)) 
@@ -93,29 +102,61 @@
 	  If you don't trust the installer (because it is not signed as this is a 350$ cost per year), you can either:
 	      + 3.1.1.a. Rebuild yourself the _Installer_ by downloading `Inno Setup` and following the _Howto_ 
           provided in the `_inno_setup` subfolder (`Howto build cryptocalc_setup.txt`) 		  
-          + 3.1.1.b. Else you can proceed to _Wizard's Lair_ setup instead (see 3.2)	  
+          + 3.1.1.b. Else you can proceed to _Wizard's Lair_ setup (see 3.2)	  
       + 3.1.2. Default setup folder is `C:\Users\$CURRENT_USER\AppData\Local\Programs\Cryptocalc`
       + 3.1.3. Default subfolder where _Wallet informations_ are saved:    
 	      * `$DEFAULT_SETUP_FOLDER\resources\app\_output`	  
    + 3.2. _Wizard's Lair_ (advised for custom local setup and/or software developers)
-      + 3.2.1. Prerequisites
-          * Install [NodeJS](https://nodejs.org/en/)
-	      * Install [Git](https://git-scm.com/)
-      + 3.2.2. Open a _command line interpreter_
-	      * Use Windows Menu _Start_ then input `cmd`
-	      * Change _current disk_ to where you plan to install (eg. if its `D` then type `D:`)
-	      * Change _current directory_ to where you to install (eg. `md tools` then `cd tools`)
-	  + 3.2.3. Import _CryptoCalc_ from _github_
-	      * Open the [GitHub _CryptoCalc_ repository](https://github.com/ALADAS-org/cryptocalc) 
-	      * Use the [<> Code v] green button
-	      * Copy the displayed [.git URL](https://github.com/ALADAS-org/cryptocalc.git)
-	      * In the _command line interpreter_, type `git clone ` followed by the `.git` URL\
-	      e.g. `git clone https://github.com/ALADAS-org/cryptocalc.git`
-          * Type `cd cryptocalc`	
-          * Type `npm install`    
-
+      + 3.2.a. On `Windows` Operating system
+	      + 3.2.a.1. Prerequisites
+              * Install [NodeJS](https://nodejs.org/en/)
+	          * Install [Git](https://git-scm.com/)
+          + 3.2.a.2. Open a _command line interpreter_
+	          * Use Windows Menu _Start_ then input `cmd`
+	          * Change _current disk_ to where you plan to install (eg. if its `D` then type `D:`)
+	          * Change _current directory_ to where you to install (eg. `md tools` then `cd tools`)
+	      + 3.2.a.3. Import _CryptoCalc_ from _github_
+	          * Open the [GitHub _CryptoCalc_ repository](https://github.com/ALADAS-org/cryptocalc) 
+	          * Use the [<> Code v] green button
+	          * Copy the displayed [.git URL](https://github.com/ALADAS-org/cryptocalc.git)
+	          * In the _command line interpreter_, type `git clone ` followed by the `.git` URL\
+	          e.g. `git clone https://github.com/ALADAS-org/cryptocalc.git`
+              * Type `cd cryptocalc`	
+              * Type `npm install` 
+			  * You can launch _CryptoCalc_ with a double clik on (eg. `sudo apt-get install nodejs`)_runW.bat`    
+      + 3.2.b. On `Linux` Operating system	
+          + 3.2.b.1. Linux distribution	  
+		      * _CryptoCalc_ was tested on [Linux Mint 2.2](running as https://linuxmint.com/)
+			  but installed as a virtual machine within [VirtualBox](https://www.virtualbox.org/).    
+              Notice that the _Cinnamon_ desktop was chosed.
+		  + 3.2.b.2. Open a _command shell_
+	          * This will open a window where you can input commands (eg. (eg. `sudo apt-get install nodejs`)whoami`) 	
+	          * Create a _subdirectory_ to use it as a _workspace_, I suggest that you name it `Dev`:
+			      + `mkdir Dev`
+	          * Change _current directory_ to this new _subdirectory_: 
+                  + `cd Dev		
+			  * Create a _subdirectory_ for iporting [Github](https://github.com/) projects, I suggest that you name it `gihub`:
+                  + `mkdir gihub`	
+			  * Change _current directory_ to this new _subdirectory_: 
+                  + `cd github					  
+	      + 3.2.b.2. Prerequisites
+              * Install [NodeJS](https://nodejs.org/en/): 
+			      + `sudo apt-get install nodejs`			  
+	          * Install [Git](https://git-scm.com/)
+                  + `sudo apt update; apt install git`              				  
+	      + 3.2.b.3. Import _CryptoCalc_ from [Github](https://github.com/)
+		      + `cd; cd Dev/github` 
+	          + `git clone https://github.com/ALADAS-org/Cryptocalc.git`
+              * `cd Cryptocalc`	
+              * `npm install` 
+			  * You can launch _CryptoCalc_ with `npm start` (or `chmod +x _runX.sh` then `./_runX.sh`)    
+			  
 4. Release notes  
-    + `0.3.52`: This version  
+    + `0.3.54`: This version
+	    * Rewrite/Updates in this README: 
+		    + Instructions to install on `Linux` (see 3.2.b)
+			+ More explanations on the usage of [Guarda](https://guarda.com/) 
+    + `0.3.52`  
 	    * Fixes in this README
 		* First tests on `Linux Mint 2.2`: problem with icon filenames
 		* Fix in icon filenames for `Linux` compatibility 
@@ -160,21 +201,13 @@
 	    * Documentation missing: added note on how `SUI` support was validated
 	+ `0.3.37`
 	    * Added `SUI` cryptocurrency (_Sui_) in _HD Wallet_ / _SWORD Wallet_ modes
-	+ `0.3.36`
-	    * Documentation Fix: missing `ZEN` (_Horizen_) in the kist of supported cryptocurrencies
-	+ `0.3.35`
-	    * Added `ZEN` cryptocurrency (_Horizen_) in _Simple Wallet_ mode
-	+ `0.3.34`
-	    * Documentation Fix: indeed `ZEC` (ZCASH) is not supported ATM
-	+ `0.3.33`
-	    * Added `RVN` cryptocurrency (_Ravencoin_) in _HD Wallet_ / _SWORD Wallet_ modes
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
-	or by downloading the `npm package` (see 3.2) then double clicking on `_run.bat`.
+	or by downloading the `npm package` (see 3.2) then double clicking on `_runW.bat` (on Windows).
     + 5.1. Features 
         * 5.1.1. _Cryptocalc Standalone installer_    
-		    + 5.1.1.a: Downloadlc [CryptoCalc installer](https://sourceforge.net/projects/aladas-cryptocalc/)
+		    + 5.1.1.a: Downloadl [CryptoCalc installer](https://sourceforge.net/projects/aladas-cryptocalc/)
 		    + 5.1.1.b. Default subfolder where _Wallet informations_ are saved:    
 	        `$DEFAULT_SETUP_FOLDER\resources\app\_output`: Notice that this folder won't be automatically deleted if you uninstall _CryptoCalc_	
 		* 5.1.2. Generate _Entropy_ from _Entropy Source_    
@@ -194,15 +227,16 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos    
         NB: Please notice that the _Shortened seed phrase_ is not meant to be used
         to import a wallet in a _Wallet Manager_, it's only a trick to _compress_ the _seed phrase_ and make it easier
-		to store on a device with limited memory like a `NTAG213 NFC` (see 4.2.3). 	
+		to store on a device with limited memory like a `NTAG213 NFC` (see 5.2.3). 	
 	    * 5.1.3. _Entropy Source_ : `D6 Dices`, `Mouse moves`, `Image` or `Fortunes`
             * `D6 Dices`: default source, the number of rolls depends on _Entropy size_ (e.g. 100 rolls for 256 bits)
 			* `Mouse moves`: entropy bytes are generated when the user moves the mouse pointe            
-			* `Image`:     
+			* `Images`    
 			    + You can _Drag'n'Drop_ images (`png`, `jpg` or `svg`) from you local folders.		
                 + Image samples are provided in `www/img` folder.  		
                 + When using [Generate], _Cryptocurrency logos_ are drawn from `www/img/CryptoCurrency`
-			* `Fortunes`: drawn from a compilation of 12803 _Fortune Cookies_
+			* `Fortunes`: 
+			    + _Fortune cookies_ are drawn from a compilation of 12803 quotes 
         * 5.1.4. Choose _Wallet_Mode_: _Simple Wallet_, _HD Wallet_ or _SWORD Wallet_ (choice is in the `Wallet` tab page)  	
             * 5.1.4.a. _Simple Wallet_    
             This is the default _Wallet Mode_. In this mode, each wallet is separated. 
@@ -210,7 +244,7 @@
 			and the purpose of the `Derivation Path` used by _HD Wallets_). So a  it's a good fit to 
 			_Give it a Try_ and start creating your _Cryptocurrency Wallets_ with minimum knowledge.    
 			On the other hand it's less secure than _HD Wallets_ (especially if you use low security entropy
-			text like you firstname, city/birth year etc.... Indeed its will be vulnarable 
+			text like you firstname, city/birth year etc.... Indeed its will be vulnerable 
 			to [_dictionary attacks_](https://en.wikipedia.org/wiki/Dictionary_attack) )	
 			and it becomes clumsy if you need to split your assets between many wallets. 			
 			* 5.1.4.b. _HD Wallet_    
@@ -295,9 +329,15 @@
             * 5.1.11.d.	Notice that for a _HD Wallet_ you can change the `Account` and/or the `Address Index` (dont forget to push
 			the [Refresh] button). Now you can save the new wallet with `File.Save As...` and if you didn't change the `Entropy` 
             then this new wallet will belong to the same `Bip32 HD Wallet Tree` (see A.2) than the original one.			
-		* 5.1.12. Import a wallet in `Guarda`    
-		An item in the menu (Help / Resources / Guarda) eases importing a wallet in a
-		_Wallet Manager_ application by opening [`Guarda`](https://guarda.com/).				
+		* 5.1.12. Import a wallet in [Guarda](https://guarda.com/)   
+		An item in the menu (Help / Resources / Guarda) eases importing a wallet in a _Wallet Manager_ application 
+		+ Notes on `Guarda`
+		    * It is a _Non custodial_ wallet because the _Private Keys_ are stored on you local computer so keep in mind 
+			that you are responsible to take care and make basckups by yourself (eg. if you reinstall the Operating system
+			without having made a security backup then your _Private Keys_ and then your assets will be lost). 	
+			* It is a _Hot_ wallet because it is is also a web service which allows to send funds to another wallet
+			and also to change a cryptocurrency in another (eg ETH to SOL).		
+            * `Guarda` was chosen mainly to validate that a generated wallet by _CryptoCalc_ is accepted and thus validated.			
         * 5.1.13. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
@@ -305,11 +345,11 @@
 		in order to make it harder to steal your _Secret Recovery Passphrase_ because 
         it should be translated to _English_ to be used with a _Wallet Manager_.   
 		NB: it is important to highlight that indeed the crucial information is the list of _Word Indexes_.
-		Thats's why translation between languages is easy in _CryptoCalc_ because 
-		the reference is the _Word Indexes_ (see 6.1.14) not the words.
+		Thats's why translation between languages is easy in _CryptoCalc_ because the reference 
+		is the _Word Indexes_ (see 6.1.14) not the words.
 		* 5.1.14. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
-		_Seed phrase_ words in the `BIP39` wordlist (see also A.1.1). 
+		_Seed phrase_ words in the `BIP39` wordlist (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
@@ -318,21 +358,21 @@
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
 		_seed phrase_ (also called the _Secret Recovery Passphrase_).
-		* 5.1.16. Change/Reset of _Options_ (`Tools/Options`)    
+		* 5.1.16. Dynamic Links
+            + Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
+            + Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
+            + 3D representation of the `Seed phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
+		* 5.1.17. Change/Reset of _Options_ (`Tools/Options`)    
 		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
 		It is also possible to reset _Options_ to _Default Options_
 		(defined in `www/config/defaults/options.json`)
-        * 5.1.17. Support of _Localization_    
-        In _CryptoCalc_, the _Localization_ (`l10n`) feature is the translation of 
-		_GUI Labels_ to adapt to the _locale_ (eg. `en`).
-        A _locale_ name can be composed of a base language, country (territory) of use, 
-		and optionnally a codeset (eg. `de_CH.UTF-8`).		
-		The _locale_ is provided as part of your machine's environment. 
-		_CryptoCalc_ only uses the 2 letter language part (eg. `en`). 
-		Localization is enabled by a _JSon_ file in the `www/js/L10n` folder 
-		(eg. `gui-msg-en.json`). 
-		Currently only `en` and `fr` are provided.  		
+        * 5.1.18. _Localization_    
+        _Localization_ (`l10n`) feature is the translation of _GUI Labels_ to adapt to the user's language, it' called the _locale_ (eg. `en`).
+        A _locale_ name can be composed of a base language, country (territory) of use and optionnally a codeset (eg. `de_CH.UTF-8`).		
+		The _locale_ is provided as part of your machine's environment. _CryptoCalc_ only uses the 2 letter language part (eg. `en`). 
+		Localization is enabled by a _JSon_ file in the `www/js/L10n` folder (eg. `gui-msg-en.json`).    
+		Notice that currently only `en` and `fr` are provided.    
     + 5.2. Use cases
         * 5.2.1. Generate a new _Wallet_ and import it in a _Wallet manager_  
 	    With a _Wallet Manager_ like [`Guarda`](https://https://guarda.com/) you can import
@@ -352,14 +392,14 @@
 		[_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption of your documents.    
 		
 6. Appendix    
-    + 6.1. `BIP39`: a _Dictionary_ of 2048 words    
+    + 6.1. `BIP39`: a _Dictionary_ of 2048 words     
 	`BIP39` (`BIP` is the acronym of _Bitcoin Improvement Proposal_) is a specification regarding:
-		* 6.1.1. A _Dictionary_ of 2048 words    
-		The _Dictionary_ contains 2048 _English_ words each with a their unique 4 starting characters 
-		(or 3 if the word is 3 characters long). This dictionary exists also in other languages 
+		* 6.1.1. A _Dictionary_ of 2048 _mnemonics_    
+		The _Dictionary_ (also called a _wordlist_) contains 2048 _English_ _mnemonics_ (words) each with a their unique 
+		4 starting characters (or 3 if the mnemonic is 3 characters long). This dictionary exists also in other languages 
 		(e.g. _French_, _Deutsh_, _Spanish_, Italian_, _Portuguese_, etc...) but _Wallet Managers_ 
 		(e.g. _Guarda_, _Metamask_, _Atomic Wallet_, etc...) and _Hardware Wallets_ 
-		(eg. _Ledger_, _Trezor_, _Tangem_, etc...) will most probably accept only _English_ words.
+		(eg. _Ledger_, _Trezor_, _Tangem_, etc...) will only accept _English_ words.
 	    * 6.1.2. Conversion of _seed phrase_ from and to _Entropy_		
         The _seed phrase_ is obtained by drawing words (also called or _menemonics_) from the dictionary.
         Drawing a word is indeed choosing an index between 0 and 2047. This index can be represented
