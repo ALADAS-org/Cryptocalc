@@ -64,7 +64,7 @@ class DrawEntropyDiceD6 {
 		}
 		
 		this.entropy = this.diceRollsToHex(dice_rolls).replace('0x','');
-		console.log("> DrawEntropyDiceD6.generateEntropy entropy(" + this.entropy.length/2 + " bytes): " + this.entropy);
+		// console.log("> DrawEntropyDiceD6.generateEntropy entropy(" + this.entropy.length/2 + " bytes): " + this.entropy);
 		
 		// this.test_rolls_to_entropy();
 		
