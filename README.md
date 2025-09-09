@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.54
+## CryptoCalc 0.3.55
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -152,7 +152,7 @@
 			  * You can launch _CryptoCalc_ with `npm start` (or `chmod +x _runX.sh` then `./_runX.sh`)    
 			  
 4. Release notes  
-    + `0.3.54`: This version
+    + `0.3.55`: This version
 	    * Rewrite/Updates in this README: 
 		    + Instructions to install on `Linux` (see 3.2.b)
 			+ More explanations on the usage of [Guarda](https://guarda.com/) 
