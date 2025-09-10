@@ -5,14 +5,14 @@
 "use strict";
 
 class Wallet {
-	static GUI_NODE_IDs = { "lang": "lang_select_id",
+	static GUI_NODE_IDs = { "Lang": "lang_select_id",
                             "Wallet Mode": "wallet_mode_select_id",
-	                        "blockchain": "wallet_blockchain_id", 
-							"coin": "wallet_coin_id", "coin_type": "coin_type_id",
+	                        "Blockchain": "wallet_blockchain_id", 
+							"Coin": "wallet_coin_id", "coin_type": "coin_type_id",
 							"Entropy": "entropy_id", 
 							"Entropy Size": "entropy_bits_select_id", "expected_entropy_digits": "",
 							"word_count": "word_count_select_id",
-							"mnemonics": "mnemonics_id",
+							"Secret phrase": "mnemonics_id",
 							"checksum": "checksum_id",
 							"password": "password_id",
 							"Word indexes": "word_indexes_id",
@@ -82,7 +82,7 @@ class Wallet {
 			if ( attr_name == "coin_type" ) { 
 				value = value.toString() + "'"; 
 			}
-			else if (attr_name == "mnemonics" && this.attributes["lang"] == "JP") {
+			else if (attr_name == "Secret phrase" && this.attributes["Lang"] == "JP") {
 				// value = value.replaceAll(' ','*');				
 				value = value.replaceAll(' ','\u3000');
 			}	
