@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.61
+## CryptoCalc 0.3.62
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -157,7 +157,7 @@
 				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
 			  
 4. Release notes  
-    - `0.3.61`: This version: GUI Updates
+    - `0.3.62`: This version: GUI Updates
 	    - A Label Online/Offline is now at the left of the _Internet connection_status_  icon. 
         - _Seed phrase_ renamed to _Secret prase_ because it seems it is the more user friendly terminology (among
         _Mnemonics_, _Seed phrase_, _Secret_, _Passphrase_ and _Secret Recovery Passphrase_).
