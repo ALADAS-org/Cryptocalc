@@ -1860,15 +1860,23 @@ class RendererGUI {
 				let internet_connected = data[1];
 				// trace2Main( pretty_format( "Internet connected", internet_connected ) );
 				
-				let internet_connection_elt = HtmlUtils.GetNode(INTERNET_CONNECTION_ICON_ID);
+				let internet_connection_icon_elt = HtmlUtils.GetNode(INTERNET_CONNECTION_ICON_ID);
 				// console.log("   internet_connection_elt: " + internet_connection_elt);
 				
-				if (internet_connection_elt != undefined) {
+				let internet_connection_label_elt = HtmlUtils.GetNode(INTERNET_CONNECTION_LABEL_ID);
+				
+				if (internet_connection_icon_elt != undefined && internet_connection_label_elt != undefined) {
 					if ( internet_connected ) {
-						internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_ON_Red.png";
+						internet_connection_label_elt.innerHTML = "Online";
+						HtmlUtils.AddClass(INTERNET_CONNECTION_LABEL_ID, "RedLabel");
+						HtmlUtils.RemoveClass(INTERNET_CONNECTION_LABEL_ID, "GreenLabel");
+						internet_connection_icon_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_ON_Red.png";
 					}
 					else {
-						internet_connection_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_OFF_Green.png";
+						internet_connection_label_elt.innerHTML = "Offline";
+						HtmlUtils.AddClass(INTERNET_CONNECTION_LABEL_ID, "GreenLabel");
+						HtmlUtils.RemoveClass(INTERNET_CONNECTION_LABEL_ID, "RedLabel");						
+						internet_connection_icon_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_OFF_Green.png";
 					}
 				}
 			    break;
@@ -2351,7 +2359,7 @@ class RendererGUI {
 			case SW_MNEMONICS_COPY_BTN_ID:
 				copy_text = HtmlUtils.GetNodeValue( MNEMONICS_ID );
 				GuiUtils.ShowQuestionDialog
-					( "Seedphrase copied in Clipboard", { "CloseButtonLabel": "OK" } );
+					( "Secret phrase copied in Clipboard", { "CloseButtonLabel": "OK" } );
 				break;
 				
 			case SW_WIF_COPY_BTN_ID:
@@ -2631,7 +2639,7 @@ class RendererGUI {
 		
 		let shortened_mnemonics_elt = HtmlUtils.GetNode( MNEMONICS_4LETTER_ID ); 
 		let shortened_mnemonics = shortened_mnemonics_elt.value;
-		crypto_info['Shortened Seedphrase'] = shortened_mnemonics;
+		crypto_info['Shortened Secret phrase'] = shortened_mnemonics;
 		
 		let lang = this.wallet_info.getAttribute(LANG);
 		let options = { [LANG]: lang };

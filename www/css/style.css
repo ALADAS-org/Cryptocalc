@@ -141,6 +141,21 @@ hr {
 	font-size:         14px;
 }
 
+#internet_connection_label_id {
+	font-weight: bold;
+	position:    absolute; 
+	left:        -50px;
+    top:         5px; 
+}
+
+.RedLabel {
+	color: red;
+}
+
+.GreenLabel {
+	color: #3ABE3A;
+}
+
 #internet_connection_td_id {
 	position: absolute; 
     top:   0px; 

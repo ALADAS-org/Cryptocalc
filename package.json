@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.60",
+  "version": "0.3.61",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -21,12 +21,13 @@
     "wallet generator",
     "cryptography",
     "mnemonics",
-    "seed phrase",
-    "secret recovery passphrase",
+    "secret phrase",
+    "passphrase",
     "private key",
     "QR code",
     "BIP39",
     "BIP32",
+	"BIP38",
     "BIP44"
   ],
   "author": "Daniel Rodet & Michel Kern",

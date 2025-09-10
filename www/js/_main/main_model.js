@@ -199,7 +199,7 @@ class MainModel {
 			// *BUG* in crypto_info: current_key == crypto_info[current_key] 
 			if (    current_key != crypto_info[current_key]  
 			    &&  current_value != undefined  &&  current_value != 'undefined' ) 	{ 				
-				wallet_info_str += current_key.padEnd(22,' ') + current_value + '\n';
+				wallet_info_str += current_key.padEnd(24,' ') + current_value + '\n';
 			}	
 		}
 		// ---------- fill 'wallet_info_str'
@@ -221,7 +221,7 @@ class MainModel {
 		
 		if ( wif != "" ) this.createQRCode( output_path, "WIF.png", wif, 'qrcode' );
 		
-		this.createQRCode( output_path, "Seedphrase.png", crypto_info[MNEMONICS], 'qrcode' );	
+		this.createQRCode( output_path, "SecretPhrase.png", crypto_info[MNEMONICS], 'qrcode' );	
 		
 		let subfolder = "xtras";
 		FileUtils.CreateSubfolder( output_path, subfolder );
@@ -245,7 +245,7 @@ class MainModel {
 		
 		if ( wif != "" )   this.createQRCode( subfolder_path, "WIF.svg", wif, 'qrcode', 'svg' );
 			
-		this.createQRCode( subfolder_path, "Seedphrase.svg", crypto_info[MNEMONICS], 'qrcode', 'svg' );
+		this.createQRCode( subfolder_path, "SecretPhrase.svg", crypto_info[MNEMONICS], 'qrcode', 'svg' );
 		//-------- SVG output
 		
 		let output_file_path = this.saveWalletInfoAsJson( output_path, crypto_info, timestamp );		
@@ -294,14 +294,15 @@ class MainModel {
             json_data[WIF]               = crypto_info[WIF];			
 		}
 		
-		if ( crypto_info["Seedphrase"] != undefined ) {
-			json_data[MNEMONICS]         = crypto_info["Seedphrase"];
+		if ( crypto_info["Secret phrase"] != undefined ) {
+			json_data["Secret phrase"] = crypto_info["Secret phrase"];
+			// json_data[MNEMONICS] = crypto_info["SecretPhrase"];
 		}	
-		else {                                            
-		    json_data[MNEMONICS]         = crypto_info[MNEMONICS];		
+		else {    
+            json_data["Secret phrase"] = crypto_info[MNEMONICS];           			
 		}
 		
-        json_data["Word indexes"]        = crypto_info["Word indexes"];
+        json_data["Word indexes"] = crypto_info["Word indexes"];
 		
 		//---------- DERIVATION_PATH ----------
 		if ( crypto_info[DERIVATION_PATH] != undefined ) {

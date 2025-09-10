@@ -76,14 +76,10 @@
 						<td class="LabelColumn">
 							<span id="entropy_src_label_id">Entropy Source</span>
 							<select id="entropy_src_type_selector_id" 
-									class="InputField EntropySelector">								
-								
-								<option value="DiceD6" selected>D6 dices</option>
-								
-								<option value="UserMove">Mouse moves</option>
-								
-								<option value="Image">Image</option>
-								
+									class="InputField EntropySelector">										
+								<option value="DiceD6" selected>D6 dices</option>								
+								<option value="UserMove">Mouse moves</option>								
+								<option value="Image">Image</option>								
 								<option value="Fortunes">Fortunes</option>			
 							</select>
 						</td>
@@ -117,7 +113,7 @@
 										</table>
 										<!-- ======== Entropy source: Images -->										
 				
-										<!-- ======== Entropy source: UserMove ======== -->
+										<!-- ======== Entropy source: Mouse Moves ======== -->
 										<div id="entropy_src_mouse_move_container_id" hidden>
 											<table>
 												<tr>
@@ -139,14 +135,14 @@
 												</tr>
 											</table>	
 										</div>
-										<!-- ======== Entropy source: UserMove -->
+										<!-- ======== Entropy source: Mouse Moves -->
 										
-										<!-- ======== Entropy source: Dice d6 ======== -->
+										<!-- ======== Entropy source: d6 Dices  ======== -->
 										<div id="entropy_src_dice_d6_container_id" hidden> <!-- hidden -->
 											<div id="entropy_src_dice_d6_div_id">														 
 											</div>												
 										</div>
-										<!-- ======== Entropy source: Dice d6 -->
+										<!-- ======== Entropy source: d6 Dices  -->
 									</td>
 								</tr>
 							</table>
@@ -200,9 +196,9 @@
 					<!-- ----------------------- Entropy (128/256 bits) -->
 					
 					
-					<!-- -----------------------  Passphrase  ----------------------- -->
+					<!-- -----------------------  Bip32 passphrase  ----------------------- -->
 					<tr id="password_row_id"><td class="LabelColumn">
-							<span id="password_label_id">Passphrase</span>
+							<span id="password_label_id">Bip32 passphrase</span>
 						</td>
 						<td colspan="2" class="FieldColumn">
                             <div class="DataFieldWithButton_Container"
@@ -212,23 +208,23 @@
 									   minlength="4" maxlength="128"
 									   value=""/>
 								<button class="SmallButton" id="eye_btn_id"
-								        title="Show/Hide passphrase">
+								        title="Show/Hide Bip32 passphrase">
 										<img id="eye_btn_img_id" src="icons/eye_closed_16px.png" 
 											  border="0"/>
 								</button><span id="apply_btn_separator_id" hidden>&nbsp;</span>
 								<input id="apply_password_btn_id" type="button" 
 								       title="Recompute HD Hierarchy" value="Apply" hidden/>&nbsp;								
 								<button class="SmallButton" id="generate_password_btn_id"
-								        title="Regenerate passphrase">
+								        title="Regenerate Bip32 passphrase">
 									<img id="apply_btn_img_id" src="icons/regenerate_16px_icn.png" 
 										 border="0"/>
 							    </button>&nbsp;
 								<input id="clear_password_btn_id" type="button" 
-								       title="Clear passphrase" value="Clear"/>
+								       title="Clear Bip32 passphrase" value="Clear"/>
 							</div>
 						</td>
 					</tr>
-					<!-- ----------------------- Passphrase -->
+					<!-- ----------------------- Bip32 passphrase -->
 					
 					
 					<!-- -----------------------  Checksum  ----------------------- -->
@@ -242,9 +238,9 @@
 					<!-- ----------------------- Checksum -->
 					
 					
-					<!-- ----------------------- Seedphrase ------------------------ -->
+					<!-- ----------------------- Secret phrase (Mnemonics) ------------------------ -->
 					<tr><td class="LabelColumn">
-							<span>Seedphrase</span>
+							<span>Secret phrase</span>
 							<!-- https://www.andiamo.co.uk/resources/iso-lang_xuage-codes/ -->
 							<select class="InputField LabelValueSelector"
 									id="lang_select_id">
@@ -295,7 +291,7 @@
 							</textarea>
 						</td>
 					</tr>
-					<!-- ----------------------- Seedphrase -->
+					<!-- ----------------------- Secret phrase (Mnemonics) -->
 					
 					<!-- ---------------------- Word Indexes ----------------------- -->
 					<tr><td class="LabelColumn">
@@ -317,7 +313,7 @@
 					<tr><td colspan="4"></td></tr>				
 				</table>
 			</div>
-			<!-- =================================== 'Seed' Tab page -->
+			<!-- =================================== 'Entropy' Tab page -->
 			
 				
 			<!-- ========================================================================================= -->
@@ -435,9 +431,9 @@
 					</tr>
 					<!-- ----------------------- Private Key -->
 					
-					<!-- --------------- Seedphrase (Simple Wallet) ---------------- -->
+					<!-- --------------- Secret phrase (Simple Wallet) ---------------- -->
 					<tr id="tr_sw_mnemonics_id">
-						<td class="LabelColumn">Seedphrase</td>	
+						<td class="LabelColumn">Secret phrase</td>	
 						<td colspan="2" class="FieldColumn">	
 							<div class="DataFieldWithButton_Container" 
 								 id="seedphrase_container_id">					
@@ -453,7 +449,7 @@
 							</div>
 						</td>
 					</tr>
-					<!-- --------------- Seedphrase (Simple Wallet) -->
+					<!-- --------------- Secret phrase (Simple Wallet) -->
 					
 					
 					<!-- -------------------------- WIF --------------------------- -->

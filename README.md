@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.60
+## CryptoCalc 0.3.61
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -19,14 +19,14 @@
    
     2.2. Selection of `Entropy size` (between 128 and 256 bits)    
    
-    2.3. Dynamic conversion of between `Entropy` and `Seed phrase`    
+    2.3. Dynamic conversion between `Entropy` and `Secret phrase`    
    
     2.4. `File/Save/Open..` commands    
     These commands allow edition of _Wallet informations_ after saving (these informations are saved as a `.wits`, a `JSON` format file) 
    
     2.5. Salted Entropy source    
     `Entropy` value is indeed computed by combining the `Salt` (currenly a dynamically generated `UUID`) with the value provided by the `Entropy source`    
-    - The formula applies the `SHA256` hash function to this concatenated string: `Salt + Entropy source`.       
+    - `SHA256` hash function is applied to this: `Salt + Entropy source`       
    
     2.6. Multiple Entropy sources    
     `100 d6 dices`, `Mouse moves`, `Images` and `Fortune cookies`
@@ -39,7 +39,7 @@
     Options includes `Blockchain`, `Wallet mode` (eg: Simple / HD / SWORD) and `Entropy size`
    
     2.9. List of `Word indexes`    
-    The crucial data in the `Seed phrase` is indeed the list of `Word indexes` (indexes in the `BIP39` wordlist ), 
+    The crucial data in the `Secret phrase` is indeed the list of `Word indexes` (indexes in the `BIP39` wordlist ), 
     is explicitly displayed so if the language is changed these word indexes are the same.
    
     2.10. Internet connection status    
@@ -54,16 +54,16 @@
     2.12. Dynamic links    
         - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
         - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
-        - 3D representation of the `Seed phrase` (see an example here: [Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
+        - 3D representation of the `Secret phrase` (see an example here: [Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
 	   
     2.13. Standalone installer    
     It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
     installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
     This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
    
-    2.14. Works on `Windows` and `Linux`    
+    2.14. Tested on `Windows` and `Linux`    
         - For `Windows`: tested on `Windows 10`    
-	    - For `Linux`: tested on [Linux Mint 2.2](running as https://linuxmint.com/) (and tested indeed on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
+	    - For `Linux`: tested on [Linux Mint 22.2](https://linuxmint.com/), tested indeed on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
 	   
     2.15. Cryptocurrencies: 23 supported Cryptocurrencies   
     `BTC` (Bitcoin), `ETH` (Ethereum), `XRP` (Ripple), `BNB` (Binance Smart Chain), `SOL` (Solana), 
@@ -128,7 +128,7 @@
 			   - You can launch _CryptoCalc_ with a double clik on `_runW.bat` (`W` means _Windows_)    
        - 3.2.b. On `Linux` Operating system	
            - Linux distribution	  
-		       - _CryptoCalc_ was tested on [Linux Mint 2.2](running as https://linuxmint.com/)
+		       - _CryptoCalc_ was tested on [Linux Mint 22.2](running as https://linuxmint.com/)
 		   	   but installed as a virtual machine within [VirtualBox](https://www.virtualbox.org/).    
                Notice that the _Cinnamon_ desktop was chosed.
 		   - Open a _command shell_
@@ -157,14 +157,19 @@
 				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
 			  
 4. Release notes  
-    - `0.3.60`: This version
+    - `0.3.61`: This version: GUI Updates
+	    - A Label Online/Offline is now at the left of the _Internet connection_status_  icon. 
+        - _Seed phrase_ renamed to _Secret prase_ because it seems it is the more user friendly terminology (among
+        _Mnemonics_, _Seed phrase_, _Secret_, _Passphrase_ and _Secret Recovery Passphrase_).
+		- Added a link (see 5.1.16) to the whitepaper of the _3D rep^resentation of a seed phrase_
+    - `0.3.60`
 	    - Trying to fix _Bullet list hell_ related to how [Github](https://github.com/) renders them
 	    - Rewrite/Updates in this README: 
 		    - Instructions to install on `Linux` (see 3.2.b)
 			- More explanations on the usage of [Guarda](https://guarda.com/) 
     - `0.3.52`  
 	    - Fixes in this README
-		- First tests on `Linux Mint 2.2`: problem with icon filenames
+		- First tests on `Linux Mint 22.2`: problem with icon filenames
 		- Fix in icon filenames for `Linux` compatibility 
     - `0.3.50`    
 	    - Added a dynamic link button [3D] to display a 3D representation of the `Seed phrase` (this is a web page
@@ -173,7 +178,7 @@
 	    - Rewrite/Updates in this README
 	    - Replaced `Password` with `Passphrase` in _HD Wallet_ mode
     - `0.3.49`
-		- Added support of _Bengali_ for the _Seed phrase_
+		- Added support of _Bengali_ for the _Secret phrase_
 		- Fixes in the documentation (this `README.md`)
     - `0.3.48`
 		- Improvements in `Mouse moves` _Entropy source_ :
@@ -183,7 +188,7 @@
     - `0.3.47`
 		- Fixed _Gujarati_ wordlist to remove words containing ':', '-', or '/'
     - `0.3.46`
-		- Added support of _Gujarati_ for the _Seed phrase_
+		- Added support of _Gujarati_ for the _Secret phrase_
 		- Default _Entropy source_ is now `D6 dices`
 	- `0.3.45`
 	    - Added informations for `Mouse moves` Entropy source: 
@@ -197,7 +202,7 @@
 	- `0.3.42`
 	    - Conversion of new wordlists (DE, RU, EO, LA, EL, HI) in .txt format to submit as proposals for official BIP39 repository
 	- `0.3.41`
-	    - Added support of _Greek_ for the _Seed phrase_
+	    - Added support of _Greek_ for the _Secret phrase_
 	- `0.3.40`
 	    - Added `Marketcap` button (after `Explore` button) in _Wallet Tab Page_ to show the relevant [coinmarketcap](https://coinmarketcap.com/) URL
 	- `0.3.39`
@@ -214,21 +219,21 @@
 	        `$DEFAULT_SETUP_FOLDER\resources\app\_output`: Notice that this folder won't be automatically deleted if you uninstall _CryptoCalc_	
 		- 5.1.2. Generate _Entropy_ from _Entropy Source_    
 		Use [Generate] button to draw a random image (cf. 5.1.3)
-		which then will be used as the _Entropy_ (with the _Salt_) to generate a new _seed phrase_ (between 12 and
+		which then will be used as the _Entropy_ (with the _Salt_) to generate a new _Secret phrase_ (between 12 and
 		24 words) which is derived to get the _Private Key_ from which the _Wallet Address_ is obtained
 		(NB: _Private Key_ and _Wallet Address_ are in the _Wallet_ Tab).
-		There is also a conversion to the _Shortened seed phrase_: as only the 4 first characters 
+		There is also a conversion to the _Shortened secret phrase_: as only the 4 first characters 
 		of each _mnemonic_ are meaningful 
-		(cf. `BIP39` specification) then in the _Shortened seed phrase_ each _mnemonic_ is represented 
+		(cf. `BIP39` specification) then in the _Shortened secret phrase_ each _mnemonic_ is represented 
 		only by its 4 first characters (with the first character in Uppercase as a mean to separate _mnemonics_).   
 		NB: As some _mnemonics_ are only 3 characters long, the abbreviation will of course only be whole _mnemonic_.  
 		Here is an example below:  
-        _seed phrase_  
+        _Secret phrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rent expand super sea summer pull catalog mobile proud solve oven goose    
-        _Shortened Seedphrase_  
+        _Shortened secret phrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos    
         NB: Please notice that the _Shortened seed phrase_ is not meant to be used
-        to import a wallet in a _Wallet Manager_, it's only a trick to _compress_ the _seed phrase_ and make it easier
+        to import a wallet in a _Wallet Manager_, it's only a trick to _compress_ the _Secret phrase_ and make it easier
 		to store on a device with limited memory like a `NTAG213 NFC` (see 5.2.3).    
 	    - 5.1.3. _Entropy Source_ : `D6 Dices`, `Mouse moves`, `Image` or `Fortunes`
             - `D6 Dices`: default source, the number of rolls depends on _Entropy size_ (e.g. 100 rolls for 256 bits)
@@ -254,12 +259,12 @@
 			_Hierarchical Deterministic_) in the same _BIP32 tree_.
 			> Please notice that the `Derivation Path` is now `Hardened` by default and mandatory (since `0.3.18`). 
 			> This is for _Security_ purpose (see 5.2.3)
-			The `BIP32` HD wallet tree_ is fully determined by the _Entropy_ (or _seed phrase_ which is equivalent) 
+			The `BIP32` HD wallet tree_ is fully determined by the _Entropy_ (or _Secret phrase_ which is equivalent) 
 			and an optional _Password_.
 			The _Entropy_ may be represented by a more human friendly representation: the _Mnemonics Sequence_ which 
-			may also be called a _seed phrase_, _Mnemonics_ or even _SRP_ (_Secret Recovery Passphrase_).    
+			may also be called a _Secret phrase_, _Mnemonics_, _Seed phrase_, _Secret_ or even _SRP_ (_Secret Recovery Passphrase_).    
 			> How to Generate a new wallet with a given _Entropy_:    
-			> Paste a new _Entropy_ (or _seed phrase_) in the `Entropy` wallet tab. 
+			> Paste a new _Entropy_ (or _Secret phrase_) in the `Entropy` wallet tab. 
 			> Notice that this will hide the _Entropy Source_ and _Salt_ fields 
 			> (meaningless in this situation).    
 			> You can then change either the _Account_ or _Address Index_ fields 
@@ -276,7 +281,7 @@
 			of _Hierarchical Deterministic_ wallets, but it allows to generate all the cryptocurrencies provided by `HD Wallet`.
 			- 5.1.4.d. Please notice that for `Cardano` HD wallets, the `Account` and `Address Index` parameters are not taken 
 			into account by the _Wallet Managers_ which I have tested (namely `Guarda` and `Yoroi`) because they ask for 
-			the `Mnemonics` (`Seed phrase` in _CryptoCalc_). This is why in _CryptoCalc_, these parameters are _hard-coded_
+			the `Mnemonics` (`Secret phrase` in _CryptoCalc_). This is why in _CryptoCalc_, these parameters are _hard-coded_
 			to Zero (for `Cardano` HD wallets only).			
 			- 5.1.4.e. You can check generated _HD Wallets_ with _Ian Coleman BIP39_ homepage    
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
@@ -314,7 +319,7 @@
 			    not be compatible with _Rectangular Micro QR Code_ but it works with 
 			    [`QRQR`](https://play.google.com/store/apps/details?id=com.arara.q&hl=en)	 
 			    an Android _QR Code reader_ published by _Arara_ on the _Google Play Store_.              
-                * 5.1.10.c.II: Then convert the _Entropy_ to the matching _seed phrase_ 
+                * 5.1.10.c.II: Then convert the _Entropy_ to the matching _Secret phrase_ 
 			    by doing a copy/paste in the `Entropy` field of _CryptoCalc_.    
 				**Caution**: Take care to set _CryptoCalc_ with the same `Entropy Size` and 
 				`Derivation path` (if applicable, don't forget to use the [Refresh] button)
@@ -333,13 +338,13 @@
             then this new wallet will belong to the same `Bip32 HD Wallet Tree` (see A.2) than the original one.			
 		- 5.1.12. Import a wallet in [Guarda](https://guarda.com/)   
 		An item in the menu (Help / Resources / Guarda) eases importing a wallet in a _Wallet Manager_ application 
-		- Notes on `Guarda`
-		    - It is a _Non custodial_ wallet because the _Private Keys_ are stored on you local computer so keep in mind 
-			that you are responsible to take care and make basckups by yourself (eg. if you reinstall the Operating system
-			without having made a security backup then your _Private Keys_ and then your assets will be lost). 	
-			- It is a _Hot_ wallet because it is is also a web service which allows to send funds to another wallet
-			and also to change a cryptocurrency in another (eg ETH to SOL).		
-            - `Guarda` was chosen mainly to validate that a generated wallet by _CryptoCalc_ is accepted and thus validated.			
+		    - Notes on `Guarda`
+		        - It is a _Non custodial_ wallet because the _Private Keys_ are stored on you local computer so keep in mind 
+			    that you are responsible to take care and make basckups by yourself (eg. if you reinstall the Operating system
+			    without having made a security backup then your _Private Keys_ and then your assets will be lost). 	
+			    - It is a _Hot_ wallet because it is is also a web service which allows to send funds to another wallet
+			    and also to change a cryptocurrency in another (eg ETH to SOL).		
+                - `Guarda` was chosen mainly to validate that a generated wallet by _CryptoCalc_ is accepted and thus validated.			
         - 5.1.13. Select _Seedphrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
@@ -351,7 +356,7 @@
 		is the _Word Indexes_ (see 6.1.14) not the words.
 		- 5.1.14. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
-		_Seed phrase_ words in the `BIP39` wordlist (see also 6.1.1). 
+		_Secret phrase_ words in the `BIP39` wordlist (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
@@ -359,11 +364,12 @@
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
-		_seed phrase_ (also called the _Secret Recovery Passphrase_).
+		_Secret phrase_ (also called the _Secret Recovery Passphrase_).
 		- 5.1.16. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
-            - 3D representation of the `Seed phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
+            - 3D representation of the `Secret phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/)) 
+            The whitepaper The description of this 3D representation is in this [whitepaper](https://zenodo.org/records/14579720)			
 		- 5.1.17. Change/Reset of _Options_ (`Tools/Options`)    
 		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
@@ -403,7 +409,7 @@
 		(e.g. _Guarda_, _Metamask_, _Atomic Wallet_, etc...) and _Hardware Wallets_ 
 		(eg. _Ledger_, _Trezor_, _Tangem_, etc...) will only accept _English_ words.
 	    - 6.1.2. Conversion of _seed phrase_ from and to _Entropy_		
-        The _seed phrase_ is obtained by drawing words (also called or _menemonics_) from the dictionary.
+        The _Secret phrase_ is obtained by drawing words (also called _mnemonics_) from the dictionary.
         Drawing a word is indeed choosing an index between 0 and 2047. This index can be represented
         by 11 bits in _Binary_ (because 2^11 = 2048). 
             - Conversion from _Entropy_ to _seed phrase_
@@ -418,15 +424,15 @@
 			are removed at the end of the concatenation of 11 bits segments.
 			e.g. For a _seed phrase_ of 12 words (converted to a 128 bits _Entropy_), 
 		    132 bits are obtained from the _Word Indexes_ (11 * 12), and because the _Entropy Checksum_ 
-			is 4 bits long then the 4 bits at the end are removed.
+			is 4 bits long (in the case of a 128 bits _Entropy_) then the 4 bits at the end are removed.
 		- Reference    
 		[BIP39 — Mnemonic Generation with detailed explanation](https://medium.com/@sundar.sat84/bip39-mnemonic-generation-with-detailed-explanation-84abde9da4c1)
 	
     - 6.2. `BIP32`: Hierarchic Deterministic wallets    
 	`BIP32` specifies how to generate wallets with are all derived from the same _Entropy_
-	or _seed phrase_ (also called the _Secret Recovery Passphrase_).
-    A _seed phrase_ of only 12 words is enough is most _Wallet Managers_ but it is much more secure to use a 24 words 
-	_seed phrase_ if possible (e.g. _Ledger_ hardware wallet manager).    
+	or _Secret phrase_ (also called the _Secret Recovery Passphrase_).
+    A _Secret phrase_ of only 12 words is enough is most _Wallet Managers_ but it is much more secure to use a 24 words 
+	_Secret phrase_ if possible (e.g. _Ledger_ hardware wallet manager).    
 	    Example: meaning of each part for `m/44'/60'/0'/0/0'` (a _Hardened Derivation Path_):    
 	    - Start at the master key                                      (m)    
         - Follow the `BIP44` specification                             (44')    

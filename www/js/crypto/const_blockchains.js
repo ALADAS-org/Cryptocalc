@@ -14,7 +14,7 @@
 // BUT Ethereum in First place because of the "ecosystem popularity"l
 const NULL_COIN    = "Null-COIN";
 
-const COIN         = "coin";
+const COIN         = "Coin";
 const COIN_TYPE    = "coin_type";
 
 const MAINNET      = "mainnet";
