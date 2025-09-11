@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.62
+## CryptoCalc 0.3.63
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -128,7 +128,7 @@
 			   - You can launch _CryptoCalc_ with a double clik on `_runW.bat` (`W` means _Windows_)    
        - 3.2.b. On `Linux` Operating system	
            - Linux distribution	  
-		       - _CryptoCalc_ was tested on [Linux Mint 22.2](running as https://linuxmint.com/)
+		       - _CryptoCalc_ was tested on [Linux Mint 22.2](https://linuxmint.com/)
 		   	   but installed as a virtual machine within [VirtualBox](https://www.virtualbox.org/).    
                Notice that the _Cinnamon_ desktop was chosed.
 		   - Open a _command shell_
@@ -145,7 +145,9 @@
                - Install [NodeJS](https://nodejs.org/en/): 
 			       - `sudo apt-get install nodejs`			  
 	           - Install [Git](https://git-scm.com/)
-                   - `sudo apt update; apt install git`              				  
+                   - `sudo apt update; apt install git` 
+               - Install `xdg-utils` ([X Desktop Group](https://www.freedesktop.org/wiki/))
+			       - `sudo apt-get install xdg-utils`
 	       - Import _CryptoCalc_ from [Github](https://github.com/)
 		       - `cd; cd Dev/github` 
 	           - `git clone https://github.com/ALADAS-org/Cryptocalc.git`
@@ -156,8 +158,12 @@
 				   - `./_runX.sh` 
 				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
 			  
-4. Release notes  
-    - `0.3.62`: This version: GUI Updates
+4. Release notes
+    - `0.3.63`: This version  
+	    - Fixed bug found on `Linux`: when saving, the [Show] button does nothing
+		- Fixed a Bug found when testing the [Show] button because the output folder is showed not the _latest wallet subfolder_
+		- Note that on `Linux`, you must also now also install `xdg-utils` (see 3.2.b)
+    - `0.3.62`: GUI Updates
 	    - A Label Online/Offline is now at the left of the _Internet connection_status_  icon. 
         - _Seed phrase_ renamed to _Secret prase_ because it seems it is the more user friendly terminology (among
         _Mnemonics_, _Seed phrase_, _Secret_, _Passphrase_ and _Secret Recovery Passphrase_).
