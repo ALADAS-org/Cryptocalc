@@ -18,6 +18,8 @@
 // * async  doFileOpen()
 // * async  doFileRead( json_data )
 //
+//          showFolderInExplorer()
+//
 // *        getNewFortuneCookie()
 // *        toggleDebugPanel()
 // *        getUserSelectedFile()
@@ -39,6 +41,16 @@ const { app, Menu, BrowserWindow, ipcMain,
 		// https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron
 
 require('v8-compile-cache');
+
+const os       = require('os');
+const { exec } = require('child_process');
+
+// https://nodejs.org/api/os.html#os_os_platform
+// 'aix', 'darwin', 'freebsd', 'linux', 'openbsd', 'sunos', 'win32'
+const WINDOWS  = "win32"; 
+const LINUX    = "linux";
+const FREE_BSD = "freebsd";
+const OPEN_BSD = "openbsd";
 
 const fs               = require('fs');
 const path             = require('path');
@@ -181,6 +193,8 @@ class ElectronMain {
 	    this.Options                   = {};
         this.SupportedBlockchains      = {};		
 	    this.FirstImageAsEntropySource = true;
+		
+		this.output_path = "";
 	} // ** Private constructor **
 	
 	createBrowserWindow( url ) {
@@ -487,9 +501,53 @@ class ElectronMain {
 	} // selectFileWithDialogBox()
 	
 	// https://stackoverflow.com/questions/43991267/electron-open-file-directory-in-specific-application
-	showFolderInExplorer( folder_path) {
+	showFolderInExplorer() {
 		pretty_func_header_log( "ElectronMain.showFolderInExplorer" );
-		shell.openPath( folder_path );
+
+		// Detect OS
+		// https://www.freecodecamp.org/news/how-to-write-os-specific-code-in-electron-bf6379c62ff6/
+		let os_platform = os.platform();
+		// console.log("OS: " + os.platform());
+		
+		console.log("this.output_path: '" + this.output_path + "'");
+
+        let path_separator = '/';
+		
+		let output_path = this.output_path;
+		if (os_platform == WINDOWS) {
+			path_separator = '\\';
+		}
+        else if (os_platform == LINUX) {
+			path_separator = '/';
+        }
+
+		output_path = this.output_path.replaceAll('\\','\0').replaceAll('/','\0');		
+        let output_path_items = output_path.split('\0');
+		console.log("output_path_items: '" + JSON.stringify(output_path_items) + "'");
+		let popped = output_path_items.pop();
+		
+		output_path = output_path_items.join(path_separator); 
+        console.log("output_path: '" + output_path + "'");		
+
+		const open_folder_LINUX = (path) => {
+			exec(`xdg-open "${path}"`, (error) => {
+				if (error) {
+					console.error(`Error opening folder: ${error}`);
+				}
+			});
+		}; // open_folder_LINUX()
+		
+		// console.log("output_path:  1: '" + output_path + "'");
+	
+		if (os_platform == WINDOWS) {		
+		    console.log("output_path:  '" + output_path + "'");
+			shell.openPath( output_path );
+		}
+		else if (os_platform == LINUX) {
+            output_path = output_path.replaceAll('\\','/');
+            console.log("output_path:  '" + output_path + "'");			
+			open_folder_LINUX( output_path );
+		}
     } // showFolderInExplorer()
 	
 	// File/Import/Random Fortune Cookie
@@ -651,8 +709,8 @@ class ElectronMain {
 		// called like this by Renderer: window.ipcMain.ShowOutputFolderInExplorer()
 		ipcMain.on( ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER, (event, data) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER );
-      	    let output_path = app.getAppPath() + "\\_output";
-			this.showFolderInExplorer( output_path );
+      	    // let output_path = app.getAppPath() + "\\_output";
+			this.showFolderInExplorer();
 		}); // "ToMain:Request/show_output_folder_in_explorer" event handler										  
 		
 		// ====================== ToMain_RQ_OPEN_URL ======================
@@ -687,7 +745,7 @@ class ElectronMain {
 		ipcMain.on( ToMain_RQ_SAVE_WALLET_INFO, ( event, crypto_info ) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_SAVE_WALLET_INFO );
 			Skribi.log( "eMain.evtH('SaveWinf')>" );	
-			MainModel.GetInstance().saveWalletInfo( crypto_info );
+			this.output_path = MainModel.GetInstance().saveWalletInfo( crypto_info );
 		}); // "ToMain:Request/save_wallet_info" event handler
 		
 		// ====================== ToMain_RQ_RESET_OPTIONS ======================

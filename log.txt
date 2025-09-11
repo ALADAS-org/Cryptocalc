@@ -8,10 +8,10 @@ MainModel.getAppVersion
 >> RendererGUI.openTabPage Seed elt:seed_tab_link_id
 >> RendererGUI.onGUIEvent: FromMain:SetVariable
    rGUI.onGUI>  data.length:                 3
-   rGUI.onGUI>  data:                        ["FromMain:SetVariable","0.3.2","0.3.61"]
-   rGUI.onGUI>  SET VARIABLE(0.3.2):         0.3.61
+   rGUI.onGUI>  data:                        ["FromMain:SetVariable","0.3.2","0.3.63"]
+   rGUI.onGUI>  SET VARIABLE(0.3.2):         0.3.63
    variable_name:                            0.3.2
-   rGUI.onGUI>  cryptowallet_version:        0.3.61
+   rGUI.onGUI>  cryptowallet_version:        0.3.63
 >> RendererGUI.onGUIEvent: FromMain:UpdateOptions
 >> RendererGUI.updateOptionsFields
    rGUI.upOpt> wallet_mode:                  Simple Wallet
@@ -56,84 +56,84 @@ MainModel.getAppVersion
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> RendererGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            39513d7d88aff1e76da624adf88196b995765c1b1622a5b73dc06b5889e2c3b0
-   rGUI.saltE> entropy_src_value:            360af3271b99dd090030cb7f719375e3cb3d43b0a935bf1ee183659d6009c26f
-   rGUI.saltE> entropy_src_value:            169b702aed7d5c690588adb6d8bc72c9b1df457fd1f6a127d92465b468ad8268
-   rGUI.upFields> entropy:                   45bef272353cd18e2e5b4fd72e508b89ec666368e10074aa33f613ff075d5a94
->> RendererGUI.propagateFields 45bef272353cd18e2e5b4fd72e508b89ec666368e10074aa33f613ff075d5a94
+   rGUI.saltE> entropy_src_value:            3ebb58cdedffc841252201c2626243ac0af914dee7be529036193858225981af
+   rGUI.saltE> entropy_src_value:            e56fbd659b064db6ccee5f0221501dce4661023c81ee76e3655f95a6e289832a
+   rGUI.saltE> entropy_src_value:            48288796801bf951be868de1f6b94b402b6896134d62c67bf6293b6568200cf5
+   rGUI.upFields> entropy:                   e3c364ef9e3868c9269e2489571c95902e21dd072ce02cc40e7fc176fadd4239
+>> RendererGUI.propagateFields e3c364ef9e3868c9269e2489571c95902e21dd072ce02cc40e7fc176fadd4239
    rGUI.propF> CMD:                          cmd:NewWallet
 >> RendererGUI.generateSalt
-   rGUI.upFields> entropy:                   0f25cf4d12ee851d51ee9dc2f36eb89a793420d177fac36d44ef913eed1dafc5
->> RendererGUI.propagateFields 0f25cf4d12ee851d51ee9dc2f36eb89a793420d177fac36d44ef913eed1dafc5
+   rGUI.upFields> entropy:                   009db45b95dea703706280586c609a69c8f035a654cebf98f3d7b00a90379e85
+>> RendererGUI.propagateFields 009db45b95dea703706280586c609a69c8f035a654cebf98f3d7b00a90379e85
    rGUI.propF> CMD:                          cmd:NewWallet
 >> RendererGUI.generateSalt
-   rGUI.upFields> entropy:                   918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
->> RendererGUI.propagateFields 918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
+   rGUI.upFields> entropy:                   9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
+>> RendererGUI.propagateFields 9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
    rGUI.propF> CMD:                          cmd:NewWallet
 >> RendererGUI.generateSalt
->> RendererGUI.updateEntropy 45bef272353cd18e2e5b4fd72e508b89ec666368e10074aa33f613ff075d5a94
+>> RendererGUI.updateEntropy e3c364ef9e3868c9269e2489571c95902e21dd072ce02cc40e7fc176fadd4239
    rGUI.upE> blockchain: :                   Bitcoin
 >> RendererGUI.updateMnemonics
->> RendererGUI.updateEntropy 0f25cf4d12ee851d51ee9dc2f36eb89a793420d177fac36d44ef913eed1dafc5
+>> RendererGUI.updateEntropy 009db45b95dea703706280586c609a69c8f035a654cebf98f3d7b00a90379e85
    rGUI.upE> blockchain: :                   Bitcoin
 >> RendererGUI.updateMnemonics
->> RendererGUI.updateEntropy 918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
+>> RendererGUI.updateEntropy 9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
    rGUI.upE> blockchain: :                   Bitcoin
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   muscle future regret patient swim post file gorilla bread sock jar point
-                                             burst chair cool equip sauce fork object end pave drama ask winter
-   rGUI.upWidx> mnemonics:                   muscle future regret patient swim post file gorilla bread sock jar point
-                                             burst chair cool equip sauce fork object end pave drama ask winter
-   rGUI.upWidx> mnemonics:                   muscle future regret patient swim post file gorilla bread sock jar point
-                                             burst chair cool equip sauce fork object end pave drama ask winter
+   rGUI.upWidx> mnemonics:                   other soap swing expand save snow evidence tip stuff blind ranch another
+                                             speed come current exhaust notable tell crucial impact shell lounge news citizen
+   rGUI.upWidx> mnemonics:                   other soap swing expand save snow evidence tip stuff blind ranch another
+                                             speed come current exhaust notable tell crucial impact shell lounge news citizen
+   rGUI.upWidx> mnemonics:                   other soap swing expand save snow evidence tip stuff blind ranch another
+                                             speed come current exhaust notable tell crucial impact shell lounge news citizen
 >> RendererGUI.updateChecksum 00110110
-   rGUI.upE> entropy_hex:                    45bef272353cd18e2e5b4fd72e508b89ec666368e10074aa33f613ff075d5a94
+   rGUI.upE> entropy_hex:                    e3c364ef9e3868c9269e2489571c95902e21dd072ce02cc40e7fc176fadd4239
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> RendererGUI.generateSimpleWalletAddress Bitcoin Image
-   rGUI.genSW> private_key:                  45bef272353cd18e2e5b4fd72e508b89ec666368e10074aa33f613ff075d5a94
->> RendererGUI.updateChecksum 10100011
-   rGUI.upE> entropy_hex:                    0f25cf4d12ee851d51ee9dc2f36eb89a793420d177fac36d44ef913eed1dafc5
+   rGUI.genSW> private_key:                  e3c364ef9e3868c9269e2489571c95902e21dd072ce02cc40e7fc176fadd4239
+>> RendererGUI.updateChecksum 10010100
+   rGUI.upE> entropy_hex:                    009db45b95dea703706280586c609a69c8f035a654cebf98f3d7b00a90379e85
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> RendererGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  0f25cf4d12ee851d51ee9dc2f36eb89a793420d177fac36d44ef913eed1dafc5
->> RendererGUI.updateChecksum 11100000
-   rGUI.upE> entropy_hex:                    918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
+   rGUI.genSW> private_key:                  009db45b95dea703706280586c609a69c8f035a654cebf98f3d7b00a90379e85
+>> RendererGUI.updateChecksum 01001010
+   rGUI.upE> entropy_hex:                    9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> RendererGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
-   rGUI.genSW> new_wallet[WIF]:              KyZHeKKr7soE6DmaJLvazDjdTFxiNVXS51bNg5weA6GDkhUHvZcd
-   rGUI.genSW> wallet_address:               1M5TnXW6exhpKppNYomLnDSomFKZLhAiDw
-   rGUI.genSW> WIF:                          KyZHeKKr7soE6DmaJLvazDjdTFxiNVXS51bNg5weA6GDkhUHvZcd
+   rGUI.genSW> private_key:                  9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
+   rGUI.genSW> new_wallet[WIF]:              L4rTDnfrVVjb3ZHWkPsoGD4jNTSVjGDcaWDMiiE9r3pW5cJdHYkY
+   rGUI.genSW> wallet_address:               1kLsncQdP8RkoWfQzecGVVjrMG47Enpdw
+   rGUI.genSW> WIF:                          L4rTDnfrVVjb3ZHWkPsoGD4jNTSVjGDcaWDMiiE9r3pW5cJdHYkY
 >> RendererGUI.updateWalletURL
 >> RendererGUI.updateMarketcapURL
 >> RendererGUI.updateCryptoshapeURL
 >> RendererGUI.updateMnemonics
-   rGUI.genSW> new_wallet[WIF]:              KwjA16zV4yTLDpKogESQx6sxs8nmpqYhcKhKTnPQoKSs73JPCDFd
-   rGUI.genSW> wallet_address:               1EvupCHhNqfayTLyywDipkVFNUAzshKi5U
-   rGUI.genSW> WIF:                          KwjA16zV4yTLDpKogESQx6sxs8nmpqYhcKhKTnPQoKSs73JPCDFd
+   rGUI.genSW> new_wallet[WIF]:              KwEue1SmpR3GT9MU6wAu2mnmasVYHY9ojFbpPuCopEF2oRohrnbH
+   rGUI.genSW> wallet_address:               1FkBbPuGVELKGWYj6bM6QGZ4NDKi8HJgth
+   rGUI.genSW> WIF:                          KwEue1SmpR3GT9MU6wAu2mnmasVYHY9ojFbpPuCopEF2oRohrnbH
 >> RendererGUI.updateWalletURL
 >> RendererGUI.updateMarketcapURL
 >> RendererGUI.updateCryptoshapeURL
 >> RendererGUI.updateMnemonics
-   rGUI.genSW> new_wallet[WIF]:              L26dhqoQEmvhYV3TVBbNaHHwGqA86zgPfT7ME6k6R84Vrxz6ASVe
-   rGUI.genSW> wallet_address:               12zxniWmczzqGJqK1uNDp7uYNqM6QQ7oFR
-   rGUI.genSW> WIF:                          L26dhqoQEmvhYV3TVBbNaHHwGqA86zgPfT7ME6k6R84Vrxz6ASVe
+   rGUI.genSW> new_wallet[WIF]:              L2V6PFS1JYge43PJ2ujcMveE9o34uXwDMrmUSuBdy9YzawocR6ZN
+   rGUI.genSW> wallet_address:               13pRVXJbMszhK7JAPJJih9aRwcCqLYMsfV
+   rGUI.genSW> WIF:                          L2V6PFS1JYge43PJ2ujcMveE9o34uXwDMrmUSuBdy9YzawocR6ZN
 >> RendererGUI.updateWalletURL
 >> RendererGUI.updateMarketcapURL
 >> RendererGUI.updateCryptoshapeURL
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   muscle future regret patient swim post file gorilla bread sock jar point
-                                             burst chair cool equip sauce fork object end pave drama ask winter
-   rGUI.upWidx> mnemonics:                   muscle future regret patient swim post file gorilla bread sock jar point
-                                             burst chair cool equip sauce fork object end pave drama ask winter
-   rGUI.upWidx> mnemonics:                   muscle future regret patient swim post file gorilla bread sock jar point
-                                             burst chair cool equip sauce fork object end pave drama ask winter
->> <END> RendererGUI.updateFields 45bef272353cd18e2e5b4fd72e508b89ec666368e10074aa33f613ff075d5a94
->> <END> RendererGUI.updateFields 0f25cf4d12ee851d51ee9dc2f36eb89a793420d177fac36d44ef913eed1dafc5
->> <END> RendererGUI.updateFields 918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
+   rGUI.upWidx> mnemonics:                   other soap swing expand save snow evidence tip stuff blind ranch another
+                                             speed come current exhaust notable tell crucial impact shell lounge news citizen
+   rGUI.upWidx> mnemonics:                   other soap swing expand save snow evidence tip stuff blind ranch another
+                                             speed come current exhaust notable tell crucial impact shell lounge news citizen
+   rGUI.upWidx> mnemonics:                   other soap swing expand save snow evidence tip stuff blind ranch another
+                                             speed come current exhaust notable tell crucial impact shell lounge news citizen
+>> <END> RendererGUI.updateFields e3c364ef9e3868c9269e2489571c95902e21dd072ce02cc40e7fc176fadd4239
+>> <END> RendererGUI.updateFields 009db45b95dea703706280586c609a69c8f035a654cebf98f3d7b00a90379e85
+>> <END> RendererGUI.updateFields 9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
 >> RendererGUI.updateWalletMode
    rGUI.upWmode> wallet_mode:                Simple Wallet
    rGUI.upWmode> default_blockchain:         Bitcoin
@@ -143,107 +143,155 @@ MainModel.getAppVersion
    rGUI.upBlkCHN> wallet_mode:               Simple Wallet
    rGUI.upBlkCHN> CMD:                       cmd:NewWallet
 >> RendererGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
-   rGUI.genSW> new_wallet[WIF]:              L26dhqoQEmvhYV3TVBbNaHHwGqA86zgPfT7ME6k6R84Vrxz6ASVe
-   rGUI.genSW> wallet_address:               12zxniWmczzqGJqK1uNDp7uYNqM6QQ7oFR
-   rGUI.genSW> WIF:                          L26dhqoQEmvhYV3TVBbNaHHwGqA86zgPfT7ME6k6R84Vrxz6ASVe
+   rGUI.genSW> private_key:                  9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
+   rGUI.genSW> new_wallet[WIF]:              L2V6PFS1JYge43PJ2ujcMveE9o34uXwDMrmUSuBdy9YzawocR6ZN
+   rGUI.genSW> wallet_address:               13pRVXJbMszhK7JAPJJih9aRwcCqLYMsfV
+   rGUI.genSW> WIF:                          L2V6PFS1JYge43PJ2ujcMveE9o34uXwDMrmUSuBdy9YzawocR6ZN
 >> RendererGUI.updateWalletURL
 >> RendererGUI.updateMarketcapURL
 >> RendererGUI.updateCryptoshapeURL
-   rGUI.upBlkCHN> WIF:                       L26dhqoQEmvhYV3TVBbNaHHwGqA86zgPfT7ME6k6R84Vrxz6ASVe
+   rGUI.upBlkCHN> WIF:                       L2V6PFS1JYge43PJ2ujcMveE9o34uXwDMrmUSuBdy9YzawocR6ZN
    rGUI.upBlkCHN> coin:                      BTC
-   rGUI.upBlkCHN> wallet_address:            12zxniWmczzqGJqK1uNDp7uYNqM6QQ7oFR
+   rGUI.upBlkCHN> wallet_address:            13pRVXJbMszhK7JAPJJih9aRwcCqLYMsfV
 >> RendererGUI.updateWalletURL
    rGUI.newW> blockchain:                    Bitcoin
 >> RendererGUI.updateEntropySize 256 bits
    rGUI.upEsz> entropy_size:                 256
    rGUI.upEsz> entropy_elt:                  entropy_id
 >> RendererGUI.updateFields
-   rGUI.upFields> wallet[ENTROPY]:           918bd2d2d08dbf51558b251b79c1dd53a1ec4b8bf261bf8b6e6024ca18844357
+   rGUI.upFields> wallet[ENTROPY]:           9d19b770281bfd9b137714d782fac604cd105c0d827b969bd8d1b8ec5708a549
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> RendererGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            13abd5adcddd6c1178e40b1b7fae2ec65839318a6a88f63e0b0d707c14473ff8
-   rGUI.upFields> entropy:                   6f121cf47fa25529ca4f1927be7cf9d1465536d10c9b839b2f43fc78be63ebc8
->> RendererGUI.propagateFields 6f121cf47fa25529ca4f1927be7cf9d1465536d10c9b839b2f43fc78be63ebc8
+   rGUI.saltE> entropy_src_value:            1bd5a7f085f6720a0f98e4dc4290ecd9d5fef5b340afdfb2199eacd0d423c71c
+   rGUI.upFields> entropy:                   058ba8da74426026fa03958c242a32e402fe765873554907b6558fbf6a69b43a
+>> RendererGUI.propagateFields 058ba8da74426026fa03958c242a32e402fe765873554907b6558fbf6a69b43a
    rGUI.propF> CMD:                          cmd:NewWallet
 >> RendererGUI.generateSalt
->> RendererGUI.updateEntropy 6f121cf47fa25529ca4f1927be7cf9d1465536d10c9b839b2f43fc78be63ebc8
+>> RendererGUI.updateEntropy 058ba8da74426026fa03958c242a32e402fe765873554907b6558fbf6a69b43a
    rGUI.upE> blockchain: :                   Bitcoin
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   humor movie dial young census neutral circle tobacco chicken view dinosaur penalty
-                                             grab opinion during nature logic sunny special wedding message cradle quality better
->> RendererGUI.updateChecksum 10101100
-   rGUI.upE> entropy_hex:                    6f121cf47fa25529ca4f1927be7cf9d1465536d10c9b839b2f43fc78be63ebc8
+   rGUI.upWidx> mnemonics:                   airport front custom trigger champion beach trend increase method candy million siege
+                                             copper depth gift height empower diet nice buyer wall crumble special erosion
+>> RendererGUI.updateChecksum 01100101
+   rGUI.upE> entropy_hex:                    058ba8da74426026fa03958c242a32e402fe765873554907b6558fbf6a69b43a
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> RendererGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  6f121cf47fa25529ca4f1927be7cf9d1465536d10c9b839b2f43fc78be63ebc8
-   rGUI.genSW> new_wallet[WIF]:              Kzwcnv1atN25RuVqTMpxE9eKyU6FYEo71pMWnQEYD5REMk63zHgm
-   rGUI.genSW> wallet_address:               146TfhwjZ3HSoymiEYs1vXkKRxKXEgwASv
-   rGUI.genSW> WIF:                          Kzwcnv1atN25RuVqTMpxE9eKyU6FYEo71pMWnQEYD5REMk63zHgm
+   rGUI.genSW> private_key:                  058ba8da74426026fa03958c242a32e402fe765873554907b6558fbf6a69b43a
+   rGUI.genSW> new_wallet[WIF]:              KwQVQxSsspwHXk8BpTXyNvcqeQV1pRML8v2Cmd1J5dHUEHmzwmxr
+   rGUI.genSW> wallet_address:               19BDi9b1C7S9DcE3LYtizKR5emUDRy6Hmf
+   rGUI.genSW> WIF:                          KwQVQxSsspwHXk8BpTXyNvcqeQV1pRML8v2Cmd1J5dHUEHmzwmxr
 >> RendererGUI.updateWalletURL
 >> RendererGUI.updateMarketcapURL
 >> RendererGUI.updateCryptoshapeURL
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   humor movie dial young census neutral circle tobacco chicken view dinosaur penalty
-                                             grab opinion during nature logic sunny special wedding message cradle quality better
->> <END> RendererGUI.updateFields 6f121cf47fa25529ca4f1927be7cf9d1465536d10c9b839b2f43fc78be63ebc8
+   rGUI.upWidx> mnemonics:                   airport front custom trigger champion beach trend increase method candy million siege
+                                             copper depth gift height empower diet nice buyer wall crumble special erosion
+>> <END> RendererGUI.updateFields 058ba8da74426026fa03958c242a32e402fe765873554907b6558fbf6a69b43a
    rGUI.newW> entropy_size:                  256
 >> RendererGUI.generateEntropyFromEntropySource
 >> RendererGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            d4048d017e99032dc58068b4d5eb3940a67ca8da09358ae3fb2f6d33121c9b95
-   rGUI.genEsrc2E> entropy:                  eee9c2e3e729754bce6210fa8603c00c947bc38b493dcdc86906fc1448d401e7
-   rGUI.newW> entropy:                       eee9c2e3e729754bce6210fa8603c00c947bc38b493dcdc86906fc1448d401e7
->> RendererGUI.updateChecksum 10001010
+   rGUI.saltE> entropy_src_value:            1249dd065d9e63fb92c33b70625b585eefab3931bc361da45c723a5b2ba5124a
+   rGUI.genEsrc2E> entropy:                  f98326001e46d65601b6806453bace0bf21bfa616f056d0637fb6232a62b2be0
+   rGUI.newW> entropy:                       f98326001e46d65601b6806453bace0bf21bfa616f056d0637fb6232a62b2be0
+>> RendererGUI.updateChecksum 11100000
 >> RendererGUI.updateLanguage lang: 'EN'
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   upon evoke rib soft nuclear planet define dragon whisper copy useless bomb
-                                             element tide coffee chicken soccer drive double wealth duty head always vanish
->> RendererGUI.updateFields eee9c2e3e729754bce6210fa8603c00c947bc38b493dcdc86906fc1448d401e7
-   rGUI.upFields> wallet[ENTROPY]:           eee9c2e3e729754bce6210fa8603c00c947bc38b493dcdc86906fc1448d401e7
+   rGUI.upWidx> mnemonics:                   wet bomb length develop hope climb almost source gold oven receive blood
+                                             canvas wood mad thing home coyote yard settle clerk better question bright
+>> RendererGUI.updateFields f98326001e46d65601b6806453bace0bf21bfa616f056d0637fb6232a62b2be0
+   rGUI.upFields> wallet[ENTROPY]:           f98326001e46d65601b6806453bace0bf21bfa616f056d0637fb6232a62b2be0
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> RendererGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            4960df65a73ecde78d725682b50cbcce67ac22c3779b638202a02728b6fc9700
-   rGUI.upFields> entropy:                   34c0ca1ce9b2efbc345dbbf0342c84e06af04cc6c822ad2b58be3455c200b67d
->> RendererGUI.propagateFields 34c0ca1ce9b2efbc345dbbf0342c84e06af04cc6c822ad2b58be3455c200b67d
+   rGUI.saltE> entropy_src_value:            253fbc8d7d63804f6b094197450f8ccdf9b9408668ddc002508d8e4e064ceb9b
+   rGUI.upFields> entropy:                   b6f5468f43ca645fd3fc983b77ef1170b9f13de428bc4f7c65b988dbee086c88
+>> RendererGUI.propagateFields b6f5468f43ca645fd3fc983b77ef1170b9f13de428bc4f7c65b988dbee086c88
    rGUI.propF> CMD:                          cmd:NewWallet
 >> RendererGUI.generateSalt
->> RendererGUI.updateEntropy 34c0ca1ce9b2efbc345dbbf0342c84e06af04cc6c822ad2b58be3455c200b67d
+>> RendererGUI.updateEntropy b6f5468f43ca645fd3fc983b77ef1170b9f13de428bc4f7c65b988dbee086c88
    rGUI.upE> blockchain: :                   Bitcoin
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   crumble alien mango square confirm task sphere resist usual pause cancel school
-                                             pyramid chapter brass affair pudding food convince hamster found able supreme run
->> RendererGUI.updateChecksum 11101010
-   rGUI.upE> entropy_hex:                    34c0ca1ce9b2efbc345dbbf0342c84e06af04cc6c822ad2b58be3455c200b67d
+   rGUI.upWidx> mnemonics:                   report pretty phrase maple play copper exit narrow derive satoshi session thumb
+                                             pair page mouse bleak exhaust tobacco hover balance same aerobic rate allow
+>> RendererGUI.updateChecksum 00110101
+   rGUI.upE> entropy_hex:                    b6f5468f43ca645fd3fc983b77ef1170b9f13de428bc4f7c65b988dbee086c88
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> RendererGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  34c0ca1ce9b2efbc345dbbf0342c84e06af04cc6c822ad2b58be3455c200b67d
-   rGUI.genSW> new_wallet[WIF]:              KxzFoP2j55ypWzFPTBJWRWuWJ2boRAihSSnQtRKZ2y7sYZQ6Nx7m
-   rGUI.genSW> wallet_address:               13GJAM1KXfUs4MAvuiHUzPDzPtTZzfv4mP
-   rGUI.genSW> WIF:                          KxzFoP2j55ypWzFPTBJWRWuWJ2boRAihSSnQtRKZ2y7sYZQ6Nx7m
+   rGUI.genSW> private_key:                  b6f5468f43ca645fd3fc983b77ef1170b9f13de428bc4f7c65b988dbee086c88
+   rGUI.genSW> new_wallet[WIF]:              L3MMh13nSVf77eitTWBYk3GydRDNAy6rS8TR8W7SmPvtr8aB3kW4
+   rGUI.genSW> wallet_address:               1F8T9tRKWEjp51cWcC5wM2keKUFRBDSC6y
+   rGUI.genSW> WIF:                          L3MMh13nSVf77eitTWBYk3GydRDNAy6rS8TR8W7SmPvtr8aB3kW4
 >> RendererGUI.updateWalletURL
 >> RendererGUI.updateMarketcapURL
 >> RendererGUI.updateCryptoshapeURL
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   crumble alien mango square confirm task sphere resist usual pause cancel school
-                                             pyramid chapter brass affair pudding food convince hamster found able supreme run
->> <END> RendererGUI.updateFields 34c0ca1ce9b2efbc345dbbf0342c84e06af04cc6c822ad2b58be3455c200b67d
->> RendererGUI.onGuiUpdateLang DE
->> RendererGUI.updateLanguage lang: 'DE'
+   rGUI.upWidx> mnemonics:                   report pretty phrase maple play copper exit narrow derive satoshi session thumb
+                                             pair page mouse bleak exhaust tobacco hover balance same aerobic rate allow
+>> <END> RendererGUI.updateFields b6f5468f43ca645fd3fc983b77ef1170b9f13de428bc4f7c65b988dbee086c88
+>> RendererGUI.fileSaveWallet
+>> RendererGUI.getWalletInfo
+   coin_id:                                  BTC
+   coin:                                     BTC
+   rGUI.getWinf> blockchain:                 Bitcoin
+eMain.evtH('SaveWinf')>
+MainModel.getAppVersion
+>> RendererGUI.showSaveWalletInfoDialog
+>> RendererGUI.fileSaveWallet
+>> RendererGUI.getWalletInfo
+   coin_id:                                  BTC
+   coin:                                     BTC
+   rGUI.getWinf> blockchain:                 Bitcoin
+eMain.evtH('SaveWinf')>
+MainModel.getAppVersion
+>> RendererGUI.showSaveWalletInfoDialog
+>> RendererGUI.generateRandomFields
+>> RendererGUI.drawEntropySource
+   entropy_source_type:                      DiceD6
+>> drawEntropySource DiceD6: 
+>> RendererGUI.updateFields
+   rGUI.upFields> wallet[ENTROPY]:           b6f5468f43ca645fd3fc983b77ef1170b9f13de428bc4f7c65b988dbee086c88
+   rGUI.upFields> CMD:                       cmd:None
+   rGUI.upFields> entropy_source *IS NOT* user_input:
+>> RendererGUI.getSaltedEntropySource DiceD6
+   rGUI.saltE> entropy_src_value:            4d69791157d47020051ffde8a89e8990c2137b91abdbd14b4ceec53cc8d02e76
+   rGUI.upFields> entropy:                   1b7ce6f3bc8ba5afaa0ee8647d063dd6196494b9469f5df1adf73f6a19b9aae9
+>> RendererGUI.propagateFields 1b7ce6f3bc8ba5afaa0ee8647d063dd6196494b9469f5df1adf73f6a19b9aae9
+   rGUI.propF> CMD:                          cmd:None
+>> RendererGUI.generateSalt
+>> RendererGUI.updateEntropy 1b7ce6f3bc8ba5afaa0ee8647d063dd6196494b9469f5df1adf73f6a19b9aae9
+   rGUI.upE> blockchain: :                   Bitcoin
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   eckball alpen laminat stille dill tonband staffel rachen wald notiz bilanz rodung
-                                             pils bremse bedarf ahorn pfiff glaube dirigent husten gotik abfall teich rendite
->> RendererGUI.onGuiUpdateLang BN
->> RendererGUI.updateLanguage lang: 'BN'
+   rGUI.upWidx> mnemonics:                   bread transfer rude jungle ripple style popular tackle good trial month promote
+                                             north engage topic stadium fuel miracle lava learn pave system produce clutch
+>> RendererGUI.updateChecksum 01100100
+   rGUI.upE> entropy_hex:                    1b7ce6f3bc8ba5afaa0ee8647d063dd6196494b9469f5df1adf73f6a19b9aae9
+   rGUI.upE> wallet_mode:                    Simple Wallet
+   rGUI.upE> wallet_info[CMD]:               cmd:None
+>> RendererGUI.generateSimpleWalletAddress Bitcoin DiceD6
+   rGUI.genSW> private_key:                  1b7ce6f3bc8ba5afaa0ee8647d063dd6196494b9469f5df1adf73f6a19b9aae9
+   rGUI.genSW> new_wallet[WIF]:              Kx99HswphLguw3viSuKwgRqfsXYhYTgcHWSppThsea6YYcAwTiyA
+   rGUI.genSW> wallet_address:               1DDqDdPenEWT6JoF2zHW5tUPDV3d44ox7Y
+   rGUI.genSW> WIF:                          Kx99HswphLguw3viSuKwgRqfsXYhYTgcHWSppThsea6YYcAwTiyA
+>> RendererGUI.updateWalletURL
+>> RendererGUI.updateMarketcapURL
+>> RendererGUI.updateCryptoshapeURL
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   কিছু অন্বেষণ পাতা লেজার কয়লা সংক্ষিপ্ত লাঠি ময়লা সুযোগ বিড়াল উপরে মৃত
-                                             ভয়ানক একাডেমিক ইঞ্চি অনিবার্য ব্যস্ত জ্যাকেট করুণা তিন টাই অংশগ্রহণকারী শুকনো মিথ্যা
->> RendererGUI.onGuiUpdateLang RU
->> RendererGUI.updateLanguage lang: 'RU'
+   rGUI.upWidx> mnemonics:                   bread transfer rude jungle ripple style popular tackle good trial month promote
+                                             north engage topic stadium fuel miracle lava learn pave system produce clutch
+>> <END> RendererGUI.updateFields 1b7ce6f3bc8ba5afaa0ee8647d063dd6196494b9469f5df1adf73f6a19b9aae9
+>> RendererGUI.onGuiUpdateLang FR
+>> RendererGUI.updateLanguage lang: 'FR'
 >> RendererGUI.updateMnemonics
-   rGUI.upWidx> mnemonics:                   действие амфора овес торговля годовой уран течение сделать чувство практически вовсе событие
-                                             робкий вторник веселый алгоритм ремонт козел господин лошадь конкретный абонент ужас слияние
->> RendererGUI.openTabPage Wallet elt:wallet_tab_link_id
+   rGUI.upWidx> mnemonics:                   belote talonner poirier hasard pivoter schéma nuque silicium fédérer tartine lingot onirique
+                                             mardi double surmener ruser évasion lézard idylle immense myriade signal omettre censurer
+>> RendererGUI.fileSaveWallet
+>> RendererGUI.getWalletInfo
+   coin_id:                                  BTC
+   coin:                                     BTC
+   rGUI.getWinf> blockchain:                 Bitcoin
+eMain.evtH('SaveWinf')>
+MainModel.getAppVersion
+>> RendererGUI.showSaveWalletInfoDialog
