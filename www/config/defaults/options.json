@@ -15,6 +15,6 @@
     "Simple Wallet": [ "Bitcoin", "Ethereum", "Solana", "DogeCoin", "Avalanche", "LiteCoin", "Polygon", "Toncoin", 
 					   "Horizen", "Terra" ] 
   },
-  "lang": "EN",
+  "Lang": "EN",
   "Wallet Save Path": "$CRYPTOCALC/_output"
 }

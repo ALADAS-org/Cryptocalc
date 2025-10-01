@@ -1,0 +1,127 @@
+<table class="Dialog_Form" height="100%">	
+	<!-- ------------ PK data ('Private Key' or 'Bip38 Encrypted PK') ------------ -->
+	<tr>
+		<td class="Dialog_LabelColumn">
+			<span id="bip38_dialog_pk_data_label_id" class="LabelColumn">Private Key</span>			
+		</td>
+		<td class="Dialog_FieldColumn">
+			<div class="Bip38_DataFieldWithButton_Container" id="bip38_pk_button_container_id">
+				<input class="Bip38InputField"
+					   id="bip38_dialog_pk_data_id" type="text" value="">
+				<button class="Bip38CopyButton" id="bip38_dialog_pk_data_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ------------ PK data ('Private Key' or 'Bip38 Encrypted PK') -->
+	
+	<!-- ----------------  Bip38 Passphrase ---------------- -->
+	<tr>
+		<td class="Dialog_LabelColumn">
+			<span id="bip38_dialog_passphrase_label_id" class="LabelColumn">Passphrase</span>			
+		</td>
+		<td class="Dialog_FieldColumn">
+			<div class="Bip38_DataFieldWithButton_Container" id="bip38_passphrase_button_container_id">
+				<input class="Bip38InputField" 
+					   id="bip38_dialog_passphrase_id" type="text" value="">
+				<button class="Bip38CopyButton" id="bip38_dialog_passphrase_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ----------------  Bip38 Passphrase -->
+	
+	
+	<!-- ------------ 'Compute' button and 'Encrypt/Decrypt' Toggle ------------ -->
+	<tr>
+		<td colspan="2">
+			<table width="100%">
+				<tr>
+					<td width="33%"><span">&nbsp;</span>			
+					</td>
+					
+					<td class="Dialog_FieldColumn" width="66%">
+						<table width="100%">							
+							<tr>
+								<td>
+									<button class="EncryptButton" id="bip38_dialog_compute_btn_id" title="Compute" border="none">Compute
+									</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									<!--<button class="Bip38Button" id="bip38_dialog_compute_btn_id" title="Bip38 Compute" border="none"> -->
+									<!--	<img id="bip38_dialog_compute_img_id" src="./icons/ArrowDown_64px.png" border="none"/> -->
+									<!--</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								</td>
+								<!-- ---------- 'Compute' button -->
+					
+								<!-- ---------- 'Toggle Switch' for Encrypt/Decrypt mode ---------- -->
+								<!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_switch -->
+								<td>									
+									<div class="Bip38_DataFieldWithButton_Container" id="bip38_toggle_switch_button_container_id">
+									    <span class="SwitchLabel">Encrypt&nbsp;&nbsp;</span>
+										<label class="Switch">
+											<input id="bip38_dialog_encrypt_decrypt_toggle_id" type="checkbox">
+											<span class="Slider"></span>
+										</label>
+										<span class="SwitchLabel">&nbsp;&nbsp;Decrypt</span>	
+									</div>
+								</td>									
+								<!-- ---------- 'Toggle Switch' for Encrypt/Decrypt mode ---------- -->
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- ------------ 'Compute' button and 'Encrypt/Decrypt' Toggle -->
+	
+	
+	<!-- ----------------  'Result' ('Private Key' or 'Bip38 Encrypted PK') ---------------- -->
+	<tr>
+		<td class="Dialog_LabelColumn">
+			<span id="bip38_dialog_result_label_id" class="LabelColumn">Bip38 Encrypted PK</span>			
+		</td>
+		<td class="Dialog_FieldColumn">
+			<div class="Bip38_DataFieldWithButton_Container" id="bip38_pk_button_container_id">
+				<input class="Bip38InputField" readonly
+					   id="bip38_dialog_result_id" type="text" value="">
+				<button class="Bip38CopyButton" id="bip38_dialog_result_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ----------------  'Result' ('Private Key' or 'Bip38 Encrypted PK') -->
+	
+	<tr>
+		<td colspan="2">&nbsp;
+		</td>
+	</tr>
+	
+	<!-- ----------------  'Result' ('Private Key' or 'Bip38 Encrypted PK') ---------------- -->
+	<tr>
+		<td colspan="2">
+			<table width="100%">
+				<tr>
+					<td width="25%"><span>&nbsp;
+					</td>
+					<td width="12.5%">
+						<button class="BottomButton" id="bip38_dialog_clear_btn_id">Clear
+						</button>
+					</td>
+					<td width="25%"><span>&nbsp;
+					<td width="12.5%">
+						<button class="BottomButton" id="bip38_dialog_quit_btn_id">Quit
+						</button>
+					</td>
+					<td width="25%"><span>&nbsp;
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- ----------------  'Result' ('Private Key' or 'Bip38 Encrypted PK') -->
+</table>

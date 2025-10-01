@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.3.63",
+  "version": "0.3.64",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -27,8 +27,9 @@
     "QR code",
     "BIP39",
     "BIP32",
-	"BIP38",
-    "BIP44"
+    "BIP38",
+    "BIP44",
+    "BIP38"
   ],
   "author": "Daniel Rodet & Michel Kern",
   "license": "BSD-3-Clause",
@@ -57,6 +58,7 @@
     "bchaddrjs": "^0.5.2",
     "bech32": "^2.0.0",
     "bip32": "^4.0.0",
+    "bip38": "^3.1.1",
     "bip39": "^3.1.0",
     "bitcoinjs-lib": "^6.1.0",
     "bitcore-lib": "^10.10.7",
@@ -88,6 +90,7 @@
     "uuid": "^10.0.0",
     "v8-compile-cache": "^2.4.0",
     "web3": "^4.11.1",
+    "wif": "^5.0.0",
     "zencashjs": "^2.2.0"
   }
 }

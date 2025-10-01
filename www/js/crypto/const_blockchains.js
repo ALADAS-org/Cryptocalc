@@ -1,21 +1,21 @@
-// =====================================================================================
-// ================================ const_blockchain.js ================================
-// =====================================================================================
+// ===================================================================================================================
+// =============================================== const_blockchain.js ===============================================
+// ===================================================================================================================
 "use strict";
 
-// up to 50 (coinmarketcap)
+// up to 50 (coinmarketcap: https://coinmarketcap.com/)
 //    ETC : Ethereum Classic
 //    XLM:  Stellar
 //    VET:  VeChain
 // 79 BSV:  Bitcoin SV
 // 98 EOS:  EOS
 
-// cf. capitalization order on https://coinmarketcap.com/
-// BUT Ethereum in First place because of the "ecosystem popularity"l
 const NULL_COIN    = "Null-COIN";
 
 const COIN         = "Coin";
 const COIN_TYPE    = "coin_type";
+
+const BLOCKCHAIN_EXPLORER = "Blockchain Explorer";
 
 const MAINNET      = "mainnet";
 const TESTNET      = "testnet";
@@ -284,6 +284,8 @@ if (typeof exports === 'object') {
 	exports.NULL_COIN                = NULL_COIN	
 	exports.COIN                     = COIN
 	exports.COIN_TYPE                = COIN_TYPE
+	
+	exports.BLOCKCHAIN_EXPLORER      = BLOCKCHAIN_EXPLORER 
 	
 	exports.TESTNET_COIN             = TESTNET_COIN	
 	

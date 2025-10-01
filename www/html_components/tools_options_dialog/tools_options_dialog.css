@@ -4,9 +4,12 @@
   overflow:          hidden;
 }
 
+.Dialog_Form {
+  background:        #F5F5DC;
+}
+
 .DialogBox {
   font-size:         12px;
-  background:        lightred;
-  background-color:  lightred;
+  background:        #F5F5DC;
 }
 

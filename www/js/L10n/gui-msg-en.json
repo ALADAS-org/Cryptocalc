@@ -8,13 +8,16 @@
   "FromFile":                  "from file...",
   "FortuneCookie":             "Fortune Cookie",
   "Quit":                      "Quit",
+  
   "Tools":                     "Tools",
+  "Bip38EncryptDecryptTool":   "Bip38 Encrypt/Decrypt",
+  
   "View":                      "View",
   "ToggleDebug":               "Toggle Debug Panel",
   "Help":                      "Help",
   "Resources":                 "Resources",
   "About":                     "About...",
-  "HelpAboutMsg":              "A crypto wallet calculator",
+  "HelpAboutMsg":              "A cryptocurrency wallet generator",
   "entropy_src_label_id":      "Entropy Source",
   "entropy_label_id":          "Entropy",
   "word_indexes_label_id":     "Word Indexes",

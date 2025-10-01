@@ -99,7 +99,7 @@ class SolanaSW_API {
 		
 		wallet[UUID]                = salt_uuid;
 		
-		let wallet_address          = keypair.publicKey.toString(); // NB: 'address' is the 'public key'
+		let wallet_address          = keypair.publicKey.toString(); // NB: 'wallet address' is the 'public key'
 		wallet[ADDRESS]             = wallet_address;		
 		wallet['public_key']        = wallet_address;
 		

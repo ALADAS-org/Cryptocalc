@@ -1,15 +1,15 @@
-## CryptoCalc 0.3.63
+## CryptoCalc 0.3.64
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
    These wallets can be _Non Deterministic_ (_Simple Wallet_) or _Hierarchical Deterministic_ (`BIP32`).
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
-   or _seed phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 10483 times on [npm](https://www.npmjs.com/).   
+   or _Secret phrase_ informations being stolen.    
+   NB: Since its first release _CryptoCalc_ has been downloaded 11227 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by reporting bugs (or asking for enhancements) with _Issues_, 
-   provide localization files (see 5.1.18) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
+   provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
    a non profit organization whose primary goal is to protect [wild bees](https://sites.google.com/view/aladas/accueil).
    
    [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
@@ -159,15 +159,35 @@
 				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
 			  
 4. Release notes
-    - `0.3.63`: This version  
+    - `0.3.64`: This version
+		- New Feature:
+			- Support of [`BIP38`](https://en.bitcoin.it/wiki/BIP_0038) for an additional security layer by Encrypting the Private Key. Please notice that only the first encryption method ('NON-EC') is supported (see also 5.2.2). 
+        - Bug Fixes:	
+		    - `Save` command (in _Main menu_ and _Main Toolbar_) is disabled while it should be enabled. 
+			This was identified in some use cases with `File/New` followed by `File/Open`.	
+		- Documentation Fixes:	
+		    - Update, fixes and some rewrites of thsi document (`README.md`).		
+	    - Refactoring:
+		    - In `html_utils.js`: `Node` replaced by `Element` in all functions because it is a better terminology 
+			for HTML entities (eg. `INPUT`,'TEXTAREA', etc...).
+			- Move of _Model_ related code to `www/js/model` and _View_ related code 
+			to `www/js/view` (cf. [`MVC`](https://www.geeksforgeeks.org/system-design/mvc-design-pattern/) _Design Pattern_)
+			also as `MVC` may be recursive, `wallet_info.js` (which is a is _Model_) bas been moved to `www/js/view/model`
+		- Usability:
+		    - `password` (Bip32 / HD Wallet mode) replaced by `Passphrase` because it is a better terminology
+			- In `wallet_info.txt`: 
+			    - `WIF` always provided 
+				- Order of "fields" is now predefined (see `js/model/wallet_inf_tmpl.js`)   
+		    - Changed Label for `Help/About...` dialog to a more consistent text ("A cryptocurrency wallet generator")	
+    - `0.3.63`  
 	    - Fixed bug found on `Linux`: when saving, the [Show] button does nothing
 		- Fixed a Bug found when testing the [Show] button because the output folder is showed not the _latest wallet subfolder_
 		- Note that on `Linux`, you must also now also install `xdg-utils` (see 3.2.b)
     - `0.3.62`: GUI Updates
 	    - A Label Online/Offline is now at the left of the _Internet connection_status_  icon. 
-        - _Seed phrase_ renamed to _Secret prase_ because it seems it is the more user friendly terminology (among
+        - _Seed phrase_ renamed to _Secret phrase_ because it seems it is the more user friendly terminology (among
         _Mnemonics_, _Seed phrase_, _Secret_, _Passphrase_ and _Secret Recovery Passphrase_).
-		- Added a link (see 5.1.16) to the whitepaper of the _3D rep^resentation of a seed phrase_
+		- Added a link (see 5.1.17) to the whitepaper of the _3D representation of a Secret phrase_
     - `0.3.60`
 	    - Trying to fix _Bullet list hell_ related to how [Github](https://github.com/) renders them
 	    - Rewrite/Updates in this README: 
@@ -178,7 +198,7 @@
 		- First tests on `Linux Mint 22.2`: problem with icon filenames
 		- Fix in icon filenames for `Linux` compatibility 
     - `0.3.50`    
-	    - Added a dynamic link button [3D] to display a 3D representation of the `Seed phrase` (this is a web page
+	    - Added a dynamic link button [3D] to display a 3D representation of the `Secret phrase` (this is a web page
 		which is indeed a copy of a companion project ([CryptoShape](https://www.npmjs.com/package/@aladas-org/cryptoshape))
 	    - Added a link for _Donations_
 	    - Rewrite/Updates in this README
@@ -205,14 +225,6 @@
 	    - New _Entropy source_: `Mouse moves`
 	- `0.3.43`
 	    - New _Entropy source_: `D6 dices` (e.g. 100 rolls for 256 bits of Entropy)  
-	- `0.3.42`
-	    - Conversion of new wordlists (DE, RU, EO, LA, EL, HI) in .txt format to submit as proposals for official BIP39 repository
-	- `0.3.41`
-	    - Added support of _Greek_ for the _Secret phrase_
-	- `0.3.40`
-	    - Added `Marketcap` button (after `Explore` button) in _Wallet Tab Page_ to show the relevant [coinmarketcap](https://coinmarketcap.com/) URL
-	- `0.3.39`
-	    - Replaced default random generator `Math.random` with a more secure for cryptography usage (see `secureRandom()` in `hex_utils.js`) 
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
@@ -238,7 +250,7 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rent expand super sea summer pull catalog mobile proud solve oven goose    
         _Shortened secret phrase_  
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos    
-        NB: Please notice that the _Shortened seed phrase_ is not meant to be used
+        NB: Please notice that the _Shortened Secret phrase_ is not meant to be used
         to import a wallet in a _Wallet Manager_, it's only a trick to _compress_ the _Secret phrase_ and make it easier
 		to store on a device with limited memory like a `NTAG213 NFC` (see 5.2.3).    
 	    - 5.1.3. _Entropy Source_ : `D6 Dices`, `Mouse moves`, `Image` or `Fortunes`
@@ -291,58 +303,63 @@
 			to Zero (for `Cardano` HD wallets only).			
 			- 5.1.4.e. You can check generated _HD Wallets_ with _Ian Coleman BIP39_ homepage    
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
-		- 5.1.5. _Passphrase feature_ (_HD Wallet_ only)    
-    	With a _passphrase_ a completely different _HD hierarchy_ is generated. 
+		- 5.1.5. 'BIP38' Encryption of the _Private Key_
+			- [`BIP38`](https://en.bitcoin.it/wiki/BIP_0038) is now supported for an additional security layer by Encrypting the _Private Key_. 
+			- A new _Tool_ (in _Main menu_ : `Tool/Bip38 Encrypt/Decrypt`) is provided to ease the retrieval of 
+			the _Private Key_ from the _Bip38 Encrypted PK_ (or conversely the encryption of the _Private Key_ to the _Bip38 Encrypted PK_).    
+			Note 1: Notice that only the first method ('NON-EC') is supported.    
+			Note 2: the _Bip38 passphrase_ is in some way similar to the _PIN Code_ of a Credit card.
+		- 5.1.6. _Bip32 Passphrase feature_ (_HD Wallet_ only)    
+    	With a _Bip32 passphrase_ a completely different _HD hierarchy_ is generated. 
 		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
 		**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
 		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button. 			
-		- 5.1.6. _Salted Entropy_    
-		_Entropy_ is generated from _Entropy Source_ and adding a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) to ensure that 
-		the _Entropy_ will be different at each Generation even if the _Entropy Source_ value is the same 
+		- 5.1.7. _Salted Entropy_    
+		_Entropy_ is generated from _Entropy Source_ and adding a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ value is the same 
 		(e.g. reusing the same image or fortune cookie). Thus the _Entropy_ value will be unique at each press of [Generate] button.
-		- 5.1.7. Choose _Entropy Size_    
-		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). This is equivalent to a _Seedphrase size_ 
-		between 12 and 24 words. Changing _Entropy Size_ impacts the _Seedphrase size_ and conversely.
-		- 5.1.8. _Wallet Address_    
+		- 5.1.8. Choose _Entropy Size_    
+		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). This is equivalent to the size of the _Secret phrase_ 
+		(between 12 and 24 words). Changing _Entropy Size_ impacts the size of the _Secret phrase_ and conversely.
+		- 5.1.9. _Wallet Address_    
 		_Wallet Address_ is displayed in the `Wallet` tab page. There's also an [Explorer...] button which allows to check
 		the generated address in the appropriate _Blockchain Explorer_.
-		- 5.1.9. _Internet Connection Status_    
+		- 5.1.10. _Internet Connection Status_    
 		This is to secure _Offline wallet creation_ (_non custodial_). An icon at the right of the _Main Toolbar_ shows 
 		if the Internet is connected (`Wifi ON` red icon) or not connected (`Wifi OFF` green icon)
-		- 5.1.10. `Save` _Wallet Informations_    
+		- 5.1.11. `Save` _Wallet Informations_    
 		With `File/Save` (or the _Save_ icon in the main toolbar), you can save the _Wallet Informations_ in a timestamped 
 		subfolder (eg. `2024_10_07_21h-4m-4s-3_BTC_EN`) under `_output` folder.	
 		This subfolder contains `wallet_info.txt` and a `wallet.json` with the informations displayed in _Entropy_ and _Wallet_ tab pages. 
-			- 5.1.10.a. When you save the current generated wallet a Popup dialog confirms the saving and allows to show where it is saved.    
-            - 5.1.10.b. The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Seedphrase`,
+			- 5.1.11.a. When you save the current generated wallet a Popup dialog confirms the saving and allows to show where it is saved.    
+            - 5.1.11.b. The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Secret phrase`,
 			`Entropy` and `WIF` (if applicable).    
 			Notice that there is a `xtras` subfolder where these _QR codes_ are provided
 			in the `svg` format. There is also a _Rectangular Micro QR code_ (`rMQR`) of the 
 			`Entropy` (_Rectangular Micro QR Code_, `R15x59` or `R15x77` version depending on		
 			`Entropy size`) and an experimental `Ultracode` color QR code of the `Entropy`.
-		    - 5.1.10.c: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
-		        - 5.1.10.c.I: Notice that most Android _QR Code reader_ apps will 
+		    - 5.1.11.c: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
+		        - 5.1.11.c.I: Notice that most Android _QR Code reader_ apps will 
 			    not be compatible with _Rectangular Micro QR Code_ but it works with 
 			    [`QRQR`](https://play.google.com/store/apps/details?id=com.arara.q&hl=en)	 
 			    an Android _QR Code reader_ published by _Arara_ on the _Google Play Store_.              
-                * 5.1.10.c.II: Then convert the _Entropy_ to the matching _Secret phrase_ 
+                * 5.1.11.c.II: Then convert the _Entropy_ to the matching _Secret phrase_ 
 			    by doing a copy/paste in the `Entropy` field of _CryptoCalc_.    
 				**Caution**: Take care to set _CryptoCalc_ with the same `Entropy Size` and 
 				`Derivation path` (if applicable, don't forget to use the [Refresh] button)
 				than those used when the wallet was created (these informations 
 				are provided either in the `wallet_info.txt` or in `wallet_info.wits`).
-		- 5.1.11. `Open` _Wallet Informations_ of a previously saved wallet    
-		    - 5.1.11.a. _Wallet informations_ are saved both as a `.txt` but also as a `.wits` file (`JSON` format). 
-		    - 5.1.11.b. A `.wits` file can be opened either with `File.Open...` menu item or 'Open...' icon
+		- 5.1.12. `Open` _Wallet Informations_ of a previously saved wallet    
+		    - 5.1.12.a. _Wallet informations_ are saved both as a `.txt` but also as a `.wits` file (`JSON` format). 
+		    - 5.1.12.b. A `.wits` file can be opened either with `File.Open...` menu item or 'Open...' icon
 			in the toolbar. It can be also be opened in `Cryptocalc.exe` by double clicking on the `.wits` 
 			(_File extension to Application_ feature): this will launchlc `Cryptocalc.exe` (cf. 3.1 for installing 
 			`Cryptocalc.exe` with the _CryptoCalc Standalone installer_)  /
-			- 5.1.11.c. Once opened, a wallet can't be saved on itself (it is to prevent accidental overwrite of the original wallet),
+			- 5.1.12.c. Once opened, a wallet can't be saved on itself (it is to prevent accidental overwrite of the original wallet),
             but you can use `File.Save As...` which will save the wallet with a different timestamp than the original one.	
-            - 5.1.11.d.	Notice that for a _HD Wallet_ you can change the `Account` and/or the `Address Index` (dont forget to push
+            - 5.1.12.d.	Notice that for a _HD Wallet_ you can change the `Account` and/or the `Address Index` (dont forget to push
 			the [Refresh] button). Now you can save the new wallet with `File.Save As...` and if you didn't change the `Entropy` 
             then this new wallet will belong to the same `Bip32 HD Wallet Tree` (see A.2) than the original one.			
-		- 5.1.12. Import a wallet in [Guarda](https://guarda.com/)   
+		- 5.1.13. Import a wallet in [Guarda](https://guarda.com/)   
 		An item in the menu (Help / Resources / Guarda) eases importing a wallet in a _Wallet Manager_ application 
 		    - Notes on `Guarda`
 		        - It is a _Non custodial_ wallet because the _Private Keys_ are stored on you local computer so keep in mind 
@@ -351,7 +368,7 @@
 			    - It is a _Hot_ wallet because it is is also a web service which allows to send funds to another wallet
 			    and also to change a cryptocurrency in another (eg ETH to SOL).		
                 - `Guarda` was chosen mainly to validate that a generated wallet by _CryptoCalc_ is accepted and thus validated.			
-        - 5.1.13. Select _Seedphrase Language_    
+        - 5.1.14. Select _Secret phrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
         Changing _Wordlist Language_ is indeed a mean to add an "obfuscation/information hiding" step  
@@ -360,48 +377,56 @@
 		NB: it is important to highlight that indeed the crucial information is the list of _Word Indexes_.
 		Thats's why translation between languages is easy in _CryptoCalc_ because the reference 
 		is the _Word Indexes_ (see 6.1.14) not the words.
-		- 5.1.14. Display of _Word Indexes_    
+		- 5.1.15. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
 		_Secret phrase_ words in the `BIP39` wordlist (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
-		- 5.1.15. Display of the _BIP32 Derivation Path_    
+		- 5.1.16. Display of the _BIP32 Derivation Path_    
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
 		_Secret phrase_ (also called the _Secret Recovery Passphrase_).
-		- 5.1.16. Dynamic Links
+		- 5.1.17. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
             - 3D representation of the `Secret phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/)) 
             The whitepaper The description of this 3D representation is in this [whitepaper](https://zenodo.org/records/14579720)			
-		- 5.1.17. Change/Reset of _Options_ (`Tools/Options`)    
+		- 5.1.18. Change/Reset of _Options_ (`Tools/Options`)    
 		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
 		It is also possible to reset _Options_ to _Default Options_
 		(defined in `www/config/defaults/options.json`)
-        - 5.1.18. _Localization_    
+        - 5.1.19. _Localization_    
         _Localization_ (`l10n`) feature is the translation of _GUI Labels_ to adapt to the user's language, it' called the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use and optionnally a codeset (eg. `de_CH.UTF-8`).		
 		The _locale_ is provided as part of your machine's environment. _CryptoCalc_ only uses the 2 letter language part (eg. `en`). 
 		Localization is enabled by a _JSon_ file in the `www/js/L10n` folder (eg. `gui-msg-en.json`).    
-		Notice that currently only `en` and `fr` are provided.    
-    - 5.2. Use cases
-        - 5.2.1. Generate a new _Wallet_ and import it in a _Wallet manager_  
+		Notice that currently only `en` and `fr` are provided. 
+	- 5.2. Security Issues 
+		- Notice that you should never disclose the _Private Key_.    
+		NB: In the case of _Bip38 Encryption_, you may share it but never neither the _Private Key_ nor the _Bip38 Passphrase_.  
+    - 5.3. Use cases
+        - 5.3.1. Generate a new _Wallet_ and import it in a _Wallet manager_  
 	    With a _Wallet Manager_ like [`Guarda`](https://https://guarda.com/) you can import
 		a wallet generated by _CryptoCalc_:
             - Choose _Wallet Mode_: _Simple Wallet_, _HD Wallet_ or _SWORD_		
             - Choose a coin: `BTC`,`ETH`,`XRP`,`ADA`,`DOGE`,`LTC`,`SOL`,`AVX`,`TRON`,`BCH`,`DASH`,`Firo` 
-		    - Enter _Private Key_  (NB: or _WIF_ for `BTC` wallets)    
-        - 5.2.3. Store _Shortened Seedphrase_ in a _NFC SmartRing_  
+		    - Enter _Private Key_  (NB: or _WIF_ for `BTC` wallets)  
+		- 5.3.2. `BIP38` Encryption of the Private Key 
+		The first method (NON-EC) of `BIP38` adds a security layer by encrypting the _Private Key_ with a _Passphrase_.
+		The _Bip38 Encrypted Private Key_ allows to subcontract the printing of a _Paper Wallet_ with _premium features_
+		(eg. Watermark, Embossing, Hologram, Custom _Credit card_, etc..) without disclosing the Private Key to the subcontractor (and providing the _Passphrase_ to your customer via a different channel than the delivery 
+		of the _Printed paper wallet_).	
+        - 5.5.3. Store _Shortened Secret phrase_ in a _NFC SmartRing_  
         The entry level _SmartRings_ (price range: 7..15$) contains a `NTAG213 NFC` with 
-		144 bytes useable capacity. This is enough to store the _Shortened Seedphrase_, 
-		with a 24 words _Shortened Seedphrase_ 
-	    the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.1) 
+		144 bytes useable capacity. This is enough to store the _Shortened Secret phrase_, 
+		with a 24 words _Shortened Secret phrase_ 
+	    the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.2) 
 		or even less (as some mnemonics have only three characters).   
         - 5.2.4. Store _Master password_  
-        This is similar to the previous case, but the _Shortened Seedphrase_ 
+        This is similar to the previous case, but the _Shortened Secret phrase_ 
 		can be used as a _Master password_ for a _Password Manager_ or for tools like
 		[_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption of your documents.    
 		
@@ -414,21 +439,21 @@
 		(e.g. _French_, _Deutsh_, _Spanish_, Italian_, _Portuguese_, etc...) but _Wallet Managers_ 
 		(e.g. _Guarda_, _Metamask_, _Atomic Wallet_, etc...) and _Hardware Wallets_ 
 		(eg. _Ledger_, _Trezor_, _Tangem_, etc...) will only accept _English_ words.
-	    - 6.1.2. Conversion of _seed phrase_ from and to _Entropy_		
+	    - 6.1.2. Conversion of _Secret phrase_ from and to _Entropy_		
         The _Secret phrase_ is obtained by drawing words (also called _mnemonics_) from the dictionary.
         Drawing a word is indeed choosing an index between 0 and 2047. This index can be represented
         by 11 bits in _Binary_ (because 2^11 = 2048). 
-            - Conversion from _Entropy_ to _seed phrase_
+            - Conversion from _Entropy_ to _Secret phrase_
 			The _Entropy_ is represented in _Binary_ and divided in 11 bits segements but the entropy
 			is a multiple of 8 bits (128, 160, 192, 224, 256) there are "missing bits" for choosing 
 			the last word. These "missing bits" are provided by computing the _Entropy Checksum_.
-			e.g. For an _Entropy Size_ of 128 bits (converted to a 12 words _seed phrase_), 
+			e.g. For an _Entropy Size_ of 128 bits (converted to a 12 words _Secret phrase_), 
 		    132 bits are needed (11 * 12), so the _Entropy Checksum_ provides the missing 4 bits.
-			* Conversion from _seed phrase_ to _Entropy_ 
+			* Conversion from _Secret phrase_ to _Entropy_ 
 			For each word its index is retrieved from the _Dictionary_, its value is represented
 			as a 11 bits segment and a number of bits corresponding to tne _Entropy Checksum_
 			are removed at the end of the concatenation of 11 bits segments.
-			e.g. For a _seed phrase_ of 12 words (converted to a 128 bits _Entropy_), 
+			e.g. For a _Secret phrase_ of 12 words (converted to a 128 bits _Entropy_), 
 		    132 bits are obtained from the _Word Indexes_ (11 * 12), and because the _Entropy Checksum_ 
 			is 4 bits long (in the case of a 128 bits _Entropy_) then the 4 bits at the end are removed.
 		- Reference    

@@ -1,13 +1,13 @@
-// =====================================================================================
-// ================================   renderer_gui.js   ================================
-// =====================================================================================
+// =====================================================================================================================
+// ==================================================   main_gui.js   ==================================================
+// =====================================================================================================================
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
 
 // password in HD wallet:
 // https://help.blockstream.com/hc/en-us/articles/8712301763737-What-is-a-BIP39-passphrase
 "use strict";
 
-// ===============================  RendererGUI class  ===============================
+// ===============================  MainGUI class  ===============================
 // NB: "Singleton" class
 // * static GetInstance()
 // ------------------------------------------------------
@@ -20,7 +20,10 @@
 // * async  getSaltedEntropySource()
 // * async  didFinishLoadInit()
 // * async  localizeHtmlNodes()
+//
 // *        registerCallbacks()
+// *        addCustomAttributes()
+//
 // * async  propagateFields( entropy, wif )
 //
 //          updateFieldsVisibility()
@@ -57,6 +60,10 @@
 // *        GuiTogglePasswordVisibility()
 // *        GuiSetPasswordApplyState()
 //
+// *        GuiClearBip38Passphrase()
+// *        GuiGenerateBip38Passphrase()
+// *        GuiToggleBip38PassphraseVisibility()
+//
 // * async  fileSaveWallet()
 // * async  fileOpenWallet()
 //
@@ -90,7 +97,7 @@ const WATERFALL_IDS           = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, 
 const WATERFALL_FROM_SEED_IDS = [ ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
 const EDITABLE_FIELD_IDS      = [ ENTROPY_SRC_FORTUNES_ID, ENTROPY_ID, MNEMONICS_ID ];
 
-const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "RendererGUI.onGUIEvent: ";
+const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "MainGUI.onGUIEvent: ";
 
 const trigger_event = ( elt, event_type ) => elt.dispatchEvent( new CustomEvent( event_type, {} ) );
 
@@ -130,30 +137,44 @@ const wordCount2BitsSize = ( word_count ) => {
 	} // word_count
 }; // wordCount2BitsSize()
 
-// ==============================  RendererGUI class   ==============================
-class RendererGUI {	
-	static #Key = Symbol();
-	static #Singleton = new RendererGUI( this.#Key );
+// ==============================  MainGUI class   ==============================
+class MainGUI {	
+	static #Key           = Symbol();
+	static #Singleton     = new MainGUI( this.#Key );
+	static #InstanceCount = 0;
 	
-	static GetInstance() {
-		if ( RendererGUI.#Singleton == undefined ) {
-			RendererGUI.#Singleton = new RendererGUI();
+	static get This() {
+		if( MainGUI.#Singleton == undefined ) {
+			MainGUI.#Singleton = new MainGUI( this.#Key );
+			if (MainGUI.#Singleton > 0) {
+				throw new TypeError("'MainGUI' constructor called more than once");
+			}
+			MainGUI.#InstanceCount++;
         }
-        return RendererGUI.#Singleton;
-    } // RendererGUI.GetInstance() 
+        return MainGUI.#Singleton;
+    } // MainGUI 'This' getter
+	
+	//static GetInstance() {
+	//	if ( MainGUI.#Singleton == undefined ) {
+	//		MainGUI.#Singleton = new MainGUI( this.#Key );
+    //    }
+    //    return MainGUI.#Singleton;
+    //} // MainGUI.This 
 	
     // ** Private constructor **
 	constructor( key ) {
-		if ( key !== RendererGUI.#Key ) {
-			throw new TypeError("RendererGUI constructor is private.");
+		if ( key !== MainGUI.#Key ) {
+			throw new TypeError("'MainGUI' constructor is private");
 		}
 		
-		this.wallet_info = new Wallet( this );
+		this.wallet_info = new WalletInfo( this );
 		this.wallet_info.setAttribute( WORD_COUNT, 24 );
 				
 		this.first_time                   = true; 
 		
-		this.password_visible             = false;
+		this.password_visible             = false;		
+		this.bip38_passphrase_visible     = false;
+		
 		this.wits_path                    = "";
 		
         this.new_cmd_count                = 0;
@@ -164,16 +185,16 @@ class RendererGUI {
 		this.entropy_source_is_user_input = false;		
 		this.img_data_asURL               = "";
 		
-		trace2Main( pretty_func_header_format( "RendererGUI.constructor" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.constructor" ) );
 		
 		window.ipcMain.receive( "fromMain", async (data) => { await this.onGUIEvent(data); } ); 
 	} // ** Private constructor **
 	
 	async newWallet( options_json_data ) {
 		trace2Main( "===== rGUI.newW> ===============================================================" );
-		trace2Main( pretty_func_header_format( "RendererGUI.newWallet" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.newWallet" ) );
 		
-		trace2Main( pretty_format( "RendererGUI.newWallet" ) );
+		trace2Main( pretty_format( "MainGUI.newWallet" ) );
 		
 		this.new_cmd_count++;
 		
@@ -214,7 +235,7 @@ class RendererGUI {
 		
 		// ---------- Coin ----------
 		let coin = COIN_ABBREVIATIONS[blockchain];		
-		HtmlUtils.SetNodeValue( WALLET_COIN_ID, coin );	
+		HtmlUtils.SetElementValue( WALLET_COIN_ID, coin );	
 		// trace2Main( pretty_format( "rGUI.newW> coin", coin ) );
 		// ---------- Coin
 		
@@ -232,7 +253,7 @@ class RendererGUI {
 		// ---------- Entropy Size
 		
 		// ---------- Entropy ----------
-		// let	entropy_1 = HtmlUtils.GetNodeValue( ENTROPY_ID );
+		// let	entropy_1 = HtmlUtils.GetElementValue( ENTROPY_ID );
 		// trace2Main( pretty_format( "rGUI.newW> entropy 1", entropy_1 ) );
 		
 		let	entropy = await this.generateEntropyFromEntropySource();
@@ -267,18 +288,18 @@ class RendererGUI {
         // --------------------------------
 		
 		this.wallet_info.setAttribute( CMD, CMD_NONE );		
-		// trace2Main( pretty_func_header_format( "<END> RendererGUI.newWallet" ) );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.newWallet" ) );
 		
 		this.updateFieldsVisibility();
 		
 		this.cb_enabled = true;  
 		
-		// trace2Main( pretty_format( "<END> RendererGUI.newWallet first_time", this.first_time) );
-		// trace2Main( pretty_format( "<END> RendererGUI.newWallet wits_path", "'" + this.wits_path + "'") );
+		// trace2Main( pretty_format( "<END> MainGUI.newWallet first_time", this.first_time) );
+		// trace2Main( pretty_format( "<END> MainGUI.newWallet wits_path", "'" + this.wits_path + "'") );
 		
 		//---------- Note: Request "Min" to 'Open WITS' with 'wits_path' ----------
 		if ( this.wits_path != "" && this.first_time ) {
-			trace2Main( pretty_format( "<END> RendererGUI.newWallet Ask 'Main' to'Open WITS' ", this.wits_path) );
+			trace2Main( pretty_format( "<END> MainGUI.newWallet Ask 'Main' to'Open WITS' ", this.wits_path) );
 			let cmd_name = CMD_OPEN_WALLET;
 			let cmd_args = this.wits_path;
 			data = { cmd_name, cmd_args };			
@@ -291,7 +312,7 @@ class RendererGUI {
 	
 	async openWallet( json_data ) {
 		trace2Main( "===== rGUI.openW> ===============================================================" );
-		trace2Main( pretty_func_header_format( "RendererGUI.openWallet" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.openWallet" ) );
 		trace2Main( JSON.stringify(json_data) );
 
         this.cb_enabled = false;
@@ -361,13 +382,13 @@ class RendererGUI {
         // ---------- Checksum		
 
 		if ( wallet_mode == HD_WALLET_TYPE ) {				
-			// ---------- Password ----------
-			if ( json_data[PASSWORD] != undefined ) {
-				let password = json_data[PASSWORD];
-				this.wallet_info.setAttribute( PASSWORD, password );
-				trace2Main( pretty_format( "rGUI.openW> password", password ) );	
+			// ---------- Bip32 Passphrase ----------
+			if ( json_data[BIP32_PASSPHRASE] != undefined ) {
+				let bip32_passphrase = json_data[BIP32_PASSPHRASE];
+				this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+				trace2Main( pretty_format( "rGUI.openW> Bip32 Passphrase", bip32_passphrase ) );	
 			}	
-			// ---------- Password
+			// ---------- Bip32 Passphrase
 
 		    let account = json_data[ACCOUNT]; 
 			this.wallet_info.setAttribute( ACCOUNT, account );
@@ -377,6 +398,14 @@ class RendererGUI {
             this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
 			// trace2Main( pretty_format( "rGUI.openW> address_index", address_index ) );
 		} // HD_WALLET_TYPE	
+		
+		// ---------- Bip38 Passphrase ----------
+		if ( json_data[BIP38_PASSPHRASE] != undefined ) {
+			let bip38_passphrase = json_data[BIP38_PASSPHRASE];
+			this.wallet_info.setAttribute( BIP38_PASSPHRASE, bip38_passphrase );
+			trace2Main( pretty_format( "rGUI.openW> Bip38 Passphrase", bip38_passphrase ) );	
+		}	
+		// ---------- Bip38 Passphrase
 		
 		// ---------- Mnemonics ----------
 		let mnemonics = json_data[MNEMONICS];
@@ -391,8 +420,8 @@ class RendererGUI {
         // ---------- Address
 		
 		//---------- Update 'Address Hardened Suffix ("" or "'") in "Wallet" Tab ----------
-		if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
-		else                         HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
+		if ( blockchain == SOLANA )  HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
+		else                         HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
 		//---------- Update 'Address' in "Wallet" Tab
 
 		// ---------- Word_Indexes ----------
@@ -423,22 +452,22 @@ class RendererGUI {
 
 		this.cb_enabled = true;
 		
-		// trace2Main( pretty_func_header_format( "<END> RendererGUI.openWallet" ) );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.openWallet" ) );
 	} // async openWallet()
 		
 	async generateSimpleWalletAddress( blockchain, entropy_hex ) {
-        trace2Main( pretty_func_header_format( "RendererGUI.generateSimpleWalletAddress", 
+        trace2Main( pretty_func_header_format( "MainGUI.generateSimpleWalletAddress", 
 		                                       blockchain + " " + this.entropy_source_type ) );					 
 		
         this.cb_enabled = false;
 		
-		let entropy_src_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		let entropy_src_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		this.entropy_source_type = entropy_src_type;
 		
 		let entropy_src = "XX";
 			
 		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
-			entropy_src = HtmlUtils.GetNodeValue( ENTROPY_SRC_FORTUNES_ID );
+			entropy_src = HtmlUtils.GetElementValue( ENTROPY_SRC_FORTUNES_ID );
 		}
 		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
 			entropy_src = this.img_data_asURL;
@@ -447,7 +476,7 @@ class RendererGUI {
 		// trace2Main( pretty_format( "rGUI.genSW> entropy_src", getShortenedString( entropy_src ) ) );
 		
 		let new_wallet = {};				
-		let salt_uuid  = HtmlUtils.GetNodeValue(SALT_ID);
+		let salt_uuid  = HtmlUtils.GetElementValue(SALT_ID);
 		let wif        = "";
 		
 		let private_key = entropy_hex;
@@ -455,7 +484,7 @@ class RendererGUI {
         trace2Main( pretty_format("rGUI.genSW> private_key", private_key) );		
 
 		if ( private_key == undefined || private_key == "" ) {
-			 throw new Error("RendererGUI.generateSimpleWalletAddress 'private_key' NOT DEFINED");
+			 throw new Error("MainGUI.generateSimpleWalletAddress 'private_key' NOT DEFINED");
 		}
 		
 		if (     blockchain == BITCOIN   || blockchain == ETHEREUM 
@@ -474,7 +503,7 @@ class RendererGUI {
 			//---------- Update 'Private Key' in 'Wallet' Tab ----------
 			this.updatePrivateKey( blockchain, private_key );
 			this.wallet_info.setAttribute(PRIVATE_KEY, private_key);
-			// HtmlUtils.SetNodeValue( PRIVATE_KEY_ID, private_key );
+			// HtmlUtils.SetElementValue( PRIVATE_KEY_ID, private_key );
 			//---------- Update 'Private Key' in 'Wallet' Tab	
 		
 			let wallet_address = new_wallet[ADDRESS];
@@ -491,15 +520,15 @@ class RendererGUI {
 	
 	        // ** Note **: 'mnemonics' is used for 'Simple Wallet' / Solana			
 			if ( blockchain == SOLANA ) {
-				let mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+				let mnemonics = HtmlUtils.GetElementValue( MNEMONICS_ID );
 				
 				if (this.wallet_info.getAttribute('lang') == "JP") {
 					let mnemonic_jp = mnemonics.replaceAll(' ', '\u3000');
 					//let mnemonic_jp = mnemonics.replaceAll(' ', '*');
-					HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonic_jp );
+					HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonic_jp );
 				}
 				else {
-					HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );
+					HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonics );
 				}				
 			}
 			
@@ -516,18 +545,18 @@ class RendererGUI {
 	} // async generateSimpleWalletAddress()
 	
 	async generateHDWalletAddress( blockchain, entropy_hex ) {
-        trace2Main( pretty_func_header_format( "RendererGUI.generateHDWalletAddress", blockchain + " " + this.entropy_source_type ) );				 
+        trace2Main( pretty_func_header_format( "MainGUI.generateHDWalletAddress", blockchain + " " + this.entropy_source_type ) );				 
 		trace2Main( pretty_format("rGUI.genHDW> entropy_hex", entropy_hex ) );
 		
 		this.cb_enabled = false;
 		
-		let entropy_src_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		let entropy_src_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		this.entropy_source_type = entropy_src_type;
 		
 		let entropy_src = "XX";
 			
 		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
-			entropy_src = HtmlUtils.GetNodeValue( ENTROPY_SRC_FORTUNES_ID );
+			entropy_src = HtmlUtils.GetElementValue( ENTROPY_SRC_FORTUNES_ID );
 		}
 		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
 			entropy_src = this.img_data_asURL;
@@ -540,7 +569,7 @@ class RendererGUI {
         let hd_private_key = undefined;	
 		let data           = undefined;
 		
-		let mnemonics      = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+		let mnemonics      = HtmlUtils.GetElementValue( MNEMONICS_ID );
 		let words          = mnemonics.split(' ');
         let word_count     = words.length;			
 		let separator      = '\n';		
@@ -551,15 +580,15 @@ class RendererGUI {
 			trace2Main( pretty_format("", mnemonics_as_2parts[1] ) );				
 		}
 		
-		let wif             = "";
-		let PRIV_KEY        = "";
-		let salt_uuid    	= HtmlUtils.GetNodeValue( SALT_ID );
-        let derivation_path = "";	
-        let crypto_net	    = MAINNET;
-		let password        = "";
-		let account         = "0";
-		let address_index   = "0";
-		let wallet_mode     = this.wallet_info.getAttribute(WALLET_MODE);
+		let wif              = "";
+		let PRIV_KEY         = "";
+		let salt_uuid    	 = HtmlUtils.GetElementValue( SALT_ID );
+        let derivation_path  = "";	
+        let crypto_net	     = MAINNET;
+		let bip32_passphrase = "";
+		let account          = "0";
+		let address_index    = "0";
+		let wallet_mode      = this.wallet_info.getAttribute(WALLET_MODE);
 
         this.wallet_info.setAttribute( BLOCKCHAIN, blockchain );		
 		
@@ -575,12 +604,12 @@ class RendererGUI {
 				
 			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
 
-			let salt_uuid = HtmlUtils.GetNodeValue( SALT_ID );
+			let salt_uuid = HtmlUtils.GetElementValue( SALT_ID );
 			
-			// ---------- get 'Password' ----------
-			password = this.wallet_info.getAttribute(PASSWORD);
-			trace2Main( pretty_format( "rGUI.genHDW> password", "'" + password + "'") );
-			// ---------- get 'Password'
+			// ---------- get 'Passphrase' ----------
+			bip32_passphrase = this.wallet_info.getAttribute(BIP32_PASSPHRASE);
+			trace2Main( pretty_format( "rGUI.genHDW> Bip32 Passphrase", "'" + bip32_passphrase + "'") );
+			// ---------- get 'Passphrase'
 			
 			// ---------- get 'Account' ----------
 			if ( wallet_mode == HD_WALLET_TYPE )
@@ -603,7 +632,7 @@ class RendererGUI {
 			// ---------- get 'Address Index'			
 			
 			// ========== Wallet Generation ==========  
-			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index };
+			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index };
 			// trace2Main( pretty_format( "rGUI.genHDW> data", JSON.stringify(data) ) );
 			new_wallet = await window.ipcMain.GetHDWallet( data );
 			// ========== Wallet Generation
@@ -612,19 +641,19 @@ class RendererGUI {
 			PRIV_KEY = "";
 			
 			if ( blockchain == CARDANO ) {
-				HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
-				HtmlUtils.SetNodeValue( PK_LABEL_ID, 'XPRIV' );
+				HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
+				HtmlUtils.SetElementValue( PK_LABEL_ID, 'XPRIV' );
 				HtmlUtils.RemoveClass( ADDRESS_ID, 'NormalAddressField' );
                 HtmlUtils.AddClass( ADDRESS_ID,    'LongAddressField' );					
 			}
 			else if ( blockchain == STELLAR ) {
-				HtmlUtils.SetNodeValue( WIF_LABEL_ID, 'Private Key' );
+				HtmlUtils.SetElementValue( WIF_LABEL_ID, 'Private Key' );
 				HtmlUtils.AddClass( ADDRESS_ID,      'NormalAddressField' );
                 HtmlUtils.RemoveClass( ADDRESS_ID,   'LongAddressField' );
 				wif = new_wallet[WIF];				
 			}
 			else {
-				HtmlUtils.SetNodeValue( PK_LABEL_ID, 'Private Key' );
+				HtmlUtils.SetElementValue( PK_LABEL_ID, 'Private Key' );
 				HtmlUtils.AddClass( ADDRESS_ID,    'NormalAddressField' );
                 HtmlUtils.RemoveClass( ADDRESS_ID, 'LongAddressField' );					
 			}			
@@ -670,20 +699,20 @@ class RendererGUI {
 			}
 		} // if 'wallet_mode' is HD_WALLET_TYPE
 
-		HtmlUtils.SetNodeValue( COIN_TYPE_ID,     coin_type + '/' );
+		HtmlUtils.SetElementValue( COIN_TYPE_ID,     coin_type + '/' );
 		
 		this.wallet_info.setAttribute( ACCOUNT,        account );
 		this.wallet_info.setAttribute( ADDRESS_INDEX,  address_index );	
 		
 		//---------- Update 'Purpose' in "Wallet" Tab ----------
-		if ( blockchain == CARDANO ) HtmlUtils.SetNodeValue( PURPOSE_ID, ADA_PURPOSE + "'/");				
-		else                         HtmlUtils.SetNodeValue( PURPOSE_ID, "44'/" );					
+		if ( blockchain == CARDANO ) HtmlUtils.SetElementValue( PURPOSE_ID, ADA_PURPOSE + "'/");				
+		else                         HtmlUtils.SetElementValue( PURPOSE_ID, "44'/" );					
 		//---------- Update 'Purpose' in "Wallet" Tab
 		
 		//---------- Update 'Change' in "Wallet" Tab ----------
 		// NB: switch to systematic Hardened adresses
-		// if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( CHANGE_ID, "0'/" );				
-		// else                         HtmlUtils.SetNodeValue( CHANGE_ID, "0/" );				
+		// if ( blockchain == SOLANA )  HtmlUtils.SetElementValue( CHANGE_ID, "0'/" );				
+		// else                         HtmlUtils.SetElementValue( CHANGE_ID, "0/" );				
 		//---------- Update 'Change' in "Wallet" Tab
 		
 		//---------- Update 'Address' in "Wallet" Tab ----------
@@ -694,8 +723,8 @@ class RendererGUI {
 		
 		//---------- Update 'Address Hardened Suffix ("" or "'") in "Wallet" Tab ----------
 		// NB: switch to systematic Hardened adresses
-		// if ( blockchain == SOLANA )  HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
-		// else                         HtmlUtils.SetNodeValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
+		// if ( blockchain == SOLANA )  HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
+		// else                         HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
 		//---------- Update 'Address' in "Wallet" Tab
 		
 		//==================== Update 'Derivation Path' in "Wallet" Tab
@@ -710,7 +739,7 @@ class RendererGUI {
 			wif = this.wallet_info.getAttribute("WIF");
 			this.wallet_info.setAttribute(PRIVATE_KEY, wif);
 		}
-		// HtmlUtils.SetNodeValue( PRIVATE_KEY_ID, hd_private_key );
+		// HtmlUtils.SetElementValue( PRIVATE_KEY_ID, hd_private_key );
 		//---------- Update 'Private Key' in "Wallet" Tab
 		
 		this.updateWalletURL( blockchain, wallet_address );
@@ -721,15 +750,17 @@ class RendererGUI {
 		
 		this.cb_enabled = true;
 		
-		// trace2Main( "rGUI.genHDW> ------ END OF RendererGUI.generateHDWalletAddress ------" );
+		// trace2Main( "rGUI.genHDW> ------ END OF MainGUI.generateHDWalletAddress ------" );
 		return new_wallet;
 	} // async generateHDWalletAddress()
 	
 	async didFinishLoadInit() {
-		trace2Main( pretty_func_header_format( "RendererGUI.didFinishLoadInit" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.didFinishLoadInit" ) );
 		
 		this.registerCallbacks();
 		this.setSaveCmdState( true );
+		
+		this.addCustomAttributes();
 		
 		// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
 		// Get the element with id="seed_tab_link_id" and click on it
@@ -742,10 +773,12 @@ class RendererGUI {
 		if ( ! HtmlUtils.HasClass( WALLET_TAB_LINK_ID, "FourBordersTabLink" ) ) {
 			HtmlUtils.RemoveClass( WALLET_TAB_LINK_ID, "FourBordersTabLink");
 		}
+		
+		// Bip38EncryptDecryptDialog.This.initialize();
 	} // async didFinishLoadInit()
 	
 	async localizeHtmlNodes() {
-		 trace2Main( pretty_func_header_format( "RendererGUI.localizeHtmlNodes" ) );
+		 trace2Main( pretty_func_header_format( "MainGUI.localizeHtmlNodes" ) );
 		 
 		 this.cb_enabled = false;
 		 
@@ -758,14 +791,14 @@ class RendererGUI {
 			 L10n_key = L10N_KEYS[i];
 			 L10n_msg = await window.ipcMain.GetLocalizedMsg( L10n_key );
 			 //trace2Main("   L10n_key: " + L10n_key + "   L10n_msg: " + L10n_msg);
-			 HtmlUtils.SetNodeValue( L10n_key, L10n_msg );
+			 HtmlUtils.SetElementValue( L10n_key, L10n_msg );
 		 }
 		 
 		 this.cb_enabled = true;
 	} // async localizeHtmlNodes()
 	
 	registerCallbacks() {
-		trace2Main( pretty_func_header_format( "RendererGUI.registerCallbacks" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.registerCallbacks" ) );
 		
 		// CUSTOM_EVT_UPDATE_ENTROPY
 		document.body.addEventListener( CUSTOM_EVT_UPDATE_ENTROPY, async (evt) => { 
@@ -835,7 +868,7 @@ class RendererGUI {
 		this.setEventHandler( LANG_SELECT_ID,           'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateLang(evt); } );	
 
-		// -------------------- Password --------------------
+		// -------------------- Passphrase --------------------
 		this.setEventHandler( PASSWORD_ID, 'keyup',   
 		    (evt) => { this.onGuiChangePassword(); } );
 
@@ -850,7 +883,21 @@ class RendererGUI {
 
 		this.setEventHandler( EYE_BTN_ID, 'click',   
 		    (evt) => { if (this.cb_enabled) this.GuiTogglePasswordVisibility(); } );
-		// -------------------- Password			
+		// -------------------- Passphrase		
+
+		// -------------------- Bip38 (Non-EC) Passphrase --------------------
+		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
+		    (evt) => { this.onGuiChangeBip38Passphrase(); } );
+			
+		this.setEventHandler( CLEAR_BIP38_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip38Passphrase(); } );			
+			
+		this.setEventHandler( GENERATE_BIP38_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiGenerateBip38Passphrase(); } );
+
+		this.setEventHandler( BIP38_PASSPHRASE_EYE_BTN_ID, 'click',   
+		    (evt) => { if (this.cb_enabled) this.GuiToggleBip38PassphraseVisibility(); } );
+		// --------------------  Bip38 (Non-EC) Passphrase			
 		
 		this.setEventHandler( WALLET_MODE_SELECT_ID,    'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiSwitchWalletMode(evt); } );
@@ -886,11 +933,21 @@ class RendererGUI {
 		this.setEventHandler( ADDRESS_INDEX_ID,         'keypress', 
 		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeypress(evt); } );
 									 
-        //trigger_event( HtmlUtils.GetNode( RANDOM_BTN_ID ), 'click' );
+        //trigger_event( HtmlUtils.GetElement( RANDOM_BTN_ID ), 'click' );
 	} // registerCallbacks()
 	
+	addCustomAttributes( entropy ) {
+		trace2Main( pretty_func_header_format( "MainGUI.addCustomAttributes") );
+		
+		let passphrase_elt = HtmlUtils.GetElement( PASSWORD_ID );
+		passphrase_elt.setAttribute( PASSWORD_PRIVATE_VALUE, "" );
+		
+		let bip38_passphrase_elt = HtmlUtils.GetElement( BIP38_PASSPHRASE_ID );
+		bip38_passphrase_elt.setAttribute( PASSWORD_PRIVATE_VALUE, "" );
+	} // addCustomAttributes()
+	
 	async propagateFields( entropy ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.propagateFields", entropy ) );
+		trace2Main( pretty_func_header_format( "MainGUI.propagateFields", entropy ) );
 
         this.cb_enabled	= false; 	
 		
@@ -913,7 +970,7 @@ class RendererGUI {
 			await this.updateMnemonics( entropy );
         }
 		
-		// trace2Main( pretty_func_header_format( "<END> RendererGUI.propagateFields", entropy ) );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.propagateFields", entropy ) );
 		
         this.cb_enabled	= true;		
 	} // async propagateFields()
@@ -947,98 +1004,98 @@ class RendererGUI {
 		//  *   *   DASH           :  -      X     - 
 		//  *   *   FIRO           :  -      X     -  
 		
-		// trace2Main( pretty_func_header_format( "RendererGUI.updateFieldsVisibility" ) );
-		HtmlUtils.HideNode( TR_SW_MNEMONICS_ID );
+		// trace2Main( pretty_func_header_format( "MainGUI.updateFieldsVisibility" ) );
+		HtmlUtils.HideElement( TR_SW_MNEMONICS_ID );
 		
 		let wallet_mode = this.wallet_info.getAttribute(WALLET_MODE);
 		let blockchain  = this.wallet_info.getAttribute(BLOCKCHAIN);
 		
-		HtmlUtils.HideNode( TR_PRIV_KEY_ID );
-		HtmlUtils.HideNode( TR_1ST_PK_ID );		
+		HtmlUtils.HideElement( TR_PRIV_KEY_ID );
+		HtmlUtils.HideElement( TR_1ST_PK_ID );		
 		
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {			
-			HtmlUtils.ShowNode( SW_ENTROPY_SIZE_ID );
+			HtmlUtils.ShowElement( SW_ENTROPY_SIZE_ID );
 			
-			HtmlUtils.ShowNode( WORD_COUNT_SELECT_ID );
-			HtmlUtils.ShowNode( SW_WORD_COUNT_ID );
+			HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
 
-			HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
+			HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
 			if ( blockchain == TON || blockchain == TERRA_LUNA || blockchain == HORIZEN ) {				
-				HtmlUtils.HideNode(TR_SW_MNEMONICS_ID);
+				HtmlUtils.HideElement(TR_SW_MNEMONICS_ID);
 			}
 			
-			HtmlUtils.HideNode( PASSWORD_ROW_ID );
+			HtmlUtils.HideElement( PASSWORD_ROW_ID );
 			
-			HtmlUtils.HideNode( ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideNode( WORD_COUNT_SELECT_ID );
-			HtmlUtils.HideNode( DERIVATION_PATH_ROW );
+			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.HideElement( DERIVATION_PATH_ROW );
 			
-			// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
-		    HtmlUtils.ShowNode( TR_1ST_PK_ID );	
+			//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
+		   HtmlUtils.ShowElement( TR_1ST_PK_ID );	
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
-            HtmlUtils.ShowNode( PASSWORD_ROW_ID );
+           HtmlUtils.ShowElement( PASSWORD_ROW_ID );
 			
-			HtmlUtils.ShowNode( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
 
 			if ( wallet_mode == HD_WALLET_TYPE )
-				HtmlUtils.ShowNode( DERIVATION_PATH_ROW );
+				HtmlUtils.ShowElement( DERIVATION_PATH_ROW );
 			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
-				HtmlUtils.HideNode( PASSWORD_ROW_ID );
-				HtmlUtils.HideNode( DERIVATION_PATH_ROW );
+				HtmlUtils.HideElement( PASSWORD_ROW_ID );
+				HtmlUtils.HideElement( DERIVATION_PATH_ROW );
 			}
-			HtmlUtils.ShowNode( TR_WIF_ID );
+			HtmlUtils.ShowElement( TR_WIF_ID );
 			
-			HtmlUtils.HideNode( TR_SW_MNEMONICS_ID );
+			HtmlUtils.HideElement( TR_SW_MNEMONICS_ID );
 			
-			HtmlUtils.HideNode( SW_ENTROPY_SIZE_ID);
+			HtmlUtils.HideElement( SW_ENTROPY_SIZE_ID);
 			
-			HtmlUtils.HideNode( WORD_COUNT_SELECT_ID );
-			HtmlUtils.HideNode( SW_WORD_COUNT_ID );  
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.HideElement( SW_WORD_COUNT_ID );  
 
 			if ( blockchain == TRON ) {
-				HtmlUtils.HideNode( TR_PRIV_KEY_ID );			
+				HtmlUtils.HideElement( TR_PRIV_KEY_ID );			
 			}			
 			else if ( blockchain == CARDANO ) {				
-				HtmlUtils.HideNode(ACCOUNT_ID);
-				HtmlUtils.HideNode(ACCOUNT_SUFFIX_ID);
-				HtmlUtils.HideNode(ADDRESS_INDEX_ID);				
+				HtmlUtils.HideElement(ACCOUNT_ID);
+				HtmlUtils.HideElement(ACCOUNT_SUFFIX_ID);
+				HtmlUtils.HideElement(ADDRESS_INDEX_ID);				
 				
-				HtmlUtils.ShowNode(ACCOUNT_READONLY_ID);
-				HtmlUtils.ShowNode(ADDRESS_INDEX_READONLY_ID);
+				HtmlUtils.ShowElement(ACCOUNT_READONLY_ID);
+				HtmlUtils.ShowElement(ADDRESS_INDEX_READONLY_ID);
 				
-				HtmlUtils.ShowNode( TR_SW_MNEMONICS_ID );
+				HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
 			}
 			else {
-				HtmlUtils.ShowNode(ACCOUNT_ID);
-				HtmlUtils.ShowNode(ACCOUNT_SUFFIX_ID);
-				HtmlUtils.ShowNode(ADDRESS_INDEX_ID);
+				HtmlUtils.ShowElement(ACCOUNT_ID);
+				HtmlUtils.ShowElement(ACCOUNT_SUFFIX_ID);
+				HtmlUtils.ShowElement(ADDRESS_INDEX_ID);
 				
-				HtmlUtils.HideNode(ACCOUNT_READONLY_ID);
-				HtmlUtils.HideNode(ADDRESS_INDEX_READONLY_ID);			
+				HtmlUtils.HideElement(ACCOUNT_READONLY_ID);
+				HtmlUtils.HideElement(ADDRESS_INDEX_READONLY_ID);			
 			}
-			// HtmlUtils.HideNode( TR_1ST_PK_ID );	
-            HtmlUtils.HideNode( TR_PRIV_KEY_ID );
+			// HtmlUtils.HideElement( TR_1ST_PK_ID );	
+            HtmlUtils.HideElement( TR_PRIV_KEY_ID );
 
 			if ( blockchain == RIPPLE ) {
-				HtmlUtils.HideNode( TR_WIF_ID );
-				HtmlUtils.HideNode( TR_1ST_PK_ID );			
+				HtmlUtils.HideElement( TR_WIF_ID );
+				HtmlUtils.HideElement( TR_1ST_PK_ID );			
 		    }
 			else if ( blockchain == STELLAR || blockchain == SUI) {				
-				HtmlUtils.ShowNode(TR_1ST_PK_ID);
+				HtmlUtils.ShowElement(TR_1ST_PK_ID);
 			}
 
             if (   blockchain == ETHEREUM  || blockchain == BINANCE_BSC
 				|| blockchain == AVALANCHE || blockchain == POLYGON				
                 || blockchain == SOLANA	) {   
-				HtmlUtils.HideNode( TR_WIF_ID );
-				HtmlUtils.ShowNode( TR_1ST_PK_ID );
-				// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
+				HtmlUtils.HideElement( TR_WIF_ID );
+				HtmlUtils.ShowElement( TR_1ST_PK_ID );
+				//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
 			}	
 
             if (   blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {   
-				HtmlUtils.ShowNode( TR_1ST_PK_ID );
-				// HtmlUtils.ShowNode( TR_PRIV_KEY_ID );
+				HtmlUtils.ShowElement( TR_1ST_PK_ID );
+				//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
 			}				
 		}	
 
@@ -1047,46 +1104,46 @@ class RendererGUI {
 		if (   ( wallet_mode == HD_WALLET_TYPE ||  wallet_mode == SWORD_WALLET_TYPE )
 			&& (    blockchain == SOLANA || blockchain == STELLAR 
 		         || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) ) {  
-			HtmlUtils.HideNode( TR_WIF_ID );
+			HtmlUtils.HideElement( TR_WIF_ID );
 		}
 		else { 
 			if (    wif != undefined  &&  wif != "" 
 				&& blockchain != ETHEREUM  &&  blockchain != AVALANCHE &&  blockchain != POLYGON 
 				&&  blockchain != BINANCE_BSC ) {
-				HtmlUtils.ShowNode( TR_WIF_ID );
+				HtmlUtils.ShowElement( TR_WIF_ID );
 			}	
 			else {
-				HtmlUtils.HideNode( TR_WIF_ID );
+				HtmlUtils.HideElement( TR_WIF_ID );
 			}
 		}
 
 		if ( wallet_mode == SIMPLE_WALLET_TYPE && blockchain == HORIZEN ) {				
-			HtmlUtils.ShowNode( TR_WIF_ID );
+			HtmlUtils.ShowElement( TR_WIF_ID );
 		}		
 		// ------------------- WIF
 		
 		
-		HtmlUtils.HideNode( ENTROPY_SRC_IMG_CONTAINER_ID );
-		HtmlUtils.HideNode( ENTROPY_SRC_FORTUNES_ID );
-		HtmlUtils.HideNode( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
-		HtmlUtils.HideNode( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
+		HtmlUtils.HideElement( ENTROPY_SRC_IMG_CONTAINER_ID );
+		HtmlUtils.HideElement( ENTROPY_SRC_FORTUNES_ID );
+		HtmlUtils.HideElement( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
+		HtmlUtils.HideElement( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
 			
 		// ------------------- Entropy Source -------------------
 		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
-			HtmlUtils.ShowNode( ENTROPY_SRC_FORTUNES_ID );			
+			HtmlUtils.ShowElement( ENTROPY_SRC_FORTUNES_ID );			
 		}
 		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
-			HtmlUtils.ShowNode( ENTROPY_SRC_IMG_CONTAINER_ID );
+			HtmlUtils.ShowElement( ENTROPY_SRC_IMG_CONTAINER_ID );
 		}
 		else if ( this.entropy_source_type == MOUSE_MOVE_ENTROPY_SRC_TYPE ) {
-			 HtmlUtils.ShowNode( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
+			HtmlUtils.ShowElement( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
 			 
 			 let words_count = this.wallet_info.getAttribute( WORD_COUNT );
 			 let entropy_bytes_count = wordCount2BitsSize(words_count) / 8;
 			 DrawEntropyMouseMove.GetInstance().init(entropy_bytes_count);
 		}
 		else if ( this.entropy_source_type == DICE_D6_ENTROPY_SRC_TYPE ) {
-			HtmlUtils.ShowNode( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
+			HtmlUtils.ShowElement( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
 			DrawEntropyDiceD6.GetInstance().clear();
 		}
 		// ------------------- Entropy Source
@@ -1094,25 +1151,25 @@ class RendererGUI {
 		let is_user_input = this.entropy_source_is_user_input;
 		//this.updateStatusbarInfo( is_user_input );
 		if ( is_user_input ) {
-			HtmlUtils.HideNode( ENTROPY_SRC_ROW );
-			HtmlUtils.HideNode( TR_SALT_ID );	
-			HtmlUtils.HideNode( ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideNode( WORD_COUNT_SELECT_ID );	
+			HtmlUtils.HideElement( ENTROPY_SRC_ROW );
+			HtmlUtils.HideElement( TR_SALT_ID );	
+			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );	
 		}
 		else {
-			HtmlUtils.ShowNode( ENTROPY_SRC_ROW );
-			HtmlUtils.ShowNode( TR_SALT_ID );	
+			HtmlUtils.ShowElement( ENTROPY_SRC_ROW );
+			HtmlUtils.ShowElement( TR_SALT_ID );	
 			
 			// trace2Main( pretty_format( "rGUI.upFieldVisib> is_user_input", is_user_input ) );
             if ( this.wallet_info.getAttribute(WALLET_MODE) == HD_WALLET_TYPE ) {				
-				HtmlUtils.ShowNode( ENTROPY_SIZE_SELECT_ID );
-				HtmlUtils.ShowNode( WORD_COUNT_SELECT_ID );
+				HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
+				HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
 			}			
 		}
 	} // updateFieldsVisibility()
 	
 	async updateFields( entropy ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateFields", entropy ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateFields", entropy ) );
 		
 		this.cb_enabled	= false; 
 		
@@ -1126,7 +1183,7 @@ class RendererGUI {
 		}
 		// trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
 		
-		//let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID ); 
+		//let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID ); 
 		
 		this.setRefreshCmdState( false );
 		
@@ -1161,14 +1218,14 @@ class RendererGUI {
 			//}
 		}
 		
-		HtmlUtils.SetNodeValue( SB_MSG_ID, "" );
-		trace2Main( pretty_func_header_format( "<END> RendererGUI.updateFields", entropy ) );
+		HtmlUtils.SetElementValue( SB_MSG_ID, "" );
+		trace2Main( pretty_func_header_format( "<END> MainGUI.updateFields", entropy ) );
 
 		this.cb_enabled	= true; 		
 	} // updateFields()
 	
 	async updateWalletMode( wallet_mode ) {
-		trace2Main( pretty_func_header_format("RendererGUI.updateWalletMode") );
+		trace2Main( pretty_func_header_format("MainGUI.updateWalletMode") );
 		
 		this.cb_enabled	= false; 
 		
@@ -1180,15 +1237,15 @@ class RendererGUI {
 		}
         trace2Main( pretty_format( "rGUI.upWmode> wallet_mode", wallet_mode) );		
         
-        let blockchain = HtmlUtils.GetNodeValue( WALLET_BLOCKCHAIN_ID ); 
+        let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID ); 
 
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) { 
 			this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;		
 		}
 		
-		HtmlUtils.InitializeNode( WALLET_BLOCKCHAIN_ID, 
-			                      this.Options['Blockchains'][wallet_mode],
-				                  this.Options['Blockchains'][wallet_mode] );
+		HtmlUtils.InitializeElement( WALLET_BLOCKCHAIN_ID, 
+			                         this.Options['Blockchains'][wallet_mode],
+				                     this.Options['Blockchains'][wallet_mode] );
 								  
 		let default_blockchain = this.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
 		trace2Main( pretty_format( "rGUI.upWmode> default_blockchain", default_blockchain ) );
@@ -1197,7 +1254,7 @@ class RendererGUI {
         this.wallet_info.setAttribute( BLOCKCHAIN,  default_blockchain ); 
 
         this.updateFieldsVisibility(); 		
-		// HtmlUtils.SetNodeValue( WALLET_BLOCKCHAIN_ID, default_blockchain);	
+		// HtmlUtils.SetElementValue( WALLET_BLOCKCHAIN_ID, default_blockchain);	
 
 		// ---------- Update Window Title ----------
 		let coin = COIN_ABBREVIATIONS[default_blockchain];
@@ -1206,13 +1263,15 @@ class RendererGUI {
 		// ---------- Update Window Title	
 		
 		this.updateFieldsVisibility();
+		
+		this.setSaveCmdState( true );
 
 		this.cb_enabled	= true; 
-        // trace2Main( pretty_func_header_format( "<END> RendererGUI.updateWalletMode" ) );		
+        // trace2Main( pretty_func_header_format( "<END> MainGUI.updateWalletMode" ) );		
 	} // async updateWalletMode()
 
 	async updateBlockchain( blockchain ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateBlockchain", blockchain ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBlockchain", blockchain ) );
 		
 		if ( blockchain == undefined ) {
 			blockchain = this.wallet_info.getAttribute( BLOCKCHAIN );
@@ -1247,7 +1306,7 @@ class RendererGUI {
 		// ---------- Update Window Title
 		
 		trace2Main( pretty_format( "rGUI.upBlkCHN> coin", coin ) );
-		HtmlUtils.SetNodeValue( WALLET_COIN_ID, coin );
+		HtmlUtils.SetElementValue( WALLET_COIN_ID, coin );
 		
 		let wallet_address =  this.wallet_info.getAttribute( ADDRESS );		
 		trace2Main( pretty_format( "rGUI.upBlkCHN> wallet_address", wallet_address ) );
@@ -1258,7 +1317,7 @@ class RendererGUI {
 	} // updateBlockchain()	
 	
 	async updateOptionsFields( options_data ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateOptionsFields" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateOptionsFields" ) );
 		
 		this.cb_enabled	= false; 
 		
@@ -1276,9 +1335,9 @@ class RendererGUI {
 		
 		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN][wallet_mode];
 		trace2Main( pretty_format( "rGUI.upOpt> default_blockchain", default_blockchain ) );
-		HtmlUtils.SetNodeValue( WALLET_BLOCKCHAIN_ID, default_blockchain );	
+		HtmlUtils.SetElementValue( WALLET_BLOCKCHAIN_ID, default_blockchain );	
 		
-		HtmlUtils.SetNodeValue( WALLET_COIN_ID, COIN_ABBREVIATIONS[default_blockchain] );
+		HtmlUtils.SetElementValue( WALLET_COIN_ID, COIN_ABBREVIATIONS[default_blockchain] );
 
 		await this.updateWalletMode( wallet_mode );
 
@@ -1290,19 +1349,19 @@ class RendererGUI {
 	} // async updateOptionsFields()
 	
 	async updateWalletAddress() {
-        trace2Main( pretty_func_header_format( "RendererGUI.updateWalletAddress" ) );		
+        trace2Main( pretty_func_header_format( "MainGUI.updateWalletAddress" ) );		
 							
-		let entropy = HtmlUtils.GetNodeValue( ENTROPY_ID );
+		let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
 		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
 		
-		let password = HtmlUtils.GetNodeValue( PASSWORD_ID ); 
-		this.wallet_info.setAttribute( PASSWORD, password );
+		let bip32_passphrase = HtmlUtils.GetElementValue( PASSWORD_ID ); 
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
 		
-		let account = parseInt( HtmlUtils.GetNodeValue( ACCOUNT_ID ) );
+		let account = parseInt( HtmlUtils.GetElementValue( ACCOUNT_ID ) );
 		this.wallet_info.setAttribute( ACCOUNT, account );
 		// trace2Main( pretty_format( "rGUI.uWadr> account", account ) );
 		
-		let address_index = parseInt( HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID ) );
+		let address_index = parseInt( HtmlUtils.GetElementValue( ADDRESS_INDEX_ID ) );
 		this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
 		trace2Main( pretty_format( "rGUI.uWadr> address_index", address_index) );
 		
@@ -1313,27 +1372,27 @@ class RendererGUI {
     } // updateWalletAddress()
 	
 	updateStatusbarInfo( is_displayed ) {
-		trace2Main( pretty_format( "RendererGUI.updateStatusbarInfo" ) );
+		trace2Main( pretty_format( "MainGUI.updateStatusbarInfo" ) );
 		let entropy = this.wallet_info.getAttribute(ENTROPY);
 		if ( is_displayed ) {		
 			let msg =   "*Warning* Entropy source is User Input"
 					  + "  |  Entropy value length: " + entropy.length
 				 	  + "  expected digits: " + this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS);		
-			HtmlUtils.SetNodeValue( "SB_item_message_id", msg );
+			HtmlUtils.SetElementValue( "SB_item_message_id", msg );
 		}
 		else {
-			HtmlUtils.SetNodeValue( "SB_item_message_id", "" );   
+			HtmlUtils.SetElementValue( "SB_item_message_id", "" );   
 		}
 	} // updateStatusbarInfo	
 	
-	async updatePassword( password ) {
+	async updatePassword( bip32_passphrase ) {
 		trace2Main( "===== rGUI.upPW ===============================================================" );
-		trace2Main( pretty_func_header_format( "RendererGUI.updatePassword", password ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updatePassword", bip32_passphrase ) );
 		await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
 	}  // async updatePassword()
 	
 	async updateEntropy( entropy_hex ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateEntropy", entropy_hex ) );		
+		trace2Main( pretty_func_header_format( "MainGUI.updateEntropy", entropy_hex ) );		
 		
 		// this.cb_enabled = false;
 		
@@ -1363,11 +1422,11 @@ class RendererGUI {
 			}
 		}		
 
-		// trace2Main( pretty_func_header_format( "<END> RendererGUI.updateEntropy", entropy_hex ) );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.updateEntropy", entropy_hex ) );
 	} // updateEntropy()
 	
 	async updateEntropySize( entropy_size ) {		
-		trace2Main( pretty_func_header_format( "RendererGUI.updateEntropySize", entropy_size + " bits") );
+		trace2Main( pretty_func_header_format( "MainGUI.updateEntropySize", entropy_size + " bits") );
 		
 		this.cb_enabled = false;
 		
@@ -1397,7 +1456,7 @@ class RendererGUI {
 		    return;								 
 		}			
 		
-		let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
 		trace2Main( pretty_format( "rGUI.upEsz> entropy_elt", entropy_elt.id ) );
 		entropy_elt.setAttribute( "minlength", this.wallet_info.getAttribute( EXPECTED_ENTROPY_DIGITS ) );
 		entropy_elt.setAttribute( "maxlength", this.wallet_info.getAttribute( EXPECTED_ENTROPY_DIGITS ) );
@@ -1412,12 +1471,12 @@ class RendererGUI {
 	} // async updateEntropySize()
 	
 	updateWalletURL( blockchain, wallet_address ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateWalletURL" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateWalletURL" ) );
 		
 		let explorer_URL = MAINNET_EXPLORER_URLs[blockchain] + wallet_address;
 		// trace2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
 		
-		let wallet_URL_elt = HtmlUtils.GetNode( WALLET_URL_LINK_ID );
+		let wallet_URL_elt = HtmlUtils.GetElement( WALLET_URL_LINK_ID );
 		//trace2Main("   wallet_URL_elt: " + wallet_URL_elt);
 		if ( wallet_URL_elt != undefined ) {
 			wallet_URL_elt.href = explorer_URL;
@@ -1425,12 +1484,12 @@ class RendererGUI {
 	} // updateWalletURL()
 	
 	updateMarketcapURL( blockchain ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateMarketcapURL" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateMarketcapURL" ) );
 		
 		let marketcap_URL = COINMARKETCAP_URLs[blockchain];
 		// trace2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
 		
-		let marketcap_URL_elt = HtmlUtils.GetNode( MARKETCAP_URL_LINK_ID );
+		let marketcap_URL_elt = HtmlUtils.GetElement( MARKETCAP_URL_LINK_ID );
 		//trace2Main("   wallet_URL_elt: " + wallet_URL_elt);
 		if ( marketcap_URL_elt != undefined ) {
 			marketcap_URL_elt.href = marketcap_URL;
@@ -1438,9 +1497,9 @@ class RendererGUI {
 	} // updateMarketcapURL()
 	
 	updateCryptoshapeURL() {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateCryptoshapeURL" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateCryptoshapeURL" ) );
 		
-		let mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+		let mnemonics = HtmlUtils.GetElementValue( MNEMONICS_ID );
 		
 		let cryptoshape_URL = 'https://aladas-org.github.io/aladas.github.io/';
 		if ( mnemonics != undefined && mnemonics != '') {
@@ -1453,14 +1512,14 @@ class RendererGUI {
 				cryptoshape_URL += 'index.html?mnemonics=' + mnemonics_parameter_value_cgi;
 			}
 		}
-		let cryptoshape_URL_elt = HtmlUtils.GetNode( CRYPTOSHAPE_URL_LINK_ID );
+		let cryptoshape_URL_elt = HtmlUtils.GetElement( CRYPTOSHAPE_URL_LINK_ID );
 		if ( cryptoshape_URL_elt != undefined ) {
 			cryptoshape_URL_elt.href = cryptoshape_URL;
 		}
 	} // updateCryptoshapeURL()
 	
 	updateWIF( blockchain, wif ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateWIF", "WIF:" + wif ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateWIF", "WIF:" + wif ) );
 		
 		if (wif != "") this.wallet_info.setAttribute(WIF, wif);   
 		this.updateFieldsVisibility();
@@ -1477,17 +1536,17 @@ class RendererGUI {
 			
 			if (   blockchain == BITCOIN 
 			    || blockchain == DOGECOIN || blockchain == LITECOIN ) {
-				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "*WIF*");
+				HtmlUtils.SetElementValue( PRIV_KEY_LABEL_ID, "*WIF*");
 			}
 			else if ( blockchain == RIPPLE || blockchain == TRON ) {
-				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "*Private Key*");	
+				HtmlUtils.SetElementValue( PRIV_KEY_LABEL_ID, "*Private Key*");	
 			}
 			else if ( blockchain == FIRO ) {
-				HtmlUtils.SetNodeValue( PRIV_KEY_LABEL_ID, "*Private Key (B58)*");
+				HtmlUtils.SetElementValue( PRIV_KEY_LABEL_ID, "*Private Key (B58)*");
 			}
 		}
 		else {
-			HtmlUtils.SetNodeValue( PRIV_KEY_ID, "XX" );
+			HtmlUtils.SetElementValue( PRIV_KEY_ID, "XX" );
 		}
 		
 		this.updateFieldsVisibility();
@@ -1499,12 +1558,12 @@ class RendererGUI {
 		const options = { [WORD_COUNT]: this.wallet_info.getAttribute(WORD_COUNT) }; 
 		const data = { entropy, options }; 
 		let checksum = await window.ipcMain.EntropyToChecksum( data );
-		trace2Main(  pretty_func_header_format( "RendererGUI.updateChecksum", checksum ) );
+		trace2Main(  pretty_func_header_format( "MainGUI.updateChecksum", checksum ) );
 		this.wallet_info.setAttribute( CHECKSUM, checksum );
 	} // updateChecksum()
 	
 	async updateMnemonics( entropy ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateMnemonics" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateMnemonics" ) );
 		
 		// this.cb_enabled = false;
 		
@@ -1518,25 +1577,25 @@ class RendererGUI {
 		if (this.wallet_info.getAttribute('lang') == "JP") {
 			let mnemonics_jp = mnemonics.replaceAll(' ', '\u3000');
 			// let mnemonics_jp = mnemonics.replaceAll(' ', '*');
-			HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics_jp );
+			HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonics_jp );
 		}
 		else {		
-			HtmlUtils.SetNodeValue( SW_MNEMONICS_ID, mnemonics );		
+			HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonics );		
 		}
 		let mnemonics_as_4letter = await window.ipcMain.MnemonicsAs4letter( mnemonics );
-		HtmlUtils.SetNodeValue( MNEMONICS_4LETTER_ID, mnemonics_as_4letter );
+		HtmlUtils.SetElementValue( MNEMONICS_4LETTER_ID, mnemonics_as_4letter );
 
 		await this.updateWordIndexes();		
     } // async updateMnemonics()
 	
 	async updateLanguage( lang ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.updateLanguage", "lang: '" + lang + "'" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateLanguage", "lang: '" + lang + "'" ) );
 		
 		// this.cb_enabled = false;
 		
 		this.wallet_info.setAttribute( LANG, lang );
 		
-		// let entropy = HtmlUtils.GetNodeValue( ENTROPY_ID );
+		// let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
 		// trace2Main( pretty_format( "rGUI.upLang> entropy(gui)", entropy ) );
 		
 		let entropy = this.wallet_info.getAttribute(ENTROPY);
@@ -1546,7 +1605,7 @@ class RendererGUI {
 	} // async updateLanguage()
 	
 	async updateWordIndexes() {
-		// trace2Main( pretty_func_header_format( "RendererGUI.updateWordIndexes" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateWordIndexes" ) );
 		
 		// this.cb_enabled = false;
 		
@@ -1561,18 +1620,18 @@ class RendererGUI {
 		// trace2Main( pretty_format( "rGUI.upWidx> lang", lang ) );	
 
         let word_indexes_str = await this.mnemonicsToWordIndexes( mnemonics, lang );		
-		HtmlUtils.SetNodeValue( WORD_INDEXES_ID, word_indexes_str ) ;
+		HtmlUtils.SetElementValue( WORD_INDEXES_ID, word_indexes_str ) ;
     } // updateWordIndexes()
 	// =======================================================
 	// ====================================      Updates      
 	// =======================================================
 	
 	async getSaltedEntropySource() {
-		let entropy_source = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
-		trace2Main( pretty_func_header_format( "RendererGUI.getSaltedEntropySource",  entropy_source ) );	 
+		let entropy_source = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.getSaltedEntropySource",  entropy_source ) );	 
 		
 		let new_uuid = await window.ipcMain.GetUUID();
-		let salt_elt = HtmlUtils.GetNode( SALT_ID );
+		let salt_elt = HtmlUtils.GetElement( SALT_ID );
 		salt_elt.textContent = new_uuid;
 
 		let words_count = this.wallet_info.getAttribute( WORD_COUNT );	
@@ -1580,7 +1639,7 @@ class RendererGUI {
 		
 		let entropy_src_value = "";
 		if ( entropy_source == FORTUNES_ENTROPY_SRC_TYPE ) {
-			entropy_src_value = HtmlUtils.GetNodeValue( ENTROPY_SRC_FORTUNES_ID );
+			entropy_src_value = HtmlUtils.GetElementValue( ENTROPY_SRC_FORTUNES_ID );
 		}	
 		else if ( entropy_source == IMAGE_ENTROPY_SRC_TYPE ) {
 		    entropy_src_value = this.img_data_asURL;
@@ -1621,35 +1680,35 @@ class RendererGUI {
 	} // getSaltedEntropySource()
 	
 	async generateSalt( force_generation ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.generateSalt" ) );
-		let entropy_src_elt = HtmlUtils.GetNode( ENTROPY_SRC_FORTUNES_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.generateSalt" ) );
+		let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID );
 		let new_uuid = "";
 		if ( entropy_src_elt.value != "" || force_generation == true ) {
 			new_uuid = await window.ipcMain.GetUUID();
-			//HtmlUtils.SetNodeValue(SALT_ID, new_uuid);
-			//let salt_elt = HtmlUtils.GetNode( SALT_ID );
+			//HtmlUtils.SetElementValue(SALT_ID, new_uuid);
+			//let salt_elt = HtmlUtils.GetElement( SALT_ID );
 			//salt_elt.textContent = new_uuid; 
-			HtmlUtils.SetNodeValue(SALT_ID, new_uuid);
+			HtmlUtils.SetElementValue(SALT_ID, new_uuid);
         }
 		return new_uuid;
     } // async generateSalt()
 	
 	async generateRandomFields() {
-		trace2Main( pretty_func_header_format( "RendererGUI.generateRandomFields" ) );	
+		trace2Main( pretty_func_header_format( "MainGUI.generateRandomFields" ) );	
 		await this.drawEntropySource();
 	} // generateRandomFields()
 	
 	async drawEntropySource() {
-		trace2Main( pretty_func_header_format( "RendererGUI.drawEntropySource" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.drawEntropySource" ) );
 
 		this.setEntropySourceIsUserInput( false );
 		
-		let entropy_source_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		let entropy_source_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		trace2Main( pretty_format( "entropy_source_type", entropy_source_type ) );
 		
 		if ( entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
 			let fortune_cookie = await window.ipcMain.GetFortuneCookie();
-			HtmlUtils.SetNodeValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );
+			HtmlUtils.SetElementValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );
 			trace2Main(">> drawEntropySource fortune_cookie: " + fortune_cookie);
 		}
 		else if ( entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
@@ -1669,7 +1728,7 @@ class RendererGUI {
 	} // drawEntropySource()
 	
 	clearFields( field_ids ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.clearFields" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.clearFields" ) );
 		for ( let i=0; i < field_ids.length; i++ ) { 
 			let field_id = field_ids[i];
 			
@@ -1685,12 +1744,14 @@ class RendererGUI {
 	// =============================================================================================
 	async onGUIEvent( data ) {
 		let event_name = data[0];	
-		//trace2Main( pretty_func_header_format( "RendererGUI.onGUIEvent", event_name ) );
+		//trace2Main( pretty_func_header_format( "MainGUI.onGUIEvent", event_name ) );
 	
 		let description_data = "";
 		let json_data        = {};
 		let wits_json_data   = {};
 		let cmd_name         = "";
+		
+		let options_data = {};
 				
 		switch ( event_name ) {
 			case FromMain_DID_FINISH_LOAD:
@@ -1766,7 +1827,7 @@ class RendererGUI {
 				break;				
 				
 			case FromMain_SEND_IMG_URL:
-			    // console.log("> RendererGUI.onGUIEvent  FromMain_SEND_IMG_URL");
+			    // console.log("> MainGUI.onGUIEvent  FromMain_SEND_IMG_URL");
 				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SEND_IMG_URL + _END_ );			
 				let img_elt_id = data[1];
 				// trace2Main("   img_elt_id:             " + img_elt_id);
@@ -1779,7 +1840,7 @@ class RendererGUI {
 				                   .replaceAll('\r', '').replaceAll('\n', '');
 				trace2Main( pretty_format( "img_data_URL", img_data_URL.substring(0,80) ) ); 
 				
-				let img_elt = HtmlUtils.GetNode( img_elt_id );
+				let img_elt = HtmlUtils.GetElement( img_elt_id );
 				trace2Main("   img_elt: " + img_elt);
 				// console.log("   img_elt: " + img_elt);
 				// trace2Main("   img_elt.id: " + img_elt.id);
@@ -1819,8 +1880,8 @@ class RendererGUI {
 			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_ );
 				let fortune_cookie = data[1];
 				trace2Main( pretty_format( "fortune_cookie", getShortenedString( fortune_cookie ) ) );
-				// HtmlUtils.SetNodeValue( ENTROPY_ID, fortune_cookie );	
-				HtmlUtils.SetNodeValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
+				// HtmlUtils.SetElementValue( ENTROPY_ID, fortune_cookie );	
+				HtmlUtils.SetElementValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
 				await this.updateFields();
 				break;
 				
@@ -1836,9 +1897,14 @@ class RendererGUI {
 				
 			case FromMain_TOOLS_OPTIONS_DIALOG:
 				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_OPTIONS_DIALOG + _END_ );
-				let options_data = data[1];
-				trace2Main( pretty_format( "$$ options_data", JSON.stringify(options_data) ) ); 
+				options_data = data[1];
+				// trace2Main( pretty_format( "$$ options_data", JSON.stringify(options_data) ) ); 
 				ToolsOptionsDialog.ShowDialog( options_data );
+				break;				
+				
+			case FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG + _END_ );
+				Bip38EncryptDecryptDialog.This.showDialog();
 				break;
 				
 			case FromMain_HELP_ABOUT:
@@ -1855,15 +1921,15 @@ class RendererGUI {
 				break;	
 				
 			case FromMain_INTERNET_CONNECTED:
-			    // console.log("> RendererGUI.onGUIEvent  FromMain_INTERNET_CONNECTED");
+			    // console.log("> MainGUI.onGUIEvent  FromMain_INTERNET_CONNECTED");
 			    // trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_INTERNET_CONNECTED + _END_ );
 				let internet_connected = data[1];
 				// trace2Main( pretty_format( "Internet connected", internet_connected ) );
 				
-				let internet_connection_icon_elt = HtmlUtils.GetNode(INTERNET_CONNECTION_ICON_ID);
+				let internet_connection_icon_elt = HtmlUtils.GetElement(INTERNET_CONNECTION_ICON_ID);
 				// console.log("   internet_connection_elt: " + internet_connection_elt);
 				
-				let internet_connection_label_elt = HtmlUtils.GetNode(INTERNET_CONNECTION_LABEL_ID);
+				let internet_connection_label_elt = HtmlUtils.GetElement(INTERNET_CONNECTION_LABEL_ID);
 				
 				if (internet_connection_icon_elt != undefined && internet_connection_label_elt != undefined) {
 					if ( internet_connected ) {
@@ -1889,12 +1955,15 @@ class RendererGUI {
 		} // switch ( event_name )
 	} // onGUIEvent()
 	
+	
+	
+	// ------------------------ Bip32 Passphrase ------------------------
 	onGuiChangePassword( evt ) {
-		let password = HtmlUtils.GetNodeValue( PASSWORD_ID );
-		// trace2Main( pretty_func_header_format( "RendererGUI.onGuiChangePassword", "'" + password + "'" ) );
-		this.wallet_info.setAttribute( PASSWORD, password );
+		let bip32_passphrase = HtmlUtils.GetElementValue( PASSWORD_ID );
+		// trace2Main( pretty_func_header_format( "MainGUI.onGuiChangePassword", "'" + password + "'" ) );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
 
-		if ( password == "") {
+		if ( bip32_passphrase == "") {
 			this.GuiSetPasswordApplyState( false );	
 		}
 		else {
@@ -1903,50 +1972,50 @@ class RendererGUI {
 	} // onGuiChangePassword()
 	
 	async GuiApplyPassword( evt ) {
-		let password = HtmlUtils.GetNodeValue( PASSWORD_ID );
-		trace2Main( pretty_func_header_format( "RendererGUI.GuiApplyPassword", password ) );
-		this.wallet_info.setAttribute( PASSWORD, password );
-		await this.updatePassword( password );
+		let bip32_passphrase = HtmlUtils.GetElementValue( PASSWORD_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", bip32_passphrase ) );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		await this.updatePassword( bip32_passphrase );
 
 		this.GuiSetPasswordApplyState( false );
 	} // async GuiApplyPassword()
 
 	// https://www.npmjs.com/package/generate-password
 	async GuiGeneratePassword( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.GuiGeneratePassword" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.GuiGeneratePassword" ) );
 		let data = {};
-		let new_password = await window.ipcMain.GeneratePassword( data );
-		this.wallet_info.setAttribute( PASSWORD, new_password);
+		let bip32_passphrase = await window.ipcMain.GeneratePassword( data );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase);
 
 		this.GuiSetPasswordApplyState( true );
 	} // async GuiGeneratePassword()	
-		
-	GuiClearPassword( update_wallet ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.GuiClearPassword" ) );
-		this.wallet_info.setAttribute( PASSWORD, '');
-
-		this.GuiSetPasswordApplyState( false );	
-	} // GuiClearPassword()
-
+	
 	GuiSetPasswordApplyState( visible ) {
 		if ( visible ) {
-			HtmlUtils.ShowNode(APPLY_PASSWORD_BTN_ID);
-			HtmlUtils.ShowNode(APPLY_BTN_SEPARATOR_ID);
-			HtmlUtils.AddClass(PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS);
-			HtmlUtils.RemoveClass(PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS);
+			HtmlUtils.ShowElement( APPLY_PASSWORD_BTN_ID );
+			HtmlUtils.ShowElement( APPLY_BTN_SEPARATOR_ID );
+			HtmlUtils.AddClass( PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass(PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
 			this.setSaveCmdState( false );
 		}
 		else {
-			HtmlUtils.HideNode(APPLY_PASSWORD_BTN_ID);
-			HtmlUtils.HideNode(APPLY_BTN_SEPARATOR_ID);
-			HtmlUtils.AddClass(PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS);
-			HtmlUtils.RemoveClass(PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS);
+			HtmlUtils.HideElement( APPLY_PASSWORD_BTN_ID );
+			HtmlUtils.HideElement( APPLY_BTN_SEPARATOR_ID );
+			HtmlUtils.AddClass( PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass( PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
 			this.setSaveCmdState( true );
 		}
 	} // GuiSetPasswordApplyState()
+	
+	GuiClearPassword( update_wallet ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiClearPassword" ) );
+		this.wallet_info.setAttribute( BIP38_PASSPHRASE, '');
 
+		this.GuiSetPasswordApplyState( false );	
+	} // GuiClearPassword()
+	
 	GuiTogglePasswordVisibility() {
-		trace2Main( pretty_func_header_format( "RendererGUI.GuiTogglePasswordVisibility" ) );	
+		trace2Main( pretty_func_header_format( "MainGUI.GuiTogglePasswordVisibility" ) );	
 		let eye_btn_img_elt = document.getElementById(EYE_BTN_IMG_ID )
 		console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
 		
@@ -1966,26 +2035,88 @@ class RendererGUI {
 		}
 		this.password_visible = ! this.password_visible;
 	} // GuiTogglePasswordVisibility()
+	// ------------------------ Bip32 Passphrase
 	
+	
+	
+	// ------------------------ Bip38 Passphrase ------------------------
+	onGuiChangeBip38Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiChangeBip38Passphrase" ) );
+		let bip38_passphrase = HtmlUtils.GetElementValue( BIP38_PASSPHRASE_ID );
+		
+		//trace2Main("   bip38_passphrase:      '" + bip38_passphrase + "'");
+		
+		let bip38_passphrase_wo_starting_space = bip38_passphrase.trimStart();
+		//trace2Main("   passphrase_trim: '" + bip38_passphrase_wo_starting_space + "'");
+		
+		// this.wallet_info.setAttribute( BIP38_PASSPHRASE, bip38_passphrase_wo_starting_space );
+		
+		let bip38_passphrase_wo_multiple_ending_spaces = bip38_passphrase_wo_starting_space.replace(/  +/g, ' ');
+		//trace2Main("   passphrase_wo_starting_or_ending_space: '" + passphrase_wo_multiple_ending_spaces + "'");
+		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, bip38_passphrase_wo_multiple_ending_spaces );
+		
+		this.wallet_info.setAttribute( BIP38_PASSPHRASE, bip38_passphrase_wo_multiple_ending_spaces );
+	} // onGuiChangeBip38Passphrase()
+	
+	async GuiGenerateBip38Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip38Passphrase" ) );
+		let data = {};
+		let new_bip38_passphrase = await window.ipcMain.GeneratePassword( data );
+		this.wallet_info.setAttribute( BIP38_PASSPHRASE, new_bip38_passphrase.trim());
+
+		this.GuiSetPasswordApplyState( true );
+	} // async GuiGenerateBip38Passphrase()
+	
+	GuiClearBip38Passphrase( update_wallet ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip38Passphrase" ) );
+		this.wallet_info.setAttribute( BIP38_PASSPHRASE, '');
+
+		this.GuiSetPasswordApplyState( false );	
+	} // GuiClearBip38Passphrase()
+	
+	GuiToggleBip38PassphraseVisibility() {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiToggleBip38PasswordVisibility" ) );	
+		let bip38_passphrase_eye_btn_img_elt = document.getElementById(BIP38_PASSPHRASE_EYE_BTN_IMG_ID )
+		// console.log("> bip38_passphrase_eye_btn_img_elt: " + bip38_passphrase_eye_btn_img_elt);
+		
+		if ( this.bip38_passphrase_visible ) { 
+			document.getElementById(BIP38_PASSPHRASE_ID).type = 'password';	
+			
+			if (bip38_passphrase_eye_btn_img_elt != undefined) {
+				bip38_passphrase_eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;	
+			}
+		}
+		else { 	
+		    document.getElementById(BIP38_PASSPHRASE_ID).type = 'text';	
+
+			if (bip38_passphrase_eye_btn_img_elt != undefined) {
+				bip38_passphrase_eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;	
+			}			
+		}
+		this.bip38_passphrase_visible = ! this.bip38_passphrase_visible;
+	} // GuiToggleBip38PassphraseVisibility()
+	// ------------------------ Bip38 Passphrase
+		
+
 	async onFileNewWallet( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onFileNewWallet" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onFileNewWallet" ) );
         await window.ipcMain.NewWalletInfo();
 	} // async onFileNewWallet()
 	
 	async fileOpenWallet() {
-		trace2Main( pretty_func_header_format( "RendererGUI.fileOpenWallet" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.fileOpenWallet" ) );
         let json_data = await window.ipcMain.OpenWalletInfo();
 	} // async fileOpenWallet()
 	
 	async fileSaveWallet() {
-		trace2Main( pretty_func_header_format( "RendererGUI.fileSaveWallet" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.fileSaveWallet" ) );
 		let crypto_info = await this.getWalletInfo();
         window.ipcMain.SaveWalletInfo( crypto_info );
 		this.showSaveWalletInfoDialog();		
 	} // async fileSaveWallet()
 	
 	showSaveWalletInfoDialog() {
-		trace2Main( pretty_func_header_format( "RendererGUI.showSaveWalletInfoDialog" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.showSaveWalletInfoDialog" ) );
         DialogManager.Clean();
 		let description_data = "<center>Wallet Informations saved</center>";
 		
@@ -2004,14 +2135,12 @@ class RendererGUI {
 			this.cb_enabled = false;
 			
 			let wallet_mode = elt.value;
-			trace2Main( pretty_func_header_format( "RendererGUI.onGuiSwitchWalletMode", wallet_mode ) );
-			//trace2Main("   ++ 1 this.Options: " + this.Options);
-			await this.updateWalletMode( wallet_mode );
-			//trace2Main("   ++ 2 this.Options: " + this.Options);			
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiSwitchWalletMode", wallet_mode ) );
+			await this.updateWalletMode( wallet_mode );	
 
             await window.ipcMain.UpdateOptions( this.Options );	
 
-			HtmlUtils.InitializeNode
+			HtmlUtils.InitializeElement
 				( WALLET_BLOCKCHAIN_ID, 
 			      this.Options['Blockchains'][wallet_mode],
 				  this.Options['Blockchains'][wallet_mode] );
@@ -2020,7 +2149,8 @@ class RendererGUI {
 			trace2Main( pretty_format( "rGUI.onGuiSwWmod> default_blockchain: '" + default_blockchain + "'" ) );
 
             this.wallet_info.setAttribute( BLOCKCHAIN, default_blockchain );			
-			// HtmlUtils.SetNodeValue( WALLET_BLOCKCHAIN_ID, default_blockchain);	
+
+			this.wallet_info.setAttribute( BIP38_PASSPHRASE, '' );			
 			
 			this.cb_enabled = true;
 	    }		
@@ -2030,7 +2160,7 @@ class RendererGUI {
 		let elt = evt.target || evt.srcElement;		
 		if ( elt.id == WALLET_BLOCKCHAIN_ID ) {
 			let blockchain = elt.value;
-			trace2Main( pretty_func_header_format( "RendererGUI.onGuiUpdateBlockchain", blockchain ) );
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateBlockchain", blockchain ) );
 			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> ", blockchain ) );
 			
 			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> BEFORE wallet(wallet_mode)", this.wallet_info.getAttribute( WALLET_MODE ) ) );
@@ -2052,7 +2182,7 @@ class RendererGUI {
 		let elt = evt.target || evt.srcElement;		
 		if ( elt.id == ENTROPY_SIZE_SELECT_ID ) {
 			let entropy_size = parseInt( elt.value );
-			trace2Main( pretty_func_header_format( "RendererGUI.onGuiUpdateEntropySize", entropy_size ) );
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateEntropySize", entropy_size ) );
 			trace2Main( pretty_format( "entropy_size", entropy_size ) );
 			await this.updateEntropySize( entropy_size );
 	    }	
@@ -2063,7 +2193,7 @@ class RendererGUI {
 		
 		if ( elt.id == WORD_COUNT_SELECT_ID ) {
 			let word_count = parseInt( elt.value );
-			trace2Main( pretty_func_header_format( "RendererGUI.onGuiUpdateWordCount", "word_count: " + word_count ) );
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateWordCount", "word_count: " + word_count ) );
 			let entropy_size = ( word_count * 11 ) - getChecksumBitCount( word_count );
 			await this.updateEntropySize( entropy_size );
 	    }	
@@ -2071,8 +2201,8 @@ class RendererGUI {
 	
 	async onGuiSwitchEntropySourceType() {
 		trace2Main( "\n\n==========================================================" );
-		trace2Main( pretty_func_header_format( "RendererGUI.onGuiSwitchEntropySourceType" ) );
-		this.entropy_source_type = HtmlUtils.GetNodeValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiSwitchEntropySourceType" ) );
+		this.entropy_source_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
 		trace2Main( pretty_format( "entropy_source_type", this.entropy_source_type ) );
 		
         await this.drawEntropySource();		
@@ -2084,22 +2214,22 @@ class RendererGUI {
 		let elt = evt.target || evt.srcElement;		
 		if ( elt.id == LANG_SELECT_ID ) {
 			let lang_value = elt.value;
-			trace2Main( pretty_func_header_format( "RendererGUI.onGuiUpdateLang", lang_value ) );
-			let entropy = HtmlUtils.GetNodeValue( ENTROPY_ID );
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateLang", lang_value ) );
+			let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
             await this.updateLanguage( lang_value );
 	    }
 		else {
-			trace2Main( pretty_func_header_format( "RendererGUI.onGuiUpdateLang" ) );	
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateLang" ) );	
 		}
 	} // async onGuiUpdateLang()
 	
 	onToggleDebug( evt ) {
-		//trace2Main( pretty_func_header_format( "RendererGUI.onToggleDebug" ) );
+		//trace2Main( pretty_func_header_format( "MainGUI.onToggleDebug" ) );
         window.ipcMain.ToggleDebugPanel();		
 	} // onToggleDebug()
 	
 	async onKeyDown( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onKeyDown", "'" + evt.key + "' keycode: " + evt.keyCode ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onKeyDown", "'" + evt.key + "' keycode: " + evt.keyCode ) );
 		
 		let elt = evt.target || evt.srcElement;		
 		if ( elt.id == ENTROPY_ID ) {
@@ -2111,7 +2241,7 @@ class RendererGUI {
 			evt.preventDefault();
 			
 			let allowed_alphabet     = ALLOWED_ALPHABETS[elt.id];
-			let entropy_value        = HtmlUtils.GetNodeValue( ENTROPY_ID );
+			let entropy_value        = HtmlUtils.GetElementValue( ENTROPY_ID );
 			let expected_digit_count = this.expected_entropy_bytes * 2;
 			
 			trace2Main( pretty_format( "entropy_value",        entropy_value ) );
@@ -2132,10 +2262,10 @@ class RendererGUI {
 	
 	// Entropy 'keypress' event handler
 	async onEntropyKeypress( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onEntropyKeypress" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onEntropyKeypress" ) );
 		trace2Main( pretty_format( "evt.charCode", evt.charCode ) );
 		
-		let entropy  = HtmlUtils.GetNodeValue( ENTROPY_ID );
+		let entropy  = HtmlUtils.GetElementValue( ENTROPY_ID );
 		
 		//========== Filter non hexadecimal characters ==========
 		let is_hex_digit =    ( evt.charCode >= 48 && evt.charCode <= 57 )  // 0..9
@@ -2160,7 +2290,7 @@ class RendererGUI {
 		
 		evt.preventDefault();
 		
-		let text_cursor_pos = HtmlUtils.GetNode( ENTROPY_ID ).selectionStart;
+		let text_cursor_pos = HtmlUtils.GetElement( ENTROPY_ID ).selectionStart;
 		
 		let new_char = String.fromCharCode(evt.charCode);
 		trace2Main( pretty_format( "new_char", new_char ) );
@@ -2172,10 +2302,10 @@ class RendererGUI {
 		trace2Main( pretty_format( "expected_digits" + this.wllet.getAttribute(EXPECTED_ENTROPY_DIGITS) ) );
         trace2Main( pretty_format( "text_cursor_pos", text_cursor_pos ) );	
 		
-		HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );
+		HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
 		
 		text_cursor_pos += 1;
-		let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
 		entropy_elt.selectionStart = text_cursor_pos;
 		entropy_elt.selectionEnd   = text_cursor_pos;
 		
@@ -2185,7 +2315,7 @@ class RendererGUI {
 		if ( new_entropy.length == this.wallet_info.getATtribute(EXPECTED_ENTROPY_DIGITS) ) {
 			trace2Main( "   new_entropy(" + new_entropy.length + "):  " + new_entropy); 
 
-            HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );			
+            HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );			
 			
 			await this.updateFields( new_entropy );
 		}	
@@ -2195,7 +2325,7 @@ class RendererGUI {
 	
 	// Entropy 'keydown' event handler
 	onEntropyKeydown( evt ) {				
-		//trace2Main( pretty_func_header_format( "RendererGUI.onEntropyKeydown" ) );
+		//trace2Main( pretty_func_header_format( "MainGUI.onEntropyKeydown" ) );
 		//trace2Main( pretty_format( "evt.keyCode", evt.keyCode ) );		
 
 		if ( evt.keyCode == BACKSPACE_KEY_CODE || evt.keyCode == DEL_KEY_CODE ) {
@@ -2207,8 +2337,8 @@ class RendererGUI {
 	
 	// Entropy 'paste' event handler
 	async onEntropyPaste( evt ) {				
-	    let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
-		trace2Main( pretty_func_header_format( "RendererGUI.onEntropyPaste" ) );
+	    let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.onEntropyPaste" ) );
         
 		evt.preventDefault();
 		
@@ -2217,7 +2347,7 @@ class RendererGUI {
 		
 		trace2Main("   paste_data(" + paste_length + "): " + paste_data);		
 		
-		let current_entropy = HtmlUtils.GetNodeValue(ENTROPY_ID);
+		let current_entropy = HtmlUtils.GetElementValue(ENTROPY_ID);
 		trace2Main("   current_entropy(" + current_entropy.length + "): " + current_entropy);	
 		
 		let new_entropy     = "";		
@@ -2251,13 +2381,13 @@ class RendererGUI {
 				new_entropy = insertSubstringAtIndex
 				              ( current_entropy, paste_data, text_cursor_pos );
 				trace2Main("   new_entropy (pasted): " + new_entropy);
-				HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );
+				HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
 			}	
 
             if ( new_entropy.length == this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS) ) {			
 				this.setEntropySourceIsUserInput( true );
 				//this.updateStatusbarInfo( true );
-				HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );	
+				HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
 					
 				await this.updateFields( new_entropy );	
 			}	
@@ -2266,15 +2396,15 @@ class RendererGUI {
 	
 	async onCustomEntropyUpdate( evt ) {
 		let entropy = evt.detail["entropy"];
-		console.log( "RendererGUI.onCustomEntropyUpdate  entropy:\n   " + entropy);	
+		console.log( "MainGUI.onCustomEntropyUpdate  entropy:\n   " + entropy);	
 
-		HtmlUtils.SetNodeValue( ENTROPY_ID, entropy );	
+		HtmlUtils.SetElementValue( ENTROPY_ID, entropy );	
 					
 		await this.updateFields( entropy );			
 	} // onCustomEntropyUpdate()
 	
 	async onMnemonicsPaste( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onMnemonicsPaste" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onMnemonicsPaste" ) );
 		evt.preventDefault();
 		
         let paste_data = (evt.clipboardData || evt.clipboardData).getData("text");
@@ -2282,7 +2412,7 @@ class RendererGUI {
 		
 		trace2Main("  paste_data(w: " + paste_words.length + "): " + paste_data);
 		
-		let current_mnemonics = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+		let current_mnemonics = HtmlUtils.GetElementValue( MNEMONICS_ID );
 		let current_words = current_mnemonics.split(' ');
 		trace2Main("   current_mnemonics(w: " + current_words.length + "): " + current_mnemonics);
 
@@ -2299,10 +2429,10 @@ class RendererGUI {
 			trace2Main(  "   OK: paste_words:" + paste_words.length
 			         + "  ==  expected_words:" + this.wallet_info.getAttribute(WORD_COUNT) );
 			
-			// HtmlUtils.SetNodeValue( MNEMONICS_ID, paste_data );
+			// HtmlUtils.SetElementValue( MNEMONICS_ID, paste_data );
 			
 			// 1. Must check if 'Mnemonics' is in current 'lang' chosen by user
-			let current_lang = HtmlUtils.GetNodeValue( LANG_SELECT_ID ); 
+			let current_lang = HtmlUtils.GetElementValue( LANG_SELECT_ID ); 
 			trace2Main("  current_lang: " + current_lang);
 			
 			let mnemonics = paste_data;
@@ -2331,39 +2461,39 @@ class RendererGUI {
 			// 3. Update 'Mnemonics' from 'Entropy'
 			this.setEntropySourceIsUserInput( true );
 			//this.updateStatusbarInfo( true );
-			HtmlUtils.SetNodeValue( ENTROPY_ID, new_entropy );	
+			HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
 					
 			await this.updateFields( new_entropy );	
 		}
 	} // onMnemonicsPaste()
 	
 	onCopyButton( evt_src_elt_id ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onCopyButton" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onCopyButton" ) );
 		//trace2Main("   evt_src_elt_id: " + evt_src_elt_id );
 		let copy_text = "";
 		switch ( evt_src_elt_id ) {
 			case ENTROPY_COPY_BTN_ID: 
-				copy_text = HtmlUtils.GetNodeValue( ENTROPY_ID );
+				copy_text = HtmlUtils.GetElementValue( ENTROPY_ID );
 				GuiUtils.ShowQuestionDialog
 					( "Entropy copied in Clipboard", 
 					  {"CloseButtonLabel": "OK" } );
 				break;
 
 			case PK_COPY_BTN_ID: 
-				copy_text = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );
+				copy_text = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );
 				GuiUtils.ShowQuestionDialog
 					( "Private Key copied in Clipboard", { "CloseButtonLabel": "OK" } );
 				break;			
 				
 			case MNEMONICS_COPY_BTN_ID: 
 			case SW_MNEMONICS_COPY_BTN_ID:
-				copy_text = HtmlUtils.GetNodeValue( MNEMONICS_ID );
+				copy_text = HtmlUtils.GetElementValue( MNEMONICS_ID );
 				GuiUtils.ShowQuestionDialog
 					( "Secret phrase copied in Clipboard", { "CloseButtonLabel": "OK" } );
 				break;
 				
 			case SW_WIF_COPY_BTN_ID:
-				copy_text = HtmlUtils.GetNodeValue( WIF_ID );
+				copy_text = HtmlUtils.GetElementValue( WIF_ID );
 				GuiUtils.ShowQuestionDialog
 					( "WIF copied in Clipboard",  	   { "CloseButtonLabel": "OK" } );
 				break;
@@ -2377,7 +2507,7 @@ class RendererGUI {
 	
 	// BIP32Field 'keypress' event handler
 	async onBIP32FieldKeypress( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onBIP32FieldKeypress" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onBIP32FieldKeypress" ) );
 		//trace2Main("  evt.keyCode:  " + evt.keyCode);
 		//trace2Main("  evt.target:  " + evt.target.id);
 		
@@ -2389,17 +2519,17 @@ class RendererGUI {
 			trace2Main("   'ENTER' or 'Return' key pressed");
 			let is_valid_field_value = false;
 			
-			let account_index = HtmlUtils.GetNodeValue( ACCOUNT_ID );
+			let account_index = HtmlUtils.GetElementValue( ACCOUNT_ID );
 			if ( account_index == "" ) {
-				HtmlUtils.SetNodeValue( ACCOUNT_ID, "0" );
+				HtmlUtils.SetElementValue( ACCOUNT_ID, "0" );
 			}
 			
-			let address_index = HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID );
+			let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
 			if ( address_index == "" ) {
-				HtmlUtils.SetNodeValue( ADDRESS_INDEX_ID, "0" );
+				HtmlUtils.SetElementValue( ADDRESS_INDEX_ID, "0" );
 			}
 			
-			field_value = HtmlUtils.GetNodeValue( evt.target.id ); // evt.target; 			
+			field_value = HtmlUtils.GetElementValue( evt.target.id ); // evt.target; 			
 			if ( field_value == "" ) {
 				field_value = "0";
 			}
@@ -2438,12 +2568,13 @@ class RendererGUI {
 	} // onBIP32FieldKeypress()	
 
 	async onRefreshButton() {
-		trace2Main( pretty_func_header_format( "RendererGUI.onRefreshButton" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onRefreshButton" ) );
 		await this.updateWalletAddress();
+		setSaveCmdState( true );
     } // onRefreshButton()
 	
 	onGuiFocus( evt ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.onGuiFocus" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiFocus" ) );
 		let source_elt = evt.target || evt.srcElement;
 		
 		if (! EDITABLE_FIELD_IDS.includes( source_elt.id )) {
@@ -2457,16 +2588,16 @@ class RendererGUI {
 	// =========================================================
 
 	setSaveCmdState( enabled ) {
-		// trace2Main( pretty_func_header_format( "RendererGUI.setSaveCmdState", enabled  ) );
+		// trace2Main( pretty_func_header_format( "MainGUI.setSaveCmdState", enabled  ) );
 		
 		if ( enabled ) {
-			HtmlUtils.ShowNode( FILE_SAVE_ICON_ID );
-			HtmlUtils.HideNode( FILE_SAVE_ICON_DISABLED_ID );
+			HtmlUtils.ShowElement( FILE_SAVE_ICON_ID );
+			HtmlUtils.HideElement( FILE_SAVE_ICON_DISABLED_ID );
 			enabled = true;			
 		}
 		else {
-			HtmlUtils.HideNode( FILE_SAVE_ICON_ID );
-			HtmlUtils.ShowNode( FILE_SAVE_ICON_DISABLED_ID );
+			HtmlUtils.HideElement( FILE_SAVE_ICON_ID );
+			HtmlUtils.ShowElement( FILE_SAVE_ICON_DISABLED_ID );
 			enabled = false;			
 		}
 		
@@ -2482,34 +2613,34 @@ class RendererGUI {
 		window.ipcMain.SetMenuItemState( data );
 		// trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_AS_MENU_ITEM_ID + ":" + enabled  ) );
 		
-		// trace2Main( pretty_func_header_format( "<END> RendererGUI.setSaveCmdState" ) );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.setSaveCmdState" ) );
 	} // setSaveCmdState()	
 	
     setRefreshCmdState( enable ) {
-		//trace2Main(">> " + _CYAN_ + "RendererGUI.showRefreshButton() " + _END_);
+		//trace2Main(">> " + _CYAN_ + "MainGUI.showRefreshButton() " + _END_);
 		if ( enable ) { // show "Regenerate" AND "Refresh" buttons 
 		    //trace2Main("   Show REFRESH");
-			HtmlUtils.ShowNode( RIGHT_BTNBAR_ITEM_ID );
+			HtmlUtils.ShowElement( RIGHT_BTNBAR_ITEM_ID );
 		}
 		else { // show only "Regenerate" button centered 
 		    //trace2Main("   HIDE REFRESH");
-			HtmlUtils.HideNode( RIGHT_BTNBAR_ITEM_ID );
+			HtmlUtils.HideElement( RIGHT_BTNBAR_ITEM_ID );
 		}
 	} // setRefreshCmdState()
 	
 	setEntropySourceIsUserInput( is_user_input ) {
-		// trace2Main( pretty_func_header_format( "RendererGUI.setEntropySourceIsUserInput", is_user_input ) );
+		// trace2Main( pretty_func_header_format( "MainGUI.setEntropySourceIsUserInput", is_user_input ) );
 		
 		this.entropy_source_is_user_input = is_user_input;
 		//this.updateStatusbarInfo( is_user_input );
 		if ( is_user_input ) {			
-			HtmlUtils.SetNodeValue( CHECKSUM_ID,          "" );
-            HtmlUtils.SetNodeValue( MNEMONICS_ID,         "" );	
-			HtmlUtils.SetNodeValue( SW_MNEMONICS_ID,      "" );	
-            HtmlUtils.SetNodeValue( MNEMONICS_4LETTER_ID, "" );
-			HtmlUtils.SetNodeValue( WORD_INDEXES_ID,      "" );			
+			HtmlUtils.SetElementValue( CHECKSUM_ID,          "" );
+            HtmlUtils.SetElementValue( MNEMONICS_ID,         "" );	
+			HtmlUtils.SetElementValue( SW_MNEMONICS_ID,      "" );	
+            HtmlUtils.SetElementValue( MNEMONICS_4LETTER_ID, "" );
+			HtmlUtils.SetElementValue( WORD_INDEXES_ID,      "" );			
 		}
-		// trace2Main( pretty_func_header_format( "<END> RendererGUI.setEntropySourceIsUserInput" ) );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.setEntropySourceIsUserInput" ) );
 		
 		this.updateFieldsVisibility();
 	} // setEntropySourceIsUserInput()
@@ -2517,12 +2648,12 @@ class RendererGUI {
 	async displayMessageInStatusbar( msg_id ) {
 		if ( msg_id != undefined ) {
 			let	msg = await window.ipcMain.GetLocalizedMsg(msg_id);
-			HtmlUtils.SetNodeValue( "SB_item_message_id", msg );
+			HtmlUtils.SetElementValue( "SB_item_message_id", msg );
 		}	
 	} // displayMessageInStatusbar()
 	
 	setEntropyValueValidity( is_valid ) {
-		let entropy_elt = HtmlUtils.GetNode( ENTROPY_ID );
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
 		
 		if ( is_valid ) {
 			entropy_elt.classList.remove( INVALID_VALUE_CSS_CLASS ); 
@@ -2535,12 +2666,12 @@ class RendererGUI {
 	} // setEntropyValueValidity()
 	
 	setFocus( elt_id ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.setFocus" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.setFocus" ) );
 		
-		let target_elt = HtmlUtils.GetNode( elt_id );
+		let target_elt = HtmlUtils.GetElement( elt_id );
 		for (let i=0; i < FIELD_IDS.length; i++) { 
 			let field_id = FIELD_IDS[i];
-			let elt = HtmlUtils.GetNode(field_id);
+			let elt = HtmlUtils.GetElement(field_id);
 			
 		    if ( target_elt.id == field_id ) {
 				elt.classList.remove( WITHOUT_FOCUS_CSS_CLASS ); 
@@ -2556,7 +2687,7 @@ class RendererGUI {
 	// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
 	// https://www.geeksforgeeks.org/how-to-drag-and-drop-images-using-html5/	
 	async onDropImage( evt ) {
-		trace2Main(">> " + _CYAN_ + "RendererGUI.onDropImage()" + _END_);		
+		trace2Main(">> " + _CYAN_ + "MainGUI.onDropImage()" + _END_);		
 		evt.preventDefault();
 		evt.stopPropagation();
 
@@ -2569,97 +2700,99 @@ class RendererGUI {
 	// ============================== Event Handlers	
 	
 	async getWalletInfo() {
-		trace2Main( pretty_func_header_format( "RendererGUI.getWalletInfo" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.getWalletInfo" ) );
 		
 		let crypto_info = {};
 		
-		let wallet_mode = HtmlUtils.GetNodeValue( WALLET_MODE_SELECT_ID ); 
+		let wallet_mode = HtmlUtils.GetElementValue( WALLET_MODE_SELECT_ID ); 
 		crypto_info[WALLET_MODE] = wallet_mode;
 		
-		let blockchain = HtmlUtils.GetNodeValue( WALLET_BLOCKCHAIN_ID ); 
+		let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID ); 
 		crypto_info[BLOCKCHAIN] = blockchain;
 		
-		let coin_id = HtmlUtils.GetNodeValue( WALLET_COIN_ID );
+		let coin_id = HtmlUtils.GetElementValue( WALLET_COIN_ID );
 		trace2Main( pretty_format( "coin_id", coin_id ) );
-		let coin = HtmlUtils.GetNodeValue( WALLET_COIN_ID ).replaceAll('\n','').replaceAll('\t',''); 
-		trace2Main( pretty_format( "coin", coin ) );
+		let coin = HtmlUtils.GetElementValue( WALLET_COIN_ID ).replaceAll('\n','').replaceAll('\t',''); 
+		trace2Main( pretty_format( "Coin", coin ) );
 		crypto_info[COIN] = coin;
 		
-		let wallet_address = HtmlUtils.GetNodeValue( ADDRESS_ID );
+		let wallet_address = HtmlUtils.GetElementValue( ADDRESS_ID );
         // trace2Main("wallet_address " + wallet_address );		
-		crypto_info['address'] = wallet_address;
+		crypto_info[ADDRESS] = wallet_address;
 		
-		let wallet_URL_elt =  HtmlUtils.GetNode( WALLET_URL_LINK_ID );
+		let wallet_URL_elt = HtmlUtils.GetElement( WALLET_URL_LINK_ID );
 		if (wallet_URL_elt != undefined) {
-			crypto_info['Blockchain Explorer'] = wallet_URL_elt.href;
+			crypto_info[BLOCKCHAIN_EXPLORER] = wallet_URL_elt.href;
 		}
 		
-		trace2Main( pretty_format( "rGUI.getWinf> blockchain", blockchain ) );
+		trace2Main( pretty_format( "rGUI.getWinf> Blockchain", blockchain ) );
 		
 		if ( this.isBlockchainSupported( blockchain ) ) {
-			let WIF_value = HtmlUtils.GetNodeValue( WIF_ID ); 
+			let WIF_value = HtmlUtils.GetElementValue( WIF_ID ); 
 			// trace2Main("WIF_value " + WIF_value );
 			if ( WIF_value != "" ) {
 				crypto_info[WIF] = WIF_value;
 			}
 
 			if ( blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN ) {
-				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );		
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );		
 				crypto_info[WIF] = WIF_value; 
 			}
 			else if (    blockchain == ETHEREUM  || blockchain == BINANCE_BSC
 					  || blockchain == AVALANCHE || blockchain == POLYGON			          
 					  || blockchain == SOLANA ) {
-				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID ); 
 				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", crypto_info[PRIVATE_KEY] ) );
 			}	
             else if ( blockchain == RIPPLE || blockchain == TON || blockchain == TERRA_LUNA ) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[PRIV_KEY];
-				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );  
 			}
 			else if (   blockchain == STELLAR || blockchain == SUI
 			         || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
 				delete crypto_info[WIF];
-				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID );  
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );  
 			}
 			else if (    blockchain == TRON 
 			          || blockchain == BITCOIN_CASH 
 					  || blockchain == DASH || blockchain == FIRO ) {
-				crypto_info[PRIVATE_KEY] = HtmlUtils.GetNodeValue( PRIVATE_KEY_ID ); 
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID ); 
 			}            		
 		}
 		
-		let mnemonics_elt = HtmlUtils.GetNode( MNEMONICS_ID ); 
+		let mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_ID ); 
 		let mnemonics = mnemonics_elt.value;
 		
 		crypto_info[MNEMONICS] = mnemonics;	
-		//crypto_info['Seedphrase'] = mnemonics;	
 		
-		let shortened_mnemonics_elt = HtmlUtils.GetNode( MNEMONICS_4LETTER_ID ); 
+		let shortened_mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_4LETTER_ID ); 
 		let shortened_mnemonics = shortened_mnemonics_elt.value;
-		crypto_info['Shortened Secret phrase'] = shortened_mnemonics;
+		crypto_info[SHORTENED_MNEMONICS] = shortened_mnemonics;
 		
 		let lang = this.wallet_info.getAttribute(LANG);
+		crypto_info[LANG] = lang;
+		
+		
 		let options = { [LANG]: lang };
 		let data = { mnemonics, options };
 		let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
 		let word_indexes_str = JSON.stringify( word_indexes )
 		                       .replaceAll( '"', '' ).replaceAll( ',', ', ' )
 							   .replaceAll( '[', '' ).replaceAll( ']', '' )
-		crypto_info['Word indexes'] = word_indexes_str;
+		crypto_info[WORD_INDEXES] = word_indexes_str;
 		
-		//trace2Main(">> " + _CYAN_ + "RendererGUI.getWalletInfo() " + _END_);
+		//trace2Main(">> " + _CYAN_ + "MainGUI.getWalletInfo() " + _END_);
 		
 		if ( wallet_mode == HD_WALLET_TYPE ) {	
-		    let password = this.wallet_info.getAttribute( PASSWORD );
-			if (password != undefined && password != null && password != "") {
-				crypto_info[PASSWORD] = password;
+		    let bip32_passphrase = this.wallet_info.getAttribute( BIP32_PASSPHRASE );
+			if ( bip32_passphrase != undefined && bip32_passphrase != null && bip32_passphrase != "" ) {
+				crypto_info[BIP32_PASSPHRASE] = bip32_passphrase;
 			}
-			let account       = HtmlUtils.GetNodeValue( ACCOUNT_ID );			
+			let account       = HtmlUtils.GetElementValue( ACCOUNT_ID );			
 			let change_chain  = ( blockchain == SOLANA ) ? "0'" : "0";			
-			let address_index = HtmlUtils.GetNodeValue( ADDRESS_INDEX_ID );
+			let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
 			
 			crypto_info[DERIVATION_PATH] =  "m/44'/" + COIN_TYPES[blockchain] + "'"
 										  + "/" + account + "'/" + change_chain
@@ -2669,20 +2802,25 @@ class RendererGUI {
             }			
 		}
 		
-		let entropy_value = HtmlUtils.GetNodeValue( ENTROPY_ID ); 
+		// -------- Bip38 passphrase --------
+		let bip38_passphrase = this.wallet_info.getAttribute( BIP38_PASSPHRASE );
+		if ( bip38_passphrase != undefined && bip38_passphrase != null && bip38_passphrase != "" ) {
+			crypto_info[BIP38_PASSPHRASE] = bip38_passphrase;
+		}
+		// -------- Bip38 passphrase
+		
+		let entropy_value = HtmlUtils.GetElementValue( ENTROPY_ID ); 
 		crypto_info[ENTROPY] = entropy_value;
 		
 		let entropy_size = entropy_value.length * 4; // 4 bits per hex digit
 		crypto_info[ENTROPY_SIZE] = entropy_size;
-		
-		crypto_info[LANG] = lang;
 		
 		return crypto_info;
 	} // getWalletInfo()
 	
 	// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
 	openTabPage( pageName, elt, color ) {
-		trace2Main( pretty_func_header_format( "RendererGUI.openTabPage", pageName + " elt:" + elt.id ) );
+		trace2Main( pretty_func_header_format( "MainGUI.openTabPage", pageName + " elt:" + elt.id ) );
 				
 		// Hide all elements with class="tabcontent" by default */
 		let i, tabcontent, tablinks;
@@ -2724,7 +2862,7 @@ class RendererGUI {
 	} // openTabPage()
 	
 	async generateEntropyFromEntropySource() {
-		trace2Main( pretty_func_header_format( "RendererGUI.generateEntropyFromEntropySource" ) );
+		trace2Main( pretty_func_header_format( "MainGUI.generateEntropyFromEntropySource" ) );
 		let salted_entropy_src_str = await this.getSaltedEntropySource();
 		//  ( pretty_format( "rGUI.genEsrc2E> Salted Entropy", getShortenedString( salted_entropy_src_str ) ) );
 		
@@ -2741,8 +2879,8 @@ class RendererGUI {
 	} // generateEntropyFromEntropySource()
 	
 	async mnemonicsToWordIndexes( mnemonics, lang ) {
-		//trace2Main( pretty_func_header_format( "RendererGUI.mnemonicsToWordIndexes" ) );		
-		let word_index_base = HtmlUtils.GetNodeValue( WORD_INDEXES_BASE_ID);
+		//trace2Main( pretty_func_header_format( "MainGUI.mnemonicsToWordIndexes" ) );		
+		let word_index_base = HtmlUtils.GetElementValue( WORD_INDEXES_BASE_ID);
 		let options = { [LANG]: lang, "word_index_base": word_index_base }; 		
 		let data = { mnemonics, options };
 		let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
@@ -2772,7 +2910,7 @@ class RendererGUI {
 			elt.addEventListener(event_name, handler_function );
 		}
 	} // setEventHandler()	
-} // RendererGUI class
-// ==============================  RendererGUI class 
+} // MainGUI class
+// ==============================  MainGUI class 
 
-RendererGUI.GetInstance();
+MainGUI.This;

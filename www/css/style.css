@@ -166,6 +166,11 @@ hr {
 	margin-top: 5px ;
 }
 
+#bip38_passphrase_label_id {
+	font-size:  14px;
+	margin-top:  5px;
+}
+
 #apply_password_btn_id {
 	background-color:  lightblue;
 }

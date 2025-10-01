@@ -3,7 +3,7 @@
 // ====================================================================================
 "use strict";
 
-// https://izitoast.marcelodolza.com/    
+// https://marcelodolza.github.io/iziToast/  
 class GuiUtils {
 	static ShowInfoDialog( msg ) {
 		iziToast.destroy();
@@ -14,7 +14,9 @@ class GuiUtils {
 			backgroundColor: 'lightblue',
 			message:         msg,
 			maxWidth:        450, layout: 2,
-			timeout:         false, progressBar: false
+			timeout:         false, 
+			progressBar: 	false,
+			zindex:          999,
 		};
 		
 		iziToast.info( options );
