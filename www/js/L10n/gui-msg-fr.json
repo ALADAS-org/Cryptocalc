@@ -8,13 +8,16 @@
   "FromFile":                  "depuis un fichier...",
   "FortuneCookie":             "Fortune Cookie",
   "Quit":                      "Quitter",
+  
   "Tools":                     "Outils",
+  "Bip38EncryptDecryptTool":   "Bip38 Encryptage/Decryptage",
+  
   "View":                      "Affichage",
   "ToggleDebug":               "Basculer panneau de Debug",
   "Help":                      "Aide",
   "Resources":                 "Ressources",
   "About":                     "A propos de Cryptocalc...",
-  "HelpAboutMsg":              "Calculatrice de wallet crypto",
+  "HelpAboutMsg":              "Générateur de wallet de cryptomonnaies",
   "entropy_src_label_id":      "Source d'Entropie",
   "entropy_label_id":          "Entropie",
   "word_indexes_label_id":     "Indices de Mnémonique",

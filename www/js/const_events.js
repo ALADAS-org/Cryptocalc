@@ -1,6 +1,6 @@
-// =====================================================================================
-// ================================   const_events.js   ================================
-// =====================================================================================
+// =====================================================================================================================
+// ================================================   const_events.js   ================================================
+// =====================================================================================================================
 "use strict";
 
 const CUSTOM_EVT_UPDATE_ENTROPY                   = "CustomEvent:UpdateEntropy";
@@ -14,6 +14,7 @@ const CMD_REFRESH_WALLET                          = "cmd:RefreshWallet";
     
 const VIEW_TOGGLE_DEVTOOLS                        = "View/ToggleDevTools";
 const TOOLS_OPTIONS                               = "Tools/Options";
+const TOOLS_BIP38_ENCRYPTER_DECRYTER              = "Tools/Bip38EncrypterDecrypter";
 
 const ToMain_RQ_QUIT_APP                          = "ToMain:Request/quit_app";
 
@@ -49,6 +50,9 @@ const ToMain_RQ_CHECK_MNEMONICS                   = "ToMain:Request/check_mnemon
 const ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = "ToMain:Request/mnemonics_to_word_indexes";
 const ToMain_RQ_GUESS_MNEMONICS_LANG              = "ToMain:Request/guess_mnemonics_lang";
 
+const ToMain_RQ_BIP38_ENCRYPT                     = "ToMain:Request/bip38_encrypt";
+const ToMain_RQ_BIP38_DECRYPT                     = "ToMain:Request/bip38_decrypt";
+
 const ToMain_RQ_GET_HD_WALLET                     = "ToMain:Request/get_hd_wallet";
 const ToMain_RQ_GET_SIMPLE_WALLET                 = "ToMain:Request/get_simple_wallet";
 const ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS  = "ToMain:Request/get_simple_wallet_from_mnemonics";
@@ -83,7 +87,9 @@ const FromMain_HELP_ABOUT                         = "FromMain:Help/About";
 
 const FromMain_SHOW_ERROR_DIALOG                  = "FromMain:ShowErrorDialog";
 const FromMain_SHOW_MSG_DIALOG                    = "FromMain:ShowMessage";
+
 const FromMain_TOOLS_OPTIONS_DIALOG               = "FromMain:ToolsOptionsDialog";
+const FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG = "FromMain:ToolsBip38EncryptDecryptDialog";
 
 const FromMain_SET_FORTUNE_COOKIE                 = "FromMain:File/Import/Random Fortune Cookie";
 const FromMain_UPDATE_OPTIONS                     = "FromMain:UpdateOptions";
@@ -94,89 +100,94 @@ const FromMain_SEND_IMG_URL                       = "FromMain:SendImageURL";
 const FromMain_INTERNET_CONNECTED                 = "FromMain:InternetConnected";
 
 if ( typeof exports === 'object' ) {
-	exports.CMD_NONE                                   = CMD_NONE
+	exports.CMD_NONE                                    = CMD_NONE
 	
-    exports.CMD_NEW_WALLET                             = CMD_NEW_WALLET
-    exports.CMD_OPEN_WALLET                            = CMD_OPEN_WALLET
-	exports.CMD_GENERATE_WALLET                        = CMD_GENERATE_WALLET
-	exports.CMD_REFRESH_WALLET                         = CMD_REFRESH_WALLET
+    exports.CMD_NEW_WALLET                              = CMD_NEW_WALLET
+    exports.CMD_OPEN_WALLET                             = CMD_OPEN_WALLET
+	exports.CMD_GENERATE_WALLET                         = CMD_GENERATE_WALLET
+	exports.CMD_REFRESH_WALLET                          = CMD_REFRESH_WALLET
 	
-	exports.VIEW_TOGGLE_DEVTOOLS                       = VIEW_TOGGLE_DEVTOOLS
-    exports.TOOLS_OPTIONS                              = TOOLS_OPTIONS	
+	exports.VIEW_TOGGLE_DEVTOOLS                        = VIEW_TOGGLE_DEVTOOLS
+    exports.TOOLS_OPTIONS                               = TOOLS_OPTIONS	
+	exports.TOOLS_BIP38_ENCRYPTER_DECRYTER			    = TOOLS_BIP38_ENCRYPTER_DECRYTER
 	
-	exports.ToMain_RQ_QUIT_APP                         = ToMain_RQ_QUIT_APP
+	exports.ToMain_RQ_QUIT_APP                          = ToMain_RQ_QUIT_APP
 	
-	exports.ToMain_RQ_LOG_2_MAIN                       = ToMain_RQ_LOG_2_MAIN
-	exports.ToMain_RQ_LOG_2_MAIN_SYNC                  = ToMain_RQ_LOG_2_MAIN_SYNC
+	exports.ToMain_RQ_LOG_2_MAIN                        = ToMain_RQ_LOG_2_MAIN
+	exports.ToMain_RQ_LOG_2_MAIN_SYNC                   = ToMain_RQ_LOG_2_MAIN_SYNC
 	
-	exports.ToMain_RQ_EXEC_CMD                         = ToMain_RQ_EXEC_CMD
+	exports.ToMain_RQ_EXEC_CMD                          = ToMain_RQ_EXEC_CMD
 	
-	exports.ToMain_RQ_SET_WINDOW_TITLE                 = ToMain_RQ_SET_WINDOW_TITLE
-	exports.ToMain_RQ_TOGGLE_DEBUG_PANEL               = ToMain_RQ_TOGGLE_DEBUG_PANEL
+	exports.ToMain_RQ_SET_WINDOW_TITLE                  = ToMain_RQ_SET_WINDOW_TITLE
+	exports.ToMain_RQ_TOGGLE_DEBUG_PANEL                = ToMain_RQ_TOGGLE_DEBUG_PANEL
 	
-	exports.ToMain_RQ_NEW_WALLET_INFO                  = ToMain_RQ_NEW_WALLET_INFO
-	exports.ToMain_RQ_OPEN_WALLET_INFO                 = ToMain_RQ_OPEN_WALLET_INFO
-	exports.ToMain_RQ_SAVE_WALLET_INFO                 = ToMain_RQ_SAVE_WALLET_INFO
+	exports.ToMain_RQ_NEW_WALLET_INFO                   = ToMain_RQ_NEW_WALLET_INFO
+	exports.ToMain_RQ_OPEN_WALLET_INFO                  = ToMain_RQ_OPEN_WALLET_INFO
+	exports.ToMain_RQ_SAVE_WALLET_INFO                  = ToMain_RQ_SAVE_WALLET_INFO
 	
-	exports.ToMain_RQ_ENTROPY_SRC_TO_ENTROPY           = ToMain_RQ_ENTROPY_SRC_TO_ENTROPY	
-    exports.ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO        = ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO
-	exports.ToMain_RQ_ENTROPY_TO_MNEMONICS             = ToMain_RQ_ENTROPY_TO_MNEMONICS
-	exports.ToMain_RQ_ENTROPY_TO_CHECKSUM              = ToMain_RQ_ENTROPY_TO_CHECKSUM	
-	exports.ToMain_RQ_ENTROPY_SRC_TO_PK                = ToMain_RQ_ENTROPY_SRC_TO_PK
-	exports.ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO      = ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO
+	exports.ToMain_RQ_ENTROPY_SRC_TO_ENTROPY            = ToMain_RQ_ENTROPY_SRC_TO_ENTROPY	
+    exports.ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO         = ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO
+	exports.ToMain_RQ_ENTROPY_TO_MNEMONICS              = ToMain_RQ_ENTROPY_TO_MNEMONICS
+	exports.ToMain_RQ_ENTROPY_TO_CHECKSUM               = ToMain_RQ_ENTROPY_TO_CHECKSUM	
+	exports.ToMain_RQ_ENTROPY_SRC_TO_PK                 = ToMain_RQ_ENTROPY_SRC_TO_PK
+	exports.ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO       = ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO
 	
-	exports.ToMain_RQ_GENERATE_PASSWORD                = ToMain_RQ_GENERATE_PASSWORD
+	exports.ToMain_RQ_GENERATE_PASSWORD                 = ToMain_RQ_GENERATE_PASSWORD
 	
-	exports.ToMain_RQ_OPEN_URL                         = ToMain_RQ_OPEN_URL	
-	exports.ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER   = ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER
+	exports.ToMain_RQ_OPEN_URL                          = ToMain_RQ_OPEN_URL	
+	exports.ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER    = ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER
 	
-	exports.ToMain_RQ_GET_SECP256K1                    = ToMain_RQ_GET_SECP256K1
-	exports.ToMain_RQ_GET_UUID                         = ToMain_RQ_GET_UUID
+	exports.ToMain_RQ_GET_SECP256K1                     = ToMain_RQ_GET_SECP256K1
+	exports.ToMain_RQ_GET_UUID                          = ToMain_RQ_GET_UUID
 	
-	exports.ToMain_RQ_GET_L10N_KEYPAIRS                = ToMain_RQ_GET_L10N_KEYPAIRS
-	exports.ToMain_RQ_GET_L10N_MSG                     = ToMain_RQ_GET_L10N_MSG
+	exports.ToMain_RQ_GET_L10N_KEYPAIRS                 = ToMain_RQ_GET_L10N_KEYPAIRS
+	exports.ToMain_RQ_GET_L10N_MSG                      = ToMain_RQ_GET_L10N_MSG
 
-    exports.ToMain_RQ_SET_MENU_ITEM_STATE              = ToMain_RQ_SET_MENU_ITEM_STATE	
+    exports.ToMain_RQ_SET_MENU_ITEM_STATE               = ToMain_RQ_SET_MENU_ITEM_STATE	
 	
-	exports.ToMain_RQ_MNEMONICS_AS_4LETTER             = ToMain_RQ_MNEMONICS_AS_4LETTER
-	exports.ToMain_RQ_MNEMONICS_AS_TWO_PARTS           = ToMain_RQ_MNEMONICS_AS_TWO_PARTS
-	exports.ToMain_RQ_MNEMONICS_TO_WORD_INDEXES        = ToMain_RQ_MNEMONICS_TO_WORD_INDEXES
-	exports.ToMain_RQ_GUESS_MNEMONICS_LANG             = ToMain_RQ_GUESS_MNEMONICS_LANG
-	exports.ToMain_RQ_GET_FORTUNE_COOKIE               = ToMain_RQ_GET_FORTUNE_COOKIE
+	exports.ToMain_RQ_MNEMONICS_AS_4LETTER              = ToMain_RQ_MNEMONICS_AS_4LETTER
+	exports.ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = ToMain_RQ_MNEMONICS_AS_TWO_PARTS
+	exports.ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = ToMain_RQ_MNEMONICS_TO_WORD_INDEXES
+	exports.ToMain_RQ_GUESS_MNEMONICS_LANG              = ToMain_RQ_GUESS_MNEMONICS_LANG
+	exports.ToMain_RQ_GET_FORTUNE_COOKIE                = ToMain_RQ_GET_FORTUNE_COOKIE
 	
-	exports.ToMain_RQ_SAVE_OPTIONS                     = ToMain_RQ_SAVE_OPTIONS
-	exports.ToMain_RQ_RESET_OPTIONS                    = ToMain_RQ_RESET_OPTIONS
-	exports.ToMain_RQ_UPDATE_OPTIONS                   = ToMain_RQ_UPDATE_OPTIONS
+	exports.ToMain_RQ_SAVE_OPTIONS                      = ToMain_RQ_SAVE_OPTIONS
+	exports.ToMain_RQ_RESET_OPTIONS                     = ToMain_RQ_RESET_OPTIONS
+	exports.ToMain_RQ_UPDATE_OPTIONS                    = ToMain_RQ_UPDATE_OPTIONS
 
-	exports.ToMain_RQ_LOAD_IMG_FROM_FILE               = ToMain_RQ_LOAD_IMG_FROM_FILE 
-	exports.ToMain_RQ_DRAW_RND_CRYPTO_LOGO             = ToMain_RQ_DRAW_RND_CRYPTO_LOGO
+	exports.ToMain_RQ_LOAD_IMG_FROM_FILE                = ToMain_RQ_LOAD_IMG_FROM_FILE 
+	exports.ToMain_RQ_DRAW_RND_CRYPTO_LOGO              = ToMain_RQ_DRAW_RND_CRYPTO_LOGO
 	
-	exports.ToMain_RQ_GET_HD_WALLET                    = ToMain_RQ_GET_HD_WALLET
-	exports.ToMain_RQ_GET_SIMPLE_WALLET                = ToMain_RQ_GET_SIMPLE_WALLET
-    exports.ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS = ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS,
-	exports.ToMain_RQ_GET_HD_SOLANA_WALLET             = ToMain_RQ_GET_HD_SOLANA_WALLET 
+	exports.ToMain_RQ_GET_HD_WALLET                     = ToMain_RQ_GET_HD_WALLET
+	exports.ToMain_RQ_GET_SIMPLE_WALLET                 = ToMain_RQ_GET_SIMPLE_WALLET
+    exports.ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS  = ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS,
+	exports.ToMain_RQ_GET_HD_SOLANA_WALLET              = ToMain_RQ_GET_HD_SOLANA_WALLET
 	
-	exports.FromMain_DID_FINISH_LOAD                 = FromMain_DID_FINISH_LOAD
+	exports.ToMain_RQ_BIP38_ENCRYPT                     = ToMain_RQ_BIP38_ENCRYPT
+	exports.ToMain_RQ_BIP38_DECRYPT                     = ToMain_RQ_BIP38_DECRYPT
 	
-	exports.FromMain_EXEC_CMD                        = FromMain_EXEC_CMD
+	exports.FromMain_DID_FINISH_LOAD                    = FromMain_DID_FINISH_LOAD
 	
-	exports.FromMain_FILE_NEW                        = FromMain_FILE_NEW
-	exports.FromMain_FILE_OPEN                       = FromMain_FILE_OPEN
-	exports.FromMain_FILE_SAVE                       = FromMain_FILE_SAVE
-	exports.FromMain_FILE_SAVE_AS                    = FromMain_FILE_SAVE_AS
-	exports.FromMain_HELP_ABOUT                      = FromMain_HELP_ABOUT
+	exports.FromMain_EXEC_CMD                           = FromMain_EXEC_CMD
 	
-	exports.FromMain_SHOW_ERROR_DIALOG               = FromMain_SHOW_ERROR_DIALOG
-	exports.FromMain_SHOW_MSG_DIALOG                 = FromMain_SHOW_MSG_DIALOG
+	exports.FromMain_FILE_NEW                           = FromMain_FILE_NEW
+	exports.FromMain_FILE_OPEN                          = FromMain_FILE_OPEN
+	exports.FromMain_FILE_SAVE                          = FromMain_FILE_SAVE
+	exports.FromMain_FILE_SAVE_AS                       = FromMain_FILE_SAVE_AS
+	exports.FromMain_HELP_ABOUT                         = FromMain_HELP_ABOUT
 	
-	exports.FromMain_TOOLS_OPTIONS_DIALOG            = FromMain_TOOLS_OPTIONS_DIALOG
+	exports.FromMain_SHOW_ERROR_DIALOG                  = FromMain_SHOW_ERROR_DIALOG
+	exports.FromMain_SHOW_MSG_DIALOG                    = FromMain_SHOW_MSG_DIALOG
 	
-	exports.FromMain_SEND_IMG_URL                    = FromMain_SEND_IMG_URL
-	exports.FromMain_SET_FORTUNE_COOKIE              = FromMain_SET_FORTUNE_COOKIE	
+	exports.FromMain_TOOLS_OPTIONS_DIALOG               = FromMain_TOOLS_OPTIONS_DIALOG
+	exports.FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG = FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG
+	
+	exports.FromMain_SEND_IMG_URL                       = FromMain_SEND_IMG_URL
+	exports.FromMain_SET_FORTUNE_COOKIE                 = FromMain_SET_FORTUNE_COOKIE	
 
-	exports.FromMain_UPDATE_OPTIONS                  = FromMain_UPDATE_OPTIONS	
+	exports.FromMain_UPDATE_OPTIONS                     = FromMain_UPDATE_OPTIONS	
 	
-	exports.FromMain_SET_VARIABLE                    = FromMain_SET_VARIABLE
-	
-	exports.FromMain_INTERNET_CONNECTED              = FromMain_INTERNET_CONNECTED
+	exports.FromMain_SET_VARIABLE                       = FromMain_SET_VARIABLE
+	 
+	exports.FromMain_INTERNET_CONNECTED                 = FromMain_INTERNET_CONNECTED
 } // exports of 'const_events.js'

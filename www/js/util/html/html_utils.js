@@ -1,19 +1,19 @@
-// =====================================================================================
-// =================================   html_utils.js   =================================
-// =====================================================================================
+// ===================================================================================================================
+// ================================================   html_utils.js   ================================================
+// ===================================================================================================================
 "use strict";
 
 class HtmlUtils {
 	// https://stackoverflow.com/questions/2155737/remove-css-class-from-element-with-javascript-no-jquery
-	static HasClass(elt_id, className) {
+	static HasClass( elt_id, className ) {
 		//trace2Main(">> HtmlUtils.HasClass elt_id:" + elt_id);
 		let elt = document.getElementById(elt_id);
-		if (elt == undefined) { 
+		if ( elt == undefined ) { 
 		    return false;
 		}		
 		//trace2Main("   elt.id:" + elt.id + " elt.classList: " + elt.classList);
 		
-		if (elt.classList != null) {
+		if ( elt.classList != null ) {
 			return elt.classList.contains(className);
 		} else {
 			return (-1 < elt.className.indexOf(className));
@@ -21,7 +21,7 @@ class HtmlUtils {
 		return false;
 	} // HtmlUtils.HasClass()
 	
-	static AddClass(elt_id, className) {
+	static AddClass( elt_id, className ) {
 		//trace2Main(">> HtmlUtils.AddClass elt_id:" + elt_id);
 		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
@@ -39,7 +39,7 @@ class HtmlUtils {
 		return elt;
 	} // HtmlUtils.AddClass()
 	
-	static RemoveClass(elt_id, className) {
+	static RemoveClass( elt_id, className ) {
 		//trace2Main(">> HtmlUtils.RemoveClass elt_id:" + elt_id);
 		let elt = document.getElementById(elt_id);
 		if (elt == undefined) { 
@@ -57,9 +57,9 @@ class HtmlUtils {
 		return elt;
 	} // HtmlUtils.RemoveClass()
 	
-	static HideNode( elt_id ) {
+	static HideElement( elt_id ) {
 		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
-		//trace2Main(">> HtmlUtils.HideNode elt_id: " + elt_id);
+		//trace2Main(">> HtmlUtils.HideElement elt_id: " + elt_id);
 	  
 		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
@@ -71,11 +71,11 @@ class HtmlUtils {
         $("#" + elt_id).hide();	
         	
         //$('#' + elt_id).prop("style", "display:none");		
-	} // HtmlUtils.HideNode()
+	} // HtmlUtils.HideElement()
 	
-	static ShowNode( elt_id ) {
+	static ShowElement( elt_id ) {
 		//if (elt_id == ENTROPY_SIZE_SELECT_ID)
-		//	trace2Main(">> HtmlUtils.ShowNode elt_id: " + elt_id);
+		//	trace2Main(">> HtmlUtils.ShowElement elt_id: " + elt_id);
 		
 		let elt = document.getElementById( elt_id );
 		if (elt == undefined) { 
@@ -84,19 +84,19 @@ class HtmlUtils {
 		
 		//elt.hidden = false; 
 		$("#" + elt_id).show();	
-	} // HtmlUtils.ShowNode()
+	} // HtmlUtils.ShowElement()
 	
-	static GetNode( elt_id ) {
+	static GetElement( elt_id ) {
 		let elt = document.getElementById(elt_id);
 		if (elt != undefined) { return elt; }
 		return undefined;
-	} // HtmlUtils.GetNode()
+	} // HtmlUtils.GetElement()
 	
-	static InitializeNode( elt_id, values, labels ) {
-		// trace2Main( pretty_func_header_format( "HtmlUtils.InitializeNode", " elt_id: " + elt_id ) );	
+	static InitializeElement( elt_id, values, labels ) {
+		// trace2Main( pretty_func_header_format( "HtmlUtils.InitializeElement", " elt_id: " + elt_id ) );	
 				 
 		let elt = document.getElementById(elt_id);
-		if (elt != undefined) { 
+		if ( elt != undefined ) { 
 		    //trace2Main("   elt.nodeName: " + elt.nodeName);
 			if ( elt.nodeName == "SELECT" ) {	
 				if (   Array.isArray(values) 
@@ -105,16 +105,16 @@ class HtmlUtils {
 						$("#" + elt_id).empty();
 						for ( let i=0; i < values.length; i++ ) {
 							//trace2Main("   values[" + i +"]: " + values[i]);							
-							elt.add(new Option(values[i], values[i]));
+							elt.add( new Option(values[i], values[i]) );
 						}
 				}					
 			}
 		}
-		// trace2Main( pretty_func_header_format( "<END> HtmlUtils.InitializeNode", " elt_id: " + elt_id ) );
-	} // HtmlUtils.InitializeNode()
+		// trace2Main( pretty_func_header_format( "<END> HtmlUtils.InitializeElement", " elt_id: " + elt_id ) );
+	} // HtmlUtils.InitializeElement()
 	
-	static GetNodeValue( elt_id ) {
-		// trace2Main( pretty_func_header_format( "HtmlUtils.GetNodeValue() ", elt_id ));
+	static GetElementValue( elt_id ) {
+		// trace2Main( pretty_func_header_format( "HtmlUtils.GetElementValue() ", elt_id ));
 		let elt = document.getElementById( elt_id );	
         		
 		if ( elt != undefined ) { 
@@ -126,20 +126,25 @@ class HtmlUtils {
 			}	
 		}
 		return "Null_String";
-	} // HtmlUtils.GetNodeValue()	
+	} // HtmlUtils.GetElementValue()	
 
-	static SetNodeValue( elt_id, value_str ) {
-		//trace2Main(">> " + _CYAN_ + "HtmlUtils.SetNodeValue() " + _END_ + elt_id);
+	static SetElementValue( elt_id, value_str ) {
+		//trace2Main(">> " + _CYAN_ + "HtmlUtils.SetElementValue() " + _END_ + elt_id);
 		//trace2Main(" elt_id: " + elt_id);
 		let elt = document.getElementById( elt_id );
 		if ( elt != undefined ) {
-            //trace2Main(" elt.nodeName: " + elt.nodeName);			
+			// trace2Main(" elt.nodeName: '" + elt.nodeName + "'");
 			if (   elt.nodeName == "TD" 
 			    || elt.nodeName == "SPAN" || elt.nodeName == "DIV" 
 				|| elt.nodeName == "BUTTON" ) {
 				elt.textContent = value_str;
 			}
-			else if (   elt.nodeName == "TEXTAREA" ) {
+			else if ( elt.nodeName == "INPUT") {
+				// trace2Main(" elt.nodeName: '" + elt.nodeName + "'");
+			    // trace2Main(" value_str: " + value_str);
+				$('#' + elt_id).prop("value", value_str);
+			}
+			else if ( elt.nodeName == "TEXTAREA" ) {
                 // **PB** value change seems asynchronous 
                 // https://stackoverflow.com/questions/47240315/how-to-update-input-from-a-programmatically-set-textarea 				
                 // https://www.geeksforgeeks.org/jquery-set-the-value-of-an-input-text-field/
@@ -152,5 +157,5 @@ class HtmlUtils {
 				elt.value = value_str;
 			}	
 		}
-	} // HtmlUtils.SetNodeValue()
+	} // HtmlUtils.SetElementValue()
 } // HtmlUtils class

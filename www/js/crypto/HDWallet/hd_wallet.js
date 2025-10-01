@@ -31,7 +31,7 @@ const { NULL_HEX, CRYPTO_NET,
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
-        PASSWORD, ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
+        BIP32_PASSPHRASE, ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 	  }                   = require('../../const_keywords.js');	  
 	  
 const { hexWithoutPrefix,  
@@ -122,7 +122,7 @@ const btc_addr_to_t_zcash_addr = ( btc_addr_str ) => {
 }; // btc_addr_to_t_zcash_addr (BTC to ZCASH address)
 	
 class HDWallet {	
-    static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index  ) {
+    static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index  ) {
 		let coin = COIN_ABBREVIATIONS[blockchain];
 		if ( crypto_net == undefined ) {
 			crypto_net = MAINNET;
@@ -150,11 +150,11 @@ class HDWallet {
 		// pretty_log( "hdw.gw> account",       account );
 		// pretty_log( "hdw.gw> address_index", address_index );
 		
-		let options = { [BLOCKCHAIN]:    blockchain, 
-		                [PASSWORD]:      password,
-			            [ACCOUNT]:       account,
-					    [ADDRESS_INDEX]: address_index, 
-			            [UUID]:          salt_uuid };
+		let options = { [BLOCKCHAIN]:    	blockchain, 
+		                [BIP32_PASSPHRASE]: bip32_passphrase,
+			            [ACCOUNT]:       	account,
+					    [ADDRESS_INDEX]: 	address_index, 
+			            [UUID]:          	salt_uuid };
 		
 		let new_wallet = HDWallet.InitializeWallet();
 		
@@ -193,8 +193,8 @@ class HDWallet {
 			new_wallet[COIN]      = hdwallet_info[COIN];
 			new_wallet[COIN_TYPE] = hdwallet_info[COIN_TYPE];
 			
-			if ( hdwallet_info[PASSWORD] != undefined && hdwallet_info[PASSWORD] != "") { 
-				new_wallet[PASSWORD] = hdwallet_info[PASSWORD];
+			if ( hdwallet_info[BIP32_PASSPHRASE] != undefined && hdwallet_info[BIP32_PASSPHRASE] != "") { 
+				new_wallet[BIP32_PASSPHRASE] = hdwallet_info[BIP32_PASSPHRASE];
 			}				
 			
 			new_wallet[PRIVATE_KEY]     = hdwallet_info[PRIVATE_KEY]; 
@@ -208,15 +208,15 @@ class HDWallet {
 		}
 		else if ( blockchain == CARDANO ) {	
 			new_wallet = await CardanoHD_API.GetWallet
-			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index );
 		}		
 		else if ( blockchain == SOLANA ) {	
 			new_wallet = await SolanaHD_API.GetWallet
-			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );		
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index );		
 		}
 		else if ( blockchain == SUI ) {	
 			new_wallet = await Sui_HD_API.GetWallet
-			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );		
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index );		
 		}
 		return new_wallet;
 	} // HDWallet.GetWallet()

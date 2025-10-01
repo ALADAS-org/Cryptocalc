@@ -66,7 +66,7 @@ const { NULL_HEX,
 	  
 const { BLOCKCHAIN, NULL_BLOCKCHAIN, 
         WORD_COUNT, MNEMONICS,
-        PASSWORD, ACCOUNT, ADDRESS_INDEX,
+        BIP32_PASSPHRASE, ACCOUNT, ADDRESS_INDEX,
 		DERIVATION_PATH, WIF
 	  }                    = require('../../const_keywords.js');
 		
@@ -122,11 +122,11 @@ class Bip32Utils {
         if ( isString( coin_type ) )  coin_type = parseInt( coin_type );		
 		pretty_log( "b32.mnk2wi> coin_type", coin_type );
 		
-		let password = "";
-		if ( args[PASSWORD] != undefined && args[PASSWORD] != null && args[PASSWORD] != "" ) { 
-			password = args[PASSWORD];
+		let bip32_passphrase = "";
+		if ( args[BIP32_PASSPHRASE] != undefined && args[BIP32_PASSPHRASE] != null && args[BIP32_PASSPHRASE] != "" ) { 
+			bip32_passphrase = args[BIP32_PASSPHRASE];
 		}
-		pretty_log( "b32.mnk2wi> password", password );
+		pretty_log( "b32.mnk2wi> Bi32 Passphrase", bip32_passphrase );
 		
 		let account = 0;
 		if ( args[ACCOUNT] != undefined ) { 
@@ -187,7 +187,7 @@ class Bip32Utils {
 		// https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786
 		//                            ====Master Private Key====    =========Chaincode=========
 		// seed (64 bytes/512 bits) = LeftSide(32 bytes/256 bits) + RightSide(32 bytes/256 bits)
-		const master_seed = bip39.mnemonicToSeedSync( mnemonics, password );	
+		const master_seed = bip39.mnemonicToSeedSync( mnemonics, bip32_passphrase );	
 		
 		let master_seed_hex   = uint8ArrayToHex( master_seed );
 	    let master_seed_bytes = master_seed_hex.length / 2;
@@ -254,18 +254,15 @@ class Bip32Utils {
 		//************************ First Private Key ************************
 		//*******************************************************************
 		// https://www.npmjs.com/package/hdaddressgenerator
-		//let bip44 = HdAddGen.withMnemonic( mnemonics, false, coin );
-		let passphrase = false;
-		if ( password != "" ) {
-			passphrase = password;
-		    hdwallet_info[PASSWORD] = password;
+		// let bip44 = HdAddGen.withMnemonic( mnemonics, false, coin );
+		if ( bip32_passphrase != "" ) {
+			hdwallet_info[BIP32_PASSPHRASE] = bip32_passphrase;
 		}
         pretty_log( "b32.mnk2wi> coin", coin );	
 		
 		let bip44 = HdAddGen.withMnemonic
-					( mnemonics,  passphrase, coin,    true,    44,  account );
-		//			( mnemonics,  passphrase, coin,    false,   44,  account );
-        //                        passphrase          hardened  bip  account        
+					( mnemonics,  bip32_passphrase, coin,    true,     44,  account );
+        //                        bip32_passphrase           hardened  bip  account        
 		//*** BIP44 *********************************************************
 
 		// Generates 'expected_address_count' addresse from index 'address_index'

@@ -455,7 +455,7 @@ class Bip39Utils {
 		args = Bip39Utils.GetArgs( args );
 		let lang            = (args[LANG] != undefined) ? args[LANG] : "EN";
 		let word_index_base = (args["word_index_base"] != undefined) ? args["word_index_base"] : "Decimal";
-		//console.log("   lang: " + lang);
+		//console.log("   Lang: " + lang);
 		
 		let words = mnemonics.split(' ');
 		//console.log("   words("+ words.length + "): " + words);

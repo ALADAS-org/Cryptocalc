@@ -34,7 +34,7 @@
 // *        setCallbacks()
 // ------------------------------------------------------
 const MAIN_WINDOW_WIDTH  = 1040; // NB: 'width' is wider because of 'Cardano'
-const MAIN_WINDOW_HEIGHT = 630; 
+const MAIN_WINDOW_HEIGHT = 651; 
 
 const { app, Menu, BrowserWindow, ipcMain, 
         shell, remote, dialog } = require('electron');	
@@ -74,7 +74,7 @@ const { APP_VERSION,
       }                = require('../const_keywords.js');
 
 const { CMD_OPEN_WALLET,
-        VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS,
+        VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS, TOOLS_BIP38_ENCRYPTER_DECRYTER,
         ToMain_RQ_QUIT_APP, 
 		ToMain_RQ_LOG_2_MAIN, ToMain_RQ_LOG_2_MAIN_SYNC,
 		
@@ -112,12 +112,16 @@ const { CMD_OPEN_WALLET,
 		
 		ToMain_RQ_GET_HD_WALLET,	
 		
+		ToMain_RQ_BIP38_ENCRYPT, ToMain_RQ_BIP38_DECRYPT,
+		
 		FromMain_DID_FINISH_LOAD, FromMain_EXEC_CMD,
 		
 		FromMain_FILE_NEW, FromMain_FILE_OPEN, FromMain_FILE_SAVE, 
 		FromMain_HELP_ABOUT,
 
-		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_UPDATE_OPTIONS, 
+		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG,
+		
+		FromMain_UPDATE_OPTIONS, 
 		FromMain_SEND_IMG_URL,
 		FromMain_SET_FORTUNE_COOKIE, 
         FromMain_SET_VARIABLE,
@@ -132,7 +136,10 @@ const { DEFAULT_OPTIONS
 	  
 const { getShortenedString }            = require('../util/values/string_utils.js');	  
 const { FileUtils }                     = require('../util/system/file_utils.js');
+
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
+const { Bip38Utils }                    = require('../crypto/bip38_utils.js');
+
 const { getRandomInt  }                 = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { L10nUtils }                     = require('../L10n/L10n_utils.js');
@@ -141,7 +148,7 @@ const { Bip32Utils }                    = require('../crypto/HDWallet/bip32_util
 const { HDWallet }                      = require('../crypto/HDWallet/hd_wallet.js');
 const { SimpleWallet }                  = require('../crypto/SimpleWallet/simple_wallet.js');
 
-const { MainModel }                     = require('./main_model.js');
+const { MainModel }                     = require('../model/main_model.js');
 
 const DEFAULT_APP_CONFIG = {
 	"ToFile": true
@@ -155,29 +162,29 @@ const error_handler = (err) => {
 }; // error_handler()
 
 class ElectronMain {
-	//static #key = {};
-	static #key = Symbol();
-	static #_Singleton = new ElectronMain( this.#key );
-	static #_InstanceCount = 0;
+	static #Key = Symbol();
+	static #Singleton = new ElectronMain( this.#Key );
+	static #InstanceCount = 0;
 	
+	// Note: KO static get This() {
 	static GetInstance() {
-		if( ElectronMain.#_Singleton == undefined ) {
-			this.#_Singleton = new ElectronMain();
-			if (this.#_InstanceCount > 0) {
-				throw new TypeError("ElectronMain constructor called more than once.");
+		if ( ElectronMain.#Singleton == undefined ) {
+			this.#Singleton = new ElectronMain( this.#Key );
+			if ( this.#InstanceCount > 0 ) {
+				throw new TypeError("'ElectronMain' constructor called more than once");
 			}
-			this.#_InstanceCount++;
+			this.#InstanceCount++;
         }
-        return ElectronMain.#_Singleton;
+        return ElectronMain.#Singleton;
     } // ElectronMain.GetInstance() 
 
     // ** Private constructor **
 	constructor( key ) {
-		if ( key !== ElectronMain.#key ) {
-			throw new TypeError("ElectronMain constructor is private.");
+		if ( key !== ElectronMain.#Key ) {
+			throw new TypeError("'ElectronMain' constructor is private");
 		}
 				
-		this.cryptowallet_version        = "x.x.x";
+		this.cryptowallet_version      = "x.x.x";
 		
 		this.app_config                = DEFAULT_APP_CONFIG;
 
@@ -279,6 +286,17 @@ class ElectronMain {
 									    ElectronMain.GetInstance().Options ] 
 									);
 							  }		 
+						   },
+						   {  label: L10nUtils.GetLocalizedMsg("Bip38EncryptDecryptTool"),
+							  click() {
+                                  pretty_func_header_log( "[Electron]", TOOLS_BIP38_ENCRYPTER_DECRYTER );								  
+								  ElectronMain.GetInstance().getMainWindow()
+								    .webContents.send
+									( 'fromMain', 
+									  [ FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG, 
+									    ElectronMain.GetInstance().Options ] 
+									);
+							  }		 
 						   }
 						 ]
 			},
@@ -361,7 +379,7 @@ class ElectronMain {
 								 + _CYAN_ + ")> this.cmd_line[PROGRAM]: " + _END_ + this.cmd_line[PROGRAM]);					
 				
 				//---------- Set 'Cryptowallet_version' in Renderer GUI ----------
-				this.cryptowallet_version = MainModel.GetInstance().getAppVersion();	
+				this.cryptowallet_version = MainModel.This.getAppVersion();	
 				//Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'did-finish-load'"
 				//                 + _CYAN_ + ")> cryptowallet_version: " + _END_ + this.cryptowallet_version);					
 				this.updateWindowTitle();
@@ -376,7 +394,7 @@ class ElectronMain {
 				
 				// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
 				// Open urls in the user's browser
-				// nB: Triggered by 'RendererGUI.OnExploreWallet()'
+				// nB: Triggered by 'MainGUI.OnExploreWallet()'
 				this.MainWindow.webContents.setWindowOpenHandler( (edata) => {
 					shell.openExternal(edata.url);
 					return { action: "deny" };
@@ -509,7 +527,7 @@ class ElectronMain {
 		let os_platform = os.platform();
 		// console.log("OS: " + os.platform());
 		
-		console.log("this.output_path: '" + this.output_path + "'");
+		// console.log("this.output_path: '" + this.output_path + "'");
 
         let path_separator = '/';
 		
@@ -523,11 +541,11 @@ class ElectronMain {
 
 		output_path = this.output_path.replaceAll('\\','\0').replaceAll('/','\0');		
         let output_path_items = output_path.split('\0');
-		console.log("output_path_items: '" + JSON.stringify(output_path_items) + "'");
+		// console.log("output_path_items: '" + JSON.stringify(output_path_items) + "'");
 		let popped = output_path_items.pop();
 		
 		output_path = output_path_items.join(path_separator); 
-        console.log("output_path: '" + output_path + "'");		
+        // console.log("output_path: '" + output_path + "'");		
 
 		const open_folder_LINUX = (path) => {
 			exec(`xdg-open "${path}"`, (error) => {
@@ -540,12 +558,12 @@ class ElectronMain {
 		// console.log("output_path:  1: '" + output_path + "'");
 	
 		if (os_platform == WINDOWS) {		
-		    console.log("output_path:  '" + output_path + "'");
+		    // console.log("output_path:  '" + output_path + "'");
 			shell.openPath( output_path );
 		}
 		else if (os_platform == LINUX) {
             output_path = output_path.replaceAll('\\','/');
-            console.log("output_path:  '" + output_path + "'");			
+            // console.log("output_path:  '" + output_path + "'");			
 			open_folder_LINUX( output_path );
 		}
     } // showFolderInExplorer()
@@ -745,7 +763,7 @@ class ElectronMain {
 		ipcMain.on( ToMain_RQ_SAVE_WALLET_INFO, ( event, crypto_info ) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_SAVE_WALLET_INFO );
 			Skribi.log( "eMain.evtH('SaveWinf')>" );	
-			this.output_path = MainModel.GetInstance().saveWalletInfo( crypto_info );
+			this.output_path = MainModel.This.saveWalletInfo( crypto_info );
 		}); // "ToMain:Request/save_wallet_info" event handler
 		
 		// ====================== ToMain_RQ_RESET_OPTIONS ======================
@@ -867,17 +885,37 @@ class ElectronMain {
 			return new_password;
 		}); // "ToMain:Request/GeneratePassword event handler
 		
+		// ========================= ToMain_RQ_BIP38_ENCRYPT =========================
+		// called like this by Renderer: await window.ipcMain.Bip38Encrypt( data )
+		ipcMain.handle( ToMain_RQ_BIP38_ENCRYPT, (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_BIP38_ENCRYPT );
+			const { private_key, passphrase } = data;
+			// Skribi.log("   options: " + JSON.stringify(options));
+			let bip38_encrypted_pk = Bip38Utils.This.encrypt( private_key, passphrase, this.getMainWindow() );
+			return bip38_encrypted_pk;
+		}); // "ToMain:Request/bip38_encrypt" event handler	
+		
+		// ========================= ToMain_RQ_BIP38_DECRYPT =========================
+		// called like this by Renderer: await window.ipcMain.Bip38Decrypt( data )
+		ipcMain.handle( ToMain_RQ_BIP38_DECRYPT, (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_BIP38_DECRYPT );
+			const { bip38_encrypted_pk, passphrase } = data;
+			// Skribi.log("   options: " + JSON.stringify(options));
+			let decrypted_pk = Bip38Utils.This.decrypt( bip38_encrypted_pk, passphrase, this.getMainWindow() );
+			return decrypted_pk;
+		}); // "ToMain:Request/bip38_decrypt" event handler	
+		
 		// ================== ToMain_RQ_GET_HD_WALLET ==================
 		// called like this by Renderer: await window.ipcMain.GetHDWallet( data )
 		ipcMain.handle( ToMain_RQ_GET_HD_WALLET, async (event, data) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_HD_WALLET );
-			const { entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index } = data;
+			const { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index } = data;
 			// pretty_log( "eMain.evtH('getHDW')> blockchain", blockchain );
 			// pretty_log( "account", account );
 			// pretty_log( "address_index", address_index );
 			// Skribi.log("   options: " + JSON.stringify(options));
 			let wallet = await HDWallet.GetWallet
-			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, password, account, address_index );
+			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index );
 			return wallet;
 		}); // "ToMain:Request/get_hd_wallet" event handler
 		
@@ -909,7 +947,7 @@ class ElectronMain {
 			let hdwallet_info = await Bip32Utils.MnemonicsToHDWalletInfo( mnemonics, options );
 			return hdwallet_info;
 		}); // "ToMain:Request/mnemonics_to_hd_wallet_info" event handler	
-
+		
 		// ================== ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO ===================
 		// called like this by Renderer: await window.ipcMain.MnemonicsToEntropyInfo( data )
 		ipcMain.handle( ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO, async (event, data) => {

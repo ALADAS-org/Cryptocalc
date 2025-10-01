@@ -1,6 +1,6 @@
-// =====================================================================================
-// ============================   tools_options_dialog.js   ============================
-// =====================================================================================
+// =====================================================================================================================
+// ============================================   tools_options_dialog.js   ============================================
+// =====================================================================================================================
 "use strict";
 
 const TOD_DEFAULT_BLOCKCHAIN_SELECT_ID = "tod_default_blockchain_select_id";
@@ -26,9 +26,11 @@ class ToolsOptionsDialog {
 				autoOpen: 		false,
                 resizable:      false,				
 				dialogClass: 	'DialogBox', 
+				
 				// https://stackoverflow.com/questions/18992081/trigger-event-on-dialog-box-open
 				// https://stackoverflow.com/questions/394491/passing-data-to-a-jquery-ui-dialog/3458299#3458299
 				width:  500,
+				
 				open:   function( event, ui ) {		
 	                        ToolsOptionsDialog.AddCallback( TOD_WALLET_MODE_SELECT_ID, 
 							    'change', ToolsOptionsDialog.OnChangeWalletMode );
@@ -102,25 +104,25 @@ class ToolsOptionsDialog {
 	static OnChangeWalletMode() {
 		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.OnChangeWalletMode" ) );
 		
-		let wallet_mode = HtmlUtils.GetNodeValue( TOD_WALLET_MODE_SELECT_ID );
+		let wallet_mode = HtmlUtils.GetElementValue( TOD_WALLET_MODE_SELECT_ID );
 		trace2Main( pretty_format( "wallet_mode", wallet_mode ) );
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
-			HtmlUtils.ShowNode( TOD_SW_ENTROPY_SIZE_ID );
-			HtmlUtils.HideNode( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
+			HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
 		}	
 		else if ( wallet_mode == HD_WALLET_TYPE ) {
-			HtmlUtils.ShowNode( TOD_ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideNode( TOD_SW_ENTROPY_SIZE_ID );
+			HtmlUtils.ShowElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( TOD_SW_ENTROPY_SIZE_ID );
 		}
 
         //trace2Main( pretty_format( "Options", JSON.stringify(ToolsOptionsDialog.Options) ) );
-		HtmlUtils.InitializeNode
+		HtmlUtils.InitializeElement
 				( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
 			      ToolsOptionsDialog.Options['Blockchains'][wallet_mode],
 				  ToolsOptionsDialog.Options['Blockchains'][wallet_mode] );
 
-		HtmlUtils.SetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
-				                ToolsOptionsDialog.Options[DEFAULT_BLOCKCHAIN][wallet_mode]);			
+		HtmlUtils.SetElementValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
+				                   ToolsOptionsDialog.Options[DEFAULT_BLOCKCHAIN][wallet_mode]);			
 	} // ToolsOptionsDialog.OnChangeWalletMode()
 	
 	static OnSave() {
@@ -158,32 +160,32 @@ class ToolsOptionsDialog {
 		
 		let wallet_mode = options_data[WALLET_MODE];
 		
-		HtmlUtils.InitializeNode
+		HtmlUtils.InitializeElement
 				( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, 
 			      ToolsOptionsDialog.Options['Blockchains'][wallet_mode],
 				  ToolsOptionsDialog.Options['Blockchains'][wallet_mode] );
 
 		let default_blockchain = ToolsOptionsDialog.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
 		trace2Main( pretty_format( "default_blockchain", default_blockchain ) );
-		HtmlUtils.SetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, default_blockchain );		
+		HtmlUtils.SetElementValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID, default_blockchain );		
 
 		trace2Main( pretty_format( "wallet_mode", wallet_mode ) );
-		HtmlUtils.SetNodeValue( TOD_WALLET_MODE_SELECT_ID, wallet_mode );
+		HtmlUtils.SetElementValue( TOD_WALLET_MODE_SELECT_ID, wallet_mode );
 
         let entropy_size = 0;
         if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
 			entropy_size = 256;
-			HtmlUtils.ShowNode( TOD_SW_ENTROPY_SIZE_ID );
-			HtmlUtils.HideNode( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
+			HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE ){			
 			entropy_size = options_data[ENTROPY_SIZE][HD_WALLET_TYPE];
-			HtmlUtils.ShowNode( TOD_ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideNode( TOD_SW_ENTROPY_SIZE_ID );
+			HtmlUtils.ShowElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( TOD_SW_ENTROPY_SIZE_ID );
 	    }
 
 		trace2Main( pretty_format( "entropy_size", entropy_size ) );		
-        HtmlUtils.SetNodeValue( TOD_ENTROPY_SIZE_SELECT_ID, entropy_size );		
+        HtmlUtils.SetElementValue( TOD_ENTROPY_SIZE_SELECT_ID, entropy_size );		
 	} // ToolsOptionsDialog.UpdateFields()
 	
 	static async RequireConfirmationFromUser( message, json_data, ok_handler ) {
@@ -217,13 +219,13 @@ class ToolsOptionsDialog {
 	static ReadFields() {
 		trace2Main( pretty_func_header_format( "ToolsOptionsDialog.ReadFields" ) );
 		
-		let default_blockchain = HtmlUtils.GetNodeValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID );
+		let default_blockchain = HtmlUtils.GetElementValue( TOD_DEFAULT_BLOCKCHAIN_SELECT_ID );
 		trace2Main( pretty_format( "default_blockchain", default_blockchain ) );
 
-		let wallet_mode = HtmlUtils.GetNodeValue( TOD_WALLET_MODE_SELECT_ID );
+		let wallet_mode = HtmlUtils.GetElementValue( TOD_WALLET_MODE_SELECT_ID );
 		trace2Main( pretty_format( "wallet_mode", wallet_mode ) );
 
-		let entropy_size = HtmlUtils.GetNodeValue( TOD_ENTROPY_SIZE_SELECT_ID );
+		let entropy_size = HtmlUtils.GetElementValue( TOD_ENTROPY_SIZE_SELECT_ID );
 		trace2Main( pretty_format( "entropy_size", entropy_size ) );
 
 		ToolsOptionsDialog.Options[WALLET_MODE]                     = wallet_mode;

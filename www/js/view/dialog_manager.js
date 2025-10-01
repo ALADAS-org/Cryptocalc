@@ -21,4 +21,4 @@ class DialogManager {
 
 if (typeof exports === 'object') {
 	exports.DialogManager = DialogManager
-} 
+}

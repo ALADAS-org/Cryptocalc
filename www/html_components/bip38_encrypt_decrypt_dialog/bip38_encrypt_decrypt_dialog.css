@@ -1,0 +1,124 @@
+.Dialog_Form {
+  background:        #F5F5DC;
+}
+
+.DialogBox {
+  font-size:         12px;
+  background:        #F5F5DC;
+}
+
+.Bip38InputField {
+  width:    		   510px;
+  height:   		   18px;  
+  background-color:    white;
+}
+
+.Bip38Button {
+	padding:       0;
+	border:     none;
+	background: none;
+}
+
+.Bip38CopyButton {
+	display:           flex;
+	align-items: 	   center;
+	padding:           8px;
+	width:             22px;
+	height:            22px;
+	margin-left:       4px;
+	padding-left:      2px;
+	margin-top:        1px;
+}
+
+.Bip38_DataFieldWithButton_Container {
+	display:           flex;
+	align-items: 	   center;
+}
+
+.Switch {
+	position: relative;
+	display:  inline-block;
+	width:    48px;
+	height:   20px;
+}
+
+.SwitchLabel {
+	font-size:      14px;
+	vertical-align: middle;	
+}
+
+.Switch input { 
+    opacity:  0;
+    width:    0;
+    height:   0;
+}
+
+.Slider {
+	position:           absolute;
+	cursor:             pointer;
+	top:                0px;
+	left:               0;
+	right:              0;
+	bottom:             0;
+	background-color:   #2196D3; /* LEFT/Encrypt: Blue */
+	-webkit-transition: .4s;
+	transition:         .4s;
+}
+
+.Slider:before {
+  position:           absolute;
+  content:            "";
+  height:             13px;
+  width:              13px;
+  left:               4px;
+  bottom:             4px;
+  background-color:   white;
+  -webkit-transition: .4s;
+  transition:         .4s;
+}
+
+input:checked + .Slider {
+  background-color:   #C282C2;  /* RIGHT/Decrypt: Magenta */
+}
+
+input:focus + .Slider {
+  box-shadow: 0 0 1px #C282C2;  /* RIGHT/Decrypt: Magenta */
+}
+
+input:checked + .Slider:before {
+	-webkit-transform:  translateX(26px);
+	-ms-transform:      translateX(26px);
+	transform:          translateX(26px);
+}
+
+.EncryptButton {
+	font-size:          18px !important;
+	width: 				120px;
+	height: 			30px;
+	color:              white;
+	background-color: 	#2196D3; /* LEFT/Encrypt: Blue */
+}
+
+.DecryptButton {
+	font-size:          18px !important;
+	width: 				120px;
+	height: 			30px;
+	color:              white;
+	background-color: 	#C282C2; /* RIGHT/Decrypt: Magenta */
+}
+
+.ComputeWaitButton {
+	font-size:          17px !important;
+	width: 				130px;
+	height: 			30px;
+	color:              black;
+	background-color: 	#FFA500; /* ComputeWaitButton: Orange */
+}
+
+.BottomButton {
+	font-size:          16px !important;
+	width: 				90px;
+	height: 			27px;
+	color:              black;
+	background-color: 	#cccc;
+}
