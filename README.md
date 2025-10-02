@@ -1,4 +1,4 @@
-## CryptoCalc 0.3.65
+## CryptoCalc 0.4.0
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,7 +6,7 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 11227 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 11729 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by reporting bugs (or asking for enhancements) with _Issues_, 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
@@ -26,46 +26,49 @@
    
     2.5. Salted Entropy source    
     `Entropy` value is indeed computed by combining the `Salt` (currenly a dynamically generated `UUID`) with the value provided by the `Entropy source`    
-    - `SHA256` hash function is applied to this: `Salt + Entropy source`       
+    - `SHA256` hash function is applied to this: `Salt + Entropy source` 
+
+    2.6. Security Layers     
+    - `Bip38` support (dirst method 'Non-EC')   	
    
-    2.6. Multiple Entropy sources    
+    2.7. Multiple Entropy sources    
     `100 d6 dices`, `Mouse moves`, `Images` and `Fortune cookies`
    
-    2.7. QR code generation    
+    2.8. QR code generation    
     For _Wallet address_, _Private Key_ (also _WIF_ if applicable) and _Mnemonics_. There is also an `xtras` folder with the
     SVG versions of these QR codes as well as more _experimental_ QR code formats (_rectangular Micro QR code_ and _Ultracode_ which has colored modules) 
    
-    2.8. Customizable options    
+    2.9. Customizable options    
     Options includes `Blockchain`, `Wallet mode` (eg: Simple / HD / SWORD) and `Entropy size`
    
-    2.9. List of `Word indexes`    
+    2.10. List of `Word indexes`    
     The crucial data in the `Secret phrase` is indeed the list of `Word indexes` (indexes in the `BIP39` wordlist ), 
     is explicitly displayed so if the language is changed these word indexes are the same.
    
-    2.10. Internet connection status    
+    2.11. Internet connection status    
     Because of the _Cold wallet_ / _Non custodial_ purpose of Cryptocalc, it is not recommended to generate
     cryptocurrency wallets while being online. The status is displayed on the right of the main horizontal toolbar,
     it's a red "connected" icon when online and a green "disconnected" icon when offline (the highly recommended way to use Cryptocalc).   
    
-    2.11. Localization    
+    2.12. Localization    
     Translations of GUI labels in the user's language (only _English_ and _French_ files provided currently but the localization
     feature allows translations in other languages as well, they are in `JSON` format eg. `gui-msg-en.json`).
    
-    2.12. Dynamic links    
+    2.13. Dynamic links    
         - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
         - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
         - 3D representation of the `Secret phrase` (see an example here: [Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
 	   
-    2.13. Standalone installer    
+    2.14. Standalone installer    
     It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
     installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
     This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
    
-    2.14. Tested on `Windows` and `Linux`    
+    2.15. Tested on `Windows` and `Linux`    
         - For `Windows`: tested on `Windows 10`    
 	    - For `Linux`: tested on [Linux Mint 22.2](https://linuxmint.com/), tested indeed on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
 	   
-    2.15. Cryptocurrencies: 23 supported Cryptocurrencies   
+    2.16. Cryptocurrencies: 23 supported Cryptocurrencies   
     `BTC` (Bitcoin), `ETH` (Ethereum), `XRP` (Ripple), `BNB` (Binance Smart Chain), `SOL` (Solana), 
     `DOGE` (Dogecoin), `TRX` (TRON), `ADA` (Cardano), `XLM` (Stellar), `SUI` (Sui), `BCH` (Bitcoin Cash), `AVAX` (Avalanche), `TON` (Toncoin), 
     `LTC` (Litecoin), `ETC` (Ethereum Classic), `POL` (Polygon), `VET` (VeChain), `BSV` (Bitcoin SV), `DASH` (Dash), `RVN` (Ravencoin), 
@@ -77,7 +80,7 @@
     - Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`    
     - Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
-    2.16. Languages: 18 supported languages     
+    2.17. Languages: 18 supported languages     
     - Officially supported in `Bip39`    
     _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
     Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
@@ -88,7 +91,7 @@
     Notice that _English_  has around 1.5 billion speakers, _Mandarin_ has around 1.1 billion speakers
     while the _India triad_ (_Hindi_, _Bengali_ and _Gujarati_) has around 1 billion speakers.
 
-    2.17. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
+    2.18. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
     _CryptoCalc_  is written in `Javascript` (both _client side_ and _server side_) and is built on top of _ElectronJS_.     
     _ElectronJS_ is used in many modern and popular [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) 
     (e.g. [Visual Studio Code](https://code.visualstudio.com/), [Discord](https://discord.com/), [WhatsApp](https://www.whatsapp.com/),
@@ -159,14 +162,18 @@
 				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
 			  
 4. Release notes
-    - `0.3.65`: This version
+    - `0.4.0`: This version
+	    - Minor Version number changed to `4` to reflect the fact that `Bip38` support is a taller "step forward"
+		- Documentation Fixes: in this document (`README.md`)	
+    - `0.3.65`
 		- New Feature:
-			- Support of [`BIP38`](https://en.bitcoin.it/wiki/BIP_0038) for an additional security layer by Encrypting the Private Key. Please notice that only the first encryption method ('NON-EC') is supported (see also 5.2.2). 
+			- Support of `BIP38` (_passphrase encrypted private key_, see 6.3.5) for an additional security layer by Encrypting the Private Key.    
+			NB: Please notice that only the first encryption method ('NON-EC') is supported (see also 5.2.2). 
         - Bug Fixes:	
 		    - `Save` command (in _Main menu_ and _Main Toolbar_) is disabled while it should be enabled. 
 			This was identified in some use cases with `File/New` followed by `File/Open`.	
 		- Documentation Fixes:	
-		    - Update, fixes and some rewrites of thsi document (`README.md`).		
+		    - Update, fixes and some rewrites of this document (`README.md`).		
 	    - Refactoring:
 		    - In `html_utils.js`: `Node` replaced by `Element` in all functions because it is a better terminology 
 			for HTML entities (eg. `INPUT`,'TEXTAREA', etc...).
@@ -304,9 +311,12 @@
 			- 5.1.4.e. You can check generated _HD Wallets_ with _Ian Coleman BIP39_ homepage    
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
 		- 5.1.5. 'BIP38' Encryption of the _Private Key_
-			- [`BIP38`](https://en.bitcoin.it/wiki/BIP_0038) is now supported for an additional security layer by Encrypting the _Private Key_. 
+			- `BIP38` (_passphrase encrypted private key_, see 6.3.5) is now supported for an additional security layer by Encrypting the _Private Key_. 
 			- A new _Tool_ (in _Main menu_ : `Tool/Bip38 Encrypt/Decrypt`) is provided to ease the retrieval of 
 			the _Private Key_ from the _Bip38 Encrypted PK_ (or conversely the encryption of the _Private Key_ to the _Bip38 Encrypted PK_).    
+            - When `Bip38 passphrase` is provided, a `Bip38 Encrypted PK` is generated when Saving the current wallet (see 5.1.11)
+			A new QR code is generated (`Bip38 Encrypted PK`) as both a `PNG` file and an `SVG` file (in `xtras` subfolder of the generated
+            wallet folder under `_output`). 			
 			Note 1: Notice that only the first method ('NON-EC') is supported.    
 			Note 2: the _Bip38 passphrase_ is in some way similar to the _PIN Code_ of a Credit card.
 		- 5.1.6. _Bip32 Passphrase feature_ (_HD Wallet_ only)    
@@ -473,7 +483,8 @@
         - And finally, generate the first address in this sequence     (0')    
         	
 	- 6.3. References    
-	    - 6.3.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))
-		- 6.3.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)
-		- 6.3.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)
-		- 6.3.4. [The evolution of the Binance Smart Chain](https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain)
+	    - 6.3.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))    
+		- 6.3.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)    
+		- 6.3.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)    
+		- 6.3.4. [The evolution of the Binance Smart Chain](https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain)    
+		- 6.3.5. [BIP38: Passphrase-protected private key](https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki)
