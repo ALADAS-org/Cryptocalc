@@ -11,7 +11,9 @@ const BIP38_DIALOG_PASSPHRASE_LABEL_ID       = "bip38_dialog_passphrase_label_id
 const BIP38_DIALOG_PASSPHRASE_ID             = "bip38_dialog_passphrase_id";
 const BIP38_DIALOG_PASSPHRASE_COPY_BTN_ID    = "bip38_dialog_passphrase_copy_btn_id";
 
-const BIP38_DIALOG_COMPUTE_BTN_ID            = "bip38_dialog_compute_btn_id";
+const BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID   = "bip38_dialog_compute_progress_btn_id";
+const BIP38_DIALOG_COMPUTE_PROGRESS_BAR_ID   = "bip38_dialog_compute_progress_bar_id";
+const BIP38_DIALOG_COMPUTE_PROGRESS_VALUE_ID = "bip38_dialog_compute_progress_value_id";
 
 const BIP38_DIALOG_ENCRYPT_DECRYPT_TOGGLE_ID = "bip38_dialog_encrypt_decrypt_toggle_id";
 
@@ -77,12 +79,12 @@ class Bip38EncryptDecryptDialog {
 							
 							this_obj.addEventHandler
 								( BIP38_DIALOG_ENCRYPT_DECRYPT_TOGGLE_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.toggleEncryptDecrypt(); } );
-								
+								  () => { Bip38EncryptDecryptDialog.This.toggleEncryptDecrypt(); } );								
+						
 							this_obj.addEventHandler
-								( BIP38_DIALOG_COMPUTE_BTN_ID, 'click', 
-								  async () => { await Bip38EncryptDecryptDialog.This.compute(); } );
-								  
+								( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'click', 
+								  async () => { await Bip38EncryptDecryptDialog.This.compute(); } );		
+								  								  
 							this_obj.addEventHandler
 								( BIP38_DIALOG_PK_DATA_COPY_BTN_ID, 'click', 
 								  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(BIP38_DIALOG_PK_DATA_ID); } );
@@ -112,9 +114,9 @@ class Bip38EncryptDecryptDialog {
 							this_obj.removeEventHandler
 								( BIP38_DIALOG_ENCRYPT_DECRYPT_TOGGLE_ID, 'click', 
 								  () => { Bip38EncryptDecryptDialog.This.toggleEncryptDecrypt(); } );
-								
+							
 							this_obj.removeEventHandler
-								( BIP38_DIALOG_COMPUTE_BTN_ID, 'click', 
+								( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'click', 
 								  async () => { await Bip38EncryptDecryptDialog.This.compute(); } );
 								  
 							this_obj.removeEventHandler
@@ -176,22 +178,61 @@ class Bip38EncryptDecryptDialog {
 		HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_ID,     '' );
 		
 		if ( this.encrypt_mode ) {
-			// --------------- 'Encrypt' mode ---------------
-			HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_BTN_ID,    'EncryptButton' );
-			HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'DecryptButton' );
+			// --------------- 'Encrypt' mode ---------------			
+			HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID,      'EncryptButton' );
+			HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID,   'DecryptButton' );
 			
-			HtmlUtils.SetElementValue( BIP38_DIALOG_PK_DATA_LABEL_ID, 'Private Key' );								
-			HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_LABEL_ID,  'Bip38 Encrypted PK' );			
+			HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_PROGRESS_VALUE_ID,    'EncryptColor' );
+			HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_VALUE_ID, 'DecryptColor' );
+			//
+			HtmlUtils.SetElementValue( BIP38_DIALOG_PK_DATA_LABEL_ID,      'Private Key' );								
+			HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_LABEL_ID,       'Bip38 Encrypted PK' );			
 		}   // --------------- 'Encrypt' mode
 		else {
-			// --------------- 'Decrypt' mode ---------------
-			HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_BTN_ID,    'DecryptButton' );
-			HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'EncryptButton' );
+			// --------------- 'Decrypt' mode ---------------			
+			HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID,      'DecryptButton' );
+			HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID,   'EncryptButton' );
+			
+			HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_PROGRESS_VALUE_ID,    'DecryptColor' );
+			HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_VALUE_ID, 'EncryptColor' );
 
-			HtmlUtils.SetElementValue( BIP38_DIALOG_PK_DATA_LABEL_ID, 'Bip38 Encrypted PK' );
-			HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_LABEL_ID,  'Private Key' );
+			HtmlUtils.SetElementValue( BIP38_DIALOG_PK_DATA_LABEL_ID,      'Bip38 Encrypted PK' );
+			HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_LABEL_ID,       'Private Key' );
 		}   // --------------- 'Decrypt' mode
 	} // toggleEncryptDecryptMode()
+	
+	async updateProgressbar( result_str ) {
+		// let log_msg = ">> " + _CYAN_ + "Bip38EncryptDecryptDialog.updateProgressbar" + _END_;
+		// window.ipcMain.logToMain(log_msg);
+		
+		let percent = parseFloat(result_str);
+		await this.setButtonProgress( percent );
+	} // async updateProgressbar()
+	
+	async setButtonProgress( percent) {
+		const MAX_WIDTH = 130;
+		
+		const progress_bar_elt   = HtmlUtils.GetElement(BIP38_DIALOG_COMPUTE_PROGRESS_BAR_ID);
+		const progress_value_elt = HtmlUtils.GetElement(BIP38_DIALOG_COMPUTE_PROGRESS_VALUE_ID);			
+
+        let percent_int = Math.floor(percent);		
+
+		if ( percent >= 0 && percent < 99 ) {
+			HtmlUtils.ShowElement( BIP38_DIALOG_COMPUTE_PROGRESS_BAR_ID );
+			HtmlUtils.HideElement( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID );			
+		
+			HtmlUtils.ShowElement( BIP38_DIALOG_COMPUTE_PROGRESS_BAR_ID );			
+			HtmlUtils.HideElement( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID );			
+			
+			progress_bar_elt.setAttribute( 'data-label', percent_int + "% complete" );
+			progress_value_elt.style.width = percent_int + '%';
+		}
+		else if ( percent >= 99 ) {
+			HtmlUtils.ShowElement( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID  );		
+			HtmlUtils.HideElement( BIP38_DIALOG_COMPUTE_PROGRESS_BAR_ID  );
+			progress_value_elt.style.width = '100%';	
+		}
+	} // async setButtonProgress()
 	
 	ifComputeError( result_str ) {
 		if ( result_str == ERROR_RETURN_VALUE ) {
@@ -201,7 +242,7 @@ class Bip38EncryptDecryptDialog {
 			return true;
 		}
 		return false;
-	} // ifComputeError
+	} // ifComputeError()
 	
 	async compute() {
 		let log_msg = ">> " + _CYAN_ + "Bip38EncryptDecryptDialog.compute" + _END_;
@@ -213,38 +254,38 @@ class Bip38EncryptDecryptDialog {
 		let passphrase = HtmlUtils.GetElementValue( BIP38_DIALOG_PASSPHRASE_ID );
 		// console.log("   passphrase: " + passphrase);
 		
-		HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'ComputeWaitButton' );
-		HtmlUtils.SetElementValue( BIP38_DIALOG_COMPUTE_BTN_ID, 'Computing...' );
+		HtmlUtils.SetElementValue( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'Computing...' );
 		
 		if ( this.encrypt_mode ) {
 			// --------------- 'Encrypt' mode ---------------
 			if ( is_not_null(pk_data)  &&  is_not_null(passphrase) ) {
-				HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'EncryptButton' );				
+				HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'EncryptButton' );
+				
 				let private_key = pk_data;	
 				const data = { private_key, passphrase };				
 				let bip38_encrypted_pk = await window.ipcMain.Bip38Encrypt( data );
 				if ( ! this.ifComputeError( bip38_encrypted_pk ) ) {
 					HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_ID, bip38_encrypted_pk );
 				}
-				HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'EncryptButton' );				
+				HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'EncryptButton' );				
 			}
 		}   // --------------- 'Encrypt' mode
 		else {
 			// --------------- 'Decrypt' mode ---------------			
 			if ( is_not_null(pk_data)  &&  is_not_null(passphrase) ) {
-				HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'DecryptButton' );
+				HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'DecryptButton' );
+				
 				let bip38_encrypted_pk = pk_data;				
 				const data = { bip38_encrypted_pk, passphrase };				
 				let private_key = await window.ipcMain.Bip38Decrypt( data );
 				if ( ! this.ifComputeError( private_key ) ) {
 					HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_ID, private_key );
 				}	
-				HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'DecryptButton' );					
+				HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'DecryptButton' );					
 			}
-		}   // --------------- 'Decrypt' mode
-		
-		HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'ComputeWaitButton' );
-		HtmlUtils.SetElementValue( BIP38_DIALOG_COMPUTE_BTN_ID, 'Compute' );
+		}   // --------------- 'Decrypt' mode		
+	
+		HtmlUtils.SetElementValue( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'Compute' );
 	} // compute()	
 	
 	onCopyField( elt_id ) {
@@ -296,8 +337,14 @@ class Bip38EncryptDecryptDialog {
 		HtmlUtils.SetElementValue( BIP38_DIALOG_PASSPHRASE_ID, '' );
 		HtmlUtils.SetElementValue( BIP38_DIALOG_RESULT_ID,     '' );
 		
-		HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_BTN_ID,    'EncryptButton' );
-		HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_BTN_ID, 'DecryptButton' );
+		HtmlUtils.ShowElement( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID  );
+		HtmlUtils.SetElementValue( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'Compute' );
+		
+		HtmlUtils.AddClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID,        'EncryptButton' );
+		HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID,     'DecryptButton' );
+		
+		HtmlUtils.HideElement( BIP38_DIALOG_COMPUTE_PROGRESS_BAR_ID  );
+		
 		HtmlUtils.GetElement( BIP38_DIALOG_ENCRYPT_DECRYPT_TOGGLE_ID).checked = false;
 	} // setFields4EncryptMode()
 	

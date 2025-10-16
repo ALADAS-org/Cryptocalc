@@ -863,8 +863,7 @@ class ElectronMain {
 			
 			let img_data_asURL = loadImageFromFile( image_file_path );
             return img_data_asURL;			
-		}); // "ToMain:Request/drop_rnd_crypto_logo" event handler
-		
+		}); // "ToMain:Request/drop_rnd_crypto_logo" event handler		
 		
 		// ================== ToMain_RQ_GENERATE_PASSWORD ==================
 		// called like this by Renderer: await window.ipcMain.GeneratePassword( data )
@@ -887,21 +886,21 @@ class ElectronMain {
 		
 		// ========================= ToMain_RQ_BIP38_ENCRYPT =========================
 		// called like this by Renderer: await window.ipcMain.Bip38Encrypt( data )
-		ipcMain.handle( ToMain_RQ_BIP38_ENCRYPT, (event, data) => {
+		ipcMain.handle( ToMain_RQ_BIP38_ENCRYPT, async ( event, data ) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_BIP38_ENCRYPT );
 			const { private_key, passphrase } = data;
 			// Skribi.log("   options: " + JSON.stringify(options));
-			let bip38_encrypted_pk = Bip38Utils.This.encrypt( private_key, passphrase, this.getMainWindow() );
+			let bip38_encrypted_pk = await Bip38Utils.This.encrypt( private_key, passphrase, this.getMainWindow() );
 			return bip38_encrypted_pk;
 		}); // "ToMain:Request/bip38_encrypt" event handler	
 		
 		// ========================= ToMain_RQ_BIP38_DECRYPT =========================
 		// called like this by Renderer: await window.ipcMain.Bip38Decrypt( data )
-		ipcMain.handle( ToMain_RQ_BIP38_DECRYPT, (event, data) => {
+		ipcMain.handle( ToMain_RQ_BIP38_DECRYPT, async ( event, data ) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_BIP38_DECRYPT );
 			const { bip38_encrypted_pk, passphrase } = data;
 			// Skribi.log("   options: " + JSON.stringify(options));
-			let decrypted_pk = Bip38Utils.This.decrypt( bip38_encrypted_pk, passphrase, this.getMainWindow() );
+			let decrypted_pk = await Bip38Utils.This.decrypt( bip38_encrypted_pk, passphrase, this.getMainWindow() );
 			return decrypted_pk;
 		}); // "ToMain:Request/bip38_decrypt" event handler	
 		
