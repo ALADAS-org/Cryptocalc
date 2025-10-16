@@ -122,3 +122,76 @@ input:checked + .Slider:before {
 	color:              black;
 	background-color: 	#cccc;
 }
+
+.ProgressBarButton {
+  /* border: 		none; */
+  /* background:    #009578;*/
+  /* background: 	#FFA500; #009578; */
+  
+  height: 			27px;
+  
+  color: 		#ffffff;  
+  /* padding: 		10px 16px; */
+  
+  position: 	relative;
+  cursor: 		pointer;
+  font-family:  "Arial", sans-serif;
+  overflow: 	hidden;
+  
+  /* background: 		red; rgba(0, 0, 0, 0.2); */
+  
+  /* border-radius: 5px; */
+  min-width: 	130px; /* 125px; */
+}
+
+/* https://stackoverflow.com/questions/41429906/how-to-display-data-label-inside-html5-progress-bar-cross-browser */ 
+.progress {
+  height: 			30px;
+  width: 			170px;
+  /* background-color: #c9c9c9; */
+  position: 		relative;
+}
+
+.progress:before {
+  font-family:  "Arial", sans-serif;
+  font-size: 	17px !important;
+  
+  content: 		attr(data-label);
+
+  position: 	absolute;
+  text-align: 	center;
+  top: 			5px;
+  left: 		0;
+  right: 		0;
+}
+
+.progress .value {
+  /* background-color:  #7cc4ff; */
+  display: 			inline-block;
+  height: 			100%;
+}
+
+.WaitColor {
+	background-color: 	#FFA500; /* ComputeWaitButton: Orange */
+}
+
+.EncryptColor {
+	background-color: 	#2196D3; /* LEFT/Encrypt: Blue */
+}
+
+.EncryptBar {
+	background-color: 	#2196D3; /* LEFT/Encrypt: Blue */
+}
+
+.ComputeWaitColor {
+	background-color: 	#FFA500; /* ComputeWaitButton: Orange */
+}
+
+
+.DecryptBar {
+	background-color: 	#C282C2; /* RIGHT/Decrypt: Magenta */
+}
+
+.DecryptColor {
+	background-color: 	#C282C2; /* RIGHT/Decrypt: Magenta */
+}

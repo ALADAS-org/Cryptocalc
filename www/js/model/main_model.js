@@ -77,7 +77,9 @@ class MainModel {
 		if ( key !== MainModel.#Key ) {
 			throw new TypeError("'MainModel' constructor is private");
 		}	
-        this.app_version = "XX";		
+        this.app_version = "XX";	
+
+		this.main_window = undefined;	
 	} // ** Private constructor **
 	
 	// https://github.com/metafloor/bwip-js/blob/master/README.md

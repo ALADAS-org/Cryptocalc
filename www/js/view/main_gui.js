@@ -1907,6 +1907,12 @@ class MainGUI {
 				Bip38EncryptDecryptDialog.This.showDialog();
 				break;
 				
+			case FromMain_BIP38_PROGRESS_TICK:
+			    let progress_status = data[1];
+				// trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_BIP38_PROGRESS_TICK + " " + progress_status + _END_ );				
+				await Bip38EncryptDecryptDialog.This.updateProgressbar( progress_status );
+				break;
+				
 			case FromMain_HELP_ABOUT:
 			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_HELP_ABOUT + _END_ );
 				let cryptowallet_version = RendererSession.GetValue( CRYPTOWALLET_VERSION );
@@ -1949,7 +1955,7 @@ class MainGUI {
 				
 			default:
 				trace2Main(  ON_GUI_EVENT_LOG_PREFIX
-						   + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + "from main");
+						   + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + " from main");
 				//DialogManager.Clean();
 				break;
 		} // switch ( event_name )

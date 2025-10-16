@@ -36,7 +36,7 @@
 	<!-- ----------------  Bip38 Passphrase -->
 	
 	
-	<!-- ------------ 'Compute' button and 'Encrypt/Decrypt' Toggle ------------ -->
+	<!-- ------------ '$$Compute$$' button and 'Encrypt/Decrypt' Toggle ------------ -->
 	<tr>
 		<td colspan="2">
 			<table width="100%">
@@ -44,17 +44,25 @@
 					<td width="33%"><span">&nbsp;</span>			
 					</td>
 					
-					<td class="Dialog_FieldColumn" width="66%">
+					<td class="Dialog_FiEnceldColumn" width="66%">
 						<table width="100%">							
 							<tr>
 								<td>
-									<button class="EncryptButton" id="bip38_dialog_compute_btn_id" title="Compute" border="none">Compute
-									</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<!--<button class="Bip38Button" id="bip38_dialog_compute_btn_id" title="Bip38 Compute" border="none"> -->
-									<!--	<img id="bip38_dialog_compute_img_id" src="./icons/ArrowDown_64px.png" border="none"/> -->
-									<!--</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								</td>
-								<!-- ---------- 'Compute' button -->
+								    <!-- ---------- '*Compute*' progress-button -->		
+								    <div id="bip38_dialog_compute_progress_bar_container_id">								    							
+										<button  id="bip38_dialog_compute_progress_btn_id"									         
+												 class="ProgressBarButton EncryptButton"
+												 type="button">		 
+										</button>										
+	                                    
+										<!-- https://stackoverflow.com/questions/41429906/how-to-display-data-label-inside-html5-progress-bar-cross-browser -->
+										<div id="bip38_dialog_compute_progress_bar_id"
+										     class="progress WaitColor" data-label="0% Complete" hidden>
+											 <span id="bip38_dialog_compute_progress_value_id" class="value EncryptColor" style="width:0%;"></span>
+										</div>
+									</div>
+									<!-- ---------- '*Compute*' progress-button -->
+								</td>								
 					
 								<!-- ---------- 'Toggle Switch' for Encrypt/Decrypt mode ---------- -->
 								<!-- https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_switch -->
@@ -76,7 +84,7 @@
 			</table>
 		</td>
 	</tr>
-	<!-- ------------ 'Compute' button and 'Encrypt/Decrypt' Toggle -->
+	<!-- ------------ '$$Compute$$' button and 'Encrypt/Decrypt' Toggle -->
 	
 	
 	<!-- ----------------  'Result' ('Private Key' or 'Bip38 Encrypted PK') ---------------- -->

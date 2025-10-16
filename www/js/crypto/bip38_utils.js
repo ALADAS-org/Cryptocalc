@@ -8,7 +8,7 @@
 // Bip38 implementation 
 //     http://cryptocoinjs.com/modules/currency/bip38/
 //
-// * Bip 38 "Methid 1": "Non-EC" or "Non-Electrum-Compatible" Method
+// * Bip 38 "Method 1": "Non-EC" or "Non-Electrum-Compatible" Method
 // This is Method 1 from the BIP38 specification, and it's commonly abbreviated as: 
 // - "Non-EC" (Non-Electrum Compatible) "Basic" BIP38 encryption
 // - "Standard" BIP38 (though this can be ambiguous)
@@ -25,6 +25,13 @@
 //     - Starts with 6P (not 6Pf or 6Pn)
 //     - No EC prefix (6Pf or 6Pn) in the encrypted string
 //     - 56 characters long (excluding the '6P' prefix)
+//
+// Difficulty: 
+// The BIP38 standard suggests N = 16384, r = 8, and p = 8. However, this may yield unacceptable performance on a mobile phone. 
+// If you alter these parameters, it wouldn't be wise to suggest to your users that your import/export encrypted keys are BIP38 
+// compatible. If you do, you may want to alert them of your parameter changes.
+// example:
+// bip38.scryptParams = {N: 8192, r: 8, p: 8};
 // ====================================  Bip38Utils class  ====================================
 "use strict"
 
@@ -35,7 +42,21 @@ const wif   = require('wif');
 
 const { ERROR_RETURN_VALUE } = require('../const_keywords.js');
 
-const { hexWithoutPrefix } = require('./hex_utils.js');	
+const { hexWithoutPrefix } = require('./hex_utils.js');
+
+const { FromMain_BIP38_PROGRESS_TICK } = require('../const_events.js');
+
+const progress_cb = async ( status ) => {
+	// console.log( ">> Bip38Utils.progress_cb" );
+	// console.log( status.percent ); // will print the percent every time current increases by 1000
+	
+	// console.log( "   <progress_cb> this.main_window: " + this.main_window );
+	
+	let main_window = Bip38Utils.This.getMainWindow();
+	
+	await main_window.webContents.send
+		 ( "fromMain", [ FromMain_BIP38_PROGRESS_TICK, status.percent ] );
+}; // progress_cb()
 
 class Bip38Utils {
 	static #Key = Symbol();
@@ -60,22 +81,32 @@ class Bip38Utils {
 			throw new TypeError("'Bip38Utils' constructor is private");
 		}
 		
-		// Bip38.version = { private: 0x80, public: 0x0 };
-	
-	    //                     N: impact on time needed to encrypt   		
-		// Bip38.scryptParams = { N: 8192, r: 8, p: 8 };
+		this.main_window = undefined;
+		
+		// Bip38.version = { private: 0x80, public: 0x0 };	
+		
+		// this.encryptDifficulty = 8192; // 16384 - 32768 - 65536 - 131072 - 262144 - 524288
+		this.encryptDifficulty = 16384; // 16384; // 16384: recommended default difficulty
+		
+		//                     N: impact on time needed to encrypt (8192: correct default for smartphones)
+		this.scryptParams  = { N: this.encryptDifficulty, r: 8, p: 8 };	
+		Bip38.scryptParams = this.scryptParams;
 	} // ** Private constructor **	
 	
-	encrypt( private_key, passphrase, window ) {
+	async encrypt( private_key, passphrase, window ) {
 		// console.log(">> Bip38Utils.encrypt\n   private_key: " + private_key + "   passphrase: " + passphrase);
 		if (    private_key == undefined || private_key == '' 
 		     || passphrase  == undefined || passphrase  == '') {
 			return "";
 		}
 		
+		this.main_window = window;
+		
+		console.log("   <encrypt> this.main_window: " + this.main_window + "  " + typeof this.main_window );
+		
 		let encrypted_PK = ERROR_RETURN_VALUE;
 		
-		try {
+		try {	
 			private_key = hexWithoutPrefix( private_key );
 			let private_key_buf = Buffer.from( private_key, 'hex' );
 			
@@ -84,22 +115,31 @@ class Bip38Utils {
 			
 			let decoded = wif.decode( WIF_str );
 		
-			encrypted_PK = Bip38.encrypt( decoded.privateKey, decoded.compressed, passphrase );
+			// encrypt(buffer, compressed, passphrase[, progressCallback, scryptParams])
+			encrypted_PK = Bip38.encrypt( decoded.privateKey, decoded.compressed, passphrase, 
+			                               async (status) => { await progress_cb(status); }, this.scryptParams );
 		}
 		catch (e) {
 			let options = {
-				message: e.toString(), 
+				message: "<encrypt> *ERROR*" + e.toString(), 
 				type:    "error",
 			}
+			
+			console.log("   window: " + window + "  " + typeof window );
+			
 			dialog.showMessageBoxSync( window, options );
 			return ERROR_RETURN_VALUE;
 		}
 		
 		return encrypted_PK;
-	} // encrypt()
+	} // async encrypt()
 	
-	decrypt( encrypted_pk, passphrase, window ) {
+	async decrypt( encrypted_pk, passphrase, main_window ) {
 		console.log(">> Bip38Utils.decrypt" );
+		
+		this.main_window = main_window;
+				
+		// console.log("   <decrypt> this.main_window: " + this.main_window + "  " + typeof this.main_window );
 		
 		if (    encrypted_pk == undefined || passphrase == undefined 
 		     || encrypted_pk == ''        || passphrase == '') {
@@ -109,7 +149,9 @@ class Bip38Utils {
 		let decrypted_PK = ERROR_RETURN_VALUE;
 		
 		try {
-			let Wif_buf = Bip38.decrypt( encrypted_pk, passphrase );
+			// decrypt(encryptedKey, passphrase[, progressCallback, scryptParams])
+			let Wif_buf = Bip38.decrypt( encrypted_pk, passphrase, 
+						                 async (status) => { await progress_cb(status); }, this.scryptParams );
 			// console.log("   Wif_buf:       " + JSON.stringify( Wif_buf ) );
 			
 			decrypted_PK = Wif_buf.privateKey.toString('hex');
@@ -119,12 +161,19 @@ class Bip38Utils {
 				message: e.toString(), 
 				type:    "error",
 			}
-			dialog.showMessageBoxSync( window, options );
+			
+			console.log("   main_window: " + main_window + "  " + typeof main_window );	
+
+			dialog.showMessageBoxSync( this.main_window, options );
 			return ERROR_RETURN_VALUE;
 		}
 		
 		return decrypted_PK;
-	} // decrypt()
+	} // async decrypt()
+	
+	getMainWindow() {
+		return this.main_window;
+	} // getMainWindow()
 } // Bip38Utils class
 
 function test_Bip38Utils() {
