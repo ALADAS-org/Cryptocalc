@@ -1,12 +1,12 @@
-## CryptoCalc 0.4.4
-![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_3_45_EN.gif)
+## CryptoCalc 0.4.5
+![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
    These wallets can be _Non Deterministic_ (_Simple Wallet_) or _Hierarchical Deterministic_ (`BIP32`).
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 12083 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 12426 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by reporting bugs (or asking for enhancements) with _Issues_, 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
@@ -162,8 +162,13 @@
 				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
 			  
 4. Release notes
-    - `0.4.4`: This version
-	    - Enhancements in Bip38 feature:
+    - `0.4.5`: This version
+	    - Updates of images:     
+            - Update of screnshots   		
+		    - Logo images mirrored to be like a `Z` because it is the new version. This new version of the
+            logo is also published on the [SourceForge installer](https://sourceforge.net/projects/aladas-cryptocalc/) 			
+    - `0.4.4`
+	    - Enhancements in `Bip38` feature:
 		    - Default difficulty set to 16384 (the recommended default)
 			- A Progress bar now shows a better feedback on the time needed to encrypt / decrypt
     - `0.4.0`
