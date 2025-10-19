@@ -14,9 +14,9 @@ How to build "Cryptocalc standalone installer" ('cryptocalc_setup.exe')
 	- Select Electron app output directory: (e.g. D:\Cryptocalc\releases) => [Return] key
 	- Select Application name: (@aladas-org/cryptocalc)                   => [Return] key
 	- Select App Bundle Id (optional)                                     => [Return] key
-	- Select App Version(optional):                                       => 0.3.4
+	- Select App Version(optional):                                       => 0.4.6
 	- Select Electron icon file: e.g. D:\Cryptocalc\www\icons\Cryptocalc_ico.ico
-	- Select Electron version release:                                    => 28.2.7
+	- Select Electron version release:                                    => 31.0.0
 	- Select platforms:    use up/down arrow keys and [Space] key to select 'win32'
 	- Select architecture: use up/down arrow keys and [Space] key to select 'x64'
     => Result in 'releases' folder
