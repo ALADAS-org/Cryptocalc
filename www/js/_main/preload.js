@@ -26,9 +26,9 @@ contextBridge.exposeInMainWorld(
 		SetWindowTitle:              (data) => ipcRenderer.send("ToMain:Request/set_window_title", data),		
 		ToggleDebugPanel:            (data) => ipcRenderer.send("ToMain:Request/toggle_debug_panel", data),
 		
-		NewWalletInfo:               (data) => ipcRenderer.invoke("ToMain:Request/new_wallet_info", data),
+		NewWalletInfo:               (data) => ipcRenderer.invoke("ToMain:Request/new_wallet_info",  data),
 		OpenWalletInfo:              (data) => ipcRenderer.invoke("ToMain:Request/open_wallet_info", data),
-		SaveWalletInfo:              (data) => ipcRenderer.send("ToMain:Request/save_wallet_info", data),
+		SaveWalletInfo:              (data) => ipcRenderer.invoke("ToMain:Request/save_wallet_info", data),
 		
 		SaveOptions:                 (data) => ipcRenderer.invoke("ToMain:Request/save_options", data),
 		ResetOptions:                (data) => ipcRenderer.invoke("ToMain:Request/reset_options", data),

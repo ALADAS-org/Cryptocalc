@@ -2117,7 +2117,7 @@ class MainGUI {
 	async fileSaveWallet() {
 		trace2Main( pretty_func_header_format( "MainGUI.fileSaveWallet" ) );
 		let crypto_info = await this.getWalletInfo();
-        window.ipcMain.SaveWalletInfo( crypto_info );
+        await window.ipcMain.SaveWalletInfo( crypto_info );
 		this.showSaveWalletInfoDialog();		
 	} // async fileSaveWallet()
 	

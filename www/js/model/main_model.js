@@ -7,9 +7,10 @@
 // ===============================  MainModel class  ===============================
 // NB: "Singleton" class
 // * static GetInstance()
-//   createQRCode( path, filename, qrcode_text, qrcode_type, filetype )
-//   saveWalletInfo( crypto_info ) 
-//   saveWalletInfoAsJson( output_path, crypto_info, timestamp )
+//
+//   		createQRCode( path, filename, qrcode_text, qrcode_type, filetype )
+//      	saveWalletInfo( crypto_info ) 
+//   		saveWalletInfoAsJson( output_path, crypto_info, timestamp )
 // * async  getAppVersion()
 // ------------------------------------------------------
 const { app } = require('electron');	
@@ -20,7 +21,7 @@ const bwipjs           = require('bwip-js');
 const { Skribi }       = require('../util/log/skribi.js'); 
 
 const { pretty_func_header_log,
-        pretty_log }      = require('../util/log/log_utils.js');
+        pretty_log }   = require('../util/log/log_utils.js');
 		
 const { VERSION, 
 		NULL_KEY, NULL_KEYPAIR_VALUE,
@@ -30,17 +31,17 @@ const { VERSION,
         MNEMONICS, WIF, WORD_INDEXES,
 		BIP32_PASSPHRASE, BIP38_PASSPHRASE, DERIVATION_PATH, ACCOUNT, ADDRESS_INDEX, 
 		HD_WALLET_TYPE, SWORD_WALLET_TYPE, 
-	  }                   = require('../const_keywords.js');
+	  }                = require('../const_keywords.js');
 	  
 const { COIN, COIN_ABBREVIATIONS, BLOCKCHAIN_EXPLORER 
-      }                   = require('../crypto/const_blockchains.js');
+      }                = require('../crypto/const_blockchains.js');
 	  
 const { ADDRESS, 
         PRIV_KEY, PRIVATE_KEY, BIP38_ENCRYPTED_PK   
-      }                   = require('../crypto/const_wallet.js');
+      }                = require('../crypto/const_wallet.js');
 
 const { WalletInfoTemplate   
-      }                   = require('./wallet_info_tmpl.js');	  
+      }                = require('./wallet_info_tmpl.js');	  
 	  
 	  
 const { Bip38Utils }      = require('../crypto/bip38_utils.js');
@@ -63,7 +64,7 @@ class MainModel {
 	
 	static get This() {
 		if( MainModel.#Singleton == undefined ) {
-			MainModel.#Singleton = new MainModel();
+			MainModel.#Singleton = new MainModel( this.#Key );
 			if (MainModel.#InstanceCount > 0) {
 				throw new TypeError("'MainModel' constructor called more than once");
 			}
@@ -77,6 +78,7 @@ class MainModel {
 		if ( key !== MainModel.#Key ) {
 			throw new TypeError("'MainModel' constructor is private");
 		}	
+		
         this.app_version = "XX";	
 
 		this.main_window = undefined;	
@@ -137,8 +139,20 @@ class MainModel {
 			bwipjs.toBuffer( options, writePNGfile );
 		}
 		else if ( filetype == "svg" ) {
-			//Skribi.log("qrcode_text: '" + qrcode_text + "'");
+			// Skribi.log("qrcode_text: '" + qrcode_text + "'");
 			options[QR_SCALE] = 1;
+			
+			// console.log("   options:\n", JSON.stringify(options));
+			
+			console.log("   options['text']: ", options["text"] + " " + typeof (options["text"]) );
+			if ( typeof options["text"] === 'object' ) {
+				// FromMain_SHOW_MSG_DIALOG
+				let error_msg =   "**Error** in MainModel.createQRCode():\n"
+				                + "   When saving:\n   " + filename + "\n"
+				                + "   typeof options['text'] " + typeof options["text"];
+				throw new Error( error_msg );
+				return;					  
+			}				
 
 			let svg_data = bwipjs.toSVG( options );
 			fs.writeFileSync( path + "/" + filename, svg_data, "binary", 
@@ -149,7 +163,7 @@ class MainModel {
 		}
     } // createQRCode()
 	
-	saveWalletInfo( crypto_info ) {
+	async saveWalletInfo( crypto_info ) {
 		pretty_func_header_log( "MainModel.saveWalletInfo" );
 		
 		let timestamp   = getDayTimestamp();
@@ -178,7 +192,7 @@ class MainModel {
 		let wif                = ""; 
 		let entropy            = crypto_info[ENTROPY];
 		
-		const preprocess_crypto_info_for_Bip38 = ( crypto_info ) => {
+		const preprocess_crypto_info_for_Bip38 = async ( crypto_info ) => {
 			if ( 	 crypto_info[BIP38_PASSPHRASE] != undefined  &&  crypto_info[BIP38_PASSPHRASE] != '' 
 			     &&  crypto_info[PRIVATE_KEY] != undefined  &&  crypto_info[PRIVATE_KEY] != '' )  {
 				// console.log("   ---------------- BIP38_PASSPHRASE FOUND !! ----------------");
@@ -188,14 +202,14 @@ class MainModel {
 				let bip38_passphrase  =  crypto_info[BIP38_PASSPHRASE];
 				// console.log("   Bip38 Passphrase: " + bip38_passphrase);
 				
-				let bip38_encryted_pk = Bip38Utils.This.encrypt( private_key, bip38_passphrase );
+				let bip38_encryted_pk = await Bip38Utils.This.encrypt( private_key, bip38_passphrase, this.main_window );
 				// console.log("   Bip38 Encrypted PK: " + bip38_encryted_pk);
 				
 				crypto_info[BIP38_ENCRYPTED_PK] = bip38_encryted_pk;
 			}
-		}; // preprocess_crypto_info_for_Bip38
+		}; // async preprocess_crypto_info_for_Bip38
 				
-		preprocess_crypto_info_for_Bip38( crypto_info );
+		await preprocess_crypto_info_for_Bip38( crypto_info );
 		
 		const fill_wallet_info_str = ( crypto_info ) => {	
 			console.log("\n\n\n>> ==================== MainModel 'fill_wallet_info_str' ====================");			
@@ -290,7 +304,6 @@ class MainModel {
 		let wallet_info_str = fill_wallet_info_str( crypto_info );
 		pretty_log( "MMdlSaveWinf> wallet_info_str", wallet_info_str );	
 		fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );		
-		
 	
 		this.createQRCode( output_path, "Address.png", crypto_info[ADDRESS], QR_CODE );		
 		
@@ -308,15 +321,15 @@ class MainModel {
 			return false;
 		}; // is_not_null()
 		
-		if (  is_not_null(private_key) ) {
+		if (  is_not_null( private_key ) ) {
 			this.createQRCode( output_path, "PrivateKey.png", private_key, QR_CODE );			
         }	
 		
-		if ( is_not_null(wif) ) {
+		if ( is_not_null( wif ) ) {
 			this.createQRCode( output_path, "WIF.png", wif, QR_CODE );
 		}
 		
-		if (  is_not_null(bip38_encrypted_pk) ) {
+		if (  is_not_null( bip38_encrypted_pk ) ) {
 			this.createQRCode( output_path, "Bip38_Encrypted_PK.png", bip38_encrypted_pk, QR_CODE );
 		}
 		
@@ -345,7 +358,7 @@ class MainModel {
 			this.createQRCode( subfolder_path, "Entropy_rMQR.svg",      entropy, 'rectangularmicroqrcode', 'svg' );
 			this.createQRCode( subfolder_path, "Entropy_Ultracode.svg", entropy, 'ultracode', 'svg' );
 			
-			if ( is_not_null(wif) ) {
+			if ( is_not_null( wif ) ) {
 				this.createQRCode( subfolder_path, "WIF.svg", wif, 'qrcode', 'svg' );
 			}
 			
@@ -356,7 +369,7 @@ class MainModel {
 		let output_file_path = this.saveWalletInfoAsJson( output_path, crypto_info, timestamp );
 		
 		return output_file_path;
-	} // saveWalletInfo()
+	} // async saveWalletInfo()
 
 	saveWalletInfoAsJson( output_path, crypto_info, timestamp ) {
 		pretty_func_header_log( "MainModel.saveWalletInfoAsJson" );		
@@ -459,6 +472,11 @@ class MainModel {
 		let json_data_str = fs.readFileSync( input_file_path, error_handler );
 		return JSON.parse( json_data_str );
 	} // loadWalletInfoFromJson()
+	
+	setMainWindow( main_window ) {
+		console.log("MainModel.setMainWindow() " + typeof main_window);
+		this.main_window = main_window;
+	} // setMainWindow()		
 	
 	getAppVersion() { 
 		// Skribi.log( "MainModel.getAppVersion" );

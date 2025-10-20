@@ -49,7 +49,7 @@ class Bip38EncryptDecryptDialog {
 	
 	// ** Private constructor **
 	constructor( key ) {
-		console.log(">> **************** new Bip38EncryptDecryptDialog");
+		// console.log(">> **************** new Bip38EncryptDecryptDialog");
 		if ( key !== Bip38EncryptDecryptDialog.#Key ) {
 			throw new TypeError("'Bip38EncryptDecryptDialog' constructor is private");
 		}
@@ -58,7 +58,7 @@ class Bip38EncryptDecryptDialog {
 	} // ** Private constructor **
 	
 	initialize() {
-		console.log(">> Bip38EncryptDecryptDialog.initialize");
+		// console.log(">> Bip38EncryptDecryptDialog.initialize");
 		
 		$("#" + BIP38_ENCRYPT_DECRYPT_DIALOG_ID).dialog
 		(   { // -------------------- JQuery Dialog options --------------------
