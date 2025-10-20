@@ -357,6 +357,9 @@ class ElectronMain {
 			  }
 			}
 		);
+		
+		console.log( "ElectronMain.createWindow()  this.MainWindow: " + typeof this.MainWindow );
+		MainModel.This.setMainWindow( this.MainWindow );
 			
 		const menu_bar = Menu.buildFromTemplate( this.getMenuTemplate() );
 		Menu.setApplicationMenu( menu_bar );	
@@ -760,10 +763,10 @@ class ElectronMain {
 		// ====================== ToMain_RQ_SAVE_WALLET_INFO ======================
 		//Skribi.log(">> register: " + ToMain_RQ_SAVE_WALLET_INFO);
 		// called like this by Renderer: window.ipcMain.SaveWalletInfo( data )
-		ipcMain.on( ToMain_RQ_SAVE_WALLET_INFO, ( event, crypto_info ) => {
+		ipcMain.handle( ToMain_RQ_SAVE_WALLET_INFO, async ( event, crypto_info ) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_SAVE_WALLET_INFO );
 			Skribi.log( "eMain.evtH('SaveWinf')>" );	
-			this.output_path = MainModel.This.saveWalletInfo( crypto_info );
+			this.output_path = await MainModel.This.saveWalletInfo( crypto_info );
 		}); // "ToMain:Request/save_wallet_info" event handler
 		
 		// ====================== ToMain_RQ_RESET_OPTIONS ======================

@@ -4,7 +4,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/quick-start
 "use strict";
 
-console.log(">> ======================== LANG: '" + LANG + "'");
+// console.log(">> ======================== LANG: '" + LANG + "'");
 
 class WalletInfo {
 	static GUI_NODE_IDs = { 

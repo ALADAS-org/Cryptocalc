@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.6
+## CryptoCalc 0.4.7
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -162,7 +162,11 @@
 				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
 			  
 4. Release notes
-    - `0.4.6`: This version
+	- `0.4.7`: This version
+	    - Bug Fix: 
+		    - regression in `Bip38` feature (since implementation of 'Progress Bar' as a feedback for encrypt/decrypt time)
+			- Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net) 
+    - `0.4.6`
 	    - Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net) 
     - `0.4.5` 
 	    - Updates of images:     
@@ -180,7 +184,7 @@
 		- New Feature:
 			- Support of `BIP38` (_passphrase encrypted private key_, see 6.3.5) for an additional security layer by Encrypting the Private Key.    
 			NB: Please notice that only the first encryption method ('NON-EC') is supported (see also 5.2.2). 
-        - Bug Fixes:	
+        - :Bug Fixes	
 		    - `Save` command (in _Main menu_ and _Main Toolbar_) is disabled while it should be enabled. 
 			This was identified in some use cases with `File/New` followed by `File/Open`.	
 		- Documentation Fixes:	
