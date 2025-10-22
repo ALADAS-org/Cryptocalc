@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.7
+## CryptoCalc 0.4.8
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,7 +6,7 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 12426 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 13098 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by reporting bugs (or asking for enhancements) with _Issues_, 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
@@ -29,7 +29,7 @@
     - `SHA256` hash function is applied to this: `Salt + Entropy source` 
 
     2.6. Security Layers     
-    - `Bip38` support (dirst method 'Non-EC')   	
+    - `Bip38` support (first method 'Non-EC')   	
    
     2.7. Multiple Entropy sources    
     `100 d6 dices`, `Mouse moves`, `Images` and `Fortune cookies`
@@ -65,8 +65,8 @@
     This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
    
     2.15. Tested on `Windows` and `Linux`    
-        - For `Windows`: tested on `Windows 10`    
-	    - For `Linux`: tested on [Linux Mint 22.2](https://linuxmint.com/), tested indeed on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
+        - `Windows`: tested on `Windows 10`    
+	    - `Linux`: tested on [Linux Mint 22.2](https://linuxmint.com/) (NB: tested on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
 	   
     2.16. Cryptocurrencies: 23 supported Cryptocurrencies   
     `BTC` (Bitcoin), `ETH` (Ethereum), `XRP` (Ripple), `BNB` (Binance Smart Chain), `SOL` (Solana), 
@@ -132,15 +132,15 @@
        - 3.2.b. On `Linux` Operating system	
            - Linux distribution	  
 		       - _CryptoCalc_ was tested on [Linux Mint 22.2](https://linuxmint.com/)
-		   	   but installed as a virtual machine within [VirtualBox](https://www.virtualbox.org/).    
+		   	   and tested as a virtual machine within [VirtualBox](https://www.virtualbox.org/).    
                Notice that the _Cinnamon_ desktop was chosed.
 		   - Open a _command shell_
-	           - This will open a window where you can input commands (eg. (eg. `sudo apt-get install nodejs`)whoami`) 	
-	           - Create a _subdirectory_ to use it as a _workspace_, I suggest that you name it `Dev`:
-			       - `mkdir Dev`
+	           - This will open a window where you can input commands (eg. `sudo apt-get install nodejs`) 	
+	           - Create a _subdirectory_ to use it as a _workspace_, I suggest that you name it `dev`:
+			       - `mkdir dev`
 	           - Change _current directory_ to this new _subdirectory_: 
-                   - `cd Dev		
-			   - Create a _subdirectory_ for iporting [Github](https://github.com/) projects, I suggest that you name it `gihub`:
+                   - `cd dev		
+			   - Create a _subdirectory_ for [Github](https://github.com/) projects, I suggest that you name it `github`:
                    - `mkdir gihub`	
 			   - Change _current directory_ to this new _subdirectory_: 
                    - `cd github					  
@@ -149,20 +149,28 @@
 			       - `sudo apt-get install nodejs`			  
 	           - Install [Git](https://git-scm.com/)
                    - `sudo apt update; apt install git` 
+			   - Install [npm](https://www.npmjs.com/)
+                   - `sudo apt update; apt install npm` 
                - Install `xdg-utils` ([X Desktop Group](https://www.freedesktop.org/wiki/))
 			       - `sudo apt-get install xdg-utils`
 	       - Import _CryptoCalc_ from [Github](https://github.com/)
-		       - `cd; cd Dev/github` 
+		       - `cd; cd dev/github` 
 	           - `git clone https://github.com/ALADAS-org/Cryptocalc.git`
                - `cd Cryptocalc`	
-               - `npm install` 
+               - `npm install`
+			   - `chmod 777 ./_run_X.sh`			   
 			   - You can launch _CryptoCalc_ with either:
 			       - `npm start` 
-				   - `./_runX.sh` 
-				       - `X` means _Linux_, you may need to give _Execution rights_ by using `chmod +x _runX.sh`   
+				   - `./_run_X.sh` 
+				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-	- `0.4.7`: This version
+    - `0.4.8`: This version
+	    - Documentation Fix: 
+		    - Instructions to install and run on `Linux` 
+		- Icon Fix: 
+		    - Mirror on `Cryptocalc_ico.ico`
+	- `0.4.7`
 	    - Bug Fix: 
 		    - regression in `Bip38` feature (since implementation of 'Progress Bar' as a feedback for encrypt/decrypt time)
 			- Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net) 
