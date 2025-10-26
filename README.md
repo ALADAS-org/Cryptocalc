@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.8
+## CryptoCalc 0.4.9
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -158,18 +158,25 @@
 	           - `git clone https://github.com/ALADAS-org/Cryptocalc.git`
                - `cd Cryptocalc`	
                - `npm install`
-			   - `chmod 777 ./_run_X.sh`			   
+			   - `chmod 777 ./_runX.sh`			   
 			   - You can launch _CryptoCalc_ with either:
 			       - `npm start` 
-				   - `./_run_X.sh` 
+				   - `./_runX.sh` 
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
     - `0.4.8`: This version
-	    - Documentation Fix: 
+	    - Ergonomy:
+		    - A _Progress Bar_ is also displayed when saving a wallet with a `BIP38 Passphrase`. 
+			This is also to give a feedback to the user why it takes more time.     
+	    - Documentation Fixes: 
+		    - Changes in 'BIP38' instructions (see 5.1.5)
 		    - Instructions to install and run on `Linux` 
 		- Icon Fix: 
 		    - Mirror on `Cryptocalc_ico.ico`
+		- Refactoring:
+		    - `html_components` (folder for _Html modules_ like _MenuBar_, _ToolBar_, _StatusBar_ and _Dialog boxes_) renamed to `vizjets`
+            - `js/renderer/const_renderer.js` moved to `js/view/const_gui.js`		
 	- `0.4.7`
 	    - Bug Fix: 
 		    - regression in `Bip38` feature (since implementation of 'Progress Bar' as a feedback for encrypt/decrypt time)
@@ -251,10 +258,6 @@
 			- Renamed [New Entropy] to [New points...]
 			- Explanations for manual (with [New points...]) vs automatic generation (with [Generate])
 		- Updated screenshots from `0.3.15` to `0.3.45`
-	- `0.3.44`
-	    - New _Entropy source_: `Mouse moves`
-	- `0.3.43`
-	    - New _Entropy source_: `D6 dices` (e.g. 100 rolls for 256 bits of Entropy)  
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
@@ -334,14 +337,18 @@
 			- 5.1.4.e. You can check generated _HD Wallets_ with _Ian Coleman BIP39_ homepage    
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
 		- 5.1.5. 'BIP38' Encryption of the _Private Key_
-			- `BIP38` (_passphrase encrypted private key_, see 6.3.5) is now supported for an additional security layer by Encrypting the _Private Key_. 
-			- A new _Tool_ (in _Main menu_ : `Tool/Bip38 Encrypt/Decrypt`) is provided to ease the retrieval of 
-			the _Private Key_ from the _Bip38 Encrypted PK_ (or conversely the encryption of the _Private Key_ to the _Bip38 Encrypted PK_).    
-            - When `Bip38 passphrase` is provided, a `Bip38 Encrypted PK` is generated when Saving the current wallet (see 5.1.11)
-			A new QR code is generated (`Bip38 Encrypted PK`) as both a `PNG` file and an `SVG` file (in `xtras` subfolder of the generated
-            wallet folder under `_output`). 			
-			Note 1: Notice that only the first method ('NON-EC') is supported.    
-			Note 2: the _Bip38 passphrase_ is in some way similar to the _PIN Code_ of a Credit card.
+			- `BIP38` (_passphrase encrypted private key_, see 6.3.5) is supported for an added security layer by Encrypting the _Private Key_. 		 
+            - How to: just input a value in `Bip38 passphrase` field the use the [Save] button (or `File/Save` menu item, cf 5.1.11).
+			This generates a `Bip38 Encrypted PK`.  			
+			Note 1: Notice that only the first method ('NON-EC': _encrypt the private Key with the passphrase_ ) is supported.    
+			Note 2: Notice that the level of security is proportional to the length and complexity (diversity of characters like [A..Z][a..z][0..9] and special characters) 
+			of the `passphrase` (like with a password).
+			Note 3: A new QR code is generated (`Bip38 Encrypted PK`) as both a `PNG` file and
+			an `SVG` file (in `xtras` subfolder of the generated wallet folder under `_output`).
+		    Note 4: The _Private Key_ is still provided (both in `wallet_info.txt` and in as a QR code), but notice it is your responsability
+			to not disclose The _Private Key_ (the `Bip38 Encrypted PK` may be disclosed in some use cases cf. 5.3.2).
+			Note 5: A new _Tool_ (in _Main menu_ : `Tool/Bip38 Encrypt/Decrypt`) is provided to decrypt 
+			the _Private Key_ from the _Bip38 Encrypted PK_ (or conversely encrypt the _Private Key_ to the _Bip38 Encrypted PK_). 
 		- 5.1.6. _Bip32 Passphrase feature_ (_HD Wallet_ only)    
     	With a _Bip32 passphrase_ a completely different _HD hierarchy_ is generated. 
 		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 

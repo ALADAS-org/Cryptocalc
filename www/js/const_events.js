@@ -93,6 +93,8 @@ const FromMain_TOOLS_OPTIONS_DIALOG               = "FromMain:ToolsOptionsDialog
 const FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG = "FromMain:ToolsBip38EncryptDecryptDialog";
 const FromMain_BIP38_PROGRESS_TICK                = "FromMain:Bip38ProgressTick";
 
+const FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG     = "FromMain:Bip38ShowProgressBarDialog";
+
 const FromMain_SET_FORTUNE_COOKIE                 = "FromMain:File/Import/Random Fortune Cookie";
 const FromMain_UPDATE_OPTIONS                     = "FromMain:UpdateOptions";
 
@@ -185,6 +187,7 @@ if ( typeof exports === 'object' ) {
 
 	exports.FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG = FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG
 	exports.FromMain_BIP38_PROGRESS_TICK                = FromMain_BIP38_PROGRESS_TICK
+	exports.FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG     = FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG 
 	
 	exports.FromMain_SEND_IMG_URL                       = FromMain_SEND_IMG_URL
 	exports.FromMain_SET_FORTUNE_COOKIE                 = FromMain_SET_FORTUNE_COOKIE	

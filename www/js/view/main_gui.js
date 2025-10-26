@@ -1783,7 +1783,7 @@ class MainGUI {
 				switch ( variable_name ) {
 					case APP_VERSION: 
 					    trace2Main( pretty_format( "rGUI.onGUI>  cryptowallet_version", variable_value) );
-						RendererSession.SetValue( CRYPTOWALLET_VERSION, variable_value );
+						GuiSession.SetValue( CRYPTOWALLET_VERSION, variable_value );
 						break;
 						
 					case WITS_PATH: 
@@ -1822,7 +1822,7 @@ class MainGUI {
 			case FromMain_FILE_SAVE:
 			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_FILE_SAVE + _END_ );	
 				let crypto_info = await this.getWalletInfo();
-                window.ipcMain.SaveWalletInfo( crypto_info );
+                await window.ipcMain.SaveWalletInfo( crypto_info );
 				this.showSaveWalletInfoDialog();				
 				break;				
 				
@@ -1907,15 +1907,30 @@ class MainGUI {
 				Bip38EncryptDecryptDialog.This.showDialog();
 				break;
 				
+			case FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG + _END_ );
+				Bip38ProgressbarDialog.This.showDialog();
+				break;
+				
 			case FromMain_BIP38_PROGRESS_TICK:
 			    let progress_status = data[1];
 				// trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_BIP38_PROGRESS_TICK + " " + progress_status + _END_ );				
-				await Bip38EncryptDecryptDialog.This.updateProgressbar( progress_status );
+				
+				// console.log( "   Bip38EncryptDecryptDialog.This.isDisplayed(): " + Bip38EncryptDecryptDialog.This.isDisplayed());
+				// console.log( "   Bip38ProgressbarDialog.This.isDisplayed():    " + Bip38ProgressbarDialog.This.isDisplayed());
+				
+				if ( Bip38EncryptDecryptDialog.This.isDisplayed() ) {
+					await Bip38EncryptDecryptDialog.This.updateProgressbar( progress_status );
+				}
+				else if ( Bip38ProgressbarDialog.This.isDisplayed() ) {
+					await Bip38ProgressbarDialog.This.updateProgressbar( progress_status );
+				}					
+				
 				break;
 				
 			case FromMain_HELP_ABOUT:
 			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_HELP_ABOUT + _END_ );
-				let cryptowallet_version = RendererSession.GetValue( CRYPTOWALLET_VERSION );
+				let cryptowallet_version = GuiSession.GetValue( CRYPTOWALLET_VERSION );
 				let i18n_msg = await window.ipcMain.GetLocalizedMsg("HelpAboutMsg");
 				description_data =   "<center><b>Cryptowallet " + cryptowallet_version + "</b></center><br>" 
 						           + "&nbsp;" + i18n_msg;

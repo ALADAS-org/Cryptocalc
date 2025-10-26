@@ -1,5 +1,5 @@
 // ======================================================================================================================
-// ============================================   bip38_encrypt_decrypt.js   ============================================
+// ========================================   bip38_encrypt_decrypt_dialog.js   =========================================
 // ======================================================================================================================
 "use strict";
 
@@ -54,6 +54,7 @@ class Bip38EncryptDecryptDialog {
 			throw new TypeError("'Bip38EncryptDecryptDialog' constructor is private");
 		}
 	
+	    this.displayed    = false;
 		this.encrypt_mode = true; 
 	} // ** Private constructor **
 	
@@ -63,8 +64,6 @@ class Bip38EncryptDecryptDialog {
 		$("#" + BIP38_ENCRYPT_DECRYPT_DIALOG_ID).dialog
 		(   { // -------------------- JQuery Dialog options --------------------
 				modal: 			true,
-				// draggable:      true,
-				// appendTo:       "body",
 				resizable:      false,
 				autoOpen: 		false, 
 				dialogClass: 	'DialogBox',
@@ -72,7 +71,7 @@ class Bip38EncryptDecryptDialog {
 				// https://stackoverflow.com/questions/18992081/trigger-event-on-dialog-box-open
 				// https://stackoverflow.com/questions/394491/passing-data-to-a-jquery-ui-dialog/3458299#3458299
 				
-				width:  700,
+				width:   700,
 				
 				open:   function( event, ui ) {	
 							let this_obj = Bip38EncryptDecryptDialog.This;
@@ -105,7 +104,9 @@ class Bip38EncryptDecryptDialog {
 								( BIP38_DIALOG_QUIT_BTN_ID, 'click', 
 								  () => { Bip38EncryptDecryptDialog.This.closeDialog(); } );
 
-							this_obj.setFields4EncryptMode();								  
+							this_obj.setFields4EncryptMode();
+							
+                            this.displayed = true;							
 						}, // open()
 						
 				close:  function( event, ui ) {	
@@ -137,7 +138,9 @@ class Bip38EncryptDecryptDialog {
 
 							this_obj.removeEventHandler
 								( BIP38_DIALOG_QUIT_BTN_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.closeDialog(); } );									  
+								  () => { Bip38EncryptDecryptDialog.This.closeDialog(); } );
+
+							this.displayed = false;								  
 						} // close()
 			} // -------------------- JQuery Dialog options		
 		).parent().css('z-index', 900);
@@ -164,7 +167,11 @@ class Bip38EncryptDecryptDialog {
 	closeDialog() {
 		let dialog_obj = $("#" + BIP38_ENCRYPT_DECRYPT_DIALOG_ID);
 		dialog_obj.dialog('close');
-	} // ToolsOptionsDialog.closeDialog()
+	} // closeDialog()
+	
+	isDisplayed() {
+		return this.displayed;
+	} // isDisplayed()	
 	
 	toggleEncryptDecrypt() {
 		let log_msg = ">> " + _CYAN_ + "Bip38EncryptDecryptDialog.toggleEncryptDecrypt" + _END_;

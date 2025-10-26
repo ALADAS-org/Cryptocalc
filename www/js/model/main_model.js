@@ -22,6 +22,10 @@ const { Skribi }       = require('../util/log/skribi.js');
 
 const { pretty_func_header_log,
         pretty_log }   = require('../util/log/log_utils.js');
+
+const { FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG
+      }                = require('../const_events.js');		
+		
 		
 const { VERSION, 
 		NULL_KEY, NULL_KEYPAIR_VALUE,
@@ -144,7 +148,8 @@ class MainModel {
 			
 			// console.log("   options:\n", JSON.stringify(options));
 			
-			console.log("   options['text']: ", options["text"] + " " + typeof (options["text"]) );
+			// console.log("   options['text']: ", options["text"] + " " + typeof (options["text"]) );
+			
 			if ( typeof options["text"] === 'object' ) {
 				// FromMain_SHOW_MSG_DIALOG
 				let error_msg =   "**Error** in MainModel.createQRCode():\n"
@@ -175,7 +180,7 @@ class MainModel {
 		let coin = COIN_ABBREVIATIONS[blockchain];
 		pretty_log( COIN, coin );
 		
-		console.log(">> ----- crypto_info: \n" + JSON.stringify(crypto_info));
+		// console.log(">> ----- crypto_info: \n" + JSON.stringify(crypto_info));
 		let lang = crypto_info[LANG];
 		
 		output_path = output_path + "_" + coin + "_" + lang;
@@ -202,6 +207,9 @@ class MainModel {
 				let bip38_passphrase  =  crypto_info[BIP38_PASSPHRASE];
 				// console.log("   Bip38 Passphrase: " + bip38_passphrase);
 				
+				await this.main_window.webContents.send
+					( "fromMain", [ FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG ] );
+				
 				let bip38_encryted_pk = await Bip38Utils.This.encrypt( private_key, bip38_passphrase, this.main_window );
 				// console.log("   Bip38 Encrypted PK: " + bip38_encryted_pk);
 				
@@ -226,12 +234,12 @@ class MainModel {
 			
 			WalletInfoTemplate.This.clear();
 			
-			console.log("\n   ========== Step 0 ========== FILL 'wallet_info_str' with 'crypto_info'");
-			console.log("crypto_info:\n" + JSON.stringify(crypto_info));
+			// console.log("\n   ========== Step 0 ========== FILL 'wallet_info_str' with 'crypto_info'");
+			// console.log("crypto_info:\n" + JSON.stringify(crypto_info));
 			
 			let template_items = WalletInfoTemplate.This.getItems();
-			console.log("\n   ========== Step 1 ========== [FILL 2]");
-			console.log("   [Fill 2] template_items: \n" + JSON.stringify(template_items));
+			// console.log("\n   ========== Step 1 ========== [FILL 2]");
+			// console.log("   [Fill 2] template_items: \n" + JSON.stringify(template_items));
 			// console.log("   template_items.length: " + template_items.length);
 			
 			for ( let i=0; i < wallet_keys.length; i++ ) {	
@@ -268,8 +276,8 @@ class MainModel {
 			
 			template_items = WalletInfoTemplate.This.getItems();
 			
-			console.log("\n   ========== Step 2 ========== [FILL 2]");
-			console.log("   template_items: \n" + JSON.stringify(template_items));
+			// console.log("\n   ========== Step 2 ========== [FILL 2]");
+			// console.log("   template_items: \n" + JSON.stringify(template_items));
 			// console.log("   template_items.length: " + template_items.length);
 						
 			for ( let i=0; i < template_items.length; i++ ) {
@@ -291,18 +299,18 @@ class MainModel {
 					}					
 					wallet_info_str_line = current_key.padEnd(24,' ') + current_value + end_of_line;
 						
-					console.log("   wallet_info_str[ index: " + i + "  key: '" + current_key + "' ]: " + current_value);										
+					// console.log("   wallet_info_str[ index: " + i + "  key: '" + current_key + "' ]: " + current_value);										
 					wallet_info_str += wallet_info_str_line;
 				}
 			}
 			
-			console.log(">> ========== END of MainModel 'fill_wallet_info_str'");
+			// console.log(">> ========== END of MainModel 'fill_wallet_info_str'");
 			
 			return wallet_info_str;
 		}; // fill_wallet_info_str()	 
 		
 		let wallet_info_str = fill_wallet_info_str( crypto_info );
-		pretty_log( "MMdlSaveWinf> wallet_info_str", wallet_info_str );	
+		// pretty_log( "MMdlSaveWinf> wallet_info_str", wallet_info_str );	
 		fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );		
 	
 		this.createQRCode( output_path, "Address.png", crypto_info[ADDRESS], QR_CODE );		

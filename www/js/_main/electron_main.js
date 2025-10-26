@@ -129,7 +129,7 @@ const { CMD_OPEN_WALLET,
 	  }                                 = require('../const_events.js');
 	  
 const { ENTROPY_SOURCE_IMG_ID
-      }                                 = require('../_renderer/const_renderer.js');
+      }                                 = require('../view/const_gui.js');
 
 const { DEFAULT_OPTIONS
       }                                 = require('../crypto/const_default_options.js');

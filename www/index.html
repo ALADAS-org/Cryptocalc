@@ -20,7 +20,7 @@
 		
 		<!-- ----------------- Renderer prerequisite modules ----------------- -->
 		<script type="text/javascript" src="./js/const_keywords.js"></script>
-		<script type="text/javascript" src="./js/_renderer/const_renderer.js"></script>			
+		<script type="text/javascript" src="./js/view/const_gui.js"></script>			
 		<script type="text/javascript" src="./js/util/values/string_utils.js"></script>
 		<script type="text/javascript" src="./js/util/values/number_utils.js"></script>
 		<script type="text/javascript" src="./js/util/html/w3.js"></script>
@@ -37,7 +37,7 @@
 		
 		<script type="text/javascript" src="./js/const_events.js"></script>			
 		
-		<script type="text/javascript" src="./js/_renderer/renderer_session.js"></script>
+		<script type="text/javascript" src="./js/view/gui_session.js"></script>
 		
 		<script type="text/javascript" src="./js/view/model/wallet_info.js"></script>
 		
@@ -53,8 +53,8 @@
 		
 	<body>
 		<!-- =========================== Main ToolBar ============================= -->
-		<div w3-include-html="./html_components/main_toolbar/main_toolbar.html"></div>
-		<!-- <link rel="stylesheet" type="text/css" href="./html_components/main_toolbar/main_toolbar.css"> -->
+		<div w3-include-html="./vizjets/main_toolbar/main_toolbar.html"></div>
+		<!-- <link rel="stylesheet" type="text/css" href="./vizjets/main_toolbar/main_toolbar.css"> -->
 		<!-- =========================== Main ToolBar -->
 		
 		
@@ -535,29 +535,41 @@
 		<!-- ================================== Tools / Options dialog ====================================== -->
 		<!-- ================================================================================================ -->
 		<div class="DialogBox" id="tools_options_dialog_id" 
-			 w3-include-html="./html_components/tools_options_dialog/tools_options_dialog.html"
+			 w3-include-html="./vizjets/tools_options_dialog/tools_options_dialog.html"
 			 title="Options" hidden></div>
-		<link rel="stylesheet" type="text/css" href="./html_components/tools_options_dialog/tools_options_dialog.css">
-		<script src="./html_components/tools_options_dialog/tools_options_dialog.js"></script>
+		<link rel="stylesheet" type="text/css" href="./vizjets/tools_options_dialog/tools_options_dialog.css">
+		<script src="./vizjets/tools_options_dialog/tools_options_dialog.js"></script>
 		<!-- ==================================== Tools Options dialog -->
 		
 		
 		<!-- ================================================================================================ -->
-		<!-- ========================= Tools / Bip38 Encrypter/Decrypter dialog ============================= -->
+		<!-- =========================== Tools / Bip38 Encrypt/Decrypt dialog =============================== -->
 		<!-- ================================================================================================ -->
 		<div class="DialogBox" id="bip38_encrypt_decrypt_dialog_id" 
-			 w3-include-html="./html_components/bip38_encrypt_decrypt_dialog/bip38_encrypt_decrypt_dialog.html"
+			 w3-include-html="./vizjets/bip38_encrypt_decrypt_dialog/bip38_encrypt_decrypt_dialog.html"
 			 title="Bip38 Encrypt / Decrypt" hidden></div>
-		<link rel="stylesheet" type="text/css" href="./html_components/bip38_encrypt_decrypt_dialog/bip38_encrypt_decrypt_dialog.css">
-		<script src="./html_components/bip38_encrypt_decrypt_dialog/bip38_encrypt_decrypt_dialog.js"></script>
-		<!-- =========================== Tools / Bip38 Encrypter/Decrypter dialog -->
+		<link rel="stylesheet" type="text/css" href="./vizjets/bip38_encrypt_decrypt_dialog/bip38_encrypt_decrypt_dialog.css">
+		<script src="./vizjets/bip38_encrypt_decrypt_dialog/bip38_encrypt_decrypt_dialog.js"></script>
+		<!-- =========================== Tools / Bip38 Encrypt/Decrypt dialog -->
+		
+		
+		<!-- ================================================================================================ -->
+		<!-- ===============================   Bip38 Progress Bar dialog   ================================== -->
+		<!-- ================================================================================================ -->
+		<div class="DialogBox" id="bip38_progress_bar_dialog_id" 
+			 w3-include-html="./vizjets/bip38_progress_bar_dialog/bip38_progress_bar_dialog.html"
+			 title="Bip38 Encrypt/Decrypt Progress" hidden></div>
+		<link rel="stylesheet" type="text/css" href="./vizjets/bip38_progress_bar_dialog/bip38_progress_bar_dialog.css">
+		<script src="./vizjets/bip38_progress_bar_dialog/bip38_progress_bar_dialog.js"></script>
+		<!-- =========================== Bip38 Progress Bar dialog -->
+		
 		
 		
 		<!-- ================================================================================================ -->
 		<!-- ========================================   Status bar   ======================================== -->
 		<!-- ================================================================================================ -->
-		<div w3-include-html="./html_components/status_bar/status_bar.html"></div>
-		<link rel="stylesheet" type="text/css" href="./html_components/status_bar/status_bar.css">
+		<div w3-include-html="./vizjets/status_bar/status_bar.html"></div>
+		<link rel="stylesheet" type="text/css" href="./vizjets/status_bar/status_bar.css">
 		<!-- ========================================== Status bar -->
 		
 		<script>
