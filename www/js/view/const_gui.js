@@ -1,6 +1,6 @@
-// =====================================================================================
-// ===============================   const_renderer.js   ===============================
-// =====================================================================================
+// ====================================================================================================
+// =========================================   const_gui.js   =========================================
+// ====================================================================================================
 "use strict";
 
 const CRYPTOWALLET_VERSION                = "Cryptowallet_version";
@@ -8,6 +8,7 @@ const CRYPTOWALLET_VERSION                = "Cryptowallet_version";
 const TOOLS_OPTIONS_DIALOG_ID             = "tools_options_dialog_id";
 
 const BIP38_ENCRYPT_DECRYPT_DIALOG_ID     = "bip38_encrypt_decrypt_dialog_id";
+const BIP38_PROGRESS_BAR_DIALOG_ID        = "bip38_progress_bar_dialog_id";
 
 const SEED_TAB_LINK_ID                    = "seed_tab_link_id";
 const WALLET_TAB_LINK_ID                  = "wallet_tab_link_id";
@@ -226,4 +227,4 @@ if (typeof exports === 'object') {
 	
 	exports.WITH_FOCUS_CSS_CLASS       = WITH_FOCUS_CSS_CLASS
 	exports.WITHOUT_FOCUS_CSS_CLASS    = WITHOUT_FOCUS_CSS_CLASS
-} // exports of 'const_renderer.js'
+} // exports of 'const_gui.js'

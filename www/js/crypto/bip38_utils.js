@@ -102,7 +102,7 @@ class Bip38Utils {
 		
 		this.main_window = window;
 		
-		console.log("   <encrypt> this.main_window: " + this.main_window + "  " + typeof this.main_window );
+		// console.log("   <encrypt> this.main_window: " + this.main_window + "  " + typeof this.main_window );
 		
 		let encrypted_PK = ERROR_RETURN_VALUE;
 		

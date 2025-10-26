@@ -1,0 +1,59 @@
+.no-close .ui-dialog-titlebar-close {
+  display: none;
+}
+
+.PB_Dialog_Form {
+  background:        #F5F5DC;
+}
+
+.PB_DialogBox {
+  font-size:         12px;
+  background:        #F5F5DC;
+}
+
+/* https://stackoverflow.com/questions/41429906/how-to-display-data-label-inside-html5-progress-bar-cross-browser */ 
+.PB_progress {
+  height: 			30px;
+  width: 			350px;
+  /* background-color: #c9c9c9; */
+  position: 		relative;
+}
+
+.PB_progress:before {
+  font-family:  "Arial", sans-serif;
+  font-size: 	17px !important;
+  
+  content: 		attr(data-label);
+
+  position: 	absolute;
+  text-align: 	center;
+  top: 			5px;
+  left: 		0;
+  right: 		0;
+}
+
+.PB_progress .PB_value {
+  /* background-color:  #7cc4ff; */
+  display: 			inline-block;
+  height: 			100%;
+}
+
+.PB_WaitColor {
+	background-color: 	#FFA500; /* ComputeWaitButton: Orange */
+}
+
+.PB_EncryptColor {
+	background-color: 	#2196D3; /* LEFT/Encrypt: Blue */
+}
+
+.PB_EncryptBar {
+	background-color: 	#2196D3; /* LEFT/Encrypt: Blue */
+}
+
+.PB_DecryptBar {
+	background-color: 	#C282C2; /* RIGHT/Decrypt: Magenta */
+}
+
+.PB_DecryptColor {
+	background-color: 	#C282C2; /* RIGHT/Decrypt: Magenta */
+}

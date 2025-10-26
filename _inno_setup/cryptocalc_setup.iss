@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Cryptocalc"
-#define MyAppVersion "0.4.7"
+#define MyAppVersion "0.4.9"
 #define MyAppPublisher "Aladas"
 #define MyAppURL "https://www.npmjs.com/package/@aladas-org/cryptocalc"
 #define MyAppExeName "cryptocalc.exe"
