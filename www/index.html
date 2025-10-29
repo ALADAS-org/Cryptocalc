@@ -72,7 +72,7 @@
 		<!-- ========================== 'Entropy' Tab page =========================== -->		
 		<div id="Seed" class="tabcontent">
 			<table class="inner SeedTabLayout">	
-				<tr><td class="HorizontalBar" colspan="4"><br/></td></tr>			
+				<!-- <tr><td class="HorizontalBar" colspan="4"><br/></td></tr> -->			
 				<!-- ----------------  Entropy Source ---------------- -->
 				<tr id="entropy_src_row">					
 					<td class="LabelColumn">
@@ -344,7 +344,7 @@
 		<!-- ========================================================================================= -->
 		<div id="Wallet" class="tabcontent">
 			<table>
-				<tr><td class="HorizontalBar" colspan="4"><br></td></tr>
+				<tr><td class="HorizontalBar" colspan="4"><br></td></tr>	
 				<!-- ---------------------- Wallet Mode ---------------------- -->	
 				<tr><td class="LabelColumn">Wallet Mode</td>	
 					<td colspan="2" class="FieldColumn">				
@@ -392,14 +392,14 @@
 									class="Bip32Cell">0'</td>
 								<td class="Bip32Cell">
 									<input id="account_id" type="text" class="Bip32CellValue" 
-										   value="0" maxlength="9"/><span id="account_suffix_id">&nbsp;'/</span> 
+										   value="0" maxlength="6"/><span id="account_suffix_id">&nbsp;'/</span> 
 									<span id="account_readonly_id" hidden>0'/</span>
 								</td>
 								<td class="Bip32Cell" id="change_id">0/</td>
 								<td class="Bip32Cell">
 									<input id="address_index_id" type="text" 
 										   class="Bip32CellValue" 
-										   value="0" maxlength="9"/>
+										   value="0" maxlength="6"/>
 									<span id="address_hardened_suffix_id"></span>
 									<span id="address_index_readonly_id" hidden>0</span>
 									<span>'</span>

@@ -6,7 +6,7 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 13098 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 13503 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by reporting bugs (or asking for enhancements) with _Issues_, 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
@@ -165,7 +165,11 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.4.8`: This version
+    - `0.4.10`: This version
+		- Bug Fix: it was possible to input a 9 digits value in `account` and `address index` fields,
+		which was a range of 1 billion `10^9` possible values for each field. Now the range is 1.000.000 ([0..999999]).
+	    - Documentation Fix: in 5.1.4.b. number of possible values for `account` and `address index` is now 1 million ([0..999999])
+    - `0.4.9`
 	    - Ergonomy:
 		    - A _Progress Bar_ is also displayed when saving a wallet with a `BIP38 Passphrase`. 
 			This is also to give a feedback to the user why it takes more time.     
@@ -320,7 +324,7 @@
 			> (meaningless in this situation).    
 			> You can then change either the _Account_ or _Address Index_ fields 
 			> (the maximum number of digits is 9 so you can input a decimal value 
-			> between 0 and 999999999, 100.000 possible values for each field) in the _Wallet_ tab page. 
+			> between 0 and 999999, 1.000.000 possible values for each field) in the _Wallet_ tab page. 
 			> This will show a [Refresh] button to recompute the wallet once you have finished.
 			> Pushing the [Refresh] button (or hitting either [Return] or [Enter] keys 
 			> while the cursor is in either _Account_ or _Address Index_ field) will recompute the 
