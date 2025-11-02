@@ -19,7 +19,7 @@ class WalletInfo {
 							[WORD_COUNT]: 				"word_count_select_id",			
 							[MNEMONICS]: 				"mnemonics_id",
 							[CHECKSUM]: 				"checksum_id",					
-							[BIP32_PASSPHRASE]:			"password_id",						
+							[BIP32_PASSPHRASE]:			"bip32_passphrase_id",						
 							[BIP38_PASSPHRASE]: 		"bip38_passphrase_id",							
 							[WORD_INDEXES]: 			"word_indexes_id",
  							[ADDRESS]: 					"address_id", 							
@@ -106,7 +106,18 @@ class WalletInfo {
 					display_value = parseInt(display_value);
 				}
 			}
-			HtmlUtils.SetElementValue( WalletInfo.GUI_NODE_IDs[attr_name], display_value );
+			
+			let elt_id = WalletInfo.GUI_NODE_IDs[attr_name];
+			// console.log( "elt_id: " + elt_id + "  display_value: " + display_value ); 
+			if ( elt_id == BIP32_PASSPHRASE_ID && display_value == '' ) {
+				HtmlUtils.HideElement(BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID);
+			}
+
+			if ( elt_id == BIP38_PASSPHRASE_ID && display_value == '' ) {
+				HtmlUtils.HideElement(BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID);
+			}
+
+			HtmlUtils.SetElementValue( elt_id, display_value );
 		}
 	} // setAttribute()
 } // Wallet class

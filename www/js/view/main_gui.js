@@ -268,8 +268,22 @@ class MainGUI {
 			// trace2Main( pretty_format( "rGUI.newW> account", 0 ) );						
 			
             this.wallet_info.setAttribute( ADDRESS_INDEX,  0 );           		
-			// trace2Main( pretty_format( "rGUI.newW> address_index", 0 ) );				
+			// trace2Main( pretty_format( "rGUI.newW> address_index", 0 ) );	
+
+			//---------- Bip32 passphrase strength ----------
+			HtmlUtils.SetElementValue( BIP32_PASSPHRASE_ID, '' );
+			HtmlUtils.SetElementValue( BIP32_PASSPHRASE_STRENGTH_ID, '0' );
+			HtmlUtils.SetElementValue( BIP32_PASSPHRASE_STRENGTH_LABEL_ID, 'Null' );
+			HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
+			//---------- Bip32 passphrase strength
 		} // HD_WALLET_TYPE	
+		
+		//---------- Bip38 passphrase strength ----------
+		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, '' );
+		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_STRENGTH_ID, '0' );
+		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_STRENGTH_LABEL_ID, 'Null' );
+		HtmlUtils.HideElement( BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID );
+		//---------- Bip38 passphrase strength
 		
 		//---------- lang ----------
 		let lang = options_json_data[LANG];			
@@ -868,9 +882,20 @@ class MainGUI {
 		this.setEventHandler( LANG_SELECT_ID,           'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateLang(evt); } );	
 
-		// -------------------- Passphrase --------------------
-		this.setEventHandler( PASSWORD_ID, 'keyup',   
-		    (evt) => { this.onGuiChangePassword(); } );
+		// -------------------- Bip32/Bip38 Passphrase --------------------
+		this.setEventHandler( BIP32_PASSPHRASE_ID, 'keyup',   
+		    async (evt) => { await this.onGuiChangePassphrase( evt ); } );
+			
+		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
+		    async (evt) => { await this.onGuiChangePassphrase( evt ); } );
+			
+			
+		this.setEventHandler( BIP32_PASSPHRASE_STRENGTH_LABEL_ID, 'mouseover',   
+		    async (evt) => { await this.onGuiPassphraseMouseOver( evt ); } );
+			
+		this.setEventHandler( BIP38_PASSPHRASE_STRENGTH_LABEL_ID, 'mouseover',   
+		    async (evt) => { await this.onGuiPassphraseMouseOver( evt ); } );
+			
 
 		this.setEventHandler( APPLY_PASSWORD_BTN_ID, 'click',   
 		    async (evt) => { if (this.cb_enabled) await this.GuiApplyPassword(); } );
@@ -883,12 +908,8 @@ class MainGUI {
 
 		this.setEventHandler( EYE_BTN_ID, 'click',   
 		    (evt) => { if (this.cb_enabled) this.GuiTogglePasswordVisibility(); } );
-		// -------------------- Passphrase		
+				
 
-		// -------------------- Bip38 (Non-EC) Passphrase --------------------
-		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
-		    (evt) => { this.onGuiChangeBip38Passphrase(); } );
-			
 		this.setEventHandler( CLEAR_BIP38_PASSPHRASE_BTN_ID, 'click',   
 		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip38Passphrase(); } );			
 			
@@ -897,7 +918,8 @@ class MainGUI {
 
 		this.setEventHandler( BIP38_PASSPHRASE_EYE_BTN_ID, 'click',   
 		    (evt) => { if (this.cb_enabled) this.GuiToggleBip38PassphraseVisibility(); } );
-		// --------------------  Bip38 (Non-EC) Passphrase			
+		// -------------------- Bip32/Bip38 Passphrase	
+		
 		
 		this.setEventHandler( WALLET_MODE_SELECT_ID,    'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiSwitchWalletMode(evt); } );
@@ -939,7 +961,7 @@ class MainGUI {
 	addCustomAttributes( entropy ) {
 		trace2Main( pretty_func_header_format( "MainGUI.addCustomAttributes") );
 		
-		let passphrase_elt = HtmlUtils.GetElement( PASSWORD_ID );
+		let passphrase_elt = HtmlUtils.GetElement( BIP32_PASSPHRASE_ID );
 		passphrase_elt.setAttribute( PASSWORD_PRIVATE_VALUE, "" );
 		
 		let bip38_passphrase_elt = HtmlUtils.GetElement( BIP38_PASSPHRASE_ID );
@@ -1024,7 +1046,7 @@ class MainGUI {
 				HtmlUtils.HideElement(TR_SW_MNEMONICS_ID);
 			}
 			
-			HtmlUtils.HideElement( PASSWORD_ROW_ID );
+			HtmlUtils.HideElement( BIP32_PASSPHRASE_ROW_ID );
 			
 			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
 			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
@@ -1034,14 +1056,14 @@ class MainGUI {
 		   HtmlUtils.ShowElement( TR_1ST_PK_ID );	
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
-           HtmlUtils.ShowElement( PASSWORD_ROW_ID );
+           HtmlUtils.ShowElement( BIP32_PASSPHRASE_ROW_ID );
 			
 			HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
 
 			if ( wallet_mode == HD_WALLET_TYPE )
 				HtmlUtils.ShowElement( DERIVATION_PATH_ROW );
 			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
-				HtmlUtils.HideElement( PASSWORD_ROW_ID );
+				HtmlUtils.HideElement( BIP32_PASSPHRASE_ROW_ID );
 				HtmlUtils.HideElement( DERIVATION_PATH_ROW );
 			}
 			HtmlUtils.ShowElement( TR_WIF_ID );
@@ -1219,7 +1241,7 @@ class MainGUI {
 		}
 		
 		HtmlUtils.SetElementValue( SB_MSG_ID, "" );
-		trace2Main( pretty_func_header_format( "<END> MainGUI.updateFields", entropy ) );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.updateFields", entropy ) );
 
 		this.cb_enabled	= true; 		
 	} // updateFields()
@@ -1354,7 +1376,7 @@ class MainGUI {
 		let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
 		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
 		
-		let bip32_passphrase = HtmlUtils.GetElementValue( PASSWORD_ID ); 
+		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID ); 
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
 		
 		let account = parseInt( HtmlUtils.GetElementValue( ACCOUNT_ID ) );
@@ -1978,22 +2000,146 @@ class MainGUI {
 	
 	
 	
-	// ------------------------ Bip32 Passphrase ------------------------
-	onGuiChangePassword( evt ) {
-		let bip32_passphrase = HtmlUtils.GetElementValue( PASSWORD_ID );
+	// ------------------------ Bip32/Bip38 Passphrase ------------------------
+	async getPassphraseInfo( passphrase ) {
+		let password_strength_info = { [PWD_STR_AS_BITS]: 0, [PWD_STR_AS_ADJECTIVE]: "Null" }; 
+		
+		let password_strength_as_bits      = 0;
+		let password_strength_as_adjective = "Null";		
+		
+		if ( passphrase != "" ) {
+			password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
+		}
+		
+		return password_strength_info;
+	} // async getPassphraseInfo()	
+		
+	async onGuiPassphraseMouseOver( evt ) {
+		let target_id = evt.target.id;
+		// console.log(" target_id:  '" + target_id + "'");
+		
+		let passphrase_field_id = BIP32_PASSPHRASE_ID;		
+		
+		if ( target_id == BIP32_PASSPHRASE_STRENGTH_LABEL_ID ) {
+			passphrase_field_id = BIP32_PASSPHRASE_ID;
+		}
+		else if ( target_id == BIP38_PASSPHRASE_STRENGTH_LABEL_ID ) {
+			passphrase_field_id = BIP38_PASSPHRASE_ID;
+		}
+		
+		let passphrase = HtmlUtils.GetElementValue( passphrase_field_id );
+		// console.log(" target_id:  '" + target_id + "'   passphrase_field_id:  '" + passphrase_field_id + "'   passphrase: '" + passphrase + "'" );
+		
+		let password_strength_as_bits      = 0;
+		let password_strength_as_adjective = "Null";
+		
+		let password_strength_info = await this.getPassphraseInfo( passphrase );
+		if ( passphrase != "" ) {
+			let password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
+			password_strength_as_bits = password_strength_info[PWD_STR_AS_BITS];
+			let suffix = 's';
+			if ( password_strength_as_bits <= 1 )  suffix = ''; 
+			document.getElementById(target_id).setAttribute('title', password_strength_as_bits.toString() + " bit" + suffix);
+		}
+	} // async onGuiPassphraseMouseOver()	
+	
+	async onGuiChangePassphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiChangePassphrase" ) );
+		// console.log(JSON.stringify( evt.target.id ));
+		
+		let target_id = evt.target.id;		
+		let passphrase = HtmlUtils.GetElementValue( target_id );
 		// trace2Main( pretty_func_header_format( "MainGUI.onGuiChangePassword", "'" + password + "'" ) );
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		
+		let password_strength_as_bits      = 0;
+		let password_strength_as_adjective = "Null";
+		
+		let password_strength_info = await this.getPassphraseInfo( passphrase );
+		if ( passphrase != "" ) {
+			let password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
 
-		if ( bip32_passphrase == "") {
-			this.GuiSetPasswordApplyState( false );	
+			password_strength_as_bits      = password_strength_info[PWD_STR_AS_BITS];
+			password_strength_as_adjective = password_strength_info[PWD_STR_AS_ADJECTIVE];
+		}
+		
+		let strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
+		let wallet_field_id       = BIP32_PASSPHRASE;
+		let strength_bits_id      = BIP32_PASSPHRASE_STRENGTH_ID;
+		let strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
+		
+		if ( target_id == BIP32_PASSPHRASE_ID ) {
+			strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
+			wallet_field_id       = BIP32_PASSPHRASE;
+			strength_bits_id      = BIP32_PASSPHRASE_STRENGTH_ID;
+			strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
+		}
+		else if ( target_id == BIP38_PASSPHRASE_ID ) {
+			strength_container_id = BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID;
+			wallet_field_id       = BIP38_PASSPHRASE;
+			strength_bits_id      = BIP38_PASSPHRASE_STRENGTH_ID;
+			strength_label_id     = BIP38_PASSPHRASE_STRENGTH_LABEL_ID;
+		}
+		
+		// console.log(" target_id:  '" + target_id + "'   passphrase: '" + passphrase + "'");
+		
+		this.wallet_info.setAttribute( wallet_field_id, passphrase );
+		if ( passphrase != "" ) {
+			HtmlUtils.ShowElement( strength_container_id );	
+			
+			let strength_bits = password_strength_as_bits;
+			const MAX_VALUE = 128;
+            if ( strength_bits > MAX_VALUE ) strength_bits = MAX_VALUE;
+			let strength_value = (strength_bits / MAX_VALUE) * 100.0;
+			HtmlUtils.SetElementValue( strength_bits_id, strength_value.toString() );
+
+			HtmlUtils.SetElementValue( strength_label_id, password_strength_as_adjective );	
+
+			// --------- Progress Color ---------
+			let strength_elt = HtmlUtils.GetElement( strength_bits_id );
+			
+			// 0 – 27 bits	    Very Weak	            Simple words, “password”, “123456”, short names
+		    // 28 – 35 bits	    Weak	                Single dictionary word with a few digits (“summer23”)
+		    // 36 – 59 bits	    Fair    	            Two random words or a word + symbols (“Blue$Tiger42”)
+		    // 60 – 79 bits	    Good	                Three random words or long passphrase
+		    // 80 – 127 bits    Strong	                Four or more random words; secure random generator used
+		    // 128 bits +	    Very Secure	            Random 16-byte key or long diceware passphrase
+			if ( strength_bits >= 0 && strength_bits < 27.99 ) {
+				document.documentElement.style.cssText = "--progress-color: #F88379"; // red
+			}
+			if ( strength_bits >= 28 && strength_bits < 35.99 ) {
+				document.documentElement.style.cssText = "--progress-color: #FFBF00"; // orange
+			}	
+			if ( strength_bits >= 36 && strength_bits < 59.99 ) {
+				document.documentElement.style.cssText = "--progress-color: #faeb36"; // yellow
+			}
+			if ( strength_bits >= 60 && strength_bits < 79.99 ) {
+				document.documentElement.style.cssText = "--progress-color: #AAFF00"; // green
+			}
+			if ( strength_bits >= 80 && strength_bits < 127.99 ) {
+				document.documentElement.style.cssText = "--progress-color: #00FFFF"; // blue
+			}
+			if ( strength_bits >= 128 ) {
+				document.documentElement.style.cssText = "--progress-color: #EE82EE"; // violet
+			}
+			// --------- Progress Color			
 		}
 		else {
-			this.GuiSetPasswordApplyState( true );	
-		}	
-	} // onGuiChangePassword()
+			HtmlUtils.HideElement( strength_container_id );				
+		}
+		
+		
+		if ( target_id == BIP32_PASSPHRASE_ID ) {
+			if ( passphrase == "" ) {
+				this.GuiSetPasswordApplyState( false );	
+			}
+			else {
+				this.GuiSetPasswordApplyState( true );	
+			}	
+	    }			
+	} // async onGuiChangePassphrase()
 	
 	async GuiApplyPassword( evt ) {
-		let bip32_passphrase = HtmlUtils.GetElementValue( PASSWORD_ID );
+		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
 		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", bip32_passphrase ) );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
 		await this.updatePassword( bip32_passphrase );
@@ -2015,22 +2161,23 @@ class MainGUI {
 		if ( visible ) {
 			HtmlUtils.ShowElement( APPLY_PASSWORD_BTN_ID );
 			HtmlUtils.ShowElement( APPLY_BTN_SEPARATOR_ID );
-			HtmlUtils.AddClass( PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
-			HtmlUtils.RemoveClass(PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
+			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass(BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
 			this.setSaveCmdState( false );
 		}
 		else {
 			HtmlUtils.HideElement( APPLY_PASSWORD_BTN_ID );
 			HtmlUtils.HideElement( APPLY_BTN_SEPARATOR_ID );
-			HtmlUtils.AddClass( PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
-			HtmlUtils.RemoveClass( PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
+			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
 			this.setSaveCmdState( true );
 		}
 	} // GuiSetPasswordApplyState()
 	
 	GuiClearPassword( update_wallet ) {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiClearPassword" ) );
-		this.wallet_info.setAttribute( BIP38_PASSPHRASE, '');
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '');
+		HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
 
 		this.GuiSetPasswordApplyState( false );	
 	} // GuiClearPassword()
@@ -2038,17 +2185,17 @@ class MainGUI {
 	GuiTogglePasswordVisibility() {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiTogglePasswordVisibility" ) );	
 		let eye_btn_img_elt = document.getElementById(EYE_BTN_IMG_ID )
-		console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
+		// console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
 		
 		if ( this.password_visible ) { 
-			document.getElementById(PASSWORD_ID).type = 'password';	
+			document.getElementById(BIP32_PASSPHRASE_ID).type = 'password';	
 			
 			if (eye_btn_img_elt != undefined) {
 				eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;	
 			}
 		}
 		else { 	
-		    document.getElementById(PASSWORD_ID).type = 'text';	
+		    document.getElementById(BIP32_PASSPHRASE_ID).type = 'text';	
 
 			if (eye_btn_img_elt != undefined) {
 				eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;	
@@ -2056,29 +2203,7 @@ class MainGUI {
 		}
 		this.password_visible = ! this.password_visible;
 	} // GuiTogglePasswordVisibility()
-	// ------------------------ Bip32 Passphrase
-	
-	
-	
-	// ------------------------ Bip38 Passphrase ------------------------
-	onGuiChangeBip38Passphrase( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.onGuiChangeBip38Passphrase" ) );
-		let bip38_passphrase = HtmlUtils.GetElementValue( BIP38_PASSPHRASE_ID );
-		
-		//trace2Main("   bip38_passphrase:      '" + bip38_passphrase + "'");
-		
-		let bip38_passphrase_wo_starting_space = bip38_passphrase.trimStart();
-		//trace2Main("   passphrase_trim: '" + bip38_passphrase_wo_starting_space + "'");
-		
-		// this.wallet_info.setAttribute( BIP38_PASSPHRASE, bip38_passphrase_wo_starting_space );
-		
-		let bip38_passphrase_wo_multiple_ending_spaces = bip38_passphrase_wo_starting_space.replace(/  +/g, ' ');
-		//trace2Main("   passphrase_wo_starting_or_ending_space: '" + passphrase_wo_multiple_ending_spaces + "'");
-		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, bip38_passphrase_wo_multiple_ending_spaces );
-		
-		this.wallet_info.setAttribute( BIP38_PASSPHRASE, bip38_passphrase_wo_multiple_ending_spaces );
-	} // onGuiChangeBip38Passphrase()
-	
+
 	async GuiGenerateBip38Passphrase( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip38Passphrase" ) );
 		let data = {};
@@ -2091,6 +2216,7 @@ class MainGUI {
 	GuiClearBip38Passphrase( update_wallet ) {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip38Passphrase" ) );
 		this.wallet_info.setAttribute( BIP38_PASSPHRASE, '');
+		HtmlUtils.HideElement( BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID);
 
 		this.GuiSetPasswordApplyState( false );	
 	} // GuiClearBip38Passphrase()
@@ -2116,7 +2242,7 @@ class MainGUI {
 		}
 		this.bip38_passphrase_visible = ! this.bip38_passphrase_visible;
 	} // GuiToggleBip38PassphraseVisibility()
-	// ------------------------ Bip38 Passphrase
+	// ------------------------ Bip32/Bip38 Passphrase
 		
 
 	async onFileNewWallet( evt ) {
@@ -2169,9 +2295,15 @@ class MainGUI {
 			let default_blockchain = this.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
 			trace2Main( pretty_format( "rGUI.onGuiSwWmod> default_blockchain: '" + default_blockchain + "'" ) );
 
-            this.wallet_info.setAttribute( BLOCKCHAIN, default_blockchain );			
+            this.wallet_info.setAttribute( BLOCKCHAIN, default_blockchain );
 
-			this.wallet_info.setAttribute( BIP38_PASSPHRASE, '' );			
+            // -------- Bip32/Bip38 passphrase -------- 
+			this.wallet_info.setAttribute( BIP32_PASSPHRASE, '' );	
+			HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );			
+
+			this.wallet_info.setAttribute( BIP38_PASSPHRASE, '' );	
+			HtmlUtils.HideElement( BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID );
+			// -------- Bip32/Bip38 passphrase		
 			
 			this.cb_enabled = true;
 	    }		

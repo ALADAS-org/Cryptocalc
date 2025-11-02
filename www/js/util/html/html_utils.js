@@ -139,9 +139,11 @@ class HtmlUtils {
 				|| elt.nodeName == "BUTTON" ) {
 				elt.textContent = value_str;
 			}
+			else if ( elt.nodeName == "PROGRESS") {
+				// console.log( "value_str: " + value_str + " typeof value_str: " + typeof value_str);
+				$('#' + elt_id).prop("value", value_str);
+			}
 			else if ( elt.nodeName == "INPUT") {
-				// trace2Main(" elt.nodeName: '" + elt.nodeName + "'");
-			    // trace2Main(" value_str: " + value_str);
 				$('#' + elt_id).prop("value", value_str);
 			}
 			else if ( elt.nodeName == "TEXTAREA" ) {

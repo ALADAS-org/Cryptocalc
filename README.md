@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.9
+## CryptoCalc 0.4.20
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,7 +6,7 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 13503 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 13615 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by reporting bugs (or asking for enhancements) with _Issues_, 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
@@ -40,35 +40,37 @@
    
     2.9. Customizable options    
     Options includes `Blockchain`, `Wallet mode` (eg: Simple / HD / SWORD) and `Entropy size`
+	
+	2.10. Visual feedback of the _Passphrase Strength_ (`Bip32/Bip38`)
    
-    2.10. List of `Word indexes`    
+    2.11. List of `Word indexes`    
     The crucial data in the `Secret phrase` is indeed the list of `Word indexes` (indexes in the `BIP39` wordlist ), 
     is explicitly displayed so if the language is changed these word indexes are the same.
    
-    2.11. Internet connection status    
+    2.12. Internet connection status    
     Because of the _Cold wallet_ / _Non custodial_ purpose of Cryptocalc, it is not recommended to generate
     cryptocurrency wallets while being online. The status is displayed on the right of the main horizontal toolbar,
     it's a red "connected" icon when online and a green "disconnected" icon when offline (the highly recommended way to use Cryptocalc).   
    
-    2.12. Localization    
+    2.13. Localization    
     Translations of GUI labels in the user's language (only _English_ and _French_ files provided currently but the localization
     feature allows translations in other languages as well, they are in `JSON` format eg. `gui-msg-en.json`).
    
-    2.13. Dynamic links    
+    2.14. Dynamic links    
         - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
         - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
         - 3D representation of the `Secret phrase` (see an example here: [Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
 	   
-    2.14. Standalone installer    
+    2.15. Standalone installer    
     It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
     installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
     This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
    
-    2.15. Tested on `Windows` and `Linux`    
+    2.16. Tested on `Windows` and `Linux`    
         - `Windows`: tested on `Windows 10`    
 	    - `Linux`: tested on [Linux Mint 22.2](https://linuxmint.com/) (NB: tested on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
 	   
-    2.16. Cryptocurrencies: 23 supported Cryptocurrencies   
+    2.17. Cryptocurrencies: 23 supported Cryptocurrencies   
     `BTC` (Bitcoin), `ETH` (Ethereum), `XRP` (Ripple), `BNB` (Binance Smart Chain), `SOL` (Solana), 
     `DOGE` (Dogecoin), `TRX` (TRON), `ADA` (Cardano), `XLM` (Stellar), `SUI` (Sui), `BCH` (Bitcoin Cash), `AVAX` (Avalanche), `TON` (Toncoin), 
     `LTC` (Litecoin), `ETC` (Ethereum Classic), `POL` (Polygon), `VET` (VeChain), `BSV` (Bitcoin SV), `DASH` (Dash), `RVN` (Ravencoin), 
@@ -80,7 +82,7 @@
     - Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`    
     - Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
-    2.17. Languages: 18 supported languages     
+    2.18. Languages: 18 supported languages     
     - Officially supported in `Bip39`    
     _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
     Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
@@ -91,7 +93,7 @@
     Notice that _English_  has around 1.5 billion speakers, _Mandarin_ has around 1.1 billion speakers
     while the _India triad_ (_Hindi_, _Bengali_ and _Gujarati_) has around 1 billion speakers.
 
-    2.18. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
+    2.19. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
     _CryptoCalc_  is written in `Javascript` (both _client side_ and _server side_) and is built on top of _ElectronJS_.     
     _ElectronJS_ is used in many modern and popular [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) 
     (e.g. [Visual Studio Code](https://code.visualstudio.com/), [Discord](https://discord.com/), [WhatsApp](https://www.whatsapp.com/),
@@ -165,7 +167,9 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.4.10`: This version
+    - `0.4.20`: This version
+	    -  New Feature:
+		    - `Passphrase Strength` for `Bip32/Bip38` (see 5.1.7)
 		- Bug Fix: it was possible to input a 9 digits value in `account` and `address index` fields,
 		which was a range of 1 billion `10^9` possible values for each field. Now the range is 1.000.000 ([0..999999]).
 	    - Documentation Fix: in 5.1.4.b. number of possible values for `account` and `address index` is now 1 million ([0..999999])
@@ -357,53 +361,64 @@
     	With a _Bip32 passphrase_ a completely different _HD hierarchy_ is generated. 
 		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
 		**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
-		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button. 			
-		- 5.1.7. _Salted Entropy_    
+		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button.
+        - 5.1.7. _Passphrase Strength_ ('Bip32/Bip38')	
+        This is a visual feedback of the _Passphrase Strength_ (Bip32/Bip38). The measure of the passphrase's strength is indeed the entropy
+		in bits (its is a a decimal number e.g. '57.04 bits'), displayed as a line (whose length is proportional to entropy) as well as an
+		adjective (i.e: Weak, Moderate, Strong, etc..) and a color. The computation of strength uses the smallest encoding alphabet by 
+		recognizing 'binary', 'octal', 'hexadecimal', 'base58', 'base64' or a combination of [A..Z][a..z][0..9][+-/=_<>&#$*@%[](){}";,.]
+		    - 0..27 bits	Very Weak	            Red
+		    - 28..35 bits	Weak	                Orange
+		    - 36..59 bits	Fair    	            Yellow
+		    - 60..79 bits	Good	                Green
+		    - 80..127 bits  Strong	                Blue
+		    - 128 bits +	Very Secure	            Violet		
+		- 5.1.8. _Salted Entropy_    
 		_Entropy_ is generated from _Entropy Source_ and adding a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ value is the same 
 		(e.g. reusing the same image or fortune cookie). Thus the _Entropy_ value will be unique at each press of [Generate] button.
-		- 5.1.8. Choose _Entropy Size_    
+		- 5.1.9. Choose _Entropy Size_    
 		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). This is equivalent to the size of the _Secret phrase_ 
 		(between 12 and 24 words). Changing _Entropy Size_ impacts the size of the _Secret phrase_ and conversely.
-		- 5.1.9. _Wallet Address_    
+		- 5.1.10. _Wallet Address_    
 		_Wallet Address_ is displayed in the `Wallet` tab page. There's also an [Explorer...] button which allows to check
 		the generated address in the appropriate _Blockchain Explorer_.
-		- 5.1.10. _Internet Connection Status_    
+		- 5.1.11. _Internet Connection Status_    
 		This is to secure _Offline wallet creation_ (_non custodial_). An icon at the right of the _Main Toolbar_ shows 
 		if the Internet is connected (`Wifi ON` red icon) or not connected (`Wifi OFF` green icon)
-		- 5.1.11. `Save` _Wallet Informations_    
+		- 5.1.12. `Save` _Wallet Informations_    
 		With `File/Save` (or the _Save_ icon in the main toolbar), you can save the _Wallet Informations_ in a timestamped 
 		subfolder (eg. `2024_10_07_21h-4m-4s-3_BTC_EN`) under `_output` folder.	
 		This subfolder contains `wallet_info.txt` and a `wallet.json` with the informations displayed in _Entropy_ and _Wallet_ tab pages. 
-			- 5.1.11.a. When you save the current generated wallet a Popup dialog confirms the saving and allows to show where it is saved.    
-            - 5.1.11.b. The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Secret phrase`,
+			- 5.1.12.a. When you save the current generated wallet a Popup dialog confirms the saving and allows to show where it is saved.    
+            - 5.1.12.b. The _Wallet Informations_ subfolder contains _QR Codes_ (`png` images) for `Address`, `Private Key`, `Secret phrase`,
 			`Entropy` and `WIF` (if applicable).    
 			Notice that there is a `xtras` subfolder where these _QR codes_ are provided
 			in the `svg` format. There is also a _Rectangular Micro QR code_ (`rMQR`) of the 
 			`Entropy` (_Rectangular Micro QR Code_, `R15x59` or `R15x77` version depending on		
 			`Entropy size`) and an experimental `Ultracode` color QR code of the `Entropy`.
-		    - 5.1.11.c: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
-		        - 5.1.11.c.I: Notice that most Android _QR Code reader_ apps will 
+		    - 5.1.12.c: How to retrieve a _Wallet Address_ from the _Rectangular Micro QR Code_    
+		        - 5.1.12.c.I: Notice that most Android _QR Code reader_ apps will 
 			    not be compatible with _Rectangular Micro QR Code_ but it works with 
 			    [`QRQR`](https://play.google.com/store/apps/details?id=com.arara.q&hl=en)	 
 			    an Android _QR Code reader_ published by _Arara_ on the _Google Play Store_.              
-                * 5.1.11.c.II: Then convert the _Entropy_ to the matching _Secret phrase_ 
+                * 5.1.12.c.II: Then convert the _Entropy_ to the matching _Secret phrase_ 
 			    by doing a copy/paste in the `Entropy` field of _CryptoCalc_.    
 				**Caution**: Take care to set _CryptoCalc_ with the same `Entropy Size` and 
 				`Derivation path` (if applicable, don't forget to use the [Refresh] button)
 				than those used when the wallet was created (these informations 
 				are provided either in the `wallet_info.txt` or in `wallet_info.wits`).
-		- 5.1.12. `Open` _Wallet Informations_ of a previously saved wallet    
-		    - 5.1.12.a. _Wallet informations_ are saved both as a `.txt` but also as a `.wits` file (`JSON` format). 
-		    - 5.1.12.b. A `.wits` file can be opened either with `File.Open...` menu item or 'Open...' icon
+		- 5.1.13. `Open` _Wallet Informations_ of a previously saved wallet    
+		    - 5.1.13.a. _Wallet informations_ are saved both as a `.txt` but also as a `.wits` file (`JSON` format). 
+		    - 5.1.13.b. A `.wits` file can be opened either with `File.Open...` menu item or 'Open...' icon
 			in the toolbar. It can be also be opened in `Cryptocalc.exe` by double clicking on the `.wits` 
 			(_File extension to Application_ feature): this will launchlc `Cryptocalc.exe` (cf. 3.1 for installing 
 			`Cryptocalc.exe` with the _CryptoCalc Standalone installer_)  /
-			- 5.1.12.c. Once opened, a wallet can't be saved on itself (it is to prevent accidental overwrite of the original wallet),
+			- 5.1.13.c. Once opened, a wallet can't be saved on itself (it is to prevent accidental overwrite of the original wallet),
             but you can use `File.Save As...` which will save the wallet with a different timestamp than the original one.	
-            - 5.1.12.d.	Notice that for a _HD Wallet_ you can change the `Account` and/or the `Address Index` (dont forget to push
+            - 5.1.13.d.	Notice that for a _HD Wallet_ you can change the `Account` and/or the `Address Index` (dont forget to push
 			the [Refresh] button). Now you can save the new wallet with `File.Save As...` and if you didn't change the `Entropy` 
             then this new wallet will belong to the same `Bip32 HD Wallet Tree` (see A.2) than the original one.			
-		- 5.1.13. Import a wallet in [Guarda](https://guarda.com/)   
+		- 5.1.14. Import a wallet in [Guarda](https://guarda.com/)   
 		An item in the menu (Help / Resources / Guarda) eases importing a wallet in a _Wallet Manager_ application 
 		    - Notes on `Guarda`
 		        - It is a _Non custodial_ wallet because the _Private Keys_ are stored on you local computer so keep in mind 
@@ -412,7 +427,7 @@
 			    - It is a _Hot_ wallet because it is is also a web service which allows to send funds to another wallet
 			    and also to change a cryptocurrency in another (eg ETH to SOL).		
                 - `Guarda` was chosen mainly to validate that a generated wallet by _CryptoCalc_ is accepted and thus validated.			
-        - 5.1.14. Select _Secret phrase Language_    
+        - 5.1.15. Select _Secret phrase Language_    
 		You can select the _Wordlist Language_ (eg. _English_, _French_, _Deutsh_, etc...). 
 		Please notice that only _English_ is accepted for most _Wallet Manager_ applications. 
         Changing _Wordlist Language_ is indeed a mean to add an "obfuscation/information hiding" step  
@@ -421,28 +436,28 @@
 		NB: it is important to highlight that indeed the crucial information is the list of _Word Indexes_.
 		Thats's why translation between languages is easy in _CryptoCalc_ because the reference 
 		is the _Word Indexes_ (see 6.1.14) not the words.
-		- 5.1.15. Display of _Word Indexes_    
+		- 5.1.16. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
 		_Secret phrase_ words in the `BIP39` wordlist (see also 6.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
-		- 5.1.16. Display of the _BIP32 Derivation Path_    
+		- 5.1.17. Display of the _BIP32 Derivation Path_    
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
 		_Secret phrase_ (also called the _Secret Recovery Passphrase_).
-		- 5.1.17. Dynamic Links
+		- 5.1.18. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
             - 3D representation of the `Secret phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/)) 
             The whitepaper The description of this 3D representation is in this [whitepaper](https://zenodo.org/records/14579720)			
-		- 5.1.18. Change/Reset of _Options_ (`Tools/Options`)    
+		- 5.1.19. Change/Reset of _Options_ (`Tools/Options`)    
 		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
 		It is also possible to reset _Options_ to _Default Options_
 		(defined in `www/config/defaults/options.json`)
-        - 5.1.19. _Localization_    
+        - 5.1.20. _Localization_    
         _Localization_ (`l10n`) feature is the translation of _GUI Labels_ to adapt to the user's language, it' called the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use and optionnally a codeset (eg. `de_CH.UTF-8`).		
 		The _locale_ is provided as part of your machine's environment. _CryptoCalc_ only uses the 2 letter language part (eg. `en`). 

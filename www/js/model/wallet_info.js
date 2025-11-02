@@ -16,9 +16,11 @@ class WalletInfo {
 							"expected_entropy_digits": "",							
 							"word_count": 			"word_count_select_id",			
 							[MNEMONICS]: 			"mnemonics_id",				// "Secret phrase": "mnemonics_id",
-							"checksum": 			"checksum_id",					
-							[BIP32_PASSPHRASE]: 	"password_id",			    // "Passphrase": "password_id",							
-							"bip38_passphrase": 	"bip38_passphrase_id",							
+							"checksum": 			"checksum_id",
+							
+							[BIP32_PASSPHRASE]: 	"bip32_passphrase_id",						
+							[BIP38_PASSPHRASE]: 	"bip38_passphrase_id",
+							
 							[WORD_INDEXES]:     	"word_indexes_id",							
 		                    [ADDRESS]: 				"address_id",							
 							"Private Key": 			"private_key_id",							

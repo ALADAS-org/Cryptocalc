@@ -199,14 +199,14 @@
 				
 				
 				<!-- -----------------------  Bip32 passphrase  ----------------------- -->
-				<tr id="password_row_id">
+				<tr id="bip32_passphrase_row_id">
 					<td class="LabelColumn">
 						<span id="password_label_id">Bip32 passphrase</span>
 					</td>
 					<td colspan="2" class="FieldColumn">
 						<div id="password_container_id" class="DataFieldWithButton_Container">
 							<input class="PasswordFielWithoutApplyButton EntropyInput"
-								   id="password_id" type="password"
+								   id="bip32_passphrase_id" type="password"
 								   minlength="4" maxlength="128" value=""/>
 							<button class="SmallButton" id="eye_btn_id"
 									title="Show/Hide Bip32 passphrase">
@@ -221,6 +221,22 @@
 							<input id="clear_password_btn_id" type="button" 
 								   title="Clear Bip32 passphrase" value="Clear"/>
 						</div>
+						
+						<!-- ------------ Bip32 Passphrase Strength ------------ -->
+						<div id="bip32_passphrase_strength_container_id" hidden>
+							<table id="bip32_passphrase_str_table_id">
+							    <tr>
+								<td id="bip32_passphrase_str_col_bar_id">
+									<progress id="bip32_passphrase_strength_id" class="Bip32PassphraseStrength" 
+										      max="100" value="0" title=""></progress>
+								</td>
+								<td id="bip32_passphrase_str_col_label_id">
+									<span id="bip32_passphrase_strength_label_id">very weak</span>
+								</td>
+							    </tr>
+						    </table>
+						</div>						
+						<!-- ------------ Bip32 Passphrase Strength -->
 					</td>
 				</tr>
 				<!-- ----------------------- Bip32 passphrase -->
@@ -303,7 +319,7 @@
 					</td>
 					<td class="FieldColumn" colspan="2">
 						<textarea class="RawDataField WithoutFocus" 
-								  rows="3" spellcheck="false"
+								  rows="2" spellcheck="false"
 								  id="word_indexes_id">XX								  
 						</textarea>
 					</td>
@@ -330,6 +346,22 @@
 							<input id="clear_bip38_passphrase_btn_id" type="button" 
 								   title="Clear Bip38 passphrase" value="Clear"/>
 						</div>
+
+                        <!-- ------------ Bip38 Passphrase Strength ------------ -->
+						<div id="bip38_passphrase_strength_container_id" hidden>
+							<table id="bip38_passphrase_str_table_id">
+							    <tr class="Bip38PassphraseStrength">
+								<td id="bip38_passphrase_str_col_bar_id">
+									<progress id="bip38_passphrase_strength_id" class="Bip38PassphraseStrength" 
+										      max="100" value="0" title=""></progress>
+								</td>
+								<td id="bip38_passphrase_str_col_label_id">
+									<span id="bip38_passphrase_strength_label_id">very weak</span>
+								</td>
+							    </tr>
+						    </table>
+						</div>
+						<!-- ------------ Bip38 Passphrase Strength -->
 					</td>
 				</tr>
 				<!-- ---------------------- Bip38 (Non-EC) Passphrase -->

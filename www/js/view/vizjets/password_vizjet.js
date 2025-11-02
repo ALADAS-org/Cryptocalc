@@ -27,7 +27,7 @@ class PasswordVizjet {
 	} // onKey()
 	
 	async applyPassword( evt ) {
-		let bip32_passphrase = HtmlUtils.GetElementValue( PASSWORD_ID );
+		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
 		trace2Main( pretty_func_header_format( "PasswordVizjet.GuiApplyPassword", bip32_passphrase ) );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
 		await this.updatePassword( bip32_passphrase );
@@ -50,15 +50,15 @@ class PasswordVizjet {
 		if ( visible ) {
 			HtmlUtils.ShowElement( APPLY_PASSWORD_BTN_ID );
 			HtmlUtils.ShowElement( APPLY_BTN_SEPARATOR_ID );
-			HtmlUtils.AddClass( PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
-			HtmlUtils.RemoveClass(PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
+			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass(BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
 			this.setSaveCmdState( false );
 		}
 		else {
 			HtmlUtils.HideElement( APPLY_PASSWORD_BTN_ID );
 			HtmlUtils.HideElement( APPLY_BTN_SEPARATOR_ID );
-			HtmlUtils.AddClass( PASSWORD_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
-			HtmlUtils.RemoveClass( PASSWORD_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
+			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
 			this.setSaveCmdState( true );
 		}
 	} // setPasswordApplyState()
@@ -81,14 +81,14 @@ class PasswordVizjet {
 		console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
 		
 		if ( this.visible ) { 
-			this.getNode( PASSWORD_ID ).type = 'password';	
+			this.getNode(BIP32_PASSPHRASE_ID).type = 'password';	
 			
 			if (eye_btn_img_elt != undefined) {
 				eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;	
 			}
 		}
 		else { 	
-		    this.getNode( PASSWORD_ID ).type = 'text';	
+		    this.getNode( BIP32_PASSPHRASE_ID ).type = 'text';	
 
 			if (eye_btn_img_elt != undefined) {
 				eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;	
