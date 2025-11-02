@@ -45,8 +45,10 @@ const EXPECTED_ENTROPY_DIGITS     = 'expected_entropy_digits';
 const WORD_COUNT                  = 'word_count';
  
 const BIP32_PASSPHRASE            = 'Bip32 Passphrase';
-
 const BIP38_PASSPHRASE            = 'Bip38 Passphrase';
+
+const PWD_STR_AS_BITS             = 'Password Strength as bits';
+const PWD_STR_AS_ADJECTIVE        = 'Password Strength as adjective';
 
 const PASSWORD_PRIVATE_VALUE      = 'password_private_value';
  
@@ -129,9 +131,11 @@ if ( typeof exports === 'object' ) {
 	exports.WORD_INDEXES          = WORD_INDEXES
 	exports.WORD_COUNT            = WORD_COUNT
 	
-	exports.BIP32_PASSPHRASE      = BIP32_PASSPHRASE
-	
+	exports.BIP32_PASSPHRASE      = BIP32_PASSPHRASE	
 	exports.BIP38_PASSPHRASE      = BIP38_PASSPHRASE
+	
+	exports.PWD_STR_AS_BITS       = PWD_STR_AS_BITS;
+    exports.PWD_STR_AS_ADJECTIVE  = PWD_STR_AS_ADJECTIVE;
 
 	exports.WIF                   = WIF
 	

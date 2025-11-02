@@ -192,6 +192,6 @@ function test_Bip38Utils() {
 
 // test_Bip38Utils();
 
-if (typeof exports === 'object') {
+if ( typeof exports === 'object' ) {
 	exports.Bip38Utils = Bip38Utils	
 } // exports of 'bip38_utils.js'

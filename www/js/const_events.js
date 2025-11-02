@@ -53,6 +53,8 @@ const ToMain_RQ_GUESS_MNEMONICS_LANG              = "ToMain:Request/guess_mnemon
 const ToMain_RQ_BIP38_ENCRYPT                     = "ToMain:Request/bip38_encrypt";
 const ToMain_RQ_BIP38_DECRYPT                     = "ToMain:Request/bip38_decrypt";
 
+const ToMain_RQ_GET_PASSWORD_STRENGTH             = "ToMain:Request/get_password_strength";
+
 const ToMain_RQ_GET_HD_WALLET                     = "ToMain:Request/get_hd_wallet";
 const ToMain_RQ_GET_SIMPLE_WALLET                 = "ToMain:Request/get_simple_wallet";
 const ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS  = "ToMain:Request/get_simple_wallet_from_mnemonics";
@@ -169,6 +171,8 @@ if ( typeof exports === 'object' ) {
 	
 	exports.ToMain_RQ_BIP38_ENCRYPT                     = ToMain_RQ_BIP38_ENCRYPT
 	exports.ToMain_RQ_BIP38_DECRYPT                     = ToMain_RQ_BIP38_DECRYPT
+	
+	exports.ToMain_RQ_GET_PASSWORD_STRENGTH             = ToMain_RQ_GET_PASSWORD_STRENGTH
 	
 	exports.FromMain_DID_FINISH_LOAD                    = FromMain_DID_FINISH_LOAD
 	

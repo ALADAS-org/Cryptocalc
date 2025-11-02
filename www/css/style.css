@@ -157,9 +157,9 @@ hr {
 }
 
 #internet_connection_td_id {
-	position: absolute; 
-    top:   0px; 
-    right: 7px
+	position: 	absolute; 
+    top:   		0px; 
+    right: 		7px
 }
 
 #password_label_id {
@@ -170,6 +170,177 @@ hr {
 	font-size:  14px;
 	margin-top:  5px;
 }
+
+/* ==================== Bip32/38 Passphrase Strength ==================== */
+html { 
+	--progress-color: orange;
+}
+
+progress[value].Bip38PassphraseStrength {
+  /* --color: 				orange; 	the progress color */
+  --color:              var(--progress-color);
+  
+  --background: 		#FFFFF0; 	/* the background color */
+
+  -webkit-appearance: 	none;
+  -moz-appearance: 		none;
+  appearance: 			none;
+  
+  border: 				none;
+ 
+  width: 				100% !important;  
+  height: 				3px  !important;
+  
+  margin: 		    	0px 0px 5px 0px;
+  box-shadow:			none;
+  border-radius: 		0px;
+  background: 			var(--background);
+}
+
+progress[value].Bip32PassphraseStrength {
+  /* --color: 				orange; 	the progress color */
+  --color:              var(--progress-color);
+  
+  --background: 		#FFFFF0;  /* the background color */
+
+  -webkit-appearance: 	none;
+  -moz-appearance: 		none;
+  appearance: 			none;
+  
+  border: 				none;
+ 
+  width: 				100% !important;  
+  height: 				3px  !important;
+  
+  margin: 		    	0px 0px 5px 0px;
+  box-shadow:			none;
+  border-radius: 		0px;
+  background: 			var(--background);
+}
+
+#bip38_passphrase_strength_container_id {
+  width: 				98.5%;
+  background: 			#FFFFF0;
+  
+  /*height:   		    5px !important;*/
+  /*max-height:   		5px !important;*/
+}
+
+#bip32_passphrase_strength_container_id {
+  width: 				98.5%;
+  background: 			#FFFFF0;
+  
+  /*height:   		    5px !important;*/
+  /*max-height:   		5px !important;*/
+}
+
+#bip38_passphrase_str_table_id {	
+  width: 				100%;
+  height:  			    5px !important;
+  max-height:  			5px !important;  
+  border-spacing: 		0px; 
+  border-collapse:		collapse; 
+  /* border:            1px solid black; */ 
+}
+
+#bip32_passphrase_str_table_id {	
+  width: 				100%;
+  border-spacing: 		0px; 
+  border-collapse:		collapse; 
+  /* border:            1px solid black; */ 
+}
+
+#bip38_passphrase_str_col_bar_id {
+  left: 				0px;
+  width: 				91%;
+  height:  				5px !important;
+  max-height:  			5px !important;
+}
+
+#bip32_passphrase_str_col_bar_id {
+  left: 				0px;
+  width: 				91%;
+  height:  				5px !important;
+  max-height:  			5px !important;
+}
+
+#bip38_passphrase_str_col_label_id {
+  width: 				9%;
+  background: 			#yellow;
+  text-align: 			center;
+  margin:               -50px 0px 0px 0px !important;
+  padding: 		        0px 0px 0px 0px   !important;
+}
+
+#bip32_passphrase_str_col_label_id {
+  width: 				9%;
+  background: 			#yellow;
+  text-align: 			center;
+  margin:               -50px 0px 0px 0px !important;
+  padding: 		        0px 0px 0px 0px   !important;
+}
+
+#bip38_passphrase_strength_label_id {
+  width: 				100%;
+  font-size:  			11px;
+  height:  				5px !important;
+  max-height:  			5px !important;
+  margin:               0px 0px 30px 0px !important;
+  padding: 		        0px 0px 0px 0px  !important;
+}
+
+#bip32_passphrase_strength_label_id {
+  width: 				100%;
+  font-size:  			11px;
+  height:  				5px !important;
+  max-height:  			5px !important;
+  margin:               0px 0px 30px 0px !important;
+  padding: 		        0px 0px 0px 0px  !important;
+}
+
+progress[value].Bip38PassphraseStrength::-webkit-progress-bar {
+  border-radius: 		0px;
+  background: 			var(--background);
+  margin:               0px 0px 0px 0px  !important;
+  padding: 		        0px 0px 0px 0px  !important;
+}
+
+progress[value].Bip32PassphraseStrength::-webkit-progress-bar {
+  border-radius: 		0px;
+  background: 			var(--background);
+  margin:               0px 0px 0px 0px  !important;
+  padding: 		        0px 0px 0px 0px  !important;
+}
+
+progress[value].Bip38PassphraseStrength::-webkit-progress-value {
+  border-radius: 		0px;
+  background: 			var(--color);
+  margin:               0px 0px 0px 0px  !important;
+  padding: 		        0px 0px 0px 0px  !important;
+}
+
+progress[value].Bip32PassphraseStrength::-webkit-progress-value {
+  border-radius: 		0px;
+  background: 			var(--color);
+  margin:               0px 0px 0px 0px  !important;
+  padding: 		        0px 0px 0px 0px  !important;
+}
+
+progress[value].Bip38PassphraseStrength::-moz-progress-bar {
+  border-radius: 		0px;
+  background: 			var(--color);
+  margin:               0px 0px 0px -20px !important;
+  padding: 		        0px 0px 0px 0px    !important;
+}
+
+progress[value].Bip32PassphraseStrength::-moz-progress-bar {
+  border-radius: 		0px;
+  background: 			var(--color);
+  margin:               0px 0px 0px -20px !important;
+  padding: 		        0px 0px 0px 0px   !important;
+}
+/* ==================== Bip32/38 Passphrase Strength */
+
 
 #apply_password_btn_id {
 	background-color:  lightblue;

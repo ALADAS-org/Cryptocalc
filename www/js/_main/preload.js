@@ -49,6 +49,8 @@ contextBridge.exposeInMainWorld(
 		Bip38Encrypt:                (data) => ipcRenderer.invoke("ToMain:Request/bip38_encrypt", data),
 		Bip38Decrypt:                (data) => ipcRenderer.invoke("ToMain:Request/bip38_decrypt", data),
 		
+		GetPasswordStrength:         (data) => ipcRenderer.invoke("ToMain:Request/get_password_strength", data),
+		
 		MnemonicsAs4letter:          (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_4letter", data),		
 		
 		CheckMnemonics:              (data) => ipcRenderer.invoke("ToMain:Request/check_mnemonics", data),

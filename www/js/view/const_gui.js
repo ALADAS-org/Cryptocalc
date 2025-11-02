@@ -7,9 +7,6 @@ const CRYPTOWALLET_VERSION                = "Cryptowallet_version";
 
 const TOOLS_OPTIONS_DIALOG_ID             = "tools_options_dialog_id";
 
-const BIP38_ENCRYPT_DECRYPT_DIALOG_ID     = "bip38_encrypt_decrypt_dialog_id";
-const BIP38_PROGRESS_BAR_DIALOG_ID        = "bip38_progress_bar_dialog_id";
-
 const SEED_TAB_LINK_ID                    = "seed_tab_link_id";
 const WALLET_TAB_LINK_ID                  = "wallet_tab_link_id";
 
@@ -39,26 +36,50 @@ const ENTROPY_COPY_BTN_ID                 = "entropy_copy_btn_id";
 const ENTROPY_SIZE_SELECT_ID              = "entropy_size_select_id";
 const SW_ENTROPY_SIZE_ID                  = "sw_entropy_size_id";
 
-const PASSWORD_ROW_ID                     = "password_row_id";
-const PASSWORD_WITH_APPLY_CSS_CLASS       = "PasswordFielWithApplyButton";
-const PASSWORD_WITHOUT_APPLY_CSS_CLASS    = "PasswordFielWithoutApplyButton";
-const PASSWORD_ID                         = "password_id";
-const APPLY_BTN_SEPARATOR_ID              = "apply_btn_separator_id";
-const APPLY_PASSWORD_BTN_ID               = "apply_password_btn_id";
-const GENERATE_PASSWORD_BTN_ID            = "generate_password_btn_id";
-const CLEAR_PASSWORD_BTN_ID               = "clear_password_btn_id";
-const EYE_BTN_ID                          = "eye_btn_id";
-const EYE_BTN_IMG_ID                      = "eye_btn_img_id";
-const EYE_OPEN_ICON                       = "eye_open_16px.png";
-const EYE_CLOSED_ICON                     = "eye_closed_16px.png";
+
+// -------------------- BIP38 --------------------
+const BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID = "bip38_passphrase_strength_container_id";
+
+const BIP38_ENCRYPT_DECRYPT_DIALOG_ID     = "bip38_encrypt_decrypt_dialog_id";
+const BIP38_PROGRESS_BAR_DIALOG_ID        = "bip38_progress_bar_dialog_id";
 
 const BIP38_PASSPHRASE_ROW_ID             = "bip38_passphrase_row_id";
-const BIP38_PASSPHRASE_ID                 = "bip38_passphrase_id";
 const BIP38_PASSPHRASE_LABEL_ID           = "bip38_passphrase_label_id";
+
+const BIP38_PASSPHRASE_ID                 = "bip38_passphrase_id";
+
+const BIP38_PASSPHRASE_STRENGTH_ID        = "bip38_passphrase_strength_id";
+const BIP38_PASSPHRASE_STRENGTH_LABEL_ID  = "bip38_passphrase_strength_label_id";
+
 const GENERATE_BIP38_PASSPHRASE_BTN_ID    = "generate_bip38_passphrase_btn_id";
 const CLEAR_BIP38_PASSPHRASE_BTN_ID       = "clear_bip38_passphrase_btn_id";
 const BIP38_PASSPHRASE_EYE_BTN_ID         = "bip38_passphrase_eye_btn_id";
 const BIP38_PASSPHRASE_EYE_BTN_IMG_ID     = "bip38_passphrase_eye_btn_img_id";
+// -------------------- BIP38
+
+// -------------------- BIP32 --------------------
+const BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID = "bip32_passphrase_strength_container_id";
+
+const BIP32_PASSPHRASE_ROW_ID             = "bip32_passphrase_row_id";
+
+const BIP32_PASSPHRASE_ID                 = "bip32_passphrase_id";
+
+const BIP32_PASSPHRASE_STRENGTH_ID        = "bip32_passphrase_strength_id";
+const BIP32_PASSPHRASE_STRENGTH_LABEL_ID  = "bip32_passphrase_strength_label_id";
+
+const PASSWORD_WITH_APPLY_CSS_CLASS       = "PasswordFielWithApplyButton";
+const PASSWORD_WITHOUT_APPLY_CSS_CLASS    = "PasswordFielWithoutApplyButton";
+
+const APPLY_BTN_SEPARATOR_ID              = "apply_btn_separator_id";
+const APPLY_PASSWORD_BTN_ID               = "apply_password_btn_id";
+const GENERATE_PASSWORD_BTN_ID            = "generate_password_btn_id";
+const CLEAR_PASSWORD_BTN_ID               = "clear_password_btn_id";
+// -------------------- BIP32
+
+const EYE_BTN_ID                          = "eye_btn_id";
+const EYE_BTN_IMG_ID                      = "eye_btn_img_id";
+const EYE_OPEN_ICON                       = "eye_open_16px.png";
+const EYE_CLOSED_ICON                     = "eye_closed_16px.png";
 
 const CHECKSUM_ID                         = "checksum_id";
     

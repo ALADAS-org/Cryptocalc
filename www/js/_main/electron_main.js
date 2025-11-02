@@ -114,6 +114,8 @@ const { CMD_OPEN_WALLET,
 		
 		ToMain_RQ_BIP38_ENCRYPT, ToMain_RQ_BIP38_DECRYPT,
 		
+		ToMain_RQ_GET_PASSWORD_STRENGTH,
+		
 		FromMain_DID_FINISH_LOAD, FromMain_EXEC_CMD,
 		
 		FromMain_FILE_NEW, FromMain_FILE_OPEN, FromMain_FILE_SAVE, 
@@ -139,6 +141,8 @@ const { FileUtils }                     = require('../util/system/file_utils.js'
 
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
 const { Bip38Utils }                    = require('../crypto/bip38_utils.js');
+
+const { PasswordStrengthEvaluator }     = require('../crypto/password_strength_evaluator.js');
 
 const { getRandomInt  }                 = require('../crypto/hex_utils.js');
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
@@ -906,6 +910,15 @@ class ElectronMain {
 			let decrypted_pk = await Bip38Utils.This.decrypt( bip38_encrypted_pk, passphrase, this.getMainWindow() );
 			return decrypted_pk;
 		}); // "ToMain:Request/bip38_decrypt" event handler	
+		
+		// ========================= ToMain_RQ_GET_PASSWORD_STRENGTH =========================
+		// called like this by Renderer: await window.ipcMain.GetPasswordStrength( data )
+		ipcMain.handle( ToMain_RQ_GET_PASSWORD_STRENGTH, async ( event, data ) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_PASSWORD_STRENGTH );
+			const password_str = data;
+			let password_strength_info = PasswordStrengthEvaluator.This.getPasswordStrengthInfo( password_str );
+			return password_strength_info;
+		}); // "ToMain:Request/get_password_strength" event handler	
 		
 		// ================== ToMain_RQ_GET_HD_WALLET ==================
 		// called like this by Renderer: await window.ipcMain.GetHDWallet( data )
