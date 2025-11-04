@@ -2097,29 +2097,45 @@ class MainGUI {
 			// --------- Progress Color ---------
 			let strength_elt = HtmlUtils.GetElement( strength_bits_id );
 			
+			const strength_to_bar_color = ( strength_bits ) => {
+				let bar_color = "black";
+				
+				if ( strength_bits >= 0 && strength_bits < 27.99 ) {
+					bar_color = '#F88379';                   // Red
+				}			
+				else if ( strength_bits >= 28 && strength_bits < 35.99 ) {
+					bar_color = '#FFBF00';                   // Orange
+				}			
+				else if ( strength_bits >= 36 && strength_bits < 59.99 ) {
+					bar_color = '#faeb36';                   // Yellow
+				}			
+				else if ( strength_bits >= 60 && strength_bits < 79.99 ) {
+					bar_color = '#AAFF00';                   // Green
+				}			
+				else if ( strength_bits >= 80 && strength_bits < 127.99 ) {
+					bar_color = '#00FFFF';                   // Blue
+				}
+				else if ( strength_bits >= 128 ) {
+					bar_color = '#EE82EE';                   // Violet
+				}
+
+				return bar_color;				
+			}; // strength_to_bar_color()
+			
 			// 0 – 27 bits	    Very Weak	            Simple words, “password”, “123456”, short names
 		    // 28 – 35 bits	    Weak	                Single dictionary word with a few digits (“summer23”)
 		    // 36 – 59 bits	    Fair    	            Two random words or a word + symbols (“Blue$Tiger42”)
 		    // 60 – 79 bits	    Good	                Three random words or long passphrase
 		    // 80 – 127 bits    Strong	                Four or more random words; secure random generator used
 		    // 128 bits +	    Very Secure	            Random 16-byte key or long diceware passphrase
-			if ( strength_bits >= 0 && strength_bits < 27.99 ) {
-				document.documentElement.style.cssText = "--progress-color: #F88379"; // red
+			let strength_bar_color = "black";
+			strength_bar_color = strength_to_bar_color( strength_bits );			
+					
+			if ( target_id == BIP32_PASSPHRASE_ID ) {
+				document.documentElement.style.setProperty("--bip32-progress-color", strength_bar_color);
 			}
-			if ( strength_bits >= 28 && strength_bits < 35.99 ) {
-				document.documentElement.style.cssText = "--progress-color: #FFBF00"; // orange
-			}	
-			if ( strength_bits >= 36 && strength_bits < 59.99 ) {
-				document.documentElement.style.cssText = "--progress-color: #faeb36"; // yellow
-			}
-			if ( strength_bits >= 60 && strength_bits < 79.99 ) {
-				document.documentElement.style.cssText = "--progress-color: #AAFF00"; // green
-			}
-			if ( strength_bits >= 80 && strength_bits < 127.99 ) {
-				document.documentElement.style.cssText = "--progress-color: #00FFFF"; // blue
-			}
-			if ( strength_bits >= 128 ) {
-				document.documentElement.style.cssText = "--progress-color: #EE82EE"; // violet
+			else if ( target_id == BIP38_PASSPHRASE_ID ) {
+				document.documentElement.style.setProperty("--bip38-progress-color", strength_bar_color);
 			}
 			// --------- Progress Color			
 		}
