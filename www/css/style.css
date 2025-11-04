@@ -173,14 +173,13 @@ hr {
 
 /* ==================== Bip32/38 Passphrase Strength ==================== */
 html { 
-	--progress-color: orange;
+	--bip38-progress-color: orange;
+	--bip32-progress-color: orange;
 }
 
 progress[value].Bip38PassphraseStrength {
-  /* --color: 				orange; 	the progress color */
-  --color:              var(--progress-color);
-  
-  --background: 		#FFFFF0; 	/* the background color */
+  --color:              var(--bip38-progress-color); /* bar color */  
+  --background: 		#FFFFF0; 	                 /* the background color */
 
   -webkit-appearance: 	none;
   -moz-appearance: 		none;
@@ -198,10 +197,8 @@ progress[value].Bip38PassphraseStrength {
 }
 
 progress[value].Bip32PassphraseStrength {
-  /* --color: 				orange; 	the progress color */
-  --color:              var(--progress-color);
-  
-  --background: 		#FFFFF0;  /* the background color */
+  --color:              var(--bip32-progress-color);  /* bar color */
+  --background: 		#FFFFF0;                /* the background color */
 
   -webkit-appearance: 	none;
   -moz-appearance: 		none;

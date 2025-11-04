@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.20
+## CryptoCalc 0.4.21
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -167,13 +167,19 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.4.20`: This version
-	    -  New Feature:
+	- `0.4.21`: This version
+	    - Bug Fix:
+			- `Bip32` and `Bip38` changing to same color when `pasphrase strength` is different 
+		- Documentation Fix:
+			- Update see in 5.1.7 because this sub feature was not documented:
+			    - When hovering on `strength adjective`, the strength (in bits) is displayed in an info bubble 
+    - `0.4.20`
+	    - New Feature:
 		    - `Passphrase Strength` for `Bip32/Bip38` (see 5.1.7)
 		- Bug Fix: it was possible to input a 9 digits value in `account` and `address index` fields,
 		which was a range of 1 billion `10^9` possible values for each field. Now the range is 1.000.000 ([0..999999]).
 	    - Documentation Fix: in 5.1.4.b. number of possible values for `account` and `address index` is now 1 million ([0..999999])
-    - `0.4.9`
+    - `0.4.10`
 	    - Ergonomy:
 		    - A _Progress Bar_ is also displayed when saving a wallet with a `BIP38 Passphrase`. 
 			This is also to give a feedback to the user why it takes more time.     
@@ -232,7 +238,7 @@
 	    - A Label Online/Offline is now at the left of the _Internet connection_status_  icon. 
         - _Seed phrase_ renamed to _Secret phrase_ because it seems it is the more user friendly terminology (among
         _Mnemonics_, _Seed phrase_, _Secret_, _Passphrase_ and _Secret Recovery Passphrase_).
-		- Added a link (see 5.1.17) to the whitepaper of the _3D representation of a Secret phrase_
+		- Added a link (see 5.1.18) to the whitepaper of the _3D representation of a Secret phrase_
     - `0.3.60`
 	    - Trying to fix _Bullet list hell_ related to how [Github](https://github.com/) renders them
 	    - Rewrite/Updates in this README: 
@@ -346,7 +352,7 @@
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
 		- 5.1.5. 'BIP38' Encryption of the _Private Key_
 			- `BIP38` (_passphrase encrypted private key_, see 6.3.5) is supported for an added security layer by Encrypting the _Private Key_. 		 
-            - How to: just input a value in `Bip38 passphrase` field the use the [Save] button (or `File/Save` menu item, cf 5.1.11).
+            - How to: just input a value in `Bip38 passphrase` field the use the [Save] button (or `File/Save` menu item, cf 5.1.12).
 			This generates a `Bip38 Encrypted PK`.  			
 			Note 1: Notice that only the first method ('NON-EC': _encrypt the private Key with the passphrase_ ) is supported.    
 			Note 2: Notice that the level of security is proportional to the length and complexity (diversity of characters like [A..Z][a..z][0..9] and special characters) 
@@ -364,15 +370,16 @@
 		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button.
         - 5.1.7. _Passphrase Strength_ ('Bip32/Bip38')	
         This is a visual feedback of the _Passphrase Strength_ (Bip32/Bip38). The measure of the passphrase's strength is indeed the entropy
-		in bits (its is a a decimal number e.g. '57.04 bits'), displayed as a line (whose length is proportional to entropy) as well as an
-		adjective (i.e: Weak, Moderate, Strong, etc..) and a color. The computation of strength uses the smallest encoding alphabet by 
+		in bits (it's a decimal number e.g. '57.04 bits'), displayed as a colored line (whose length is proportional to entropy) as well as an
+		adjective (i.e: Weak, Moderate, Strong, etc..). The computation of strength uses the smallest encoding alphabet by 
 		recognizing 'binary', 'octal', 'hexadecimal', 'base58', 'base64' or a combination of [A..Z][a..z][0..9][+-/=_<>&#$*@%[](){}";,.]
 		    - 0..27 bits	Very Weak	            Red
 		    - 28..35 bits	Weak	                Orange
 		    - 36..59 bits	Fair    	            Yellow
 		    - 60..79 bits	Good	                Green
 		    - 80..127 bits  Strong	                Blue
-		    - 128 bits +	Very Secure	            Violet		
+		    - 128 bits +	Very Secure	            Violet    
+		NB: When hovering on `strength adjective` (eg. _Weak_), the passphrase's strength (in bits) is displayed in an info bubble 			
 		- 5.1.8. _Salted Entropy_    
 		_Entropy_ is generated from _Entropy Source_ and adding a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ value is the same 
 		(e.g. reusing the same image or fortune cookie). Thus the _Entropy_ value will be unique at each press of [Generate] button.
@@ -446,7 +453,7 @@
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
-		_Secret phrase_ (also called the _Secret Recovery Passphrase_).
+		_Secret phrase_ (also called the _Secret Recovery Passphrase_).    
 		- 5.1.18. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
