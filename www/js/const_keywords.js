@@ -47,6 +47,7 @@ const WORD_COUNT                  = 'word_count';
 const BIP32_PASSPHRASE            = 'Bip32 Passphrase';
 const BIP38_PASSPHRASE            = 'Bip38 Passphrase';
 
+const PWD_STR_AS_SCORE            = 'Password Strength as score';
 const PWD_STR_AS_BITS             = 'Password Strength as bits';
 const PWD_STR_AS_ADJECTIVE        = 'Password Strength as adjective';
 
@@ -134,6 +135,7 @@ if ( typeof exports === 'object' ) {
 	exports.BIP32_PASSPHRASE      = BIP32_PASSPHRASE	
 	exports.BIP38_PASSPHRASE      = BIP38_PASSPHRASE
 	
+	exports.PWD_STR_AS_SCORE      = PWD_STR_AS_SCORE;
 	exports.PWD_STR_AS_BITS       = PWD_STR_AS_BITS;
     exports.PWD_STR_AS_ADJECTIVE  = PWD_STR_AS_ADJECTIVE;
 

@@ -881,7 +881,7 @@ class ElectronMain {
 			let new_password = PasswordGenerator.generate({
 				length:                    24,
 				numbers:                   true,
-				//symbols:                   true,
+				symbols:                   true,
 				uppercase:                 true,
 				lowercase:                 true,
 				excludeSimilarCharacters : true,

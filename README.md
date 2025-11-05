@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.21
+## CryptoCalc 0.4.22
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -167,7 +167,13 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-	- `0.4.21`: This version
+    - `0.4.22`: This version
+	    - Enhancement:
+		    - `Strength` evaluation of `Bip32/Bip38 Passphrase` (see 5.1.7) was not enough reliable, because it was a computation 
+			of Entropy (in bits) and not taking into account the _guessable_ cases (eg. `aaaaaa`, `123456789`, frequently used words
+			used in passwords and even usage of _Leetspeak_). It has been replaced by [`zxcvbn`](https://www.npmjs.com/package/zxcvbn),
+			a popular and much more reliable solution (it is provided by [_DropBox_](https://www.dropbox.com/)).
+	- `0.4.21`
 	    - Bug Fix:
 			- `Bip32` and `Bip38` changing to same color when `pasphrase strength` is different 
 		- Documentation Fix:
@@ -368,18 +374,19 @@
 		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
 		**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
 		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button.
-        - 5.1.7. _Passphrase Strength_ ('Bip32/Bip38')	
-        This is a visual feedback of the _Passphrase Strength_ (Bip32/Bip38). The measure of the passphrase's strength is indeed the entropy
-		in bits (it's a decimal number e.g. '57.04 bits'), displayed as a colored line (whose length is proportional to entropy) as well as an
-		adjective (i.e: Weak, Moderate, Strong, etc..). The computation of strength uses the smallest encoding alphabet by 
-		recognizing 'binary', 'octal', 'hexadecimal', 'base58', 'base64' or a combination of [A..Z][a..z][0..9][+-/=_<>&#$*@%[](){}";,.]
-		    - 0..27 bits	Very Weak	            Red
-		    - 28..35 bits	Weak	                Orange
-		    - 36..59 bits	Fair    	            Yellow
-		    - 60..79 bits	Good	                Green
-		    - 80..127 bits  Strong	                Blue
-		    - 128 bits +	Very Secure	            Violet    
-		NB: When hovering on `strength adjective` (eg. _Weak_), the passphrase's strength (in bits) is displayed in an info bubble 			
+        - 5.1.7. _Passphrase Strength_ (`Bip32/Bip38`)	
+        This is a visual feedback of the _Passphrase Strength_ (Bip32/Bip38). The measure of the passphrase's strength is a score 
+		(an integer between 0 and 4) computed with the help of [`zxcvbn`](https://www.npmjs.com/package/zxcvbn) library.
+		Then this score is displayed as a colored line (whose length is proportional to the score) as well as an
+		adjective (i.e: Weak, Moderate, Strong, etc..).
+		    - 0	 Very Weak	            Red
+		    - 1	 Weak	                Orange
+		    - 2	 Fair    	            Yellow
+		    - 3	 Good	                Green
+		    - 4  Strong	                Violet    
+		NB: It is strongly advised to use the [Random] button (a circular arrow icon) because it would probably be less
+        predictable (and thus more secure) than a _Passphrase_ that you provide because even unconsciously there is a higher
+        probability that it will be predictable (even with _Tricks_ like acronyms, abbreviations and even `L33+5p34|<`).		
 		- 5.1.8. _Salted Entropy_    
 		_Entropy_ is generated from _Entropy Source_ and adding a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ value is the same 
 		(e.g. reusing the same image or fortune cookie). Thus the _Entropy_ value will be unique at each press of [Generate] button.
