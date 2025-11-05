@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.4.21",
+  "version": "0.4.22",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -91,6 +91,7 @@
     "v8-compile-cache": "^2.4.0",
     "web3": "^4.11.1",
     "wif": "^5.0.0",
-    "zencashjs": "^2.2.0"
+    "zencashjs": "^2.2.0",
+    "zxcvbn": "^4.4.2"
   }
 }

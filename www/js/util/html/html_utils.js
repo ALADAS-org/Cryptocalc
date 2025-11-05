@@ -125,7 +125,7 @@ class HtmlUtils {
 				return elt.value;
 			}	
 		}
-		return "Null_String";
+		return "";
 	} // HtmlUtils.GetElementValue()	
 
 	static SetElementValue( elt_id, value_str ) {

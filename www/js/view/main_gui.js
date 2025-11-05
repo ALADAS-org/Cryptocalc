@@ -888,26 +888,19 @@ class MainGUI {
 			
 		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
 		    async (evt) => { await this.onGuiChangePassphrase( evt ); } );
+		// -------------------- Bip32/Bip38 Passphrase	
 			
-			
-		this.setEventHandler( BIP32_PASSPHRASE_STRENGTH_LABEL_ID, 'mouseover',   
-		    async (evt) => { await this.onGuiPassphraseMouseOver( evt ); } );
-			
-		this.setEventHandler( BIP38_PASSPHRASE_STRENGTH_LABEL_ID, 'mouseover',   
-		    async (evt) => { await this.onGuiPassphraseMouseOver( evt ); } );
-			
-
 		this.setEventHandler( APPLY_PASSWORD_BTN_ID, 'click',   
 		    async (evt) => { if (this.cb_enabled) await this.GuiApplyPassword(); } );
 	
 		this.setEventHandler( GENERATE_PASSWORD_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiGeneratePassword(); } );
+		    async (evt) => { if (this.cb_enabled) await this.GuiGenerateBip32Passphrase(); } );
 			
 		this.setEventHandler( CLEAR_PASSWORD_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiClearPassword(); } );
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip32Passphrase(); } );
 
 		this.setEventHandler( EYE_BTN_ID, 'click',   
-		    (evt) => { if (this.cb_enabled) this.GuiTogglePasswordVisibility(); } );
+		    (evt) => { if (this.cb_enabled) this.GuiToggleBip32PassphraseVisibility(); } );
 				
 
 		this.setEventHandler( CLEAR_BIP38_PASSPHRASE_BTN_ID, 'click',   
@@ -2013,7 +2006,8 @@ class MainGUI {
 		
 		return password_strength_info;
 	} // async getPassphraseInfo()	
-		
+	
+    /*	
 	async onGuiPassphraseMouseOver( evt ) {
 		let target_id = evt.target.id;
 		// console.log(" target_id:  '" + target_id + "'");
@@ -2036,47 +2030,51 @@ class MainGUI {
 		let password_strength_info = await this.getPassphraseInfo( passphrase );
 		if ( passphrase != "" ) {
 			let password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
-			password_strength_as_bits = password_strength_info[PWD_STR_AS_BITS];
+			password_strength_score = password_strength_info[PWD_STR_AS_SCORE];
 			let suffix = 's';
-			if ( password_strength_as_bits <= 1 )  suffix = ''; 
+			if ( password_strength_info <= 1 )  suffix = ''; 
 			document.getElementById(target_id).setAttribute('title', password_strength_as_bits.toString() + " bit" + suffix);
 		}
 	} // async onGuiPassphraseMouseOver()	
+	*/
 	
 	async onGuiChangePassphrase( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onGuiChangePassphrase" ) );
+		await this.updatePassphraseStrength( evt.target.id );			
+	} // async onGuiChangePassphrase()
+	
+	async updatePassphraseStrength( target_id ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updatePassphraseStrength" ) );
 		// console.log(JSON.stringify( evt.target.id ));
 		
-		let target_id = evt.target.id;		
 		let passphrase = HtmlUtils.GetElementValue( target_id );
 		// trace2Main( pretty_func_header_format( "MainGUI.onGuiChangePassword", "'" + password + "'" ) );
 		
-		let password_strength_as_bits      = 0;
+		let password_strength_score        = 0;
 		let password_strength_as_adjective = "Null";
 		
 		let password_strength_info = await this.getPassphraseInfo( passphrase );
 		if ( passphrase != "" ) {
 			let password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
-
-			password_strength_as_bits      = password_strength_info[PWD_STR_AS_BITS];
+			password_strength_score        = password_strength_info[PWD_STR_AS_SCORE];
 			password_strength_as_adjective = password_strength_info[PWD_STR_AS_ADJECTIVE];
 		}
 		
 		let strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
 		let wallet_field_id       = BIP32_PASSPHRASE;
-		let strength_bits_id      = BIP32_PASSPHRASE_STRENGTH_ID;
+		let strength_score_id     = BIP32_PASSPHRASE_STRENGTH_ID;
 		let strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
 		
 		if ( target_id == BIP32_PASSPHRASE_ID ) {
 			strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
 			wallet_field_id       = BIP32_PASSPHRASE;
-			strength_bits_id      = BIP32_PASSPHRASE_STRENGTH_ID;
+			strength_score_id     = BIP32_PASSPHRASE_STRENGTH_ID;
 			strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
 		}
 		else if ( target_id == BIP38_PASSPHRASE_ID ) {
 			strength_container_id = BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID;
 			wallet_field_id       = BIP38_PASSPHRASE;
-			strength_bits_id      = BIP38_PASSPHRASE_STRENGTH_ID;
+			strength_score_id     = BIP38_PASSPHRASE_STRENGTH_ID;
 			strength_label_id     = BIP38_PASSPHRASE_STRENGTH_LABEL_ID;
 		}
 		
@@ -2086,50 +2084,42 @@ class MainGUI {
 		if ( passphrase != "" ) {
 			HtmlUtils.ShowElement( strength_container_id );	
 			
-			let strength_bits = password_strength_as_bits;
-			const MAX_VALUE = 128;
-            if ( strength_bits > MAX_VALUE ) strength_bits = MAX_VALUE;
-			let strength_value = (strength_bits / MAX_VALUE) * 100.0;
-			HtmlUtils.SetElementValue( strength_bits_id, strength_value.toString() );
-
+			// [0, 1, 2, 3, 4] rescaled to [8, 25, 50, 75, 100]
+			let strength_value = password_strength_score * 25;
+			if ( strength_value == 0 )  strength_value = 8;
+			HtmlUtils.SetElementValue( strength_score_id, strength_value.toString() );
 			HtmlUtils.SetElementValue( strength_label_id, password_strength_as_adjective );	
 
 			// --------- Progress Color ---------
-			let strength_elt = HtmlUtils.GetElement( strength_bits_id );
-			
-			const strength_to_bar_color = ( strength_bits ) => {
+			// - 0	 Very Weak	            Red
+		    // - 1	 Weak	                Orange
+		    // - 2	 Moderate  	            Yellow
+		    // - 3	 Good	                Green
+		    // - 4   Strong	                Violet
+			const strength_to_bar_color = ( strength_value ) => {
 				let bar_color = "black";
 				
-				if ( strength_bits >= 0 && strength_bits < 27.99 ) {
-					bar_color = '#F88379';                   // Red
+				if ( strength_value <= 8 ) { 
+					bar_color = '#F88379';                   // Very Weak: Red
 				}			
-				else if ( strength_bits >= 28 && strength_bits < 35.99 ) {
-					bar_color = '#FFBF00';                   // Orange
+				else if ( strength_value == 25 ) {
+					bar_color = '#FFBF00';                   // Weak: Orange
 				}			
-				else if ( strength_bits >= 36 && strength_bits < 59.99 ) {
-					bar_color = '#faeb36';                   // Yellow
+				else if ( strength_value == 50 ) {
+					bar_color = '#faeb36';                   // Moderate: Yellow
 				}			
-				else if ( strength_bits >= 60 && strength_bits < 79.99 ) {
-					bar_color = '#AAFF00';                   // Green
+				else if ( strength_value == 75 ) {
+					bar_color = '#AAFF00';                   // Good: Green
 				}			
-				else if ( strength_bits >= 80 && strength_bits < 127.99 ) {
-					bar_color = '#00FFFF';                   // Blue
-				}
-				else if ( strength_bits >= 128 ) {
-					bar_color = '#EE82EE';                   // Violet
+				else if ( strength_value == 100 ) {
+					bar_color = '#EE82EE';                   // Strong: Violet
 				}
 
 				return bar_color;				
 			}; // strength_to_bar_color()
 			
-			// 0 – 27 bits	    Very Weak	            Simple words, “password”, “123456”, short names
-		    // 28 – 35 bits	    Weak	                Single dictionary word with a few digits (“summer23”)
-		    // 36 – 59 bits	    Fair    	            Two random words or a word + symbols (“Blue$Tiger42”)
-		    // 60 – 79 bits	    Good	                Three random words or long passphrase
-		    // 80 – 127 bits    Strong	                Four or more random words; secure random generator used
-		    // 128 bits +	    Very Secure	            Random 16-byte key or long diceware passphrase
 			let strength_bar_color = "black";
-			strength_bar_color = strength_to_bar_color( strength_bits );			
+			strength_bar_color = strength_to_bar_color( strength_value );			
 					
 			if ( target_id == BIP32_PASSPHRASE_ID ) {
 				document.documentElement.style.setProperty("--bip32-progress-color", strength_bar_color);
@@ -2152,7 +2142,7 @@ class MainGUI {
 				this.GuiSetPasswordApplyState( true );	
 			}	
 	    }			
-	} // async onGuiChangePassphrase()
+	} // async updatePassphraseStrength()
 	
 	async GuiApplyPassword( evt ) {
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
@@ -2164,14 +2154,16 @@ class MainGUI {
 	} // async GuiApplyPassword()
 
 	// https://www.npmjs.com/package/generate-password
-	async GuiGeneratePassword( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.GuiGeneratePassword" ) );
+	async GuiGenerateBip32Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip32Passphrase" ) );
 		let data = {};
 		let bip32_passphrase = await window.ipcMain.GeneratePassword( data );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase);
+		
+		this.updatePassphraseStrength( BIP32_PASSPHRASE_ID );
 
 		this.GuiSetPasswordApplyState( true );
-	} // async GuiGeneratePassword()	
+	} // async GuiGenerateBip32Passphrase()	
 	
 	GuiSetPasswordApplyState( visible ) {
 		if ( visible ) {
@@ -2190,16 +2182,16 @@ class MainGUI {
 		}
 	} // GuiSetPasswordApplyState()
 	
-	GuiClearPassword( update_wallet ) {
-		trace2Main( pretty_func_header_format( "MainGUI.GuiClearPassword" ) );
+	GuiClearBip32Passphrase( update_wallet ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip32Passphrase" ) );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '');
 		HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
 
 		this.GuiSetPasswordApplyState( false );	
-	} // GuiClearPassword()
+	} // GuiClearBip32Passphrase()
 	
-	GuiTogglePasswordVisibility() {
-		trace2Main( pretty_func_header_format( "MainGUI.GuiTogglePasswordVisibility" ) );	
+	GuiToggleBip32PassphraseVisibility() {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiToggleBip32PassphraseVisibility" ) );	
 		let eye_btn_img_elt = document.getElementById(EYE_BTN_IMG_ID )
 		// console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
 		
@@ -2218,13 +2210,15 @@ class MainGUI {
 			}			
 		}
 		this.password_visible = ! this.password_visible;
-	} // GuiTogglePasswordVisibility()
+	} // GuiToggleBip32PassphraseVisibility()
 
 	async GuiGenerateBip38Passphrase( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip38Passphrase" ) );
 		let data = {};
 		let new_bip38_passphrase = await window.ipcMain.GeneratePassword( data );
 		this.wallet_info.setAttribute( BIP38_PASSPHRASE, new_bip38_passphrase.trim());
+		
+		this.updatePassphraseStrength( BIP38_PASSPHRASE_ID );
 
 		this.GuiSetPasswordApplyState( true );
 	} // async GuiGenerateBip38Passphrase()

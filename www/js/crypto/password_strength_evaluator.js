@@ -9,15 +9,17 @@ const LOWER_CASE        = 'LOWER_CASE';
 const DIGIT             = 'DIGIT';
 const SPECIAL_CHARACTER = 'SPECIAL_CHARACTER';
 
-const { PWD_STR_AS_BITS,
+const { PWD_STR_AS_SCORE,
         PWD_STR_AS_ADJECTIVE } = require('../const_keywords.js'); 
+		
+const zxcvbn = require('zxcvbn'); 
 
 class PasswordStrengthEvaluator {
 	static #Key = Symbol();
 	static #Singleton = new PasswordStrengthEvaluator( this.#Key );
 	static #InstanceCount = 0;	
 	
-	static ALPHABET_ENTROPIES = { [HEXA]: 4, [UPPER_CASE]: 4.7, [LOWER_CASE]: 4.7, [DIGIT]: 3.32, [SPECIAL_CHARACTER]: 4.52 };
+	static ALPHABET_ENTROPIES = { [HEXA]: 4, [UPPER_CASE]: 4.7, [LOWER_CASE]: 4.7, [DIGIT]: 3.32, [SPECIAL_CHARACTER]: 4.81 };
 	
 	// static GetInstance() {
 	static get This() {
@@ -130,8 +132,10 @@ class PasswordStrengthEvaluator {
 		return /^\d+$/.test(str);
 	} // is_digit()
 	
+	
 	is_special_character(str) {
-		const SPECIAL_CHARACTERS = '+-/=_<>&#$*@%[](){}";,.'; 
+		// const SPECIAL_CHARACTERS = '+-/=_<>&#$*@%[](){};,.\'"'; 
+		const SPECIAL_CHARACTERS = '-_#+*!§$%&=?@,.;:\'~"/(){}[]\\'; // 28 characters: entropy = 4.81 bit / character 
 		return (SPECIAL_CHARACTERS.indexOf(str) !== -1);
 	} // is_digit()
 
@@ -143,6 +147,18 @@ class PasswordStrengthEvaluator {
 		}
 	} // ** Private constructor **
 	
+	getPasswordStrengthScore( password_str ) {
+		let zxcvbn_result = zxcvbn( password_str );
+		let password_score = zxcvbn_result.score;		
+		return password_score;
+	} // getPasswordStrengthScore()
+	
+	// 0 – 27 bits	    Very Weak	            Simple words, “password”, “123456”, short names
+	// 28 – 35 bits	    Weak	                Single dictionary word with a few digits (“summer23”)
+	// 36 – 59 bits	    Fair    	            Two random words or a word + symbols (“Blue$Tiger42”)
+	// 60 – 79 bits	    Good	                Three random words or long passphrase
+	// 80 – 127 bits    Strong	                Four or more random words; secure random generator used
+	// 128 bits +	    Very Secure	            Random 16-byte key or long diceware passphrase
 	getPasswordStrengthAsBits( password_str ) {
 		let password_strength = 0;
 		
@@ -182,7 +198,36 @@ class PasswordStrengthEvaluator {
 		return password_strength;
 	} // getPasswordStrengthAsBits()	
 	
-	getPasswordStrengthAsAdjective( password_str ) {
+	getPasswordScoreAsAdjective( password_str ) {
+		let password_strength_score = this.getPasswordStrengthScore( password_str );
+		
+		let password_strength_adjective = "Null";	
+		
+		// - 0	 Very Weak
+		// - 1	 Weak
+		// - 2	 Moderate
+		// - 3	 Good
+		// - 4   Strong		
+		if ( password_strength_score == 0 ) { 
+			password_strength_adjective = "Very Weak";
+        }
+        else if ( password_strength_score == 1 ) { 
+			password_strength_adjective = "Weak";
+        }
+		else if ( password_strength_score == 2 ) { 
+			password_strength_adjective = "Moderate";
+        }
+        else if ( password_strength_score == 3 ) { 
+			password_strength_adjective = "Good";
+        }
+        else if ( password_strength_score == 4 ) { 
+			password_strength_adjective = "Strong";
+        }        
+
+		return password_strength_adjective;
+	} // getPasswordScoreAsAdjective()
+	
+	getPasswordStrengthBitsAsAdjective( password_str ) {
 		let password_strength_bits = this.getPasswordStrengthAsBits( password_str );
 		
 		// Entropy (Bits) Adjective Example / Meaning Estimated Time to Crack (Ballpark)
@@ -206,8 +251,8 @@ class PasswordStrengthEvaluator {
         else if ( password_strength_bits >= 28 && password_strength_bits <= 35.99 ) { 
 			password_strength_adjective = "Weak";
         }
-		// * 36 - 59 bits Moderate / Reasonable A combination of a few unrelated words or a complex, random-looking string of 8-10 characters (e.g., Red*Sky$At4Night or turtle battery staple). Resists online attacks for a long time but may fall to determined offline attacks. Days to decades
-        // else if ( password_strength_bits >= 36 && password_strength_bits <= 59 ) { 
+		// * 36 - 59 bits Moderate / Reasonable A combination of a few unrelated words or a complex, random-looking string of 8-10 characters (e.g., Red*Sky$At4Night or turtle battery staple). 
+		//           Resists online attacks for a long time but may fall to determined offline attacks. Days to decades
 		else if ( password_strength_bits >= 36 && password_strength_bits <= 59.99 ) { 
 			password_strength_adjective = "Fair";
         }
@@ -226,13 +271,13 @@ class PasswordStrengthEvaluator {
         }  	
 		
 		return password_strength_adjective;
-	} // getPasswordStrengthAsAdjective()
+	} // getPasswordStrengthBitsAsAdjective()
 	
 	getPasswordStrengthInfo( password_str ) {
-		let password_strength_bits      = this.getPasswordStrengthAsBits( password_str );		
-		let password_strength_adjective = this.getPasswordStrengthAsAdjective( password_str );
+		let password_score     = this.getPasswordStrengthScore( password_str );		
+		let password_adjective = this.getPasswordScoreAsAdjective( password_str );
 		
-		let password_strength_info = { [PWD_STR_AS_BITS]: password_strength_bits, [PWD_STR_AS_ADJECTIVE]: password_strength_adjective };
+		let password_strength_info = { [PWD_STR_AS_SCORE]: password_score, [PWD_STR_AS_ADJECTIVE]: password_adjective };
 		return password_strength_info;
 	} // getPasswordStrengthInfo()
 	
@@ -243,6 +288,57 @@ class PasswordStrengthEvaluator {
 		entropy_for_alphabet = Number(entropy_for_alphabet.toFixed(2));
 		return entropy_for_alphabet;
 	} // getEntropyForAlphabetAsBits()
+	
+	
+	// ======== DeepSeek mix zxvcbn and Entropy ========  
+	DS_calculateAdjustedEntropy( password ) {
+		const charSets = {
+			lower: /[a-z]/.test(password),
+			upper: /[A-Z]/.test(password),
+			numbers: /[0-9]/.test(password),
+			symbols: /[^a-zA-Z0-9]/.test(password)
+		};
+		
+		const charsetSize = [
+			charSets.lower ? 26 : 0,
+			charSets.upper ? 26 : 0,
+			charSets.numbers ? 10 : 0,
+			charSets.symbols ? 33 : 0
+		].reduce((a, b) => a + b, 0);
+		
+		// Base entropy
+		let entropy = password.length * Math.log2(charsetSize);
+		
+		// Penalties for common patterns
+		if (/(.)\1/.test(password)) entropy *= 0.9; // repeated chars
+		if (/^[A-Z]/.test(password)) entropy *= 0.95; // starts with uppercase
+		if (/\d$/.test(password)) entropy *= 0.95; // ends with number
+		
+		return Math.max(entropy, 0);
+	} // DS_calculateAdjustedEntropy()
+
+	// Better scoring scale
+	DS_entropyToScore( entropy ) {
+		if (entropy < 28) return 0; // Very Weak
+		if (entropy < 35) return 1; // Weak
+		if (entropy < 45) return 2; // Fair
+		if (entropy < 55) return 3; // Strong
+		return 4; // Very Strong
+	} // DS_entropyToScore()
+	
+	DS_comprehensivePasswordStrength( password ) {
+		const zxcvbnResult = zxcvbn(password);
+		const adjustedEntropy = this.DS_calculateAdjustedEntropy( password );
+		
+		return {
+			zxcvbnScore: 	zxcvbnResult.score, // 0-4
+			entropy: 		adjustedEntropy,
+			feedback: 		zxcvbnResult.feedback,
+			// Combine both metrics for final assessment
+			finalAssessment: Math.max(zxcvbnResult.score, this.DS_entropyToScore(adjustedEntropy))
+		};
+	} // DS_comprehensivePasswordStrength()
+	// ======== DeepSeek mix zxvcbn and Entropy
 } // PasswordStrengthEvaluator
 
 const test_GetDisplayEntropyForAlphabet = () => {
@@ -260,7 +356,7 @@ const test_GetDisplayEntropyForAlphabet = () => {
 	get_and_display_entropy_for_alphabet(8);  // Octal digits:                       [0..7] 
 	get_and_display_entropy_for_alphabet(10); // Decimal digits:                     [0..9] 
 	get_and_display_entropy_for_alphabet(16); // Hexadecimal digits:                 [0123456789abcdef] 
-	get_and_display_entropy_for_alphabet(23); // Special Characters:                 [+-/=_<>&#$*@%[](){}";,.]  
+	get_and_display_entropy_for_alphabet(28); // Special Characters:                 [+-/=_<>&#$*@%[](){}'";,.]  
 	get_and_display_entropy_for_alphabet(26); // Alphabetic Characters Upper:        [A..Z]
 	get_and_display_entropy_for_alphabet(32);
 	get_and_display_entropy_for_alphabet(52); // Alphabetic Characters Upper/Lower:  [A..Z][a..z]
@@ -273,58 +369,92 @@ const test_GetDisplayEntropyForAlphabet = () => {
 
 // test_GetDisplayEntropyForAlphabet();
 
+// Password strength checker:
+// * https://bitwarden.com/password-strength/?gad_campaignid=21289974901
+//
+// 'zxcvbn' (https://www.dropbox.com/)
+// https://www.npmjs.com/package/zxcvbn
 const test_GetDisplayPasswordStrength = () => {
 	const get_and_display_password_strength = ( password_str ) => {
 		let this_obj = PasswordStrengthEvaluator.This;
 		let separator = "\n";
 		if ( password_str.length < 10 ) separator = "\t\t";
-		let password_strength = this_obj.getPasswordStrengthAsBits( password_str );
-        console.log( " > For password(" + password_str.length + "): '" + password_str + "' " + separator + "     password_strength:   " + password_strength + " bits" );
+		let password_strength_bits = this_obj.getPasswordStrengthAsBits( password_str );
+		let password_strength_adjective = this_obj.getPasswordStrengthBitsAsAdjective( password_str );
+        console.log(   " > For password(" + password_str.length + "): '" + password_str + "' " + separator 
+		             + "     strength:   " + password_strength_bits + " bits - " + password_strength_adjective);
 	}; // compute_and_display_password_strength()
 	
-	get_and_display_password_strength( '0' );
-	get_and_display_password_strength( '5' );
-	get_and_display_password_strength( 'A' );
-	get_and_display_password_strength( 'a' );
-	get_and_display_password_strength( 'Z' );
-	get_and_display_password_strength( 't' );
-	get_and_display_password_strength( '+' );
-	get_and_display_password_strength( '*$' );
-	get_and_display_password_strength( 'Aa' );
-	get_and_display_password_strength( 'Z/' );	
+	const get_both_results = ( password ) => {
+		let this_obj = PasswordStrengthEvaluator.This;
+		let zxcvbn_result = zxcvbn( password );	
+		let guesses = zxcvbn_result.guesses;
+		let adjusted_strength = this_obj.DS_comprehensivePasswordStrength( password );
+		console.log('--------');
+		get_and_display_password_strength( password );
+		console.log( "For '" + password + "' zxcvbn score is: " + zxcvbn_result.score + "  adjusted_strength: " + JSON.stringify(adjusted_strength));
+	}; // get_both_results()
+	
+	get_both_results( '0' );
+	get_both_results( '5' );
+	get_both_results( 'A' );
+	get_both_results( 'a' );
+	get_both_results( 'Z' );
+	get_both_results( 't' );
+	get_both_results( '+' );
+	get_both_results( '*$' );
+	get_both_results( 'Aa' );
+	get_both_results( 'Z/' );	
 		
 	console.log("----------------");
 	
-	get_and_display_password_strength( '010101' );
-	get_and_display_password_strength( '0123' );	
-	get_and_display_password_strength( 'deadbeef' );
-	get_and_display_password_strength( '0xdeadbeef' );
-	get_and_display_password_strength( 'Hello World' );
-	get_and_display_password_strength( 'The quick brown fox jumps over the lazy dog' );
+	get_both_results( '010101' );
+	get_both_results( '0123' );	
+	get_both_results( 'deadbeef' );
+	get_both_results( '0xdeadbeef' );
+	get_both_results( 'Hello World' );
+	get_both_results( 'The quick brown fox jumps over the lazy dog' );
 	
-	get_and_display_password_strength( 'Hello World' );
-	get_and_display_password_strength( '$Hello World-567*' );
+	get_both_results( 'Hello World' );
+	get_both_results( '$Hello World-567*' );
 	
-	get_and_display_password_strength( '01234567' );
-	get_and_display_password_strength( 'ABCDEFGHIJ' );
+	get_both_results( '01234567' );
 	
-	get_and_display_password_strength( 'Base58ttmrze8BVniavN7wEjRWeJq83vASNFZ4mrze8' ); 
+	get_both_results( 'ABCDEFGHIJ' );
 	
-	//                                  ASNFZ4mrze8BI0VniavN7wEjRWeJq83vASNFZ4mrze8=  43 coding digits
-	get_and_display_password_strength( 'Base64+0OIl/mrze8BVniavN7wEjRWeJqSNFZ4mrze8' ); 
-	get_and_display_password_strength( 'Base64+0OIl/mrze8BVniavN7wEjRWeJq83vASNrze8=' );
 	
-	get_and_display_password_strength( '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' );
-	get_and_display_password_strength( '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' );
+	get_both_results('AAAAAAAAAA');
 	
-	get_and_display_password_strength(  '0101010100000000010101010000000001010101000000000101010100000000'
-	                                  + '0101010100000000010101010000000001010101000000000101010100000000' );
-									  
-	get_and_display_password_strength("ttttttttttt134555");
+	get_both_results('Tr0ub4dour&3');
 	
-	let pk_hex =   '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' 
-	// console.log("pk_hex.length: " + pk_hex.length);
-	get_and_display_password_strength(pk_hex);
+	get_both_results( 'Base58ttmrze8BVniavN7wEjRWeJq83vASNFZ4mrze8' ); 
+	
+	//                 ASNFZ4mrze8BI0VniavN7wEjRWeJq83vASNFZ4mrze8=  43 coding digits
+	get_both_results( 'Base64+0OIl/mrze8BVniavN7wEjRWeJqSNFZ4mrze8' ); 
+	get_both_results( 'Base64+0OIl/mrze8BVniavN7wEjRWeJq83vASNrze8=' );
+	
+	get_both_results( '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' );
+	get_both_results( '0x0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' );
+	
+	get_both_results(   '0101010100000000010101010000000001010101000000000101010100000000'
+	                  + '0101010100000000010101010000000001010101000000000101010100000000' );
+	
+	get_both_results( 'ttttttttttt134555' );
+	
+	get_both_results( '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef' );
+	
+	let password = 'display brand regular service above price middle someone someone fall beach daughter sock provide cabbage border hero science inject local regular strategy category castle';
+	get_both_results( password ); 
+	
+	password = 'display brand regular service above price middle someone someone fall beach daughter';
+	get_both_results( password ); 
+	
+	password = 'DispBranReguServAbovPricMiddSomeSomeFallBeacDaugSockProvCabbBordHeroScieInjeLocaReguStraCateCast';
+	get_both_results( password ); 
+	
+	get_both_results( 'ab345436986' ); 
+	
+	get_both_results( '*WP5W5v3i' );
 } // test_GetDisplayPasswordStrength()
 
 // test_GetDisplayPasswordStrength();
