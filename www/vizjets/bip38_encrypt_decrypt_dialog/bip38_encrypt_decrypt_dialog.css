@@ -1,22 +1,23 @@
 .Dialog_Form {
-  background:        #F5F5DC;
+  background:          #F5F5DC;
 }
 
 .DialogBox {
-  font-size:         12px;
-  background:        #F5F5DC;
+  font-size:           12px;
+  background:          #F5F5DC;
 }
 
 .Bip38InputField {
-  width:    		   510px;
+  width:    		   427px !important;
   height:   		   18px;  
   background-color:    white;
+  font-size:           12px !important;
 }
 
 .Bip38Button {
-	padding:       0;
-	border:     none;
-	background: none;
+	padding:           0;
+	border:            none;
+	background:        none;
 }
 
 .Bip38CopyButton {
@@ -36,15 +37,15 @@
 }
 
 .Switch {
-	position: relative;
-	display:  inline-block;
-	width:    48px;
-	height:   20px;
+	position:          relative;
+	display:           inline-block;
+	width:             48px;
+	height:            20px;
 }
 
 .SwitchLabel {
-	font-size:      14px;
-	vertical-align: middle;	
+	font-size:         14px;
+	vertical-align:    middle;	
 }
 
 .Switch input { 

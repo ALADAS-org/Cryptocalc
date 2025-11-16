@@ -74,7 +74,10 @@ const { APP_VERSION,
       }                = require('../const_keywords.js');
 
 const { CMD_OPEN_WALLET,
-        VIEW_TOGGLE_DEVTOOLS, TOOLS_OPTIONS, TOOLS_BIP38_ENCRYPTER_DECRYTER,
+        VIEW_TOGGLE_DEVTOOLS, 
+		
+		TOOLS_OPTIONS, TOOLS_BIP38_ENCRYPTER_DECRYTER, TOOLS_SECRET_PHRASE_TRANSLATOR,
+		
         ToMain_RQ_QUIT_APP, 
 		ToMain_RQ_LOG_2_MAIN, ToMain_RQ_LOG_2_MAIN_SYNC,
 		
@@ -122,6 +125,7 @@ const { CMD_OPEN_WALLET,
 		FromMain_HELP_ABOUT,
 
 		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG,
+		FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG,
 		
 		FromMain_UPDATE_OPTIONS, 
 		FromMain_SEND_IMG_URL,
@@ -287,6 +291,17 @@ class ElectronMain {
 								    .webContents.send
 									( 'fromMain', 
 									  [ FromMain_TOOLS_OPTIONS_DIALOG, 
+									    ElectronMain.GetInstance().Options ] 
+									);
+							  }		 
+						   },
+						   {  label: L10nUtils.GetLocalizedMsg("SecretPhraseTranslatorTool"),
+							  click() {
+                                  pretty_func_header_log( "[Electron]", TOOLS_SECRET_PHRASE_TRANSLATOR );								  
+								  ElectronMain.GetInstance().getMainWindow()
+								    .webContents.send
+									( 'fromMain', 
+									  [ FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG, 
 									    ElectronMain.GetInstance().Options ] 
 									);
 							  }		 

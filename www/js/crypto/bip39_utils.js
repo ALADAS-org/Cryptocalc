@@ -544,22 +544,30 @@ class Bip39Utils {
 		console.log(">> " + _CYAN_ + "Bip39Utils.GuessMnemonicsLang" + _END_);
 		let lang         = "EN";
 		let words        = mnemonics.split(' ');
-		let current_lang = ""; 
+		let current_lang = "";
+		
 		for (let i=0; i < SUPPORTED_LANGS.length; i++) {
 			current_lang = SUPPORTED_LANGS[i];
-			console.log("   Check if 'mnemonics' is: " + current_lang);
+			// console.log("   Check if 'mnemonics' is: " + current_lang);
 			let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( current_lang );
+			// console.log("   LANG_WORDLIST.length: " + LANG_WORDLIST.length);
+			
 			let found_word_count = 0;
-			for (let j=0; j < words.length; j++) {
-				let current_word = words[i];
+			for ( let j=0; j < words.length; j++ ) {
+				let current_word = words[j];
+
 				let word_index = LANG_WORDLIST.indexOf( current_word );
-				if (word_index != -1) found_word_count++;
+				if ( word_index != -1 )  {
+					found_word_count++;
+					// console.log("   current_word[" + j + "]: " + current_word  );
+				    // console.log("   found_word_count: " + found_word_count );
+				}
 			}
-			if (found_word_count == words.length) {
+			if ( found_word_count == words.length ) {
 				return current_lang;
 			}
 		} 	
-		return lang;
+		return current_lang;
 	} // Bip39Utils.GuessMnemonicsLang()
 	
 	static CheckMnemonics( mnemonics, args ) {
@@ -576,7 +584,8 @@ class Bip39Utils {
 		}
 		
 		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
-		for (let i=0; i < words.length; i++) {
+		
+		for ( let i=0; i < words.length; i++ ) {
 			let current_word = words[i];
 			//console.log("   word[" + i + "] : " + current_word);
 			let word_index = LANG_WORDLIST.indexOf( current_word );
@@ -691,9 +700,23 @@ const test_Bip39Utils = () => {
 	console.log("mnemonics: " + mnemonics);
 	console.log("mnemonics_items[0]: " + mnemonics_items[0]);
 	console.log("mnemonics_items[0]: " + mnemonics_items[1]);
-}; // test_EntropyToMnemonics
+}; // test_EntropyToMnemonics()
 
 // test_Bip39Utils();
+
+const test_GuessMnemonicsLang = () => {
+	let mnemonics_PT = "agrupar jato bitola moderno ocupado ossada sedutor quente grisalho julho moto vagaroso"; 
+	
+	let lang = "";	
+	lang = Bip39Utils.GuessMnemonicsLang( mnemonics_PT );
+	console.log("   lang: " + lang);
+	
+	let mnemonics_RU = "аршин огурец вскоре пощечина режим рояль укол стать нагрузка округ программа шланг";				
+	lang = Bip39Utils.GuessMnemonicsLang( mnemonics_RU );
+	console.log("   lang: " + lang);
+}; // test_GuessMnemonicsLang()
+
+// test_GuessMnemonicsLang();
 
 if (typeof exports === 'object') {
 	exports.Bip39Utils = Bip39Utils	

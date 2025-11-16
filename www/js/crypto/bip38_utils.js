@@ -190,6 +190,29 @@ function test_Bip38Utils() {
 	console.log("   decrypted_PK:  " + decrypted_PK);
 } // test_Bip38Utils()
 
+function test_pk_to_Wif() {
+	console.log(">> ========== test_pk_to_Wif ==========");
+	const ENTROPY        = 'fbba7de7390acae05b88e8055a7564180c4d4dcb667d842486ec22fb7c9fd5f2';
+	const PRIVATE_KEY    = '35aa73ef7738a7bd52a5547df3c650415a85883c14c4a8e9de4a7fee77d71d53';
+	const WALLET_ADDRESS = '1NRm6cn1rfeo1Go2zGzEvQ3t2xCMY8WhUu';
+    const EXPECTED_WIF   = 'Ky22hzppvmFqbwoseWj98SBaBpfyubFtCV2epYpDLBmgF8aGwSkR';
+	const SECRET_PHRASE  =   'wing stadium keep improve protect ice hotel brown aim squirrel flip copy'
+ 	                       + 'shadow plunge collect soul loud category roast echo result exit fit elite';
+
+	let private_key = hexWithoutPrefix( PRIVATE_KEY );
+	let pk_buf = Buffer.from( private_key, 'hex' );
+			
+	let WIF_str = wif.encode( { version: 0x80, privateKey: pk_buf, compressed: false } ); // for the testnet use: wif.encode(239, ...
+	console.log("   Entropy:        " + ENTROPY);	
+	console.log("   Private Key:    " + PRIVATE_KEY);
+	console.log("   WALLET_ADDRESS: " + WALLET_ADDRESS);	
+	console.log("   Computed WIF:   " + WIF_str);	
+	console.log("   Expected WIF:   " + EXPECTED_WIF);
+	console.log("   SECRET_PHRASE:\n                   " + SECRET_PHRASE);
+} // test_pk_to_Wif()
+
+// test_pk_to_Wif();
+
 // test_Bip38Utils();
 
 if ( typeof exports === 'object' ) {

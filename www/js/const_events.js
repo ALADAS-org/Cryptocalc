@@ -13,8 +13,10 @@ const CMD_GENERATE_WALLET                         = "cmd:GenerateWallet";
 const CMD_REFRESH_WALLET                          = "cmd:RefreshWallet";
     
 const VIEW_TOGGLE_DEVTOOLS                        = "View/ToggleDevTools";
+
 const TOOLS_OPTIONS                               = "Tools/Options";
 const TOOLS_BIP38_ENCRYPTER_DECRYTER              = "Tools/Bip38EncrypterDecrypter";
+const TOOLS_SECRET_PHRASE_TRANSLATOR              = "Tools/SecretPhraseTranslator";
 
 const ToMain_RQ_QUIT_APP                          = "ToMain:Request/quit_app";
 
@@ -90,9 +92,12 @@ const FromMain_HELP_ABOUT                         = "FromMain:Help/About";
 const FromMain_SHOW_ERROR_DIALOG                  = "FromMain:ShowErrorDialog";
 const FromMain_SHOW_MSG_DIALOG                    = "FromMain:ShowMessage";
 
-const FromMain_TOOLS_OPTIONS_DIALOG               = "FromMain:ToolsOptionsDialog";
+// ---------- Tools ----------
+const FromMain_TOOLS_OPTIONS_DIALOG                  = "FromMain:ToolsOptionsDialog";
+const FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG    = "FromMain:ToolsBip38EncryptDecryptDialog";
+const FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG = "FromMain:ToolsSecretPhraseTranslatorDialog";
+// ---------- Tools
 
-const FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG = "FromMain:ToolsBip38EncryptDecryptDialog";
 const FromMain_BIP38_PROGRESS_TICK                = "FromMain:Bip38ProgressTick";
 
 const FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG     = "FromMain:Bip38ShowProgressBarDialog";
@@ -114,8 +119,10 @@ if ( typeof exports === 'object' ) {
 	exports.CMD_REFRESH_WALLET                          = CMD_REFRESH_WALLET
 	
 	exports.VIEW_TOGGLE_DEVTOOLS                        = VIEW_TOGGLE_DEVTOOLS
+	
     exports.TOOLS_OPTIONS                               = TOOLS_OPTIONS	
 	exports.TOOLS_BIP38_ENCRYPTER_DECRYTER			    = TOOLS_BIP38_ENCRYPTER_DECRYTER
+	exports.TOOLS_SECRET_PHRASE_TRANSLATOR              = TOOLS_SECRET_PHRASE_TRANSLATOR
 	
 	exports.ToMain_RQ_QUIT_APP                          = ToMain_RQ_QUIT_APP
 	
@@ -187,9 +194,10 @@ if ( typeof exports === 'object' ) {
 	exports.FromMain_SHOW_ERROR_DIALOG                  = FromMain_SHOW_ERROR_DIALOG
 	exports.FromMain_SHOW_MSG_DIALOG                    = FromMain_SHOW_MSG_DIALOG
 	
-	exports.FromMain_TOOLS_OPTIONS_DIALOG               = FromMain_TOOLS_OPTIONS_DIALOG
-
-	exports.FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG = FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG
+	exports.FromMain_TOOLS_OPTIONS_DIALOG                  = FromMain_TOOLS_OPTIONS_DIALOG
+	exports.FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG    = FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG
+	exports.FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG = FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG
+	
 	exports.FromMain_BIP38_PROGRESS_TICK                = FromMain_BIP38_PROGRESS_TICK
 	exports.FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG     = FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG 
 	

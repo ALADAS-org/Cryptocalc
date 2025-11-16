@@ -5,7 +5,10 @@
 
 const CRYPTOWALLET_VERSION                = "Cryptowallet_version";
 
+// ------------------------- Dialogs -------------------------
 const TOOLS_OPTIONS_DIALOG_ID             = "tools_options_dialog_id";
+const SECRET_PHRASE_TRANSLATOR_DIALOG_ID  = "tools_secret_phrase_translator_dialog_id";
+// ------------------------- Dialogs
 
 const SEED_TAB_LINK_ID                    = "seed_tab_link_id";
 const WALLET_TAB_LINK_ID                  = "wallet_tab_link_id";

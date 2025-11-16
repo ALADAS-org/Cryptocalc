@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.22
+## CryptoCalc 0.4.23
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,11 +6,11 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 13615 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 14090 times on [npm](https://www.npmjs.com/).   
    
-   You can support this project by reporting bugs (or asking for enhancements) with _Issues_, 
+   You can support this project by testing and reporting bugs (or asking for enhancements) with [`Issues`](https://github.com/ALADAS-org/Cryptocalc/issues), 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
-   a non profit organization whose primary goal is to protect [wild bees](https://sites.google.com/view/aladas/accueil).
+   a non profit organization whose primary goal is to protect Wild bees](https://sites.google.com/view/aladas/accueil).
    
    [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
 
@@ -60,17 +60,21 @@
         - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
         - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
         - 3D representation of the `Secret phrase` (see an example here: [Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
+		
+	2.15. Dedicated Tools    
+        - The first dedicated tool is `Secret phrase Translator`, it allows to import a generated wallet with a _Secret phrase_ in a non `Bip39` official 
+		language (eg. `Russian`) and translate it to its equivalent in `English` (because _Wallet Managers_	support only English). 	
 	   
-    2.15. Standalone installer    
+    2.16. Standalone installer    
     It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
     installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
     This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
    
-    2.16. Tested on `Windows` and `Linux`    
+    2.17. Tested on `Windows` and `Linux`    
         - `Windows`: tested on `Windows 10`    
 	    - `Linux`: tested on [Linux Mint 22.2](https://linuxmint.com/) (NB: tested on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
 	   
-    2.17. Cryptocurrencies: 23 supported Cryptocurrencies   
+    2.18. Cryptocurrencies: 23 supported Cryptocurrencies   
     `BTC` (Bitcoin), `ETH` (Ethereum), `XRP` (Ripple), `BNB` (Binance Smart Chain), `SOL` (Solana), 
     `DOGE` (Dogecoin), `TRX` (TRON), `ADA` (Cardano), `XLM` (Stellar), `SUI` (Sui), `BCH` (Bitcoin Cash), `AVAX` (Avalanche), `TON` (Toncoin), 
     `LTC` (Litecoin), `ETC` (Ethereum Classic), `POL` (Polygon), `VET` (VeChain), `BSV` (Bitcoin SV), `DASH` (Dash), `RVN` (Ravencoin), 
@@ -82,7 +86,7 @@
     - Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`    
     - Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
-    2.18. Languages: 18 supported languages     
+    2.19. Languages: 18 supported languages     
     - Officially supported in `Bip39`    
     _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
     Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
@@ -93,7 +97,7 @@
     Notice that _English_  has around 1.5 billion speakers, _Mandarin_ has around 1.1 billion speakers
     while the _India triad_ (_Hindi_, _Bengali_ and _Gujarati_) has around 1 billion speakers.
 
-    2.19. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
+    2.20. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
     _CryptoCalc_  is written in `Javascript` (both _client side_ and _server side_) and is built on top of _ElectronJS_.     
     _ElectronJS_ is used in many modern and popular [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) 
     (e.g. [Visual Studio Code](https://code.visualstudio.com/), [Discord](https://discord.com/), [WhatsApp](https://www.whatsapp.com/),
@@ -167,7 +171,17 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.4.22`: This version
+    - `0.4.23`: This version
+	    - A dedicated tool in `Tools/Secret phrase Translator` eases importation of a generated wallet in a _Wallet Manager_.    
+		Use case: You can use a _Secret phrase_ in a non `Bip39` official language (eg. `Russian`) and translate it to its equivalent in `English` 
+		which allows to import the generated wallet in a _Wallet Manager_ (because _Wallet Managers_ support only English).   	
+	    - Changes in _Tools/Bip38 Encrypt/Decrypt dialog_:
+			- _Progress bar_ in now displayed again (when pushing [Compute] button)
+			- Length of Dialog window is shorter
+	    - Changes in _Passphrase strength_ (`Bip32/Bip38`): 
+		    - Adjectives changed to _Very Weak_, _Weak_, _Good_, _Strong_, _Very Strong_
+			- Minimum bar length is now 5% (for a score of 0 / _Very Weak_)
+    - `0.4.22`
 	    - Enhancement:
 		    - `Strength` evaluation of `Bip32/Bip38 Passphrase` (see 5.1.7) was not enough reliable, because it was a computation 
 			of Entropy (in bits) and not taking into account the _guessable_ cases (eg. `aaaaaa`, `123456789`, frequently used words
@@ -263,21 +277,6 @@
     - `0.3.49`
 		- Added support of _Bengali_ for the _Secret phrase_
 		- Fixes in the documentation (this `README.md`)
-    - `0.3.48`
-		- Improvements in `Mouse moves` _Entropy source_ :
-		    + In _manual_ mode: more entropy data in _Entropy source_ by 'mixing' (`XOR` operation) each mouse point 
-			(provided by the user) with a random byte (generated with `Crypto.getRandomValues()`) 
-			+ Consistent graphics between _manual_ ([New points...]) and _automatic_ ([Generate]) mode 
-    - `0.3.47`
-		- Fixed _Gujarati_ wordlist to remove words containing ':', '-', or '/'
-    - `0.3.46`
-		- Added support of _Gujarati_ for the _Secret phrase_
-		- Default _Entropy source_ is now `D6 dices`
-	- `0.3.45`
-	    - Added informations for `Mouse moves` Entropy source: 
-			- Renamed [New Entropy] to [New points...]
-			- Explanations for manual (with [New points...]) vs automatic generation (with [Generate])
-		- Updated screenshots from `0.3.15` to `0.3.45`
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
@@ -374,22 +373,23 @@
 		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
 		**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
 		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button.
-        - 5.1.7. _Passphrase Strength_ (`Bip32/Bip38`)	
-        This is a visual feedback of the _Passphrase Strength_ (Bip32/Bip38). The measure of the passphrase's strength is a score 
+        - 5.1.7. Passphrase Strength (`Bip32/Bip38`)	
+        This is a visual feedback of the `Passphrase Strength` (`Bip32/Bip38`). The measure of the passphrase's strength is a score 
 		(an integer between 0 and 4) computed with the help of [`zxcvbn`](https://www.npmjs.com/package/zxcvbn) library.
-		Then this score is displayed as a colored line (whose length is proportional to the score) as well as an
+		This score is displayed as a colored line (whose length is proportional to the score) as well as an
 		adjective (i.e: Weak, Moderate, Strong, etc..).
-		    - 0	 Very Weak	            Red
-		    - 1	 Weak	                Orange
-		    - 2	 Fair    	            Yellow
-		    - 3	 Good	                Green
-		    - 4  Strong	                Violet    
-		NB: It is strongly advised to use the [Random] button (a circular arrow icon) because it would probably be less
-        predictable (and thus more secure) than a _Passphrase_ that you provide because even unconsciously there is a higher
-        probability that it will be predictable (even with _Tricks_ like acronyms, abbreviations and even `L33+5p34|<`).		
+		    - 0	 `Very Weak`	        Red
+		    - 1	 `Weak`	                Orange
+		    - 2	 `Fair`    	            Yellow
+		    - 3	 `Good`	                Green
+		    - 4  `Strong`	            Violet    
+		NB: It is strongly advised to use the [Random] button (a circular arrow icon) because it would probably be much less
+        predictable (and thus more secure) than a _Passphrase_ that you provide because (even unconsciously) there is a higher
+        probability that it will be predictable (even with _Tricks_ like _Acronyms_, _Abbreviations_ and even usage of `L33+5p34|<`).		
 		- 5.1.8. _Salted Entropy_    
-		_Entropy_ is generated from _Entropy Source_ and adding a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) to ensure that the _Entropy_ will be different at each Generation even if the _Entropy Source_ value is the same 
-		(e.g. reusing the same image or fortune cookie). Thus the _Entropy_ value will be unique at each press of [Generate] button.
+		_Entropy_ is generated from _Entropy Source_ then a _Salt_ (a generated `UUID` currently, this is 128 bits of Entropy) is added to 
+		to provide the `Salted Entropy`. This is a way to make sure the _Entropy_ is unique at each Generation even if the _Entropy Source_ 
+		value is the same (e.g. reusing the same _Image_ or _Fortune cookie_). Thus the _Entropy_ value will be unique at each press of [Generate] button.
 		- 5.1.9. Choose _Entropy Size_    
 		The _Entropy Size_ is between 128 to 256 bits (32 to 64 hexadecimal digits). This is equivalent to the size of the _Secret phrase_ 
 		(between 12 and 24 words). Changing _Entropy Size_ impacts the size of the _Secret phrase_ and conversely.
@@ -460,22 +460,26 @@
 		The _BIP32 Derivation Path_ is displayed in the _Wallet_ tab page.
 		You can edit the _Account_ or _Address Index_ fields to generate new wallets
 		which belong to the same `BIP32` hierarchy that is determined by the
-		_Secret phrase_ (also called the _Secret Recovery Passphrase_).    
-		- 5.1.18. Dynamic Links
+		_Secret phrase_ (also called the _Secret Recovery Passphrase_).
+	    - 5.1.18. Secret phrase Translator  
+	        - This dedicated tool (`Tools/Secret phrase Translator`) is meant to import a generated wallet in a _Wallet Manager_.    
+		    Use case: You can use a _Secret phrase_ in a non `Bip39` official language (eg. `Russian`) and translate it to its equivalent in `English` 
+		    (because _Wallet Managers_ support only English).    
+		- 5.1.19. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
             - 3D representation of the `Secret phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/)) 
             The whitepaper The description of this 3D representation is in this [whitepaper](https://zenodo.org/records/14579720)			
-		- 5.1.19. Change/Reset of _Options_ (`Tools/Options`)    
+		- 5.1.20. Change/Reset of _Options_ (`Tools/Options`)    
 		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
 		It is also possible to reset _Options_ to _Default Options_
 		(defined in `www/config/defaults/options.json`)
-        - 5.1.20. _Localization_    
+        - 5.1.21. _Localization_    
         _Localization_ (`l10n`) feature is the translation of _GUI Labels_ to adapt to the user's language, it' called the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use and optionnally a codeset (eg. `de_CH.UTF-8`).		
 		The _locale_ is provided as part of your machine's environment. _CryptoCalc_ only uses the 2 letter language part (eg. `en`). 
-		Localization is enabled by a _JSon_ file in the `www/js/L10n` folder (eg. `gui-msg-en.json`).    
+		Localization is enabled by a `JSon` file in the `www/js/L10n` folder (eg. `gui-msg-en.json`).    
 		Notice that currently only `en` and `fr` are provided. 
 	- 5.2. Security Issues 
 		- Notice that you should never disclose the _Private Key_.    
