@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.23
+## CryptoCalc 0.4.24
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -171,7 +171,10 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.4.23`: This version
+    - `0.4.24`: This version    
+		- Bug Fix:
+		    - in `Tools/Bip38 Encrypt/Decrypt`: the `Encrypt/Decrypt` state value was not get/set properly.
+    - `0.4.23`
 	    - A dedicated tool in `Tools/Secret phrase Translator` eases importation of a generated wallet in a _Wallet Manager_.    
 		Use case: You can use a _Secret phrase_ in a non `Bip39` official language (eg. `Russian`) and translate it to its equivalent in `English` 
 		which allows to import the generated wallet in a _Wallet Manager_ (because _Wallet Managers_ support only English).   	
