@@ -1922,6 +1922,11 @@ class MainGUI {
 				Bip38EncryptDecryptDialog.This.showDialog();
 				break;
 				
+			case FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG + _END_ );
+				SecretPhraseTranslatorDialog.This.showDialog();
+				break;
+				
 			case FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG:
 				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG + _END_ );
 				Bip38ProgressbarDialog.This.showDialog();
@@ -1934,6 +1939,7 @@ class MainGUI {
 				// console.log( "   Bip38EncryptDecryptDialog.This.isDisplayed(): " + Bip38EncryptDecryptDialog.This.isDisplayed());
 				// console.log( "   Bip38ProgressbarDialog.This.isDisplayed():    " + Bip38ProgressbarDialog.This.isDisplayed());
 				
+				// console.log( "Bip38EncryptDecryptDialog.This.isDisplayed(): " +Bip38EncryptDecryptDialog.This.isDisplayed());
 				if ( Bip38EncryptDecryptDialog.This.isDisplayed() ) {
 					await Bip38EncryptDecryptDialog.This.updateProgressbar( progress_status );
 				}
@@ -2082,37 +2088,39 @@ class MainGUI {
 		
 		this.wallet_info.setAttribute( wallet_field_id, passphrase );
 		if ( passphrase != "" ) {
-			HtmlUtils.ShowElement( strength_container_id );	
+			HtmlUtils.ShowElement( strength_container_id );
+
+            const MIN_STRENGTH = 5;			
 			
-			// [0, 1, 2, 3, 4] rescaled to [8, 25, 50, 75, 100]
+			// [0, 1, 2, 3, 4] rescaled to [MIN_STRENGTH, 25, 50, 75, 100]
 			let strength_value = password_strength_score * 25;
-			if ( strength_value == 0 )  strength_value = 8;
+			if ( strength_value == 0 )  strength_value = MIN_STRENGTH;
 			HtmlUtils.SetElementValue( strength_score_id, strength_value.toString() );
 			HtmlUtils.SetElementValue( strength_label_id, password_strength_as_adjective );	
 
 			// --------- Progress Color ---------
 			// - 0	 Very Weak	            Red
 		    // - 1	 Weak	                Orange
-		    // - 2	 Moderate  	            Yellow
-		    // - 3	 Good	                Green
-		    // - 4   Strong	                Violet
+		    // - 2	 Good  	                Yellow
+		    // - 3	 Strong	                Green
+		    // - 4   Very 	                Violet
 			const strength_to_bar_color = ( strength_value ) => {
 				let bar_color = "black";
 				
-				if ( strength_value <= 8 ) { 
+				if ( strength_value <= MIN_STRENGTH ) { 
 					bar_color = '#F88379';                   // Very Weak: Red
 				}			
 				else if ( strength_value == 25 ) {
 					bar_color = '#FFBF00';                   // Weak: Orange
 				}			
 				else if ( strength_value == 50 ) {
-					bar_color = '#faeb36';                   // Moderate: Yellow
+					bar_color = '#faeb36';                   // Good: Yellow
 				}			
 				else if ( strength_value == 75 ) {
-					bar_color = '#AAFF00';                   // Good: Green
+					bar_color = '#AAFF00';                   // Strong: Green
 				}			
 				else if ( strength_value == 100 ) {
-					bar_color = '#EE82EE';                   // Strong: Violet
+					bar_color = '#EE82EE';                   // Very Strong: Violet
 				}
 
 				return bar_color;				

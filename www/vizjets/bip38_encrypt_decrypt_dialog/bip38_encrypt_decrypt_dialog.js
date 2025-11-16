@@ -24,13 +24,6 @@ const BIP38_DIALOG_RESULT_COPY_BTN_ID        = "bip38_dialog_result_copy_btn_id"
 const BIP38_DIALOG_CLEAR_BTN_ID              = "bip38_dialog_clear_btn_id";
 const BIP38_DIALOG_QUIT_BTN_ID               = "bip38_dialog_quit_btn_id";
 
-const is_not_null = ( in_str ) => {
-	if (  in_str != undefined  && in_str != 'undefined'  &&  in_str != ""  &&  in_str != ''   ) {
-		return true;			
-	}
-	return false;
-}; // is_not_null()
-
 class Bip38EncryptDecryptDialog {
 	static #Key           = Symbol();
 	static #Singleton     = new Bip38EncryptDecryptDialog( this.#Key );
@@ -71,7 +64,7 @@ class Bip38EncryptDecryptDialog {
 				// https://stackoverflow.com/questions/18992081/trigger-event-on-dialog-box-open
 				// https://stackoverflow.com/questions/394491/passing-data-to-a-jquery-ui-dialog/3458299#3458299
 				
-				width:   700,
+				width:   610, // 700,
 				
 				open:   function( event, ui ) {	
 							let this_obj = Bip38EncryptDecryptDialog.This;
@@ -106,7 +99,7 @@ class Bip38EncryptDecryptDialog {
 
 							this_obj.setFields4EncryptMode();
 							
-                            this.displayed = true;							
+                            this_obj.displayed = true;							
 						}, // open()
 						
 				close:  function( event, ui ) {	
@@ -140,7 +133,7 @@ class Bip38EncryptDecryptDialog {
 								( BIP38_DIALOG_QUIT_BTN_ID, 'click', 
 								  () => { Bip38EncryptDecryptDialog.This.closeDialog(); } );
 
-							this.displayed = false;								  
+							this_obj.displayed = false;								  
 						} // close()
 			} // -------------------- JQuery Dialog options		
 		).parent().css('z-index', 900);
@@ -265,7 +258,7 @@ class Bip38EncryptDecryptDialog {
 		
 		if ( this.encrypt_mode ) {
 			// --------------- 'Encrypt' mode ---------------
-			if ( is_not_null(pk_data)  &&  is_not_null(passphrase) ) {
+			if ( this.is_not_null(pk_data)  &&  this.is_not_null(passphrase) ) {
 				HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'EncryptButton' );
 				
 				let private_key = pk_data;	
@@ -279,7 +272,7 @@ class Bip38EncryptDecryptDialog {
 		}   // --------------- 'Encrypt' mode
 		else {
 			// --------------- 'Decrypt' mode ---------------			
-			if ( is_not_null(pk_data)  &&  is_not_null(passphrase) ) {
+			if ( this.is_not_null(pk_data)  &&  this.is_not_null(passphrase) ) {
 				HtmlUtils.RemoveClass( BIP38_DIALOG_COMPUTE_PROGRESS_BTN_ID, 'DecryptButton' );
 				
 				let bip38_encrypted_pk = pk_data;				
@@ -377,6 +370,13 @@ class Bip38EncryptDecryptDialog {
 			elt.removeEventListener( evt_name, evt_handler );
 		}
 	} // removeEventHandler()
+	
+	is_not_null( in_str ) {
+		if (  in_str != undefined  && in_str != 'undefined'  &&  in_str != ""  &&  in_str != ''   ) {
+			return true;			
+		}
+		return false;
+	} // is_not_null()
 } // Bip38EncryptDecryptDialog class 	
 
 Bip38EncryptDecryptDialog.This.initialize();

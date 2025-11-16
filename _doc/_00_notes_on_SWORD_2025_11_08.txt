@@ -1,0 +1,9 @@
+SWORD est une compromis entre Simple Wallet et HD Wallet. 
+
+Le principe consiste à utiliser le HD Wallet en mode limité: les champs "account" at "address_index" sont générés aléatoirement 
+et non dévoilés à l'utilisateur. C'est en principe plus sécurisé qu'un Simple Wallet On pourrait même ajouter le champ "Bip32 passphrase"
+ (qui n'est pas disponible actuellement en mode SWORD). 
+
+Je viens de tester, seul le WIF permet d'importer le wallet dans Guarda.com (la "clé privée" donne une erreur et la "secret phrase" 
+donne une autre adresse de wallet). Du coup il faudrait enlever la "clé privée" (car d'après mes tests elle correspond à un autre WIF, 
+donc une autre adresse aussi) et la  "secret phrase" dans "wallet_info.txt"  et mieux documenter ce point concernant le mode "SWORD"

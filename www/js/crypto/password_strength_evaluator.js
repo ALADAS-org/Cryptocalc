@@ -205,9 +205,9 @@ class PasswordStrengthEvaluator {
 		
 		// - 0	 Very Weak
 		// - 1	 Weak
-		// - 2	 Moderate
-		// - 3	 Good
-		// - 4   Strong		
+		// - 2	 Good
+		// - 3	 Strong
+		// - 4   Very Strong		
 		if ( password_strength_score == 0 ) { 
 			password_strength_adjective = "Very Weak";
         }
@@ -215,13 +215,13 @@ class PasswordStrengthEvaluator {
 			password_strength_adjective = "Weak";
         }
 		else if ( password_strength_score == 2 ) { 
-			password_strength_adjective = "Moderate";
-        }
-        else if ( password_strength_score == 3 ) { 
 			password_strength_adjective = "Good";
         }
-        else if ( password_strength_score == 4 ) { 
+        else if ( password_strength_score == 3 ) { 
 			password_strength_adjective = "Strong";
+        }
+        else if ( password_strength_score == 4 ) { 
+			password_strength_adjective = "Very Strong";
         }        
 
 		return password_strength_adjective;

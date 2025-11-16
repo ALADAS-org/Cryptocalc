@@ -121,6 +121,10 @@ class HtmlUtils {
 			if ( elt.nodeName == "TD" || elt.nodeName == "SPAN" || elt.nodeName == "DIV" ) {
 				return elt.textContent;
 			}
+			else if ( elt.nodeName == "TEXTAREA" ) {
+                // **PB** value change seems asynchronous 
+				return $('#' + elt_id).val();
+			}
 			else {
 				return elt.value;
 			}	
