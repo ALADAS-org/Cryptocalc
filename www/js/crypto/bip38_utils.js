@@ -117,7 +117,7 @@ class Bip38Utils {
 		
 			// encrypt(buffer, compressed, passphrase[, progressCallback, scryptParams])
 			encrypted_PK = Bip38.encrypt( decoded.privateKey, decoded.compressed, passphrase, 
-			                               async (status) => { await progress_cb(status); }, this.scryptParams );
+			                              async (status) => { await progress_cb(status); }, this.scryptParams );
 		}
 		catch (e) {
 			let options = {

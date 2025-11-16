@@ -185,7 +185,7 @@ class SecretPhraseTranslatorDialog {
 		
 		let entropy = entropy_info[ENTROPY_HEX];
 		if ( entropy.indexOf('00undefined') != -1 ) {
-			let error_msg = "*Error*: Unknown Language";
+			let error_msg = "*Error*: Unknown Wordlist";
 			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, error_msg );
 			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_INPUT_LANG_SELECT_ID,  'UNKNOWN' );			
 			return;
@@ -208,7 +208,7 @@ class SecretPhraseTranslatorDialog {
 			translated_secret_phrase = translated_secret_phrase.replaceAll(' ', '\u3000');
 		}
 		
-		console.log("   translated_secret_phrase: " + translated_secret_phrase);		
+		// console.log("   translated_secret_phrase: " + translated_secret_phrase);		
 
 		HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_TRANSLATED_ID, translated_secret_phrase );
     } // async updateTranslatedMnemonics()
@@ -233,7 +233,7 @@ class SecretPhraseTranslatorDialog {
 		let data = { mnemonics };	
 		let paste_lang = await window.ipcMain.GuessMnemonicsLang( data );
 		
-		console.log("   paste_lang: " + paste_lang);
+		// console.log("   paste_lang: " + paste_lang);
 		if ( paste_lang == '' ) return;
 		
 		let words = mnemonics.split(' ');
