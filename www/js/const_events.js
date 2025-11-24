@@ -49,7 +49,10 @@ const ToMain_RQ_GENERATE_PASSWORD                 = "ToMain:Request/GeneratePass
 const ToMain_RQ_MNEMONICS_AS_4LETTER              = "ToMain:Request/mnemonics_as_4letter";
 const ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = "ToMain:Request/mnemonics_as_two_parts";
 const ToMain_RQ_CHECK_MNEMONICS                   = "ToMain:Request/check_mnemonics";
+
+const ToMain_RQ_WORD_INDEXES_TO_MNEMONICS         = "ToMain:Request/word_indexes_to_mnemonics";
 const ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = "ToMain:Request/mnemonics_to_word_indexes";
+
 const ToMain_RQ_GUESS_MNEMONICS_LANG              = "ToMain:Request/guess_mnemonics_lang";
 
 const ToMain_RQ_BIP38_ENCRYPT                     = "ToMain:Request/bip38_encrypt";
@@ -160,7 +163,10 @@ if ( typeof exports === 'object' ) {
 	
 	exports.ToMain_RQ_MNEMONICS_AS_4LETTER              = ToMain_RQ_MNEMONICS_AS_4LETTER
 	exports.ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = ToMain_RQ_MNEMONICS_AS_TWO_PARTS
+	
+	exports.ToMain_RQ_WORD_INDEXES_TO_MNEMONICS         = ToMain_RQ_WORD_INDEXES_TO_MNEMONICS
 	exports.ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = ToMain_RQ_MNEMONICS_TO_WORD_INDEXES
+	
 	exports.ToMain_RQ_GUESS_MNEMONICS_LANG              = ToMain_RQ_GUESS_MNEMONICS_LANG
 	exports.ToMain_RQ_GET_FORTUNE_COOKIE                = ToMain_RQ_GET_FORTUNE_COOKIE
 	

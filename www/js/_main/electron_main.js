@@ -106,8 +106,11 @@ const { CMD_OPEN_WALLET,
 		ToMain_RQ_SET_MENU_ITEM_STATE,
 		
 		ToMain_RQ_CHECK_MNEMONICS, 
-		ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, ToMain_RQ_GUESS_MNEMONICS_LANG,
 		
+		ToMain_RQ_WORD_INDEXES_TO_MNEMONICS,
+		ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, 
+		
+		ToMain_RQ_GUESS_MNEMONICS_LANG,		
 		ToMain_RQ_SAVE_OPTIONS, ToMain_RQ_RESET_OPTIONS, ToMain_RQ_UPDATE_OPTIONS,
 		ToMain_RQ_GET_FORTUNE_COOKIE,	
 
@@ -1057,6 +1060,17 @@ class ElectronMain {
 			let fortune_cookie = this.getNewFortuneCookie();
 			return fortune_cookie;
 		}); // "ToMain:Request/get_FortuneCookie"
+		
+		// =============== ToMain_RQ_WORD_INDEXES_TO_MNEMONICS ===============
+		// called like this by Renderer: await window.ipcMain.WordIndexesToMnemonics( data )
+		ipcMain.handle( ToMain_RQ_WORD_INDEXES_TO_MNEMONICS, async (event, data) => {
+			Skribi.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + ToMain_RQ_WORD_INDEXES_TO_MNEMONICS + _END_);
+			const { word_indexes, lang } = data;
+			let mnemonics = Bip39Utils.WordIndexesToMnemonics( word_indexes, lang );
+						
+			return mnemonics;
+		}); // "ToMain:Request/word_indexes_to_mnemonics" event handler
+		
 
 		// =============== ToMain_RQ_MNEMONICS_TO_WORD_INDEXES ===============
 		// called like this by Renderer: await window.ipcMain.MnemonicsToWordIndexes( data )

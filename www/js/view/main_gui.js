@@ -2772,14 +2772,14 @@ class MainGUI {
 			enabled = false;			
 		}
 		
-		// Note: enabling 'Save' disables 'Save As.." and vice-versa 
+		// Update 'File/Save' and 'File/Save...' menu items
 		let menu_item_id = FILE_SAVE_MENU_ITEM_ID;
 		let data = { menu_item_id, enabled };
 		window.ipcMain.SetMenuItemState( data );
         // trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_MENU_ITEM_ID + ":" + enabled  ) );		
 		
 		menu_item_id = FILE_SAVE_AS_MENU_ITEM_ID;
-		enabled = ! enabled ;
+		// enabled = ! enabled ;
 		data = { menu_item_id, enabled };
 		window.ipcMain.SetMenuItemState( data );
 		// trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_AS_MENU_ITEM_ID + ":" + enabled  ) );
