@@ -43,6 +43,8 @@ const ENTROPY                     = 'Entropy';
 const ENTROPY_SIZE                = 'Entropy Size';
 const EXPECTED_ENTROPY_DIGITS     = 'expected_entropy_digits';
 const WORD_COUNT                  = 'word_count';
+
+const WORDLIST_WORD_INDEXES       = "#WordIndexes";
  
 const BIP32_PASSPHRASE            = 'Bip32 Passphrase';
 const BIP38_PASSPHRASE            = 'Bip38 Passphrase';

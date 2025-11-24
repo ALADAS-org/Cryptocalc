@@ -54,7 +54,10 @@ contextBridge.exposeInMainWorld(
 		MnemonicsAs4letter:          (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_4letter", data),		
 		
 		CheckMnemonics:              (data) => ipcRenderer.invoke("ToMain:Request/check_mnemonics", data),
+		
+		WordIndexesToMnemonics:      (data) => ipcRenderer.invoke("ToMain:Request/word_indexes_to_mnemonics", data),
 		MnemonicsToWordIndexes:      (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_word_indexes", data),
+		
 		GuessMnemonicsLang:          (data) => ipcRenderer.invoke("ToMain:Request/guess_mnemonics_lang", data),
 		GetUUID:                     (data) => ipcRenderer.invoke("ToMain:Request/get_UUID", data),
 		GetFortuneCookie:            (data) => ipcRenderer.invoke("ToMain:Request/get_FortuneCookie", data),

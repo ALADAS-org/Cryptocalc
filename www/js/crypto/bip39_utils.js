@@ -449,30 +449,34 @@ class Bip39Utils {
 	} // Bip39Utils.GetChecksumBitCount()
 	
 	static GetWordIndexes( mnemonics, args ) {
-		//console.log(">> " + _CYAN_ + "Bip39Utils.GetWordIndexes " + _END_);
-		//console.log("   mnemonics: " + mnemonics);
+		// console.log(">> " + _CYAN_ + "Bip39Utils.GetWordIndexes " + _END_);
+		// console.log("   mnemonics: " + mnemonics);
 		
 		args = Bip39Utils.GetArgs( args );
 		let lang            = (args[LANG] != undefined) ? args[LANG] : "EN";
 		let word_index_base = (args["word_index_base"] != undefined) ? args["word_index_base"] : "Decimal";
-		//console.log("   Lang: " + lang);
+		
+		// console.log("   word_index_base: " + word_index_base);
+		// console.log("   Lang:            " + lang);
 		
 		let words = mnemonics.split(' ');
-		//console.log("   words("+ words.length + "): " + words);
+		// console.log("   words("+ words.length + "): " + words);
 
 		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
-		let word_indexes = [];
+		let word_indexes  = [];
 		for ( let i=0; i < words.length; i++ ) {
 			let current_word = words[i] ;
-			//console.log("   word("+ i + "): " + current_word);
+			// console.log("   word("+ i + "): " + current_word);
+			
 			let word_index = LANG_WORDLIST.indexOf( current_word );
-			//console.log("   word_index: " + word_index);
-			if (word_index_base == "Decimal") { 
+			// console.log("   word_index: " + word_index);
+			
+			if ( word_index_base == "Decimal" ) { 
 				word_indexes.push( word_index.toString() );
 			}
 			else if (word_index_base == "Binary") { 
 				let word_index_binary = parseInt(word_index, 10).toString(2).padStart(11, "0");
-				//console.log("   word_index_binary: " + word_index_binary);				
+				// console.log("   word_index_binary: " + word_index_binary);				
 				word_indexes.push( word_index_binary );
 			}
 		}
@@ -481,20 +485,45 @@ class Bip39Utils {
 	} // Bip39Utils.GetWordIndexes()
 	
 	static WordIndexesToMnemonics( word_indexes, lang ) {
-		let mnemonics = "";
-		if (word_indexes == undefined) {
+		if ( word_indexes == undefined ) {
 			word_indexes = [];
 		}
-		if (lang == undefined) {
+		if ( lang == undefined ) {
 			lang = "EN";
 		}
+		
 		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
-		for (let i=0; i < word_indexes.length; i++) {
-			let word_index = word_indexes[i];
-			let word = LANG_WORDLIST[word_index];
-			let prefix = (i==0) ? " ":"";
-			mnemonics = prefix + mnemonics;
+		
+		let word_count = word_indexes.length;
+		
+		let mnemonics = [];
+				
+		if ( ! ( word_count == 12 || word_count == 15 || word_count == 18 || word_count == 21 || word_count == 24 ) ) {
+			return mnemonics;
 		}
+		
+		let entropy_binary = "";
+		for ( let i=0; i < word_indexes.length; i++ ) {
+			let current_word = word_indexes[i];
+			let word_index = parseInt( current_word );
+			let word_index_binary = parseInt(word_index, 10).toString(2).padStart(11, "0");
+			entropy_binary += word_index_binary;
+		} // for each word in 'words'
+		
+		
+		let checksum_bit_count = Bip39Utils.GetChecksumBitCount( word_count );
+		// console.log("   checksum_bit_count:         " + checksum_bit_count);
+	    
+		let checksum_bits = entropy_binary.substring( entropy_binary.length - checksum_bit_count );		
+		// console.log("   checksum_bits:              " + checksum_bits);
+		
+		let entropy_bits = entropy_binary.substring( 0, entropy_binary.length - checksum_bit_count );
+		
+		let entropy_hex  = binaryToHex( entropy_bits );
+		// pretty_log("   entropy_hex", entropy_hex);
+		
+		mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex, lang );
+
 		return mnemonics;
 	} // Bip39Utils.WordIndexesToMnemonics()
 	
@@ -508,7 +537,7 @@ class Bip39Utils {
 		let mnemonics_dictionary = Bip39Mnemonic.Words.ENGLISH;
 		switch ( lang ) {
 			case "EN": 	mnemonics_dictionary = Bip39Mnemonic.Words.ENGLISH; break; // English	
-			case "FR":  mnemonics_dictionary = Bip39Mnemonic.Words.FRENCH; break;  // French		
+			case "FR":  mnemonics_dictionary = Bip39Mnemonic.Words.FRENCH;  break; // French		
 			case "ES":  mnemonics_dictionary = Bip39Mnemonic.Words.SPANISH; break; // Spanish		
 			case "IT":  mnemonics_dictionary = Bip39Mnemonic.Words.ITALIAN; break; // Italian				
 			case "CS":  mnemonics_dictionary = CS_WORDLIST; break;                 // Czech		
@@ -546,7 +575,7 @@ class Bip39Utils {
 		let words        = mnemonics.split(' ');
 		let current_lang = "";
 		
-		for (let i=0; i < SUPPORTED_LANGS.length; i++) {
+		for ( let i=0; i < SUPPORTED_LANGS.length; i++ ) {
 			current_lang = SUPPORTED_LANGS[i];
 			// console.log("   Check if 'mnemonics' is: " + current_lang);
 			let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( current_lang );
@@ -579,7 +608,7 @@ class Bip39Utils {
 
 		let words = mnemonics.split(' ');
 		//console.log("   words.length: " + words.length);
-		if (words.length != word_count ) { 
+		if ( words.length != word_count ) { 
 			return false;
 		}
 		
@@ -589,7 +618,7 @@ class Bip39Utils {
 			let current_word = words[i];
 			//console.log("   word[" + i + "] : " + current_word);
 			let word_index = LANG_WORDLIST.indexOf( current_word );
-			if (word_index == -1) {
+			if ( word_index == -1 ) {
 				return false;
 			}
 		}
@@ -599,8 +628,8 @@ class Bip39Utils {
 	static MnemonicsAs4letter( mnemonics ) {
 		//console.log(">> " + _CYAN_ + "Bip39Utils.MnemonicsAs4letter" + _END_);
 		let word_4letter_prefixes = "";
-		let words = mnemonics.split(' ');
-		let word_count = words.length;
+		let words                 = mnemonics.split(' ');
+		let word_count            = words.length;
 		
 		let capitalize = (in_str) => {
 			return in_str.charAt(0).toUpperCase() + in_str.slice(1);

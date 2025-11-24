@@ -28,7 +28,7 @@ class SecretPhraseTranslatorDialog {
 	static #InstanceCount = 0;
 	
 	static get This() {
-		if( SecretPhraseTranslatorDialog.#Singleton == undefined ) {
+		if ( SecretPhraseTranslatorDialog.#Singleton == undefined ) {
 			SecretPhraseTranslatorDialog.#Singleton = new SecretPhraseTranslatorDialog( this.#Key );
 			if ( Bip38EncryptDecryptDialog.#Singleton > 0 ) {
 				throw new TypeError("'SecretPhraseTranslatorDialog' constructor called more than once");
@@ -74,6 +74,10 @@ class SecretPhraseTranslatorDialog {
 							this_obj.addEventHandler
 								( TRANSLATOR_DIALOG_INPUT_ID, 'paste', 
 								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onPasteText( evt ); } );
+							
+							this_obj.addEventHandler
+								( TRANSLATOR_DIALOG_OUTPUT_LANG_SELECT_ID, 'change', 
+								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onChangeOutputLang( evt ); } );		  
 				
 							this_obj.addEventHandler
 								( TRANSLATOR_DIALOG_COPY_INPUT_BTN_ID, 'click', 
@@ -105,6 +109,10 @@ class SecretPhraseTranslatorDialog {
 							this_obj.removeEventHandler 
                                 ( TRANSLATOR_DIALOG_INPUT_ID, 'paste',							
 								  async (evt) => { if (this.cb_enabled) await SecretPhraseTranslatorDialog.This.onPasteText(evt); } );	
+								  
+							this_obj.removeEventHandler
+								( TRANSLATOR_DIALOG_OUTPUT_LANG_SELECT_ID, 'change', 
+								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onChangeOutputLang( evt ); } );
 							
 							this_obj.removeEventHandler
 								( TRANSLATOR_DIALOG_COPY_INPUT_BTN_ID, 'click', 
@@ -176,24 +184,61 @@ class SecretPhraseTranslatorDialog {
 			return;
 		}
 		
-		let	mnemonics  = input_mnemonics;
-		let input_lang = HtmlUtils.GetElementValue( TRANSLATOR_DIALOG_INPUT_LANG_SELECT_ID );
+		let lang                     = "";
+		let input_lang               = "";
+		let	mnemonics                = [];
+		let data                     = {};
+		let word_indexes             = [];
+		let translated_secret_phrase = "";
 		
-        let lang = input_lang;		
-		let data = { mnemonics, lang };
-		let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
-		
-		let entropy = entropy_info[ENTROPY_HEX];
-		if ( entropy.indexOf('00undefined') != -1 ) {
-			let error_msg = "*Error*: Unknown Wordlist";
-			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, error_msg );
-			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_INPUT_LANG_SELECT_ID,  'UNKNOWN' );			
+		input_lang = HtmlUtils.GetElementValue( TRANSLATOR_DIALOG_INPUT_LANG_SELECT_ID );	
+
+		if ( input_lang == output_lang ) {
+			translated_secret_phrase = input_mnemonics;
+			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_TRANSLATED_ID, translated_secret_phrase );
 			return;
+		}		
+
+		if ( input_lang == WORDLIST_WORD_INDEXES ) {
+			lang         = output_lang;	
+			word_indexes = words;				
+			data = { word_indexes, lang };
+			translated_secret_phrase = await window.ipcMain.WordIndexesToMnemonics( data );
+			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_TRANSLATED_ID, translated_secret_phrase );
+		}	
+		else if ( output_lang == WORDLIST_WORD_INDEXES ) {
+            let options = { [LANG]: input_lang };			
+			mnemonics = words.join(' ');				
+			data = { mnemonics, options };
+			let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
+			let translated_secret_phrase = word_indexes.join(' ');
+			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_TRANSLATED_ID, translated_secret_phrase );
+		}			
+		else { 
+			lang      = input_lang;
+  	        mnemonics = input_mnemonics;			
+	  		data = { mnemonics, lang };
+			let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			
+			let entropy = entropy_info[ENTROPY_HEX];
+			if ( entropy.indexOf('00undefined') != -1 ) {
+				let error_msg = "*Error*: Unknown Wordlist";
+				HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, error_msg );
+				HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_INPUT_LANG_SELECT_ID,  'UNKNOWN' );			
+				return;
+			}
+			// console.log("   entropy: " + JSON.stringify(entropy));
+			
+			await this.updateTranslatedMnemonics( entropy, output_lang ); 
 		}
-		// console.log("   entropy: " + JSON.stringify(entropy));
-		
-		await this.updateTranslatedMnemonics( entropy, output_lang ); 
 	} // async onTranslateText()
+	
+	async onChangeOutputLang( evt ) {
+		let log_msg = ">> " + _CYAN_ + "SecretPhraseTranslatorDialog.onChangeOutputLang" + _END_;
+		window.ipcMain.logToMain(log_msg);
+		
+		await this.onTranslateText( evt );
+	} // async onChangeOutputLang()
 	
 	async updateTranslatedMnemonics( entropy, output_lang ) {
 		let log_msg = ">> " + _CYAN_ + "SecretPhraseTranslatorDialog.updateTranslatedMnemonics" + _END_;
@@ -227,24 +272,41 @@ class SecretPhraseTranslatorDialog {
 	    evt.preventDefault();
         let paste_text = (evt.clipboardData || window.clipboardData).getData("text");
 
-		// console.log("   paste_text: " + paste_text);
-		
-		let mnemonics = paste_text;
-		let data = { mnemonics };	
-		let paste_lang = await window.ipcMain.GuessMnemonicsLang( data );
-		
-		// console.log("   paste_lang: " + paste_lang);
-		if ( paste_lang == '' ) return;
-		
-		let words = mnemonics.split(' ');
+		let words = paste_text.split(' ');
 		if ( ! ( words.length == 12 || words.length == 15 || words.length == 18 || words.length == 21 || words.length == 24 ) ) {
 			let error_msg = "*Error*: Invalid mnemonics count: " + words.length;
 			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, error_msg );
 			return;
 		}
 		
-		// HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, '' );
-		HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_INPUT_ID, mnemonics );
+		// ----------Special case: 'Word Indexes' ----------
+		let is_word_indexes_list = true;
+		for ( let i=0; i< words.length; i++ ) {
+			let current_word = words[i];
+			if (! stringIsNumber( current_word ) ) {
+				is_word_indexes_list = false;
+				break;
+			}
+		}
+		// ----------Special case: 'Word Indexes'
+		
+		let mnemonics  = "";
+		let paste_lang = "";
+		let data       = {};
+		
+		if ( is_word_indexes_list ) {
+			paste_lang = WORDLIST_WORD_INDEXES;
+		}
+		else {	
+			mnemonics = paste_text;
+			data      = { mnemonics };	
+			paste_lang = await window.ipcMain.GuessMnemonicsLang( data );
+			
+			// console.log("   paste_lang: " + paste_lang);
+			if ( paste_lang == '' ) return;
+		}
+		
+		HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_INPUT_ID,             paste_text );
 		HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_INPUT_LANG_SELECT_ID, paste_lang );
 	} // async onPasteText()
 	
@@ -271,7 +333,7 @@ class SecretPhraseTranslatorDialog {
 	} // onCopyField()
 	
 	onClearFields() {
-		console.log(">> SecretPhraseTranslatorDialog.onClearFields");
+		// console.log(">> SecretPhraseTranslatorDialog.onClearFields");
 		this.clearFields();
 	} // onClearFields()
 	

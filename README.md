@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.24
+## CryptoCalc 0.4.25
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -171,7 +171,14 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.4.24`: This version    
+    - `0.4.25`: This version    
+		- Enhancement:
+		    - in `Tools/Secret Secret phrase Translator`: a _special language_ (`Word Indexes`) is now provided to get the indexes of the words in 
+			the _Secret phrase_ (they are independent from the language).
+		- Bug Fix:
+		    - When you provide a Bip32 passphrase, `File/Save As...` was not disabled (it should be disabled until you use the [Apply] button to  
+			recompute the wallet addresses in the Bip32 hierarchy).
+    - `0.4.24`    
 		- Bug Fix:
 		    - in `Tools/Bip38 Encrypt/Decrypt`: the `Encrypt/Decrypt` state value was not get/set properly.
     - `0.4.23`
@@ -465,9 +472,14 @@
 		which belong to the same `BIP32` hierarchy that is determined by the
 		_Secret phrase_ (also called the _Secret Recovery Passphrase_).
 	    - 5.1.18. Secret phrase Translator  
-	        - This dedicated tool (`Tools/Secret phrase Translator`) is meant to import a generated wallet in a _Wallet Manager_.    
+	        - This dedicated tool (`Tools/Secret phrase Translator`) is meant to import a generated wallet in a _Wallet Manager_. 
+            Usage: Paste a _Secret phrase_, choose an output language (with the `Output` dropdown list) then use [Translate] button (the Green arrow button) 
+			to get the translated _Secret phrase_.    
 		    Use case: You can use a _Secret phrase_ in a non `Bip39` official language (eg. `Russian`) and translate it to its equivalent in `English` 
 		    (because _Wallet Managers_ support only English).    
+            Note 1: A _special language_ (`Word Indexes`) is provided to get the indexes of the words in the _Secret phrase_ (they are independent from the language).    
+            Note 2: Once a first translation has been performed, you can change the _Output language_ and translate at the same time by selecting the new
+            _Output language_ in the `Output` dropdown list.    
 		- 5.1.19. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
