@@ -1,0 +1,36 @@
+#tools_db_management_dialog_id {
+  font-size:         18px;
+  background-color:  lightred;
+  overflow:          hidden;
+}
+
+.DBM_LabelColumn {
+  width:             100px;
+  padding-left:      10px;
+  min-width:         100px;
+  max-width:         100px;
+  height:            25px;
+}
+
+.DBInputField {
+  width:             460px;
+  background-color:  #e4e4e4; /* #cecece */
+}
+
+.DBSelectFolderButton { 
+  display:           flex;
+  align-items: 	     center;
+  padding:           8px;
+  width:             22px;
+  height:            22px;
+  margin-left:       4px;
+  padding-left:      2px;
+  margin-top:        1px;
+}
+
+.DBImportButton {
+  width:             120px !important; /* 90px */
+  min-width:         120px !important;
+  max-width:         120px !important;
+  background-color:  lightgreen;
+}

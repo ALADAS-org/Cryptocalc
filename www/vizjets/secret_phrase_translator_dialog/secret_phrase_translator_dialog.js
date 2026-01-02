@@ -43,10 +43,11 @@ class SecretPhraseTranslatorDialog {
 		// console.log(">> **************** new SecretPhraseTranslatorDialog");
 		if ( key !== SecretPhraseTranslatorDialog.#Key ) {
 			throw new TypeError("'SecretPhraseTranslatorDialog' constructor is private");
-		}
-	
-	    this.displayed    = false;
-		this.encrypt_mode = true; 
+		}	
+
+	    this.event_handlers_attached = false;
+	    this.displayed               = false;
+		this.encrypt_mode            = true; 
 	} // ** Private constructor **
 	
 	initialize() {
@@ -65,71 +66,45 @@ class SecretPhraseTranslatorDialog {
 				width:   670, // 680
 				
 				open:   function( event, ui ) {	
-							let this_obj = SecretPhraseTranslatorDialog.This;
-	
-							this_obj.addEventHandler
-								( TRANSLATOR_DIALOG_TRANSLATE_BTN_ID, 'click', 
-								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onTranslateText( evt ); } );						
+							let this_obj = SecretPhraseTranslatorDialog.This;						
 							
-							this_obj.addEventHandler
-								( TRANSLATOR_DIALOG_INPUT_ID, 'paste', 
-								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onPasteText( evt ); } );
-							
-							this_obj.addEventHandler
-								( TRANSLATOR_DIALOG_OUTPUT_LANG_SELECT_ID, 'change', 
-								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onChangeOutputLang( evt ); } );		  
-				
-							this_obj.addEventHandler
-								( TRANSLATOR_DIALOG_COPY_INPUT_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onCopyField(TRANSLATOR_DIALOG_INPUT_ID); } );	
-								  
-							this_obj.addEventHandler
-								( TRANSLATOR_DIALOG_COPY_TRANSLATED_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onCopyField(TRANSLATOR_DIALOG_TRANSLATED_ID); } );	
-							
-							this_obj.addEventHandler
-								( TRANSLATOR_DIALOG_CLEAR_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onClearFields(); } );	
-								  
-							this_obj.addEventHandler
-								( TRANSLATOR_DIALOG_QUIT_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onQuit(); } );								  
-				
+							if ( ! this_obj.event_handlers_attached ) {	
+								this_obj.addEventHandler
+									( TRANSLATOR_DIALOG_TRANSLATE_BTN_ID, 'click', 
+									  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onTranslateText( evt ); } );						
+								
+								this_obj.addEventHandler
+									( TRANSLATOR_DIALOG_INPUT_ID, 'paste', 
+									  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onPasteText( evt ); } );
+								
+								this_obj.addEventHandler
+									( TRANSLATOR_DIALOG_OUTPUT_LANG_SELECT_ID, 'change', 
+									  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onChangeOutputLang( evt ); } );		  
+					
+								this_obj.addEventHandler
+									( TRANSLATOR_DIALOG_COPY_INPUT_BTN_ID, 'click', 
+									  () => { SecretPhraseTranslatorDialog.This.onCopyField(TRANSLATOR_DIALOG_INPUT_ID); } );	
+									  
+								this_obj.addEventHandler
+									( TRANSLATOR_DIALOG_COPY_TRANSLATED_BTN_ID, 'click', 
+									  () => { SecretPhraseTranslatorDialog.This.onCopyField(TRANSLATOR_DIALOG_TRANSLATED_ID); } );	
+								
+								this_obj.addEventHandler
+									( TRANSLATOR_DIALOG_CLEAR_BTN_ID, 'click', 
+									  () => { SecretPhraseTranslatorDialog.This.onClearFields(); } );	
+									  
+								this_obj.addEventHandler
+									( TRANSLATOR_DIALOG_QUIT_BTN_ID, 'click', 
+									  () => { SecretPhraseTranslatorDialog.This.onQuit(); } );
+
+								this_obj.event_handlers_attached = true;									  
+							}
 				            this_obj.clearFields();
                             this_obj.displayed = true;							
 						}, // open()
 						
 				close:  function( event, ui ) {	
 							let this_obj = SecretPhraseTranslatorDialog.This;
-							
-							this_obj.removeEventHandler
-								( TRANSLATOR_DIALOG_TRANSLATE_BTN_ID, 'click', 
-								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onTranslateText( evt ); } );
-							
-							this_obj.removeEventHandler 
-                                ( TRANSLATOR_DIALOG_INPUT_ID, 'paste',							
-								  async (evt) => { if (this.cb_enabled) await SecretPhraseTranslatorDialog.This.onPasteText(evt); } );	
-								  
-							this_obj.removeEventHandler
-								( TRANSLATOR_DIALOG_OUTPUT_LANG_SELECT_ID, 'change', 
-								  async ( evt ) => { await SecretPhraseTranslatorDialog.This.onChangeOutputLang( evt ); } );
-							
-							this_obj.removeEventHandler
-								( TRANSLATOR_DIALOG_COPY_INPUT_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onCopyField(TRANSLATOR_DIALOG_INPUT_ID); } );	
-								  
-							this_obj.removeEventHandler
-								( TRANSLATOR_DIALOG_COPY_TRANSLATED_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onCopyField(TRANSLATOR_DIALOG_TRANSLATED_ID); } );
-							
-							this_obj.removeEventHandler
-								( TRANSLATOR_DIALOG_CLEAR_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onClearFields(); } );	
-								  
-							this_obj.removeEventHandler
-								( TRANSLATOR_DIALOG_QUIT_BTN_ID, 'click', 
-								  () => { SecretPhraseTranslatorDialog.This.onQuit(); } );		
-
 							this_obj.displayed = false;								  
 						} // close()
 			} // -------------------- JQuery Dialog options		

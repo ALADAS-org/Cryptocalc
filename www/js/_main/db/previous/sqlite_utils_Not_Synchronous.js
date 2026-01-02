@@ -1,0 +1,511 @@
+// ======================================================================================================================
+// ================================================    sqlite_util.js    ================================================
+// ======================================================================================================================
+"use strict";
+
+const sqlite3 = require('sqlite3').verbose();
+const bcrypt  = require('bcrypt');
+
+const fs   = require('fs');
+const path = require('path');
+const os   = require('os');
+
+const CRYPTOCALC_DB_LANGS =       [ "EN","DE","FR","ES","PT","IT","EO","LA","CS","RU","EL","SC","TC","JP","KO","HI","BN","GU" ];
+
+const CRYPTOCALC_DB_COINS =       [ "BTC", "ETH",  "XRP", "BNB", "SOL", "DOGE", "TRX", "ADA", "XLM", "SUI", "BCH",
+                                    "AVAX", "TON", "LTC", "ETC", "POL", "VET", "BSV", "DASH", "RVN", "ZEN", "LUNA", "FIRO" ];  
+							  
+const CRYPTOCALC_DB_BLOCKCHAINS = [ "Bitcoin", "Ethereum", "Ripple", "Binance Smart Chain", "Solana", "Dogecoin", "TRON", 
+                                    "Cardano", "Stellar", "Sui", "Bitcoin Cash)", "Avalanche", "Toncoin", "Litecoin", "Ethereum Classic",
+									"Polygon", "VeChain", "Bitcoin SV", "Dash", "Ravencoin", "Horizen", "Terra", "Firo" ];
+
+class SqLiteUtils {
+	static #Key           = Symbol();
+	static #Singleton     = new SqLiteUtils( this.#Key );
+	static #InstanceCount = 0;
+	
+	static get This() {
+		if ( SqLiteUtils.#Singleton == undefined ) {
+			this.#Singleton = new SqLiteUtils( this.#Key );
+			if ( this.#InstanceCount > 0 ) {
+				throw new TypeError("'SqLiteUtils' constructor called more than once");
+			}
+			this.#InstanceCount++;
+        }
+        return SqLiteUtils.#Singleton;
+    } // SqLiteUtils 'This' getter
+
+    // ** Private constructor **
+	constructor( key ) {
+		if ( key !== SqLiteUtils.#Key ) {
+			throw new TypeError("'SqLiteUtils' constructor is private");
+		}
+		
+		this.local_app_data_path = process.env.LOCALAPPDATA;
+		// console.log('   Chemin LOCALAPPDATA: ' + this.local_app_data_path);
+		
+		this.app_folder_path = path.join( this.local_app_data_path, 'Aladas-org/Cryptocalc');
+		
+		// Créer le dossier (ne fait rien s'il existe)
+		if ( ! fs.existsSync( this.app_folder_path ) ) {		
+			fs.mkdirSync( this.app_folder_path, { recursive: true } );
+		}
+		
+		this.db_obj       = undefined;
+		this.db_file_path = '';
+		
+		this.initialize();
+	} // ** Private constructor **
+	
+	initialize() {
+		console.log('>> initialize');
+		 
+		this.db_file_path = path.join( this.app_folder_path, 'Cryptocalc.db');
+			
+		if ( this.existsFileSync( this.db_file_path ) ) {
+			// console.log('   file already created: ' + this.db_file_path);
+		}
+		else {
+			console.log('   Create File: ' + this.db_file_path);				
+			fs.writeFileSync( this.db_file_path, '' );
+			console.log('✅ Fichier DB créé: ' + this.db_file_path);
+		}
+		
+		// Initialize database connection
+		this.db_obj = new sqlite3.Database(this.db_file_path, (err) => {
+			if (err) {
+				console.error('Erreur connection DB:', err);
+				return;
+			}
+			console.log('✅ Connecté à la base de données');
+			
+			// Enable WAL mode and foreign keys
+			this.db_obj.serialize(() => {
+				this.db_obj.run('PRAGMA journal_mode = WAL', (err) => {
+					if (err) console.error('Erreur WAL mode:', err);
+				});
+				
+				this.db_obj.run('PRAGMA foreign_keys = ON', (err) => {
+					if (err) {
+						console.error('Erreur activation Foreign Keys:', err);
+					} else {
+						console.log('✅ Clés étrangères activées');
+					}
+				});
+			});
+		});
+		
+		this.initSchema();
+		this.initDB();
+	} // initialize()
+
+	initDB() {
+		console.error('> SqLiteUtils.initDB');
+		
+		this.db_obj.serialize(
+		    () => {
+			this.initAdminUser();
+			
+			// Create WALLET table
+			this.db_obj.run(
+				"CREATE TABLE IF NOT EXISTS WALLET ("
+					+ "id                 INTEGER  PRIMARY KEY  AUTOINCREMENT,"	
+					+ "name               TEXT,"
+					+ "version            VARCHAR(10),"
+					+ "time_stamp         TIMESTAMP,"
+					+ "wallet_mode        VARCHAR(15),"						   
+					+ "blockchain         TEXT,"
+					+ "balance            REAL,"
+					+ "coin               VARCHAR(7),"	
+					+ "entropy            TEXT,"
+					+ "entropy_size       INTEGER,"	
+					+ "wallet_address     TEXT,"
+					+ "bc_explorer_url    TEXT,"
+					+ "private_key        TEXT,"						  
+					+ "bip38_passphrase   TEXT,"
+					+ "bip38_encrypted_pk TEXT,"
+					+ "wif                TEXT,"
+					+ "secret_phrase      TEXT,"	
+					+ "word_indexes       TEXT,"	
+					+ "bip32_passphrase   TEXT,"
+					+ "derivation_path    TEXT,"						   
+					+ "account            INTEGER,"
+					+ "address_index      INTEGER,"						   
+					+ "lang               VARCHAR(3),"  
+					+ "FOREIGN KEY (coin)        REFERENCES COIN(id),"
+					+ "FOREIGN KEY (blockchain)  REFERENCES BLOCKCHAIN(id),"
+					+ "FOREIGN KEY (wallet_mode) REFERENCES WALLET_MODE(id),"
+					+ "FOREIGN KEY (lang)        REFERENCES LANG(id),"
+					+ "UNIQUE(name, entropy)"
+				  + ")"
+				),
+				(err) => {
+					if (err) {
+						console.error('Erreur création table WALLET:', err);
+					} else {
+						console.log('✅ Table WALLET créée/verifiée');
+					}
+				}
+		});
+	} // initDB()
+	
+	initSchema() {
+		console.error('> SqLiteUtils.initSchema');
+		
+		// Check if LANG table exists
+		this.db_obj.get("SELECT name FROM sqlite_master WHERE type='table' AND name='LANG'", (err, row) => {
+			if (err) {
+				console.error('Erreur vérification table LANG:', err);
+				return;
+			}
+			
+			if (!row) {
+				this.initConstantTables();
+			}
+		});
+	} // initSchema()
+	
+	initAdminUser() {
+		console.error('> SqLiteUtils.initAdminUser');
+		
+		// Check if USERS table exists
+		this.db_obj.get("SELECT name FROM sqlite_master WHERE type='table' AND name='USERS'", (err, row) => {
+			if (err) {
+				console.error('Erreur vérification table USERS:', err);
+				return;
+			}
+			
+			if (!row) {
+				// Create USERS table
+				this.db_obj.run(
+					"CREATE TABLE IF NOT EXISTS USERS ("
+						+ "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+						+ "username           TEXT UNIQUE NOT NULL,"
+						+ "email              TEXT UNIQUE NOT NULL,"
+						+ "password_hash      TEXT NOT NULL,"
+						+ "is_admin           BOOLEAN DEFAULT 0,"
+						+ "is_active          BOOLEAN DEFAULT 1,"
+						+ "can_manage_users   BOOLEAN DEFAULT 0,"
+						+ "can_manage_content BOOLEAN DEFAULT 0,"
+						+ "can_view_logs      BOOLEAN DEFAULT 0,"
+						+ "full_name          TEXT,"
+						+ "last_login         DATETIME,"
+						+ "created_at         DATETIME DEFAULT CURRENT_TIMESTAMP,"
+						+ "updated_at         DATETIME DEFAULT CURRENT_TIMESTAMP"
+					  + ")"	
+					),
+					(err) => {
+						if (err) {
+							console.error('Erreur création table USERS:', err);
+							return;
+						}
+						
+						// Insert admin user
+						const hashed_password = '$2b$10$viyvP9YIQs0E4.sZN0feIeBrPbHTpCnLLc.ldWgCHDg4BCoHgm2Fi';
+						
+						this.db_obj.run(
+							  "INSERT INTO USERS(" 
+							+ "  username, email, password_hash, is_admin, can_manage_users, can_manage_content," 
+							+ "  can_view_logs, full_name, is_active )" 
+							+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+							
+							['admin', 'admin@example.com', hashed_password, 1, 1, 1, 1, 'Super Administrator', 1],
+							(err) => {
+								if (err) {
+									console.error('Erreur insertion admin:', err);
+								} else {
+									console.log('✅ Utilisateur admin créé');
+								}
+							}
+						);
+					}
+			}
+		});
+	} // initAdminUser()
+	
+	initConstantTables() {
+		console.error('> SqLiteUtils.initConstantTables');
+		
+		// Execute all operations in serial order
+		this.db_obj.serialize(() => {
+			// WALLET_MODE table
+			this.db_obj.run(
+				'CREATE TABLE IF NOT EXISTS WALLET_MODE (id VARCHAR(15) PRIMARY KEY)',
+				(err) => {
+					if (err) {
+						console.error('Erreur création WALLET_MODE:', err);
+						return;
+					}
+					
+					// Insert wallet modes
+					const walletModes = ['Simple Wallet', 'SWORD Wallet', 'HD Wallet'];
+					let insertedCount = 0;
+					
+					walletModes.forEach(mode => {
+						this.db_obj.run(
+							'INSERT INTO WALLET_MODE (id) VALUES (?)',
+							[mode],
+							(err) => {
+								if (err && !err.message.includes('UNIQUE constraint')) {
+									console.error('Erreur insertion WALLET_MODE:', err);
+								}
+								insertedCount++;
+							}
+						);
+					});
+					
+					console.log('✅ Table WALLET_MODE initialisée');
+				}
+			);
+			
+			// COIN table
+			this.db_obj.run(
+				'CREATE TABLE IF NOT EXISTS COIN (id VARCHAR(7) PRIMARY KEY)',
+				(err) => {
+					if (err) {
+						console.error('Erreur création COIN:', err);
+						return;
+					}
+					
+					// Insert coins
+					CRYPTOCALC_DB_COINS.forEach(coin => {
+						this.db_obj.run(
+							'INSERT INTO COIN (id) VALUES (?)',
+							[coin],
+							(err) => {
+								if (err && !err.message.includes('UNIQUE constraint')) {
+									console.error('Erreur insertion COIN:', err);
+								}
+							}
+						);
+					});
+					
+					console.log('✅ Table COIN initialisée');
+				}
+			);
+			
+			// BLOCKCHAIN table
+			this.db_obj.run(
+				'CREATE TABLE IF NOT EXISTS BLOCKCHAIN (id TEXT PRIMARY KEY)',
+				(err) => {
+					if (err) {
+						console.error('Erreur création BLOCKCHAIN:', err);
+						return;
+					}
+					
+					// Insert blockchains
+					CRYPTOCALC_DB_BLOCKCHAINS.forEach(blockchain => {
+						this.db_obj.run(
+							'INSERT INTO BLOCKCHAIN (id) VALUES (?)',
+							[blockchain],
+							(err) => {
+								if (err && !err.message.includes('UNIQUE constraint')) {
+									console.error('Erreur insertion BLOCKCHAIN:', err);
+								}
+							}
+						);
+					});
+					
+					console.log('✅ Table BLOCKCHAIN initialisée');
+				}
+			);
+			
+			// LANG table
+			this.db_obj.run(
+				'CREATE TABLE IF NOT EXISTS LANG (id VARCHAR(3) PRIMARY KEY)',
+				(err) => {
+					if (err) {
+						console.error('Erreur création LANG:', err);
+						return;
+					}
+					
+					// Insert languages
+					CRYPTOCALC_DB_LANGS.forEach(lang => {
+						this.db_obj.run(
+							'INSERT INTO LANG (id) VALUES (?)',
+							[lang],
+							(err) => {
+								if (err && !err.message.includes('UNIQUE constraint')) {
+									console.error('Erreur insertion LANG:', err);
+								}
+							}
+						);
+					});
+					
+					console.log('✅ Table LANG initialisée');
+				}
+			);
+		});
+	} // initConstantTables()
+	
+	importWallets( folder_path ) {	
+		try {
+			const sub_folders = fs.readdirSync( folder_path, { withFileTypes: true } );
+			for ( let i=0; i < sub_folders.length; i++ ) {
+				let folder_name = sub_folders[i].name;				
+				console.log('> folder_name[' + i + ']: ' + folder_name);
+				
+				let json_file_path = folder_path + '\\' + folder_name + '\\wallet_info.wits'; 
+				// console.log('> json_file_path[' + i + ']: ' + json_file_path);
+				
+				const wallet_info_content = fs.readFileSync( json_file_path, 'utf8' );
+				const wallet_json_data = JSON.parse( wallet_info_content );
+				
+				this.addWallet( wallet_json_data, folder_name );
+			}
+		} catch ( err ) {
+		    console.error('Erreur de lecture du dossier :', err.message);
+		}
+	} // importWallets()
+	
+	
+	addWallet( wallet_data, sub_folder_name ) {
+		// If no wallet_data provided, just return (this was likely a test call)
+		if (!wallet_data) return;
+		
+		try {
+			let name               = sub_folder_name;
+			let version            = wallet_data['Version'];
+			let time_stamp         = wallet_data['timestamp'];
+			let wallet_mode        = wallet_data['Wallet Mode'];
+			let blockchain         = wallet_data['Blockchain'];
+			let coin               = wallet_data['Coin'];
+			let balance            = 0;
+			let entropy            = wallet_data['Entropy'];			
+			let entropy_size       = wallet_data['Entropy Size'];
+			let wallet_address     = wallet_data['Wallet Address'];
+			let bc_explorer_url    = wallet_data['Blockchain Explorer'];			
+			let private_key        = wallet_data['Private Key'] != undefined ? wallet_data['Private Key'] : '';
+			let bip38_passphrase   = wallet_data['Bip38 Passphrase'] != undefined ? wallet_data['Bip38 Passphrase'] : '';
+			let bip38_encrypted_pk = wallet_data['Bip38 Encrypted PK'] != undefined ? wallet_data['Bip38 Encrypted PK'] : '';
+			let wif                = wallet_data['WIF'] != undefined ? wallet_data['WIF'] : '';
+			let secret_phrase      = wallet_data['Secret phrase'];
+			let word_indexes       = wallet_data['Word indexes'];
+			let bip32_passphrase   = wallet_data['Bip32 Passphrase'] != undefined ? wallet_data['Bip32 Passphrase'] : '';
+			let derivation_path    = wallet_data['Derivation Path'];			
+			let account            = wallet_data['account'];
+			let address_index      = wallet_data['address_index'];
+			let lang               = wallet_data['lang'];
+			
+			this.db_obj.run(
+				`INSERT OR IGNORE INTO WALLET 
+				 (name, version, time_stamp, wallet_mode, blockchain, coin, balance, entropy, entropy_size, 
+				  wallet_address, bc_explorer_url, private_key, bip38_passphrase, bip38_encrypted_pk,
+				  wif, secret_phrase, word_indexes, bip32_passphrase, derivation_path, account, address_index, lang) 
+				 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+				[
+					name, version, time_stamp, wallet_mode, blockchain, coin, balance, entropy, entropy_size, 
+					wallet_address, bc_explorer_url, private_key, bip38_passphrase, bip38_encrypted_pk,
+					wif, secret_phrase, word_indexes, bip32_passphrase, derivation_path, account, address_index, lang
+				],
+				(err) => {
+					if (err && !err.message.includes('UNIQUE constraint')) {
+						console.error('Erreur insertion wallet:', err);
+					}
+				}
+			);
+		} catch (err) {
+			console.error('Erreur dans addWallet:', err);
+		}
+	} // addWallet()
+	
+	existsDBTable( db_obj, table_name ) {	
+		return new Promise((resolve) => {
+			db_obj.get(
+				`SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
+				[table_name],
+				(err, row) => {
+					if (err) {
+						console.error('Erreur vérification table:', err);
+						resolve(false);
+					} else {
+						resolve(!!row);
+					}
+				}
+			);
+		});
+	} // existsDBTable()
+	
+	// Helper method for synchronous version (for backward compatibility)
+	existsDBTableSync(table_name) {
+		let exists = false;
+		this.db_obj.get(
+			`SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
+			[table_name],
+			(err, row) => {
+				if (!err && row) {
+					exists = true;
+				}
+			}
+		);
+		return exists;
+	}
+	
+	existsFileSync( file_path ) {
+		try {
+			fs.accessSync( file_path, fs.constants.F_OK );
+			return true;
+		} catch (err) {
+			return false;
+		}
+	} // existsFileSync()
+	
+	get appFolderPath() {
+		return this.app_folder_path;
+	} // 'appFolderPath' getter
+	
+	// Helper method to run queries with promises
+	runQuery(sql, params = []) {
+		return new Promise((resolve, reject) => {
+			this.db_obj.run(sql, params, function(err) {
+				if (err) reject(err);
+				else resolve({ lastID: this.lastID, changes: this.changes });
+			});
+		});
+	} // runQuery()
+	
+	// Helper method to get a single row with promises
+	getRow(sql, params = []) {
+		return new Promise((resolve, reject) => {
+			this.db_obj.get(sql, params, (err, row) => {
+				if (err) reject(err);
+				else resolve(row);
+			});
+		});
+	}
+	
+	// Helper method to get all rows with promises
+	getAll(sql, params = []) {
+		return new Promise((resolve, reject) => {
+			this.db_obj.all(sql, params, (err, rows) => {
+				if (err) reject(err);
+				else resolve(rows);
+			});
+		});
+	} // getAll()
+} // SqLiteUtils class
+
+
+async function test_hash_pwd() {
+	console.log('**SqLiteUtils** ---------- test_hash_pwd ----------');
+	const hashed_password = await bcrypt.hash('admin', 10);
+	console.log("hashed_password: '" + hashed_password + "'");
+}; // test_hash_pwd
+// test_hash_pwd();
+
+function test_initialize() {
+	console.log('**SqLiteUtils** ---------- test_initialize ----------');
+	SqLiteUtils.This;
+}; // test_initialize
+// test_initialize();
+
+function test_import_wallets() {
+	console.log('**SqLiteUtils** ---------- test_import_wallets ----------');
+	let path = "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\_output";
+	SqLiteUtils.This.importWallets( path );
+}; // test_import_wallets
+test_import_wallets();
+
+if ( typeof exports === 'object' ) {
+	exports.SqLiteUtils = SqLiteUtils	
+} // exports of 'bip38_utils.js'

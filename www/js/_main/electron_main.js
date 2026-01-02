@@ -18,6 +18,7 @@
 // * async  doFileOpen()
 // * async  doFileRead( json_data )
 //
+// * async  selectFileOrDirectoryPathWithDialogBox()
 //          showFolderInExplorer()
 //
 // *        getNewFortuneCookie()
@@ -68,22 +69,30 @@ const { pretty_func_header_log,
 		
 const { Skribi }       = require('../util/log/skribi.js');		
 	  
-const { APP_VERSION, 
+const { APP_VERSION,
         PROGRAM, ELECTRON_LAUNCHER, EXE_LAUNCHER, 
+		OUTPUT_DIR_PATH, INVALID_OUTPUT_DIR_PATH,
+		SELECT_DIRECTORY_PATH_MODE, SELECT_FILE_PATH_MODE,		
 		WITS_PATH, PATH, ARGS,
       }                = require('../const_keywords.js');
 
 const { CMD_OPEN_WALLET,
         VIEW_TOGGLE_DEVTOOLS, 
 		
-		TOOLS_OPTIONS, TOOLS_BIP38_ENCRYPTER_DECRYTER, TOOLS_SECRET_PHRASE_TRANSLATOR,
+		TOOLS_OPTIONS, TOOLS_DATABASE_MANAGEMENT,
+		TOOLS_BIP38_ENCRYPTER_DECRYTER, TOOLS_SECRET_PHRASE_TRANSLATOR,
 		
         ToMain_RQ_QUIT_APP, 
 		ToMain_RQ_LOG_2_MAIN, ToMain_RQ_LOG_2_MAIN_SYNC,
 		
+		ToMain_RQ_GET_APP_PATH,
+		
 		ToMain_RQ_EXEC_CMD,
 		
 		ToMain_RQ_SET_WINDOW_TITLE, ToMain_RQ_TOGGLE_DEBUG_PANEL,
+		
+		ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG,
+		ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE,
 		
 		ToMain_RQ_NEW_WALLET_INFO, ToMain_RQ_OPEN_WALLET_INFO, ToMain_RQ_SAVE_WALLET_INFO, 
 		
@@ -127,7 +136,9 @@ const { CMD_OPEN_WALLET,
 		FromMain_FILE_NEW, FromMain_FILE_OPEN, FromMain_FILE_SAVE, 
 		FromMain_HELP_ABOUT,
 
-		FromMain_TOOLS_OPTIONS_DIALOG, FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG,
+		FromMain_TOOLS_OPTIONS_DIALOG, 
+		FromMain_TOOLS_DB_MANAGEMENT_DIALOG,
+		FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG,
 		FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG,
 		
 		FromMain_UPDATE_OPTIONS, 
@@ -160,6 +171,8 @@ const { HDWallet }                      = require('../crypto/HDWallet/hd_wallet.
 const { SimpleWallet }                  = require('../crypto/SimpleWallet/simple_wallet.js');
 
 const { MainModel }                     = require('../model/main_model.js');
+
+const { SqLiteUtils }                   = require('./db/sqlite_utils.js');
 
 const DEFAULT_APP_CONFIG = {
 	"ToFile": true
@@ -295,6 +308,16 @@ class ElectronMain {
 									( 'fromMain', 
 									  [ FromMain_TOOLS_OPTIONS_DIALOG, 
 									    ElectronMain.GetInstance().Options ] 
+									);
+							  }		 
+						   },
+						   {  label: L10nUtils.GetLocalizedMsg("DatabaseManagementTool"),
+							  click() {
+                                  pretty_func_header_log( "[Electron]", TOOLS_DATABASE_MANAGEMENT );								  
+								  ElectronMain.GetInstance().getMainWindow()
+								    .webContents.send
+									( 'fromMain', 
+									  [ FromMain_TOOLS_DB_MANAGEMENT_DIALOG, SqLiteUtils.This.appFolderPath ] 
 									);
 							  }		 
 						   },
@@ -543,6 +566,153 @@ class ElectronMain {
 		return in_file_path;
 	} // selectFileWithDialogBox()
 	
+	async selectFileOrDirectoryPathWithDialogBox( default_path, title, select_mode, path_type  ) {
+		pretty_func_header_log( "ElectronMain.selectFileOrDirectoryPathWithDialogBox" );
+		
+		if ( select_mode == undefined ) select_mode = SELECT_DIRECTORY_PATH_MODE;
+		
+		if ( path_type == undefined ) path_type = '';		
+		pretty_log( ">> -=-=-=-=-=-=  selectFileOrDirectoryPathWithDialogBox   path_type: '" + path_type + "'");
+		// pretty_log( ">> selectFileOrDirectoryPathWithDialogBox   default_path: '" + default_path + "'");
+		
+		let out_dir_path       = "";
+		let result             = undefined;	
+		let selected_file_path = undefined;		
+
+		if ( select_mode == SELECT_DIRECTORY_PATH_MODE ) {	
+			//               ===== Modal window =====
+			// pretty_log( "====----====----====----====----====  dialog.showOpenDialog");
+			result = await dialog.showOpenDialog( this.MainWindow, {
+				'title':       title,
+				'defaultPath': default_path,
+				properties:    ['openDirectory'],				
+				buttonLabel:   'Select'				
+			});
+		}	
+		else if ( select_mode == SELECT_FILE_PATH_MODE ) { 	
+			result = await dialog.showSaveDialog( this.MainWindow, {
+				'title':       title,
+				'defaultPath': default_path,
+				filters:       [ { name: 'Fichier SQLite', extensions: ['db'] } ],				
+				buttonLabel:   'Select',
+				showsTagField: false
+			});
+			if ( !result.canceled && result.filePath ) {
+				console.log('Selected file path:', result.filePath);
+				selected_file_path = result.filePath;
+				// Handle the save operation
+			} 			
+		}
+		
+		pretty_log( ">> ---------------- selected_file_path: '" + selected_file_path + "'");		
+		pretty_log( ">> ---------------- result.filePaths: '" + result.filePaths + "'");		
+		pretty_log( ">> ---------------- result.filePath: '" + result.filePath + "'");
+		pretty_log( ">> ---------------- selected_file_path: '" + selected_file_path + "'");
+		
+		if ( result.filePaths == undefined ) {
+			console.log(">> ********* result.filePaths == undefined\n   selected_file_path: " + selected_file_path);
+			out_dir_path = selected_file_path;
+			
+			if ( ! fs.existsSync( out_dir_path ) ) {
+				try {
+				  fs.writeFileSync(out_dir_path, '');
+				  console.log('✓ Fichier créé avec succès');
+				} 
+				catch (err) {
+				  console.error('✗ Erreur:', err.message);
+				}
+			}	 
+		}
+		else {
+			pretty_log( ">> ---------------- result.filePaths.length: '" + result.filePaths.length + "'");
+			if ( result.filePaths.length > 0 ) {
+				pretty_log( "filePaths: " + JSON.stringify(result.filePaths));
+				out_dir_path = result.filePaths[0];
+				// pretty_log( ">> -------- out_dir_path: '" + out_dir_path + "'");	
+			}
+		}
+		
+		// console.log( ">> +++++++++++++++ path_type: '" + path_type + "' vs '" + OUTPUT_DIR_PATH + "'");
+		if ( path_type == OUTPUT_DIR_PATH ) {		
+			const validate_output_path = ( in_path ) => {
+				//                2025_     12_     15_    16h-      26m-     24s-    6_       BTC_         EN
+				//                  1        2       3      4         5        6       7        8            9 
+				const pattern = /^(\d{4})_(\d{2})_(\d{2})_(\d{2})h-(\d{2})m-(\d{2})s-(\d+)_([A-Z]{3,4})_([A-Z]{2})$/;
+                
+				try {
+					const pattern_match = in_path.match( pattern );
+					if (! pattern_match ) return false;
+				
+					const year   = parseInt( pattern_match[1], 10 );
+					// console.log("> year: " + year ); 
+					
+					const month  = parseInt( pattern_match[2], 10 );
+					// console.log("> month: " + month ); 
+					
+					const day    = parseInt( pattern_match[3], 10 );
+					// console.log("> day: " + day );
+					
+					const hour   = parseInt( pattern_match[4], 10 );
+					// console.log("> hour: " + hour );
+					
+					const minute = parseInt( pattern_match[5], 10 );
+					// console.log("> minute: " + minute );
+					
+					const second = parseInt( pattern_match[6], 10 );
+					// console.log("> second: " + second );
+					
+					const milli_second = parseInt( pattern_match[7], 10 );
+					// console.log("> milli_second: " + milli_second );
+	
+					// Validate ranges
+					if ( month  < 1 || month  > 12 )  return false;
+					if ( day    < 1 || day    > 31 )  return false;
+					if ( hour   < 0 || hour   > 23 )  return false;
+					if ( minute < 0 || minute > 59 )  return false;
+					if ( second < 0 || second > 59 )  return false;
+					
+					const coin = pattern_match[8];
+					// console.log("> coin: " + coin );
+					
+					const lang = pattern_match[9];
+					// console.log("> lang: " + lang );
+				}	
+				catch ( err ) {
+					console.log("** Parsing Error ** in ElectronMain.selectFileOrDirectoryPathWithDialogBox.validate_output_path" );
+			        return false; 
+				}	
+				
+				return true;
+			} // validate_output_path()
+						
+ 		    let at_least_one_wits_file = false;			
+			const sub_dirs = fs.readdirSync( out_dir_path, { withFileTypes: true } );
+			
+			for ( let i=0; i < sub_dirs.length; i++ ) { 
+			    let current_sub_dir = sub_dirs[i];
+				console.log('> -------- current_sub_dir.path[' + i + ']: ' + current_sub_dir.path);
+				
+				let subdir_name = current_sub_dir.name;
+				console.log('> -------- subdir_name[' + i + ']: ' + subdir_name);				
+				
+				let valid_as_ouput_dir_path = validate_output_path( subdir_name );
+				console.log('> -------- valid_as_ouput_dir_path[' + i + ']: ' + valid_as_ouput_dir_path);
+				if ( valid_as_ouput_dir_path ) {
+					let wits_file_path = current_sub_dir.path + '\\' + subdir_name + '\\wallet_info.wits';
+					console.log('> wits_file_path[' + i + ']: ' + wits_file_path);
+					if ( fs.existsSync( wits_file_path ) ) {
+						at_least_one_wits_file = true;
+						return out_dir_path;
+					}	
+				}
+			}
+			
+			if ( ! at_least_one_wits_file ) return INVALID_OUTPUT_DIR_PATH;
+		} // if ( path_type == OUTPUT_DIR_PATH )
+		
+		return out_dir_path;
+	} // selectFileOrDirectoryPathWithDialogBox()
+	
 	// https://stackoverflow.com/questions/43991267/electron-open-file-directory-in-specific-application
 	showFolderInExplorer() {
 		pretty_func_header_log( "ElectronMain.showFolderInExplorer" );
@@ -550,8 +720,6 @@ class ElectronMain {
 		// Detect OS
 		// https://www.freecodecamp.org/news/how-to-write-os-specific-code-in-electron-bf6379c62ff6/
 		let os_platform = os.platform();
-		// console.log("OS: " + os.platform());
-		
 		// console.log("this.output_path: '" + this.output_path + "'");
 
         let path_separator = '/';
@@ -734,6 +902,13 @@ class ElectronMain {
 			Skribi.log( data );
 		}); // "ToMain:Request/log2main_sync" event handler
 		
+		// ====================== ToMain_RQ_GET_APP_PATH ======================
+		// called like this by Renderer: await window.ipcMain.GetAppPath(data)
+		ipcMain.handle( ToMain_RQ_GET_APP_PATH, async (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_APP_PATH );
+			return app.getAppPath();
+		}); // "ToMain:Request/get_app_path" event handler
+		
 		// ====================== ToMain_RQ_SET_WINDOW_TITLE ======================
 		// called like this by Renderer: window.ipcMain.SetWindowTitle(data)
 		ipcMain.on( ToMain_RQ_SET_WINDOW_TITLE, (event, data) => {
@@ -765,6 +940,26 @@ class ElectronMain {
 			// https://stackoverflow.com/questions/31749625/make-a-link-from-electron-open-in-browser
 			this.MainWindow.location = url;
 		}); // "ToMain:Request/open_URL" event handler
+		
+		// ====================== ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG ======================
+		Skribi.log(">> register ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG: '" + ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG + "'");
+		// called like this by Renderer: await window.ipcMain.selectFileOrDirectoryPathWithDialogBox( data )
+		ipcMain.handle( ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG, async ( event, data ) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG );
+			Skribi.log( "eMain.evtH('selectFileOrDirPath')>" );
+			let { default_path, title, select_mode, path_type } = data;
+			return await ElectronMain.GetInstance().selectFileOrDirectoryPathWithDialogBox( default_path, title, select_mode, path_type );			
+		}); // "ToMain:Request/select_file_of_directory_path_dialog" event handler
+		
+		// ====================== ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE ======================
+		Skribi.log(">> register ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE: '" + ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE + "'");
+		// called like this by Renderer: await window.ipcMain.ImportOutputFilesInDatabase( data )
+		ipcMain.handle( ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE, async ( event, data ) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE );
+			Skribi.log( "eMain.evtH(importOutpuFilesInDB')>" );
+			let { output_dirs_path, db_path } = data;
+			await SqLiteUtils.This.importWallets( output_dirs_path, db_path );	
+		}); // "ToMain:Request/import_output_files_in_database" event handler
 		
 		// ====================== ToMain_RQ_NEW_WALLET_INFO ======================
 		//Skribi.log(">> register: " + ToMain_RQ_NEW_WALLET_INFO);

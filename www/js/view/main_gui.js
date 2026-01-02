@@ -1700,9 +1700,9 @@ class MainGUI {
 		let new_uuid = "";
 		if ( entropy_src_elt.value != "" || force_generation == true ) {
 			new_uuid = await window.ipcMain.GetUUID();
-			//HtmlUtils.SetElementValue(SALT_ID, new_uuid);
-			//let salt_elt = HtmlUtils.GetElement( SALT_ID );
-			//salt_elt.textContent = new_uuid; 
+			// HtmlUtils.SetElementValue(SALT_ID, new_uuid);
+			// let salt_elt = HtmlUtils.GetElement( SALT_ID );
+			// salt_elt.textContent = new_uuid; 
 			HtmlUtils.SetElementValue(SALT_ID, new_uuid);
         }
 		return new_uuid;
@@ -1754,9 +1754,9 @@ class MainGUI {
 		}
 	} // clearFields()
 	
-	// =============================================================================================
-	// ====================================   Event Handlers   =====================================
-	// =============================================================================================
+	// =====================================================================================================
+	// ====================================       Event Handlers       =====================================
+	// =====================================================================================================
 	async onGUIEvent( data ) {
 		let event_name = data[0];	
 		//trace2Main( pretty_func_header_format( "MainGUI.onGUIEvent", event_name ) );
@@ -1915,6 +1915,13 @@ class MainGUI {
 				options_data = data[1];
 				// trace2Main( pretty_format( "$$ options_data", JSON.stringify(options_data) ) ); 
 				ToolsOptionsDialog.ShowDialog( options_data );
+				break;		
+	
+			case FromMain_TOOLS_DB_MANAGEMENT_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_DB_MANAGEMENT_DIALOG + _END_ );
+				let local_app_folder_path = data[1];
+				trace2Main( pretty_format( ">> local_app_folder_path", local_app_folder_path ) ); 
+				await ToolsDbManagementDialog.This.showDialog( local_app_folder_path );
 				break;				
 				
 			case FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG:
@@ -2754,9 +2761,9 @@ class MainGUI {
 		
 		this.setFocus( source_elt.id );
 	} // onGuiFocus()
-	// =========================================================
-	// ====================================   Event Handlers   
-	// =========================================================
+	// ================================================================
+	// ====================================       Event Handlers       
+	// ================================================================
 
 	setSaveCmdState( enabled ) {
 		// trace2Main( pretty_func_header_format( "MainGUI.setSaveCmdState", enabled  ) );

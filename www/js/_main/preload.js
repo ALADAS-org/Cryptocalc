@@ -21,10 +21,15 @@ contextBridge.exposeInMainWorld(
 		logToMain:                   (data) => ipcRenderer.send("ToMain:Request/log2main", data),
 		logToMainSync:               (data) => ipcRenderer.invoke("ToMain:Request/log2main_sync", data),
 		
+		GetAppPath:                  (data) => ipcRenderer.invoke("ToMain:Request/get_app_path", data),
+		
 		ExecuteCommand:              (data) => ipcRenderer.invoke("ToMain:Request/ExecCmd", data),
 		
 		SetWindowTitle:              (data) => ipcRenderer.send("ToMain:Request/set_window_title", data),		
 		ToggleDebugPanel:            (data) => ipcRenderer.send("ToMain:Request/toggle_debug_panel", data),
+		
+		SelectFileOrDirectoryPathDialog: (data) => ipcRenderer.invoke("ToMain:Request/select_file_or_directory_path_dialog", data),
+		ImportOutputFilesInDatabase:     (data) => ipcRenderer.invoke("ToMain:Request/import_output_files_in_database", data),
 		
 		NewWalletInfo:               (data) => ipcRenderer.invoke("ToMain:Request/new_wallet_info",  data),
 		OpenWalletInfo:              (data) => ipcRenderer.invoke("ToMain:Request/open_wallet_info", data),

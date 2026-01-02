@@ -6,27 +6,27 @@
 
 class WalletInfo {
 	static GUI_NODE_IDs = { 
-							[LANG]: 				"lang_select_id",			// "Lang": "lang_select_id",     
- 							[WALLET_MODE]: 			"wallet_mode_select_id", 	// "Wallet Mode": "wallet_mode_select_id",               
-							[BLOCKCHAIN]: 			"wallet_blockchain_id",		//"Blockchain": "wallet_blockchain_id", 
-							[COIN]: 				"wallet_coin_id",			// "Coin": "wallet_coin_id", 
-							[COIN_TYPE]: 			"coin_type_id",				// "coin_type": "coin_type_id",					
-							[ENTROPY]:         		 "entropy_id",							
-							[ENTROPY_SIZE]: 		"entropy_bits_select_id", 
+							[LANG]: 				   "lang_select_id",			// "Lang": "lang_select_id",     
+ 							[WALLET_MODE]: 			   "wallet_mode_select_id", 	// "Wallet Mode": "wallet_mode_select_id",               
+							[BLOCKCHAIN]: 			   "wallet_blockchain_id",		//"Blockchain": "wallet_blockchain_id", 
+							[COIN]: 				   "wallet_coin_id",			// "Coin": "wallet_coin_id", 
+							[COIN_TYPE]: 			   "coin_type_id",				// "coin_type": "coin_type_id",					
+							[ENTROPY]:         		   "entropy_id",							
+							[ENTROPY_SIZE]: 		   "entropy_bits_select_id", 
 							"expected_entropy_digits": "",							
-							"word_count": 			"word_count_select_id",			
-							[MNEMONICS]: 			"mnemonics_id",				// "Secret phrase": "mnemonics_id",
-							"checksum": 			"checksum_id",
+							"word_count": 			   "word_count_select_id",			
+							[MNEMONICS]: 			   "mnemonics_id",				// "Secret phrase": "mnemonics_id",
+							"checksum": 			   "checksum_id",
 							
-							[BIP32_PASSPHRASE]: 	"bip32_passphrase_id",						
-							[BIP38_PASSPHRASE]: 	"bip38_passphrase_id",
+							[BIP32_PASSPHRASE]: 	   "bip32_passphrase_id",						
+							[BIP38_PASSPHRASE]: 	   "bip38_passphrase_id",
 							
-							[WORD_INDEXES]:     	"word_indexes_id",							
-		                    [ADDRESS]: 				"address_id",							
-							"Private Key": 			"private_key_id",							
-							[WIF]:          	    "wif_id",							
-							[ACCOUNT]: 				"account_id", 							
-							[ADDRESS_INDEX]: 		"address_index_id"							
+							[WORD_INDEXES]:     	   "word_indexes_id",							
+		                    [ADDRESS]: 				   "address_id",							
+							"Private Key": 			   "private_key_id",							
+							[WIF]:          	       "wif_id",							
+							[ACCOUNT]: 				   "account_id", 							
+							[ADDRESS_INDEX]: 		   "address_index_id"							
 		                  };
 	
 	constructor( renderer_gui ) {
