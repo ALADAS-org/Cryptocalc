@@ -35,6 +35,12 @@ const EXE_LAUNCHER                = 'cryptowallet.exe';
 const PATH                        = 'path';
 const ARGS                        = 'args';
 
+const OUTPUT_DIR_PATH             = 'Output Folders Path';
+const INVALID_OUTPUT_DIR_PATH     = '*ERROR* Invalid Output Folders Path';
+
+const SELECT_DIRECTORY_PATH_MODE  = 'Select Folder Path Mode';
+const SELECT_FILE_PATH_MODE       = 'Select File Path Mode';
+
 const BLOCKCHAIN                  = 'Blockchain';
 const NULL_BLOCKCHAIN             = 'Null-BLOCKCHAIN';
 
@@ -117,6 +123,12 @@ if ( typeof exports === 'object' ) {
 	exports.ARGS                  = ARGS	
 
 	exports.LANG                  = LANG
+	
+	exports.OUTPUT_DIR_PATH         = OUTPUT_DIR_PATH
+    exports.INVALID_OUTPUT_DIR_PATH = INVALID_OUTPUT_DIR_PATH
+	
+	exports.SELECT_DIRECTORY_PATH_MODE = SELECT_DIRECTORY_PATH_MODE
+    exports.SELECT_FILE_PATH_MODE      = SELECT_FILE_PATH_MODE
 	
 	exports.BLOCKCHAIN            = BLOCKCHAIN
 	exports.NULL_BLOCKCHAIN       = NULL_BLOCKCHAIN

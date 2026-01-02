@@ -15,6 +15,8 @@ const CMD_REFRESH_WALLET                          = "cmd:RefreshWallet";
 const VIEW_TOGGLE_DEVTOOLS                        = "View/ToggleDevTools";
 
 const TOOLS_OPTIONS                               = "Tools/Options";
+const TOOLS_DATABASE_MANAGEMENT                   = "Tools/Database Management";
+
 const TOOLS_BIP38_ENCRYPTER_DECRYTER              = "Tools/Bip38EncrypterDecrypter";
 const TOOLS_SECRET_PHRASE_TRANSLATOR              = "Tools/SecretPhraseTranslator";
 
@@ -23,10 +25,15 @@ const ToMain_RQ_QUIT_APP                          = "ToMain:Request/quit_app";
 const ToMain_RQ_LOG_2_MAIN                        = "ToMain:Request/log2main";
 const ToMain_RQ_LOG_2_MAIN_SYNC                   = "ToMain:Request/log2main_sync";
 
+const ToMain_RQ_GET_APP_PATH                      = "ToMain:Request/get_app_path";
+
 const ToMain_RQ_EXEC_CMD                          = "ToMain:Request/ExecCmd";
 
 const ToMain_RQ_SET_WINDOW_TITLE                  = "ToMain:Request/set_window_title";
 const ToMain_RQ_TOGGLE_DEBUG_PANEL                = "ToMain:Request/toggle_debug_panel";
+
+const ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG = "ToMain:Request/select_file_or_directory_path_dialog";
+const ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE      = "ToMain:Request/import_output_files_in_database";
 
 const ToMain_RQ_NEW_WALLET_INFO                   = "ToMain:Request/new_wallet_info";
 const ToMain_RQ_OPEN_WALLET_INFO                  = "ToMain:Request/open_wallet_info";
@@ -97,6 +104,7 @@ const FromMain_SHOW_MSG_DIALOG                    = "FromMain:ShowMessage";
 
 // ---------- Tools ----------
 const FromMain_TOOLS_OPTIONS_DIALOG                  = "FromMain:ToolsOptionsDialog";
+const FromMain_TOOLS_DB_MANAGEMENT_DIALOG            = "FromMain:ToolsDatabaseManagement";
 const FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG    = "FromMain:ToolsBip38EncryptDecryptDialog";
 const FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG = "FromMain:ToolsSecretPhraseTranslatorDialog";
 // ---------- Tools
@@ -124,6 +132,8 @@ if ( typeof exports === 'object' ) {
 	exports.VIEW_TOGGLE_DEVTOOLS                        = VIEW_TOGGLE_DEVTOOLS
 	
     exports.TOOLS_OPTIONS                               = TOOLS_OPTIONS	
+	exports.TOOLS_DATABASE_MANAGEMENT                   = TOOLS_DATABASE_MANAGEMENT	
+	 
 	exports.TOOLS_BIP38_ENCRYPTER_DECRYTER			    = TOOLS_BIP38_ENCRYPTER_DECRYTER
 	exports.TOOLS_SECRET_PHRASE_TRANSLATOR              = TOOLS_SECRET_PHRASE_TRANSLATOR
 	
@@ -132,10 +142,15 @@ if ( typeof exports === 'object' ) {
 	exports.ToMain_RQ_LOG_2_MAIN                        = ToMain_RQ_LOG_2_MAIN
 	exports.ToMain_RQ_LOG_2_MAIN_SYNC                   = ToMain_RQ_LOG_2_MAIN_SYNC
 	
+	exports.ToMain_RQ_GET_APP_PATH                      = ToMain_RQ_GET_APP_PATH
+	
 	exports.ToMain_RQ_EXEC_CMD                          = ToMain_RQ_EXEC_CMD
 	
 	exports.ToMain_RQ_SET_WINDOW_TITLE                  = ToMain_RQ_SET_WINDOW_TITLE
 	exports.ToMain_RQ_TOGGLE_DEBUG_PANEL                = ToMain_RQ_TOGGLE_DEBUG_PANEL
+	
+	exports.ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG = ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG
+	exports.ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE      = ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE
 	
 	exports.ToMain_RQ_NEW_WALLET_INFO                   = ToMain_RQ_NEW_WALLET_INFO
 	exports.ToMain_RQ_OPEN_WALLET_INFO                  = ToMain_RQ_OPEN_WALLET_INFO
@@ -190,7 +205,7 @@ if ( typeof exports === 'object' ) {
 	exports.FromMain_DID_FINISH_LOAD                    = FromMain_DID_FINISH_LOAD
 	
 	exports.FromMain_EXEC_CMD                           = FromMain_EXEC_CMD
-	
+		
 	exports.FromMain_FILE_NEW                           = FromMain_FILE_NEW
 	exports.FromMain_FILE_OPEN                          = FromMain_FILE_OPEN
 	exports.FromMain_FILE_SAVE                          = FromMain_FILE_SAVE
@@ -201,6 +216,7 @@ if ( typeof exports === 'object' ) {
 	exports.FromMain_SHOW_MSG_DIALOG                    = FromMain_SHOW_MSG_DIALOG
 	
 	exports.FromMain_TOOLS_OPTIONS_DIALOG                  = FromMain_TOOLS_OPTIONS_DIALOG
+	exports.FromMain_TOOLS_DB_MANAGEMENT_DIALOG            = FromMain_TOOLS_DB_MANAGEMENT_DIALOG
 	exports.FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG    = FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG
 	exports.FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG = FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG
 	

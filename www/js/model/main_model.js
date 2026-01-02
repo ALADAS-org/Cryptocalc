@@ -439,6 +439,18 @@ class MainModel {
 		}
 		// -------- "Bip38 passphrase" in 'wallet_info.wits'
 		
+		// -------- "Bip38 Encrypted PK" in 'wallet_info.wits' --------
+		if ( crypto_info[BIP38_ENCRYPTED_PK] != undefined ) {
+            json_data[BIP38_ENCRYPTED_PK] = crypto_info[BIP38_ENCRYPTED_PK];			
+		}
+		// -------- "Bip38 Encrypted PK" in 'wallet_info.wits'
+		
+		// -------- "Derivation Path" in 'wallet_info.wits' --------
+		if ( crypto_info[DERIVATION_PATH] != undefined ) {
+            json_data[DERIVATION_PATH] = crypto_info[DERIVATION_PATH];			
+		}
+		// -------- "Derivation Path" in 'wallet_info.wits'
+		
         json_data[WORD_INDEXES] = crypto_info[WORD_INDEXES];
 		
 		//---------- DERIVATION_PATH ----------

@@ -1,4 +1,4 @@
-## CryptoCalc 0.4.25
+## CryptoCalc 0.5.0
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -41,40 +41,45 @@
     2.9. Customizable options    
     Options includes `Blockchain`, `Wallet mode` (eg: Simple / HD / SWORD) and `Entropy size`
 	
-	2.10. Visual feedback of the _Passphrase Strength_ (`Bip32/Bip38`)
+	2.10. Wallets Database: A [SQLite](https://sqlite.org/)Database is populated by importing `.wits` files (wallet informations in `JSON`).
+    Then the Database can be explored by [Adminer](https://www.adminer.org/en/), it is a [PHP](https://www.php.net/) application, successor of [phpMyAdmin](https://www.phpmyadmin.net/). 
+	The support of the `Http server/SQLite/PHP` stack was delegated to [phpdesktop](https://github.com/cztomczak/phpdesktop).    
+	Notice that the Database may also be explored with [DBeaver](https://dbeaver.io/). 			
+	
+	2.11. Visual feedback of the _Passphrase Strength_ (`Bip32/Bip38`)
    
-    2.11. List of `Word indexes`    
+    2.12. List of `Word indexes`    
     The crucial data in the `Secret phrase` is indeed the list of `Word indexes` (indexes in the `BIP39` wordlist ), 
     is explicitly displayed so if the language is changed these word indexes are the same.
    
-    2.12. Internet connection status    
+    2.13. Internet connection status    
     Because of the _Cold wallet_ / _Non custodial_ purpose of Cryptocalc, it is not recommended to generate
     cryptocurrency wallets while being online. The status is displayed on the right of the main horizontal toolbar,
     it's a red "connected" icon when online and a green "disconnected" icon when offline (the highly recommended way to use Cryptocalc).   
    
-    2.13. Localization    
+    2.14. Localization    
     Translations of GUI labels in the user's language (only _English_ and _French_ files provided currently but the localization
     feature allows translations in other languages as well, they are in `JSON` format eg. `gui-msg-en.json`).
    
-    2.14. Dynamic links    
+    2.15. Dynamic links    
         - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
         - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
         - 3D representation of the `Secret phrase` (see an example here: [Cryptoshape](https://aladas-org.github.io/aladas.github.io/))   
 		
-	2.15. Dedicated Tools    
+	2.16. Dedicated Tools    
         - The first dedicated tool is `Secret phrase Translator`, it allows to import a generated wallet with a _Secret phrase_ in a non `Bip39` official 
 		language (eg. `Russian`) and translate it to its equivalent in `English` (because _Wallet Managers_	support only English). 	
 	   
-    2.16. Standalone installer    
+    2.17. Standalone installer    
     It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
     installer will install _Cryptocalc_ as a `.exe` local standalone desktop application (see 3.1.1) with all its prerequisites.
     This allows users to install _Cryptocalc_ without installing `NodeJS`, `git` and `npm` and using command line instructions (described in 3.2)
    
-    2.17. Tested on `Windows` and `Linux`    
+    2.18. Tested on `Windows` and `Linux`    
         - `Windows`: tested on `Windows 10`    
 	    - `Linux`: tested on [Linux Mint 22.2](https://linuxmint.com/) (NB: tested on a virtual machine within [VirtualBox](https://www.virtualbox.org/))
 	   
-    2.18. Cryptocurrencies: 23 supported Cryptocurrencies   
+    2.19. Cryptocurrencies: 23 supported Cryptocurrencies   
     `BTC` (Bitcoin), `ETH` (Ethereum), `XRP` (Ripple), `BNB` (Binance Smart Chain), `SOL` (Solana), 
     `DOGE` (Dogecoin), `TRX` (TRON), `ADA` (Cardano), `XLM` (Stellar), `SUI` (Sui), `BCH` (Bitcoin Cash), `AVAX` (Avalanche), `TON` (Toncoin), 
     `LTC` (Litecoin), `ETC` (Ethereum Classic), `POL` (Polygon), `VET` (VeChain), `BSV` (Bitcoin SV), `DASH` (Dash), `RVN` (Ravencoin), 
@@ -86,7 +91,7 @@
     - Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`    
     - Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
-    2.19. Languages: 18 supported languages     
+    2.20. Languages: 18 supported languages     
     - Officially supported in `Bip39`    
     _English_, _French_, _Spanish_, _Italian_, _Czech_, _Portuguese_, _Simplified Chinese_, _Traditional Chinese_, _Japanese_ and _Korean_.    
     Notice that _English_ is the only supported langage by electronic cold wallets (eg. _Ledger_ or _Trezor_).
@@ -97,7 +102,7 @@
     Notice that _English_  has around 1.5 billion speakers, _Mandarin_ has around 1.1 billion speakers
     while the _India triad_ (_Hindi_, _Bengali_ and _Gujarati_) has around 1 billion speakers.
 
-    2.20. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
+    2.21. Developed with `Javascript` and [ElectronJS](https://www.electronjs.org/)    
     _CryptoCalc_  is written in `Javascript` (both _client side_ and _server side_) and is built on top of _ElectronJS_.     
     _ElectronJS_ is used in many modern and popular [Desktop applications](https://en.wikipedia.org/wiki/List_of_software_using_Electron) 
     (e.g. [Visual Studio Code](https://code.visualstudio.com/), [Discord](https://discord.com/), [WhatsApp](https://www.whatsapp.com/),
@@ -149,7 +154,7 @@
 			   - Create a _subdirectory_ for [Github](https://github.com/) projects, I suggest that you name it `github`:
                    - `mkdir gihub`	
 			   - Change _current directory_ to this new _subdirectory_: 
-                   - `cd github					  
+                   - `cd github`					  
 	       - Prerequisites
                - Install [NodeJS](https://nodejs.org/en/): 
 			       - `sudo apt-get install nodejs`			  
@@ -171,7 +176,21 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.4.25`: This version    
+    - `0.5.0`: This version 
+		- New Feature:
+		    - `Tools/Database Management`: A [SQLite](https://sqlite.org/) Database is populated by importing the `.wits` files 
+			(in `_output` generated subfolder). Then the Database can be explored by [Adminer](https://www.adminer.org/en/) 
+			(a [PHP](https://www.php.net/) application, successor of [phpMyAdmin](https://www.phpmyadmin.net/)). 
+			The `Http server/SQLite/PHP` stack is supported by [phpdesktop](https://github.com/cztomczak/phpdesktop). 
+			See `document _00_README_PhPDesktop-AdMiner-SQLite.txt` (in `www\js\_main\db\Howto AdMiner`) for the setup guide.    
+            Note: you can also use [DBeaver](https://dbeaver.io/), which provides much more features like the visualization of the _DB Schema_.      
+
+		- Bug Fixes:
+		    - `.wits` files (in `_output` generated subfolder) were missing fields of `wallet_info.txt`: namely `Bip38 Encrypted PK` and `Derivation Path` 
+			- _Event Handlers_ were added multiple times in _Dialog Boxes_. Now fixed in `Tools/Bip38 Encrypt/Decrypt`, 
+			`Tools/Bip38 Secret phrase Translator` and the more recent `Tools/Database Management`. 
+			- Updated  `SUI` required module (`@mysten/sui` instead of @mysten/sui.js`)
+    - `0.4.25`    
 		- Enhancement:
 		    - in `Tools/Secret Secret phrase Translator`: a _special language_ (`Word Indexes`) is now provided to get the indexes of the words in 
 			the _Secret phrase_ (they are independent from the language).
@@ -479,18 +498,25 @@
 		    (because _Wallet Managers_ support only English).    
             Note 1: A _special language_ (`Word Indexes`) is provided to get the indexes of the words in the _Secret phrase_ (they are independent from the language).    
             Note 2: Once a first translation has been performed, you can change the _Output language_ and translate at the same time by selecting the new
-            _Output language_ in the `Output` dropdown list.    
-		- 5.1.19. Dynamic Links
+            _Output language_ in the `Output` dropdown list.
+		- 5.1.19. Wallets Database
+		A [SQLite](https://sqlite.org/) Database is populated by importing `.wits` files (wallet informations in `JSON`).
+        Then the Database can be explored by [Adminer](https://www.adminer.org/en/), it is a [PHP](https://www.php.net/) application, 
+		successor of [phpMyAdmin](https://www.phpmyadmin.net/). The support of the `Http server/SQLite/PHP` stack was delegated 
+		to [phpdesktop](https://github.com/cztomczak/phpdesktop).    
+        See `document _00_README_PhPDesktop-AdMiner-SQLite.txt` (in `www\js\_main\db\Howto AdMiner`) for the setup guide.    
+	    Notice that the Database may also be explored with [DBeaver](https://dbeaver.io/). 
+		- 5.1.20. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
             - 3D representation of the `Secret phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/)) 
             The whitepaper The description of this 3D representation is in this [whitepaper](https://zenodo.org/records/14579720)			
-		- 5.1.20. Change/Reset of _Options_ (`Tools/Options`)    
+		- 5.1.21. Change/Reset of _Options_ (`Tools/Options`)    
 		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
 		It is also possible to reset _Options_ to _Default Options_
 		(defined in `www/config/defaults/options.json`)
-        - 5.1.21. _Localization_    
+        - 5.1.22. _Localization_    
         _Localization_ (`l10n`) feature is the translation of _GUI Labels_ to adapt to the user's language, it' called the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use and optionnally a codeset (eg. `de_CH.UTF-8`).		
 		The _locale_ is provided as part of your machine's environment. _CryptoCalc_ only uses the 2 letter language part (eg. `en`). 

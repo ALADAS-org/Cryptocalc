@@ -1,0 +1,1 @@
+start "C:\phpdesktop\_00_start_adminer.bat"

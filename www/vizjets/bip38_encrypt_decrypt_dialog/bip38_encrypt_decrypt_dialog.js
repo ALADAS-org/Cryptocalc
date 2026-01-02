@@ -48,10 +48,10 @@ class Bip38EncryptDecryptDialog {
 			throw new TypeError("'Bip38EncryptDecryptDialog' constructor is private");
 		}
 	
-	    this.cb_enabled   = true;
-		
-	    this.displayed    = false;
-		this.encrypt_mode = true; 
+	    this.cb_enabled              = true;
+		this.event_handlers_attached = false;				
+		this.displayed               = false;
+		this.encrypt_mode            = true; 
 	} // ** Private constructor **
 	
 	initialize() {
@@ -72,39 +72,43 @@ class Bip38EncryptDecryptDialog {
 				open:   function( event, ui ) {	
 							let this_obj = Bip38EncryptDecryptDialog.This;
 							
-							this_obj.addEventHandler
-								( BIP38_DIALOG_ENCRYPT_DECRYPT_TOGGLE_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.toggleEncryptDecrypt(); } );								
-						
-							this_obj.addEventHandler
-								( BIP38_DIALOG_COMPUTE_BTN_ID, 'click', 
-								  async () => { if (Bip38EncryptDecryptDialog.This.cb_enabled) { await Bip38EncryptDecryptDialog.This.compute(); } } );		
-								  								  
-							this_obj.addEventHandler
-								( BIP38_DIALOG_PK_DATA_COPY_BTN_ID, 'click', 
-								  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(BIP38_DIALOG_PK_DATA_ID); } );
-								  
-							this_obj.addEventHandler
-								( BIP38_DIALOG_PASSPHRASE_COPY_BTN_ID, 'click', 
-								  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(BIP38_DIALOG_PASSPHRASE_ID); } );
-								  
-							this_obj.addEventHandler
-								( BIP38_DIALOG_RESULT_COPY_BTN_ID, 'click', 
-								  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(BIP38_DIALOG_RESULT_ID); } );
-
-							this_obj.addEventHandler
-								( BIP38_DIALOG_CLEAR_BTN_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.onClearFields(); } );						  
-
-							this_obj.addEventHandler
-								( BIP38_DIALOG_QUIT_BTN_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.closeDialog(); } );
-
-							this_obj.setFields4EncryptMode();
+							if ( ! this_obj.event_handlers_attached ) {							
+								this_obj.addEventHandler
+									( BIP38_DIALOG_ENCRYPT_DECRYPT_TOGGLE_ID, 'click', 
+									  () => { Bip38EncryptDecryptDialog.This.toggleEncryptDecrypt(); } );								
 							
-                            this_obj.displayed    = true;
-							this_obj.encrypt_mode = true;
-                            this_obj.cb_enabled   = true;					
+								this_obj.addEventHandler
+									( BIP38_DIALOG_COMPUTE_BTN_ID, 'click', 
+									  async () => { if (Bip38EncryptDecryptDialog.This.cb_enabled) { await Bip38EncryptDecryptDialog.This.compute(); } } );		
+																	  
+								this_obj.addEventHandler
+									( BIP38_DIALOG_PK_DATA_COPY_BTN_ID, 'click', 
+									  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(BIP38_DIALOG_PK_DATA_ID); } );
+									  
+								this_obj.addEventHandler
+									( BIP38_DIALOG_PASSPHRASE_COPY_BTN_ID, 'click', 
+									  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(BIP38_DIALOG_PASSPHRASE_ID); } );
+									  
+								this_obj.addEventHandler
+									( BIP38_DIALOG_RESULT_COPY_BTN_ID, 'click', 
+									  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(BIP38_DIALOG_RESULT_ID); } );
+
+								this_obj.addEventHandler
+									( BIP38_DIALOG_CLEAR_BTN_ID, 'click', 
+									  () => { Bip38EncryptDecryptDialog.This.onClearFields(); } );						  
+
+								this_obj.addEventHandler
+									( BIP38_DIALOG_QUIT_BTN_ID, 'click', 
+									  () => { Bip38EncryptDecryptDialog.This.closeDialog(); } );
+
+								this_obj.setFields4EncryptMode();
+								
+								this_obj.displayed    = true;
+								this_obj.encrypt_mode = true;
+								this_obj.cb_enabled   = true;
+								
+								this_obj.event_handlers_attached = true;
+							}                           							
 						}, // open()
 						
 				close:  function( event, ui ) {	
@@ -113,34 +117,6 @@ class Bip38EncryptDecryptDialog {
 							
 							let this_obj = Bip38EncryptDecryptDialog.This;
 							
-							this_obj.removeEventHandler
-								( BIP38_DIALOG_ENCRYPT_DECRYPT_TOGGLE_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.toggleEncryptDecrypt(); } );			
-							
-							this_obj.removeEventHandler
-								( BIP38_DIALOG_COMPUTE_BTN_ID, 'click', 
-								  async () => { if (Bip38EncryptDecryptDialog.This.cb_enabled) { await Bip38EncryptDecryptDialog.This.compute(); } } );	
-								  
-							this_obj.removeEventHandler
-								( BIP38_DIALOG_PK_DATA_COPY_BTN_ID, 'click', 
-								  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(); } );
-								  
-							this_obj.removeEventHandler
-								( BIP38_DIALOG_PASSPHRASE_COPY_BTN_ID, 'click', 
-								  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(); } );
-								  
-							this_obj.removeEventHandler
-								( BIP38_DIALOG_RESULT_COPY_BTN_ID, 'click', 
-								  async () => { await Bip38EncryptDecryptDialog.This.onCopyField(); } );								  
-
-							this_obj.removeEventHandler
-								( BIP38_DIALOG_CLEAR_BTN_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.onClearFields(); } );						  
-
-							this_obj.removeEventHandler
-								( BIP38_DIALOG_QUIT_BTN_ID, 'click', 
-								  () => { Bip38EncryptDecryptDialog.This.closeDialog(); } );
-
 							this_obj.displayed     = false;	
 							this_obj.encrypt_mode  = true;
 							this_obj.cb_enabled    = true;	

@@ -10,7 +10,7 @@
 const bip39            = require('bip39');
 const bs58             = require('bs58');
 
-const { Ed25519Keypair }                       = require('@mysten/sui.js/keypairs/ed25519');
+const { Ed25519Keypair }                       = require('@mysten/sui/keypairs/ed25519');
 const { mnemonicToSeedSync, generateMnemonic } = require('bip39');
 const { derivePath }                           = require('ed25519-hd-key');
 
@@ -87,20 +87,34 @@ class Sui_HD_API {
 
 		// Step 2: Derive seed and private key
 		const SUI_seed = mnemonicToSeedSync(mnemonics); // returns Buffer
-		const { key } = derivePath(derivation_path, SUI_seed.toString('hex')); // key = private key
+		const { key } = derivePath( derivation_path, SUI_seed.toString('hex') ); // key = private key
 
 		// Step 3: Create the Sui Ed25519 keypair from private key
-		const keypair     = Ed25519Keypair.fromSecretKey(Uint8Array.from(key));
-		const SUI_address = keypair.getPublicKey().toSuiAddress();
+		// const keypair     = Ed25519Keypair.fromSecretKey(Uint8Array.from(key));
+		// const SUI_address = keypair.getPublicKey().toSuiAddress();
 
 		// Output results
 		// console.log('Public Key (Base64):', keypair.getPublicKey().toBase64());
 		
-		const SUI_private_key = keypair.export().privateKey;
-		console.log('Private Key (Base64):', keypair.export().privateKey);
+		// Generate a keypair
+		const keypair = Ed25519Keypair.generate( key );
+
+		// Get the secret key (private key)
+		const SUI_private_key = keypair.getSecretKey(); // Returns Uint8Array
+
+		// Get the public key
+		const publicKey = keypair.getPublicKey();
+
+		// Get address
+		const address = keypair.toSuiAddress();
+		
+		//const SUI_private_key = keypair.export().privateKey;
+		// console.log('Private Key (Base64):', keypair.export().privateKey);
+		console.log('Private Key (Base64):', SUI_private_key);
 		
 		new_sui_wallet[PRIVATE_KEY] = SUI_private_key;		
-		new_sui_wallet[ADDRESS]     = SUI_address;
+		// new_sui_wallet[ADDRESS]     = SUI_address;
+		new_sui_wallet[ADDRESS]     = address;
 
 		return new_sui_wallet;
 	} // Sui_HD_API.GetWallet()

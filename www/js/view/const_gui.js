@@ -8,6 +8,7 @@ const CRYPTOWALLET_VERSION                = "Cryptowallet_version";
 // ------------------------- Dialogs -------------------------
 const TOOLS_OPTIONS_DIALOG_ID             = "tools_options_dialog_id";
 const SECRET_PHRASE_TRANSLATOR_DIALOG_ID  = "tools_secret_phrase_translator_dialog_id";
+const TOOLS_DB_MANAGEMENT_DIALOG_ID       = "tools_db_management_dialog_id";
 // ------------------------- Dialogs
 
 const SEED_TAB_LINK_ID                    = "seed_tab_link_id";
@@ -207,48 +208,50 @@ const trace2Main = ( msg ) => {
 }; // trace2Main()
 
 if (typeof exports === 'object') {
-	exports.CRYPTOWALLET_VERSION        = CRYPTOWALLET_VERSION
+	exports.CRYPTOWALLET_VERSION          = CRYPTOWALLET_VERSION
 	
-	exports.ENTROPY_LABEL_ID           = ENTROPY_LABEL_ID	
-	exports.ENTROPY_SRC_FORTUNES_ID    = ENTROPY_SRC_FORTUNES_ID
-	exports.ENTROPY_ID                 = ENTROPY_ID
-	exports.ENTROPY_SIZE_SELECT_ID     = ENTROPY_SIZE_SELECT_ID
-	exports.WORD_COUNT_SELECT_ID       = WORD_COUNT_SELECT_ID
-	exports.FILE_IMPORT_BTN_ID         = FILE_IMPORT_BTN_ID
+	exports.TOOLS_DB_MANAGEMENT_DIALOG_ID = TOOLS_DB_MANAGEMENT_DIALOG_ID;
 	
-	exports.ENTROPY_SOURCE_IMG_ID      = ENTROPY_SOURCE_IMG_ID
+	exports.ENTROPY_LABEL_ID              = ENTROPY_LABEL_ID	
+	exports.ENTROPY_SRC_FORTUNES_ID       = ENTROPY_SRC_FORTUNES_ID
+	exports.ENTROPY_ID                    = ENTROPY_ID
+	exports.ENTROPY_SIZE_SELECT_ID        = ENTROPY_SIZE_SELECT_ID
+	exports.WORD_COUNT_SELECT_ID          = WORD_COUNT_SELECT_ID
+	exports.FILE_IMPORT_BTN_ID            = FILE_IMPORT_BTN_ID
 	
-	exports.MNEMONICS_ID               = MNEMONICS_ID
-	exports.LANG_SELECT_ID             = LANG_SELECT_ID
-	exports.MNEMONICS_4LETTER_ID       = MNEMONICS_4LETTER_ID	
+	exports.ENTROPY_SOURCE_IMG_ID         = ENTROPY_SOURCE_IMG_ID
 	
-	exports.SALT_ID                    = SALT_ID
-	exports.USE_SALT_ID                = USE_SALT_ID
+	exports.MNEMONICS_ID                  = MNEMONICS_ID
+	exports.LANG_SELECT_ID                = LANG_SELECT_ID
+	exports.MNEMONICS_4LETTER_ID          = MNEMONICS_4LETTER_ID	
 	
-	exports.WORD_INDEXES_ID            = WORD_INDEXES_ID
+	exports.SALT_ID                       = SALT_ID
+	exports.USE_SALT_ID                   = USE_SALT_ID
 	
-	exports.WALLET_BLOCKCHAIN_LABEL_ID = WALLET_BLOCKCHAIN_LABEL_ID
-	exports.WALLET_BLOCKCHAIN_ID       = WALLET_BLOCKCHAIN_ID
-	exports.WALLET_COIN_ID             = WALLET_COIN_ID
-	exports.WALLET_EXPLORE_BTN_ID      = WALLET_EXPLORE_BTN_ID
-	exports.WALLET_URL_LINK_ID         = WALLET_URL_LINK_ID
+	exports.WORD_INDEXES_ID               = WORD_INDEXES_ID
+	
+	exports.WALLET_BLOCKCHAIN_LABEL_ID    = WALLET_BLOCKCHAIN_LABEL_ID
+	exports.WALLET_BLOCKCHAIN_ID          = WALLET_BLOCKCHAIN_ID
+	exports.WALLET_COIN_ID                = WALLET_COIN_ID
+	exports.WALLET_EXPLORE_BTN_ID         = WALLET_EXPLORE_BTN_ID
+	exports.WALLET_URL_LINK_ID            = WALLET_URL_LINK_ID
 		
-	exports.ADDRESS_ID                 = ADDRESS_ID
-	exports.DERIVATION_PATH_ID         = DERIVATION_PATH_ID
-	exports.PK_LABEL_ID         = PK_LABEL_ID
-    exports.PRIVATE_KEY_ID             = PRIVATE_KEY_ID
+	exports.ADDRESS_ID                    = ADDRESS_ID
+	exports.DERIVATION_PATH_ID            = DERIVATION_PATH_ID
+	exports.PK_LABEL_ID                   = PK_LABEL_ID
+    exports.PRIVATE_KEY_ID                = PRIVATE_KEY_ID
 	
-	exports.WIF_ID                     = WIF_ID
-	exports.PRIV_KEY_ID                = PRIV_KEY_ID
-	exports.CHECKSUM_ID				   = CHECKSUM_ID
+	exports.WIF_ID                        = WIF_ID
+	exports.PRIV_KEY_ID                   = PRIV_KEY_ID
+	exports.CHECKSUM_ID		 		      = CHECKSUM_ID
+	 
+	exports.UPDATE_LABEL_ID               = UPDATE_LABEL_ID
 	
-	exports.UPDATE_LABEL_ID            = UPDATE_LABEL_ID
+	exports.RANDOM_BTN_ID                 = RANDOM_BTN_ID
 	
-	exports.RANDOM_BTN_ID              = RANDOM_BTN_ID
+	exports.SB_MSG_ID                     = SB_MSG_ID
+	exports.UPDATE_MSG                    = UPDATE_MSG
 	
-	exports.SB_MSG_ID                  = SB_MSG_ID
-	exports.UPDATE_MSG                 = UPDATE_MSG
-	
-	exports.WITH_FOCUS_CSS_CLASS       = WITH_FOCUS_CSS_CLASS
-	exports.WITHOUT_FOCUS_CSS_CLASS    = WITHOUT_FOCUS_CSS_CLASS
+	exports.WITH_FOCUS_CSS_CLASS          = WITH_FOCUS_CSS_CLASS
+	exports.WITHOUT_FOCUS_CSS_CLASS       = WITHOUT_FOCUS_CSS_CLASS
 } // exports of 'const_gui.js'

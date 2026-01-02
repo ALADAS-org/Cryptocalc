@@ -10,6 +10,7 @@
   "Quit":                        "Quit",
   
   "Tools":                       "Tools",
+  "DatabaseManagementTool":      "Database Management",
   "Bip38EncryptDecryptTool":     "Bip38 Encrypt/Decrypt",
   "SecretPhraseTranslatorTool":  "Secret phrase Translator",
   
