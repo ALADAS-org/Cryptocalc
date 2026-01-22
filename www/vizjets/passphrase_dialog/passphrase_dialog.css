@@ -1,0 +1,60 @@
+.PassphraseInputField {
+  font-size:            15px   !important; 
+  width:    		    380px   !important;
+  height:   		    20px;  !important;
+  background-color:     white;
+  
+  margin-bottom:        0px;   !important;
+  padding-bottom:       0px;   !important;
+}
+
+.PassphraseLabelColumn {
+	text-align:    	   center;
+	font-size:         14px;
+	padding-left:      0px;
+	width:             80px !important; /* 90px */
+	min-width:         80px !important;
+	max-width:         80px !important;
+	height:            25px;
+}
+
+.break-tiny::after {
+  content:     "\A"; /* saut de ligne */
+  white-space: pre;
+  display:     block;
+  height:      2px; /* ajustez cette valeur */
+}
+
+.PassphraseButton {
+	font-size:          15px    !important;
+	width: 				120px;
+	height: 			25px;   !important;	
+	margin-up:          -20px; !important;
+    padding-up:         0px;   !important;
+	margin-bottom:      0px;   !important;
+    padding-bottom:     0px;   !important;
+}
+
+#passphrase_dialog_apply_btn_id {
+	color:              white;
+	background-color: 	#2196D3; /* Blue *//
+}
+
+#passphrase_dialog_cancel_btn_id {
+	color:              black;
+	background-color: 	#e0e0e0; /* Blue */
+}
+
+.PassphraseTable {
+	border:             none; */
+	/* border:          1px solid black; */ 
+	margin:             0px;
+	padding:            0px;
+}
+
+.PassphraseDialog_FieldColumn {
+	font-size:         14px; 
+	padding-left:      10px;
+	width:             100%;
+	min-width:         100%;
+}

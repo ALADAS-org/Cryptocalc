@@ -1,6 +1,6 @@
-// ====================================================================================
-// =================================   hd_wallet.js   =================================
-// ====================================================================================
+// ============================================================================================================================================
+// =====================================================           hd_wallet.js           =====================================================
+// ============================================================================================================================================
 "use strict";
 
 const bip39      = require('bip39');
@@ -31,7 +31,8 @@ const { NULL_HEX, CRYPTO_NET,
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
-        BIP32_PASSPHRASE, ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
+        BIP32_PROTOCOL, BIP32_PASSPHRASE, 
+		ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 	  }                   = require('../../const_keywords.js');	  
 	  
 const { hexWithoutPrefix,  
@@ -105,7 +106,7 @@ const btc_addr_to_t_zcash_addr = ( btc_addr_str ) => {
 	btc_addr = btc_addr.slice(1); // discard type byte
 	console.log("> btc_addr_to_t_zcash_addr:   B btc_addr: JSON " + JSON.stringify(btc_addr));
 	
-		// btc_addr = btc_addr.slice(2); // discard 2 bytes
+	// btc_addr = btc_addr.slice(2); // discard 2 bytes
 	btc_addr = btc_addr.slice(2,22); // discard 2 bytes
 	console.log("> btc_addr_to_t_zcash_addr:   C btc_addr: JSON " + JSON.stringify(btc_addr));
 	
@@ -122,23 +123,35 @@ const btc_addr_to_t_zcash_addr = ( btc_addr_str ) => {
 }; // btc_addr_to_t_zcash_addr (BTC to ZCASH address)
 	
 class HDWallet {	
-    static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index  ) {
-		let coin = COIN_ABBREVIATIONS[blockchain];
-		if ( crypto_net == undefined ) {
-			crypto_net = MAINNET;
-		}
-		
-		pretty_func_header_log( "HDWallet.GetWallet", blockchain + " " + coin + " " + crypto_net );
-		//pretty_log( "hdw.gw> entropy_hex", entropy_hex );
-		
+    // static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index, bip32_protocol ) {
+	static async GetWallet( entropy_hex, salt_uuid, args ) {
 		if ( entropy_hex == undefined || entropy_hex == "" ) {
 			throw new Error("HDWallet.GetWallet 'entropy_hex' NOT DEFINED");
 		} 
 		
-		if ( account == undefined ) 		account       = 0;	
-		if ( address_index == undefined ) 	address_index = 0;
+		if ( salt_uuid == undefined || salt_uuid == "" ) {
+			throw new Error("HDWallet.GetWallet 'salt_uuid' NOT DEFINED");
+		} 
 		
-	    let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex );		
+		// let options = { [BLOCKCHAIN]: blockchain, [CRYPTO_NET]: crypto_net, [BIP32_PASSPHRASE]: bip32_passphrase, [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
+		let crypto_net     = ( args[CRYPTO_NET] != undefined )     ? args[CRYPTO_NET]           : MAINNET;
+		let blockchain     = ( args[BLOCKCHAIN] != undefined )     ? args[BLOCKCHAIN]           : BITCOIN;
+		
+		let bip32_protocol = ( args[BIP32_PROTOCOL] != undefined ) ? args[BIP32_PROTOCOL]       : 44;		
+		
+		let bip32_passphrase = ( args[BIP32_PASSPHRASE] != undefined ) ? args[BIP32_PASSPHRASE] : "";
+		
+		let account          = ( args[ACCOUNT]       != undefined )    ? args[ACCOUNT]          : 0;
+		let address_index    = ( args[ADDRESS_INDEX] != undefined )    ? args[ADDRESS_INDEX]    : 0;
+		
+		
+		let coin = COIN_ABBREVIATIONS[blockchain];
+		
+	    pretty_func_header_log( "++++++++++++ HDWallet.GetWallet", blockchain + " " + coin + " " + crypto_net );
+		pretty_log( "hdw.gw> bip32_protocol", bip32_protocol );
+		//pretty_log( "hdw.gw> entropy_hex", entropy_hex );
+		
+	    let mnemonics       = Bip39Utils.EntropyToMnemonics( entropy_hex );		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
 		pretty_log( "hdw.gw> mnemonics", mnemonics_items[0] );
 		if ( mnemonics_items[1].length > 0 ) {	
@@ -151,6 +164,7 @@ class HDWallet {
 		// pretty_log( "hdw.gw> address_index", address_index );
 		
 		let options = { [BLOCKCHAIN]:    	blockchain, 
+		                [BIP32_PROTOCOL]:   bip32_protocol,
 		                [BIP32_PASSPHRASE]: bip32_passphrase,
 			            [ACCOUNT]:       	account,
 					    [ADDRESS_INDEX]: 	address_index, 
@@ -228,6 +242,7 @@ class HDWallet {
 		null_wallet[UUID]            = "Null-UUID";
 		null_wallet[PRIVATE_KEY]     = NULL_HEX;
 		null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
+		null_wallet[BIP32_PROTOCOL]  = 44;
 		null_wallet[ADDRESS]         = "Null-ADDRESS";
 		null_wallet[MNEMONICS]       = "Null-MNEMONICS";
 		return null_wallet;

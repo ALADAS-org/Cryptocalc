@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.0
+## CryptoCalc 0.5.1
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -15,7 +15,8 @@
    [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
 
 2. Features    
-    2.1. Support of HD / Bip32 (multiple wallets)    
+    2.1. Support of HD / Bip32 (multiple wallets)
+    Added support support of `Bip84` purpose in the `Bip32 derivation path` (HD Wallet). Notice that it is usable only with `Bitcoin` and `Litcoin`.    
    
     2.2. Selection of `Entropy size` (between 128 and 256 bits)    
    
@@ -41,10 +42,8 @@
     2.9. Customizable options    
     Options includes `Blockchain`, `Wallet mode` (eg: Simple / HD / SWORD) and `Entropy size`
 	
-	2.10. Wallets Database: A [SQLite](https://sqlite.org/)Database is populated by importing `.wits` files (wallet informations in `JSON`).
-    Then the Database can be explored by [Adminer](https://www.adminer.org/en/), it is a [PHP](https://www.php.net/) application, successor of [phpMyAdmin](https://www.phpmyadmin.net/). 
-	The support of the `Http server/SQLite/PHP` stack was delegated to [phpdesktop](https://github.com/cztomczak/phpdesktop).    
-	Notice that the Database may also be explored with [DBeaver](https://dbeaver.io/). 			
+	2.10. Wallets Database: A [SQLite](https://sqlite.org/)Database is populated by importing `.wits` files (_Wallet informations_ in a `JSON` format file).
+    Then the SQLite Database can be explored with [DBeaver](https://dbeaver.io/). 			
 	
 	2.11. Visual feedback of the _Passphrase Strength_ (`Bip32/Bip38`)
    
@@ -176,15 +175,29 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.0`: This version 
+    - `0.5.1`: This version 
+		- Terminology Fix:
+		    - Terminology `Bip32 passphrase` is the wrong terminology, iut has been replaced by `Bip39 passphrase`  
+	    - New Feature:
+		  Added support support of `Bip84` purpose in the `Bip32 derivation path` (HD Wallet). Notice that it is usable only with `Bitcoin` and `Litcoin`. 
+		- Ergonomy Fix:
+		  Previously: When you wanted to define a `Bip39 passphrase`, you had to explicitly use the [Apply] button to recompute the _Bip32 Hierarchy_. 
+		  Thus the [Apply] button was often overlooked and the `Bip39 passphrase` was not taken into account. This situation can be qualified ad an `Ergonomy Bug`.    
+ 		  Now: With the `Ergonomy fix`, the `Bip39 passphrase` is a `readonly` field so to enter a value you must use the [Edit] button (a button with a 'Pen' icon) then you either 
+          use [Apply] (to explicity ask "Use the Bip39 passphrase and recompute the Bip32 Hierarchy") or [Cancel] (to explicity ask "Don't Change the Bip39 passphrase").
+        - Small Ergonomy upgrade:	
+          The [Clear] button (for the input of `Bip39 passphrase` or `Bip38 passphrase`) is now an icon (a 'Cross' shape). 	
+	    - Documentation:
+	      There is now only the _most straightforward way_ to explore the `SQLite Database` which is with [DBeaver](https://dbeaver.io/). 		
+
+    - `0.5.0`
 		- New Feature:
 		    - `Tools/Database Management`: A [SQLite](https://sqlite.org/) Database is populated by importing the `.wits` files 
 			(in `_output` generated subfolder). Then the Database can be explored by [Adminer](https://www.adminer.org/en/) 
 			(a [PHP](https://www.php.net/) application, successor of [phpMyAdmin](https://www.phpmyadmin.net/)). 
 			The `Http server/SQLite/PHP` stack is supported by [phpdesktop](https://github.com/cztomczak/phpdesktop). 
 			See `document _00_README_PhPDesktop-AdMiner-SQLite.txt` (in `www\js\_main\db\Howto AdMiner`) for the setup guide.    
-            Note: you can also use [DBeaver](https://dbeaver.io/), which provides much more features like the visualization of the _DB Schema_.      
-
+            Note: you can also use [DBeaver](https://dbeaver.io/), which provides much more features like the visualization of the _DB Schema_.   
 		- Bug Fixes:
 		    - `.wits` files (in `_output` generated subfolder) were missing fields of `wallet_info.txt`: namely `Bip38 Encrypted PK` and `Derivation Path` 
 			- _Event Handlers_ were added multiple times in _Dialog Boxes_. Now fixed in `Tools/Bip38 Encrypt/Decrypt`, 
@@ -207,24 +220,24 @@
 	    - Changes in _Tools/Bip38 Encrypt/Decrypt dialog_:
 			- _Progress bar_ in now displayed again (when pushing [Compute] button)
 			- Length of Dialog window is shorter
-	    - Changes in _Passphrase strength_ (`Bip32/Bip38`): 
+	    - Changes in _Passphrase strength_ (`Bip39/Bip38`): 
 		    - Adjectives changed to _Very Weak_, _Weak_, _Good_, _Strong_, _Very Strong_
 			- Minimum bar length is now 5% (for a score of 0 / _Very Weak_)
     - `0.4.22`
 	    - Enhancement:
-		    - `Strength` evaluation of `Bip32/Bip38 Passphrase` (see 5.1.7) was not enough reliable, because it was a computation 
+		    - `Strength` evaluation of `Bip39/Bip38 Passphrase` (see 5.1.7) was not enough reliable, because it was a computation 
 			of Entropy (in bits) and not taking into account the _guessable_ cases (eg. `aaaaaa`, `123456789`, frequently used words
 			used in passwords and even usage of _Leetspeak_). It has been replaced by [`zxcvbn`](https://www.npmjs.com/package/zxcvbn),
 			a popular and much more reliable solution (it is provided by [_DropBox_](https://www.dropbox.com/)).
 	- `0.4.21`
 	    - Bug Fix:
-			- `Bip32` and `Bip38` changing to same color when `pasphrase strength` is different 
+			- `Bip39` and `Bip38` changing to same color when `pasphrase strength` is different 
 		- Documentation Fix:
 			- Update see in 5.1.7 because this sub feature was not documented:
 			    - When hovering on `strength adjective`, the strength (in bits) is displayed in an info bubble 
     - `0.4.20`
 	    - New Feature:
-		    - `Passphrase Strength` for `Bip32/Bip38` (see 5.1.7)
+		    - `Passphrase Strength` for `Bip39/Bip38` (see 5.1.7)
 		- Bug Fix: it was possible to input a 9 digits value in `account` and `address index` fields,
 		which was a range of 1 billion `10^9` possible values for each field. Now the range is 1.000.000 ([0..999999]).
 	    - Documentation Fix: in 5.1.4.b. number of possible values for `account` and `address index` is now 1 million ([0..999999])
@@ -397,13 +410,17 @@
 			to not disclose The _Private Key_ (the `Bip38 Encrypted PK` may be disclosed in some use cases cf. 5.3.2).
 			Note 5: A new _Tool_ (in _Main menu_ : `Tool/Bip38 Encrypt/Decrypt`) is provided to decrypt 
 			the _Private Key_ from the _Bip38 Encrypted PK_ (or conversely encrypt the _Private Key_ to the _Bip38 Encrypted PK_). 
-		- 5.1.6. _Bip32 Passphrase feature_ (_HD Wallet_ only)    
-    	With a _Bip32 passphrase_ a completely different _HD hierarchy_ is generated. 
-		You can either input or generate (with the [Generate] button represented by a `Refresh` icon, like in the main toolbar). 
-		**Important Notice**: Once a password is provided, you must use the [Apply] button to recompute the _HD hierarchy_, 
-		this is the reason why _Save_ is disabled (in the main toolbar and in the 'File' menu) until you click on the [Apply] button.
-        - 5.1.7. Passphrase Strength (`Bip32/Bip38`)	
-        This is a visual feedback of the `Passphrase Strength` (`Bip32/Bip38`). The measure of the passphrase's strength is a score 
+		- 5.1.6. _Bip39 Passphrase feature_ (_HD Wallet_ only)    
+    	The `Bip39 passphrase` is like an optional `password`. It you decide to define it, then it will generate a completely different `Bip32 hierarchy` (HD Wallet).		
+		The ergonomy has been fixed so now to input a `Bip39 passphrase` you must use the [Edit] button (a 'Pen' shape) and use the [Apply] button in order to recompute 
+		the `Bip32 Hierarchy` (which is parameterized by the `Bip39 passphrase`).    
+		Note 1: Notice that you can still use the [Generate] button (a 'Circular arrow' icon) to generate the `Bip39 passphrase` and the [Clear] button (a 'Cross' shape)
+		but they are now in the _Bip39 passphrase Input_ Dialog Box.
+		Note 2: You can check that the computed `Wallet address` and `Private Key` (or `WIF`) are correct by using [Ian Coleman Bip39](https://iancoleman.io/bip39/), just
+		take care to provide `Entropy` then provide the `BIP39 Passphrase (optional)` (as well as `Account` and `Address Index` if different from 0) then don't forget
+		to check `Use hardened addressess`.
+        - 5.1.7. Passphrase Strength (`Bip39/Bip38`)	
+        This is a visual feedback of the `Passphrase Strength` (`Bip39/Bip38`). The measure of the passphrase's strength is a score 
 		(an integer between 0 and 4) computed with the help of [`zxcvbn`](https://www.npmjs.com/package/zxcvbn) library.
 		This score is displayed as a colored line (whose length is proportional to the score) as well as an
 		adjective (i.e: Weak, Moderate, Strong, etc..).
@@ -500,12 +517,8 @@
             Note 2: Once a first translation has been performed, you can change the _Output language_ and translate at the same time by selecting the new
             _Output language_ in the `Output` dropdown list.
 		- 5.1.19. Wallets Database
-		A [SQLite](https://sqlite.org/) Database is populated by importing `.wits` files (wallet informations in `JSON`).
-        Then the Database can be explored by [Adminer](https://www.adminer.org/en/), it is a [PHP](https://www.php.net/) application, 
-		successor of [phpMyAdmin](https://www.phpmyadmin.net/). The support of the `Http server/SQLite/PHP` stack was delegated 
-		to [phpdesktop](https://github.com/cztomczak/phpdesktop).    
-        See `document _00_README_PhPDesktop-AdMiner-SQLite.txt` (in `www\js\_main\db\Howto AdMiner`) for the setup guide.    
-	    Notice that the Database may also be explored with [DBeaver](https://dbeaver.io/). 
+		A [SQLite](https://sqlite.org/) Database is populated by importing `.wits` files (_Wallet informations_ in a `JSON` format file).
+		Then the SQLite Database can be explored with [DBeaver](https://dbeaver.io/)
 		- 5.1.20. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    

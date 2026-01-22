@@ -395,14 +395,26 @@ class MainGUI {
 		await this.updateChecksum( entropy );
         // ---------- Checksum		
 
-		if ( wallet_mode == HD_WALLET_TYPE ) {				
-			// ---------- Bip32 Passphrase ----------
+		if ( wallet_mode == HD_WALLET_TYPE ) {
+			// ---------- Bip32 Protocol ----------
+			if ( json_data[DERIVATION_PATH] != undefined ) {
+				let derivation_path = json_data[DERIVATION_PATH];
+				trace2Main( pretty_format( "rGUI.openW> derivation_path", derivation_path ) );
+				let derivation_path_items = derivation_path.split("/");
+				let bip32_protocol = derivation_path_items[1].replace("'", "");
+				this.wallet_info.setAttribute( BIP32_PROTOCOL, bip32_protocol );
+				trace2Main( pretty_format( "rGUI.openW> Bip32 Protocol", bip32_protocol ) );	
+			}	
+			// ---------- Bip32 Protocol
+
+		
+			// ---------- Bip39 Passphrase ----------
 			if ( json_data[BIP32_PASSPHRASE] != undefined ) {
 				let bip32_passphrase = json_data[BIP32_PASSPHRASE];
 				this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
-				trace2Main( pretty_format( "rGUI.openW> Bip32 Passphrase", bip32_passphrase ) );	
+				trace2Main( pretty_format( "rGUI.openW> Bip39 Passphrase", bip32_passphrase ) );	
 			}	
-			// ---------- Bip32 Passphrase
+			// ---------- Bip39 Passphrase
 
 		    let account = json_data[ACCOUNT]; 
 			this.wallet_info.setAttribute( ACCOUNT, account );
@@ -621,7 +633,7 @@ class MainGUI {
 			let salt_uuid = HtmlUtils.GetElementValue( SALT_ID );
 			
 			// ---------- get 'Passphrase' ----------
-			bip32_passphrase = this.wallet_info.getAttribute(BIP32_PASSPHRASE);
+			bip32_passphrase = this.wallet_info.getAttribute( BIP32_PASSPHRASE );
 			trace2Main( pretty_format( "rGUI.genHDW> Bip32 Passphrase", "'" + bip32_passphrase + "'") );
 			// ---------- get 'Passphrase'
 			
@@ -646,7 +658,12 @@ class MainGUI {
 			// ---------- get 'Address Index'			
 			
 			// ========== Wallet Generation ==========  
-			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index };
+			// const { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index, bip32_protocol } = data;
+			let bip32_protocol = 44;
+			if ( blockchain == BITCOIN || blockchain == LITECOIN ) {
+				bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID );
+			}
+			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index, bip32_protocol };
 			// trace2Main( pretty_format( "rGUI.genHDW> data", JSON.stringify(data) ) );
 			new_wallet = await window.ipcMain.GetHDWallet( data );
 			// ========== Wallet Generation
@@ -719,8 +736,10 @@ class MainGUI {
 		this.wallet_info.setAttribute( ADDRESS_INDEX,  address_index );	
 		
 		//---------- Update 'Purpose' in "Wallet" Tab ----------
-		if ( blockchain == CARDANO ) HtmlUtils.SetElementValue( PURPOSE_ID, ADA_PURPOSE + "'/");				
-		else                         HtmlUtils.SetElementValue( PURPOSE_ID, "44'/" );					
+		// if ( blockchain == CARDANO ) HtmlUtils.SetElementValue( PURPOSE_ID, ADA_PURPOSE + "'/");				
+		// else                         HtmlUtils.SetElementValue( PURPOSE_ID, "44'/" );		
+		if ( blockchain == CARDANO ) HtmlUtils.SetElementValue( BIP32_PROTOCOL_ID, ADA_PURPOSE);				
+		// else                         HtmlUtils.SetElementValue( BIP32_PROTOCOL_ID, "44" );			
 		//---------- Update 'Purpose' in "Wallet" Tab
 		
 		//---------- Update 'Change' in "Wallet" Tab ----------
@@ -882,13 +901,15 @@ class MainGUI {
 		this.setEventHandler( LANG_SELECT_ID,           'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateLang(evt); } );	
 
-		// -------------------- Bip32/Bip38 Passphrase --------------------
-		this.setEventHandler( BIP32_PASSPHRASE_ID, 'keyup',   
-		    async (evt) => { await this.onGuiChangePassphrase( evt ); } );
+		// -------------------- Bip39/Bip38 Passphrase --------------------
+		//this.setEventHandler( BIP32_PASSPHRASE_ID, 'keyup',   
+		//    async (evt) => { await this.onGuiChangePassphrase( evt ); } );
+		this.setEventHandler( EDIT_BIP39_BTN_ID, 'click',   
+		     (evt) => { PassphraseDialog.This.showDialog( BIP39_PASSPHRASE_TYPE ); } );
 			
 		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
-		    async (evt) => { await this.onGuiChangePassphrase( evt ); } );
-		// -------------------- Bip32/Bip38 Passphrase	
+		   async (evt) => { await this.onGuiChangePassphrase( evt ); } );
+		// -------------------- Bip39/Bip38 Passphrase	
 			
 		this.setEventHandler( APPLY_PASSWORD_BTN_ID, 'click',   
 		    async (evt) => { if (this.cb_enabled) await this.GuiApplyPassword(); } );
@@ -942,6 +963,11 @@ class MainGUI {
 		    async (evt) => { if (this.cb_enabled) await this.generateRandomFields(); } );				
 		this.setEventHandler( REFRESH_BTN_ID,           'click',    
 		    async (evt) => { if (this.cb_enabled) await this.onRefreshButton(); } );
+			
+		// -------------------- Bip32 Protocol --------------------
+		this.setEventHandler( BIP32_PROTOCOL_ID, 'change', 
+		    async (evt) => { if (this.cb_enabled) await this.onBIP32ProtocolChange(evt); } );
+		// -------------------- Bip32 Protocol
 		
 		this.setEventHandler( ACCOUNT_ID,               'keypress', 
 		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeypress(evt); } );
@@ -1296,6 +1322,25 @@ class MainGUI {
 		let wallet_mode = this.wallet_info.getAttribute( WALLET_MODE );
 		
 		trace2Main( pretty_format( "rGUI.upBlkCHN> wallet_mode", wallet_mode ) );
+		
+		if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) { 
+		    HtmlUtils.SetElementValue( BIP32_PROTOCOL_ID, 44 );
+			let bip32_protocol_elt = HtmlUtils.GetElement( BIP32_PROTOCOL_ID );
+			
+			if ( blockchain == BITCOIN || blockchain == LITECOIN ) { 
+			    // Set BIP32_PROTOCOL_ID to "Editable Mode"
+				HtmlUtils.RemoveClass( BIP32_PROTOCOL_ID, "ReadOnlySelect" );
+				HtmlUtils.AddClass   ( BIP32_PROTOCOL_ID, "EditableSelect" );
+                if ( bip32_protocol_elt != undefined ) bip32_protocol_elt.removeAttribute('disabled');
+			}
+			else { 
+			    // Set BIP32_PROTOCOL_ID to "ReadOnly Mode"
+				HtmlUtils.RemoveClass( BIP32_PROTOCOL_ID, "EditableSelect" );
+				HtmlUtils.AddClass   ( BIP32_PROTOCOL_ID, "ReadOnlySelect" );
+				if ( bip32_protocol_elt != undefined ) bip32_protocol_elt.setAttribute('disabled', 'disabled' );
+			}
+		}
+		
 		trace2Main( pretty_format( "rGUI.upBlkCHN> CMD", this.wallet_info.getAttribute(CMD) ) );
 		
 		let wallet = {};
@@ -1364,13 +1409,17 @@ class MainGUI {
 	} // async updateOptionsFields()
 	
 	async updateWalletAddress() {
-        trace2Main( pretty_func_header_format( "MainGUI.updateWalletAddress" ) );		
+        trace2Main( pretty_func_header_format( "================ MainGUI.updateWalletAddress" ) );		
 							
 		let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
 		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
 		
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID ); 
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		
+		let bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID ); 
+		trace2Main( pretty_format( "rGUI.uWadr> bip32_protocol", bip32_protocol ) );
+		this.wallet_info.setAttribute( BIP32_PROTOCOL, bip32_protocol );
 		
 		let account = parseInt( HtmlUtils.GetElementValue( ACCOUNT_ID ) );
 		this.wallet_info.setAttribute( ACCOUNT, account );
@@ -1380,7 +1429,8 @@ class MainGUI {
 		this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
 		trace2Main( pretty_format( "rGUI.uWadr> address_index", address_index) );
 		
-		this.setEntropySourceIsUserInput( true );
+		// this.setEntropySourceIsUserInput( true );
+		
 		// this.updateStatusbarInfo( true );
 		
 		await this.updateFields( entropy );	
@@ -2186,14 +2236,14 @@ class MainGUI {
 			HtmlUtils.ShowElement( APPLY_BTN_SEPARATOR_ID );
 			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
 			HtmlUtils.RemoveClass(BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
-			this.setSaveCmdState( false );
+			// this.setSaveCmdState( false );
 		}
 		else {
 			HtmlUtils.HideElement( APPLY_PASSWORD_BTN_ID );
 			HtmlUtils.HideElement( APPLY_BTN_SEPARATOR_ID );
 			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
 			HtmlUtils.RemoveClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
-			this.setSaveCmdState( true );
+			// this.setSaveCmdState( true );
 		}
 	} // GuiSetPasswordApplyState()
 	
@@ -2207,7 +2257,7 @@ class MainGUI {
 	
 	GuiToggleBip32PassphraseVisibility() {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiToggleBip32PassphraseVisibility" ) );	
-		let eye_btn_img_elt = document.getElementById(EYE_BTN_IMG_ID )
+		let eye_btn_img_elt = document.getElementById( EYE_BTN_IMG_ID )
 		// console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
 		
 		if ( this.password_visible ) { 
@@ -2220,7 +2270,7 @@ class MainGUI {
 		else { 	
 		    document.getElementById(BIP32_PASSPHRASE_ID).type = 'text';	
 
-			if (eye_btn_img_elt != undefined) {
+			if ( eye_btn_img_elt != undefined ) {
 				eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;	
 			}			
 		}
@@ -2338,7 +2388,7 @@ class MainGUI {
 		let elt = evt.target || evt.srcElement;		
 		if ( elt.id == WALLET_BLOCKCHAIN_ID ) {
 			let blockchain = elt.value;
-			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateBlockchain", blockchain ) );
+			trace2Main( pretty_func_header_format( "+++++++++++++  MainGUI.onGuiUpdateBlockchain", blockchain ) );
 			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> ", blockchain ) );
 			
 			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> BEFORE wallet(wallet_mode)", this.wallet_info.getAttribute( WALLET_MODE ) ) );
@@ -2683,6 +2733,14 @@ class MainGUI {
 		}
 	} // onCopyButton()
 	
+	async onBIP32ProtocolChange( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onBIP32ProtocolChange" ) );
+		let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID );
+        if ( blockchain == BITCOIN || blockchain == LITECOIN ) {
+			await this.updateWalletAddress();
+        }			
+	} // onBIP32ProtocolChange()
+	
 	// BIP32Field 'keypress' event handler
 	async onBIP32FieldKeypress( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onBIP32FieldKeypress" ) );
@@ -2972,12 +3030,12 @@ class MainGUI {
 			let change_chain  = ( blockchain == SOLANA ) ? "0'" : "0";			
 			let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
 			
-			crypto_info[DERIVATION_PATH] =  "m/44'/" + COIN_TYPES[blockchain] + "'"
+			let bip32_protocol = 44;
+			bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID );
+			
+			crypto_info[DERIVATION_PATH] =  "m/" + bip32_protocol + "'/" + COIN_TYPES[blockchain] + "'"
 										  + "/" + account + "'/" + change_chain
-										  + "/" + address_index;
-			if ( blockchain == SOLANA  &&  ! crypto_info[DERIVATION_PATH].endsWith("'") ){
-				crypto_info[DERIVATION_PATH] += "'";				
-            }			
+										  + "/" + address_index + "'";		
 		}
 		
 		// -------- Bip38 passphrase --------
@@ -2994,7 +3052,7 @@ class MainGUI {
 		crypto_info[ENTROPY_SIZE] = entropy_size;
 		
 		return crypto_info;
-	} // getWalletInfo()
+	} // async getWalletInfo()
 	
 	// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
 	openTabPage( pageName, elt, color ) {

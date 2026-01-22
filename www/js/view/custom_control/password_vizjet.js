@@ -52,14 +52,14 @@ class PasswordVizjet {
 			HtmlUtils.ShowElement( APPLY_BTN_SEPARATOR_ID );
 			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
 			HtmlUtils.RemoveClass(BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
-			this.setSaveCmdState( false );
+			// this.setSaveCmdState( false );
 		}
 		else {
 			HtmlUtils.HideElement( APPLY_PASSWORD_BTN_ID );
 			HtmlUtils.HideElement( APPLY_BTN_SEPARATOR_ID );
 			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
 			HtmlUtils.RemoveClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
-			this.setSaveCmdState( true );
+			// this.setSaveCmdState( true );
 		}
 	} // setPasswordApplyState()
 	

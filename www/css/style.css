@@ -61,6 +61,10 @@ hr {
     background-color: #333;  /* Modern Browsers */
 }
 
+.ReadOnlyField {
+	background-color: #e9e9e9;
+}
+
 .SimpleWalletLabel {
 	font-size:     13px;
 }
@@ -132,7 +136,8 @@ hr {
 
 .PasswordFielWithoutApplyButton {
 	font-family:       Arial, Helvetica, sans-serif;
-	width:             85.5%;
+	/* width:             85.5%; */
+	width:             82%;
 	max-width:         85.5%;
 }
 
@@ -164,6 +169,16 @@ hr {
 
 #password_label_id {
 	margin-top: 5px ;
+}
+
+#bip32_passphrase_id {
+	width:     92%; !important; 
+    min-width: 92%; !important;	
+}
+
+#bip38_passphrase_id {
+	width:     89%; !important; 
+    min-width: 89%; !important;	
 }
 
 #bip38_passphrase_label_id {
@@ -574,7 +589,7 @@ progress[value].Bip32PassphraseStrength::-moz-progress-bar {
 }
 
 #entropy_id { 
-	width:             94.5%;
+	width:             94.8%;
 }
 
 #private_key_id { 
@@ -729,7 +744,15 @@ progress[value].Bip32PassphraseStrength::-moz-progress-bar {
 	min-height:        10%;
 }
 
-.ReadOnlyValue {
+.ReadOnlySelect {
+	background-color:  #F1FFFF;
+}
+
+.EditableSelect {
+	background-color:  white;
+}
+
+.SaltValue {
 	font-family:       Arial, Helvetica, sans-serif;
 	font-size:         15px;
 }

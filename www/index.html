@@ -157,7 +157,7 @@
 				<tr id="salt_row"><td class="LabelColumn">Salt</td>
 					<td colspan="2" class="FieldColumn">
 						<!-- <input type="checkbox" id="use_salt_id" name="use" checked /> -->
-						<span class="ReadOnlyValue" id="salt_id">XX</span>
+						<span class="SaltValue" id="salt_id">XX</span>
 					</td>
 				</tr>
 				<!-- ------------------ Salt (UUID) -->
@@ -198,31 +198,27 @@
 				<!-- ----------------------- Entropy (128/256 bits) -->
 				
 				
-				<!-- -----------------------  Bip32 passphrase  ----------------------- -->
+				<!-- -----------------------  Bip39 passphrase  ----------------------- -->
 				<tr id="bip32_passphrase_row_id">
 					<td class="LabelColumn">
-						<span id="password_label_id">Bip32 passphrase</span>
+						<span id="password_label_id">Bip39 passphrase</span>
 					</td>
 					<td colspan="2" class="FieldColumn">
 						<div id="password_container_id" class="DataFieldWithButton_Container">
-							<input class="PasswordFielWithoutApplyButton EntropyInput"
+							<input class="PasswordFielWithoutApplyButton EntropyInput ReadOnlyField"
 								   id="bip32_passphrase_id" type="password"
-								   minlength="4" maxlength="128" value=""/>
+								   minlength="4" maxlength="128" value="" readonly/>
+							<button class="SmallButton" id="edit_bip39_passphrase_btn_id"
+									title="Show/Edit Bip39 passphrase">
+									<img id="edit_btn_img_id" src="icons/edit_16px.png" border="0"/>
+							</button>		
 							<button class="SmallButton" id="eye_btn_id"
-									title="Show/Hide Bip32 passphrase">
+									title="Show/Hide Bip39 passphrase">
 									<img id="eye_btn_img_id" src="icons/eye_closed_16px.png" border="0"/>
-							</button><span id="apply_btn_separator_id" hidden>&nbsp;</span>
-							<input id="apply_password_btn_id" type="button" 
-								   title="Recompute HD Hierarchy" value="Apply" hidden/>&nbsp;								
-							<button class="SmallButton" id="generate_password_btn_id"
-									title="Random Bip32 passphrase">
-								<img id="apply_btn_img_id" src="icons/regenerate_16px_icn.png" border="0"/>
-							</button>&nbsp;
-							<input id="clear_password_btn_id" type="button" 
-								   title="Clear Bip32 passphrase" value="Clear"/>
+							</button>
 						</div>
 						
-						<!-- ------------ Bip32 Passphrase Strength ------------ -->
+						<!-- ------------ Bip39 Passphrase Strength ------------ -->
 						<div id="bip32_passphrase_strength_container_id" hidden>
 							<table id="bip32_passphrase_str_table_id">
 							    <tr>
@@ -236,10 +232,10 @@
 							    </tr>
 						    </table>
 						</div>						
-						<!-- ------------ Bip32 Passphrase Strength -->
+						<!-- ------------ Bip39 Passphrase Strength -->
 					</td>
 				</tr>
-				<!-- ----------------------- Bip32 passphrase -->
+				<!-- ----------------------- Bip39 passphrase -->
 				
 				
 				<!-- -----------------------  Checksum  ----------------------- -->
@@ -342,9 +338,11 @@
 							<button class="SmallButton" id="generate_bip38_passphrase_btn_id"
 									title="Random Bip38 passphrase">
 								<img id="generate_bip38_passphrase_btn_img_id" src="icons/regenerate_16px_icn.png" border="0"/>
-							</button>&nbsp;
-							<input id="clear_bip38_passphrase_btn_id" type="button" 
-								   title="Clear Bip38 passphrase" value="Clear"/>
+							</button>
+							<button class="SmallButton" id="clear_bip38_passphrase_btn_id"
+									title="Clear Bip38 passphrase">
+								    <img id="clear_bip38_passphrase_btn_img_id" src="icons/delete_16px_icn.png" border="0"/>
+							</button>
 						</div>
 
                         <!-- ------------ Bip38 Passphrase Strength ------------ -->
@@ -417,9 +415,16 @@
 								<td class="Bip32Cell Bip32CellHeader">Change</td>
 								<td class="Bip32Cell Bip32CellHeader">Address Index</td>
 							</tr>
-							<tr>
+							<tr>							
 								<td class="Bip32Cell">m/</td>
-								<td class="Bip32Cell" id="purpose_id">44'/</td>
+								<td class="Bip32Cell" id="purpose_id">
+									<select class="InputField LabelValueSelector EditableSelect"
+								            id="bip32_protocol_id">
+										<option value="44" selected>44</option>
+										<option value="84">84</option>	
+                                        <option value="1852" hidden>1852</option>										
+									</select>&nbsp;'/
+								</td>
 								<td id="coin_type_id"
 									class="Bip32Cell">0'</td>
 								<td class="Bip32Cell">
@@ -616,6 +621,17 @@
 		<link rel="stylesheet" type="text/css" href="./vizjets/secret_phrase_translator_dialog/secret_phrase_translator_dialog.css">
 		<script src="./vizjets/secret_phrase_translator_dialog/secret_phrase_translator_dialog.js"></script>
 		<!-- ===========================  Secret phrase Translator dialog -->
+		
+		
+		<!-- ================================================================================================ -->
+		<!-- =========================      Bip39/Bip38 Passphrase dialog        ============================ -->
+		<!-- ================================================================================================ -->
+		<div class="DialogBox" id="passphrase_dialog_id" 
+			 w3-include-html="./vizjets/passphrase_dialog/passphrase_dialog.html"
+			 title="Bip39 Passphrase Input" hidden></div>
+		<link rel="stylesheet" type="text/css" href="./vizjets/passphrase_dialog/passphrase_dialog.css">
+		<script src="./vizjets/passphrase_dialog/passphrase_dialog.js"></script>
+		<!-- ===========================  Bip39/Bip38 Passphrase dialog -->
 		
 		
 		<!-- ================================================================================================ -->
