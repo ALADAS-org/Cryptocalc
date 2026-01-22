@@ -66,7 +66,8 @@ const { NULL_HEX,
 	  
 const { BLOCKCHAIN, NULL_BLOCKCHAIN, 
         WORD_COUNT, MNEMONICS,
-        BIP32_PASSPHRASE, ACCOUNT, ADDRESS_INDEX,
+        BIP32_PROTOCOL, BIP32_PASSPHRASE, 
+		ACCOUNT, ADDRESS_INDEX,
 		DERIVATION_PATH, WIF
 	  }                    = require('../../const_keywords.js');
 		
@@ -122,6 +123,12 @@ class Bip32Utils {
         if ( isString( coin_type ) )  coin_type = parseInt( coin_type );		
 		pretty_log( "b32.mnk2wi> coin_type", coin_type );
 		
+		let bip32_protocol = 44;
+		if ( args[BIP32_PROTOCOL] != undefined ) { 
+			bip32_protocol = args[BIP32_PROTOCOL];
+			if ( isString( bip32_protocol ) )  bip32_protocol = parseInt( bip32_protocol );
+		}
+		
 		let bip32_passphrase = "";
 		if ( args[BIP32_PASSPHRASE] != undefined && args[BIP32_PASSPHRASE] != null && args[BIP32_PASSPHRASE] != "" ) { 
 			bip32_passphrase = args[BIP32_PASSPHRASE];
@@ -176,7 +183,7 @@ class Bip32Utils {
 		//let master_derivation_path = "m/44'/" + coin_type + "'" + "/0'/0/" + address_index;
 		
 		// NB: Now switch to systematic Hardened adresses
-		let path_options = { [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
+		let path_options = { [BIP32_PROTOCOL]: bip32_protocol, [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
 		
 		let master_derivation_path = Bip32Utils.GetDerivationPath( coin_type, path_options );
 		pretty_log( "b32.mnk2wi> master_derivation_path", master_derivation_path );
@@ -261,8 +268,8 @@ class Bip32Utils {
         pretty_log( "b32.mnk2wi> coin", coin );	
 		
 		let bip44 = HdAddGen.withMnemonic
-					( mnemonics,  bip32_passphrase, coin,    true,     44,  account );
-        //                        bip32_passphrase           hardened  bip  account        
+					( mnemonics,  bip32_passphrase, coin,    true,     bip32_protocol,  account );
+        //                        bip32_passphrase           hardened  protocol         account        
 		//*** BIP44 *********************************************************
 
 		// Generates 'expected_address_count' addresse from index 'address_index'
@@ -301,7 +308,7 @@ class Bip32Utils {
 		let child_pk_to_mnemonics = Bip39Utils.EntropyToMnemonics( child_private_key );
 		
 		//-ok-------------------- Extended Private key -----------------------
-		let account_derivation_path = "m/44'/" + coin_type + "'/" + account + "'";
+		let account_derivation_path = "m/" + bip32_protocol + "'/" + coin_type + "'/" + account + "'";
 		pretty_log( "b32.mnk2wi> account_derivation_path", account_derivation_path );	
 		let ACCOUNT_XPRIV = master_node.derivePath( account_derivation_path ).toBase58();
 		
@@ -321,7 +328,8 @@ class Bip32Utils {
 			const parent = new HDPrivateKey( prvKey.xprivkey );
 			
 			const multiWallet = parent
-				.deriveChild( 44, true )
+				// .deriveChild( 44, true )
+				.deriveChild( bip32_protocol, true )
 				.deriveChild( coinType, true )
 				.deriveChild( account,  true );
 
@@ -355,18 +363,19 @@ class Bip32Utils {
 	
 	// https://www.ledger.com/blog/understanding-crypto-addresses-and-derivation-paths
 	static GetDerivationPath( coin_type, path_options ) {
-		let account       = "0"; 
-		let address_index = "0";
+		let account        = "0"; 
+		let address_index  = "0";
+		let bip32_protocol = "44";
 		
 		if ( path_options != undefined ) {
-			account       = ( path_options[ACCOUNT] != undefined ) ?       path_options[ACCOUNT].toString() :       "0";								
-			address_index =	( path_options[ADDRESS_INDEX] != undefined ) ? path_options[ADDRESS_INDEX].toString() : "0";
+			account        = ( path_options[ACCOUNT] != undefined ) ?       path_options[ACCOUNT].toString() :       "0";								
+			address_index  = ( path_options[ADDRESS_INDEX] != undefined ) ? path_options[ADDRESS_INDEX].toString() : "0";
+			bip32_protocol = ( path_options[BIP32_PROTOCOL] != undefined ) ? path_options[BIP32_PROTOCOL].toString() : "44";
 		} 
 		
-		let derivation_path =   "m/44'/" 
+		let derivation_path =   "m/" + bip32_protocol + "'/" 
 		                      + coin_type + "'/" 
-							  + account + "'/0/"
-							  + address_index;
+							  + account + "'/0/" + address_index;
 		return derivation_path;
 	} // Bip32Utils.GetDerivationPath()
 } // Bip32Utils class

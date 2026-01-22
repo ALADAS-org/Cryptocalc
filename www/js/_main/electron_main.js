@@ -74,7 +74,12 @@ const { APP_VERSION,
 		OUTPUT_DIR_PATH, INVALID_OUTPUT_DIR_PATH,
 		SELECT_DIRECTORY_PATH_MODE, SELECT_FILE_PATH_MODE,		
 		WITS_PATH, PATH, ARGS,
+		BLOCKCHAIN, BIP32_PASSPHRASE, BIP32_PROTOCOL, ACCOUNT, ADDRESS_INDEX 
       }                = require('../const_keywords.js');
+	  
+const { CRYPTO_NET        
+}                      = require('../crypto/const_wallet.js');
+	  
 
 const { CMD_OPEN_WALLET,
         VIEW_TOGGLE_DEVTOOLS, 
@@ -1136,14 +1141,19 @@ class ElectronMain {
 		// ================== ToMain_RQ_GET_HD_WALLET ==================
 		// called like this by Renderer: await window.ipcMain.GetHDWallet( data )
 		ipcMain.handle( ToMain_RQ_GET_HD_WALLET, async (event, data) => {
-			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_HD_WALLET );
-			const { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index } = data;
+			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_HD_WALLET + "======================" );
+			const { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index, bip32_protocol } = data;
 			// pretty_log( "eMain.evtH('getHDW')> blockchain", blockchain );
 			// pretty_log( "account", account );
 			// pretty_log( "address_index", address_index );
+			pretty_log( "bip32_protocol", bip32_protocol );
 			// Skribi.log("   options: " + JSON.stringify(options));
+			let options = { [BLOCKCHAIN]: blockchain, [CRYPTO_NET]: crypto_net, [BIP32_PASSPHRASE]: bip32_passphrase, 
+			                [BIP32_PROTOCOL]: bip32_protocol, [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
+			// let wallet = await HDWallet.GetWallet
+			//                   ( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index );
 			let wallet = await HDWallet.GetWallet
-			                   ( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index );
+			                   ( entropy_hex, salt_uuid, options );
 			return wallet;
 		}); // "ToMain:Request/get_hd_wallet" event handler
 		
@@ -1169,7 +1179,7 @@ class ElectronMain {
 		// ================== ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO ==================
 		// called like this by Renderer: await window.ipcMain.MnemonicsToHDWalletInfo( data )
 		ipcMain.handle( ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO, async (event, data) => {
-			pretty_func_header_log( "[Electron]", ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO );
+			pretty_func_header_log( "[Electron]", ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO + "=)=)=)=)=)=)=)=)=)=)");
 			const { mnemonics, options } = data;
 			// Skribi.log("   options: " + JSON.stringify(options));
 			let hdwallet_info = await Bip32Utils.MnemonicsToHDWalletInfo( mnemonics, options );

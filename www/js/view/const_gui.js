@@ -9,7 +9,13 @@ const CRYPTOWALLET_VERSION                = "Cryptowallet_version";
 const TOOLS_OPTIONS_DIALOG_ID             = "tools_options_dialog_id";
 const SECRET_PHRASE_TRANSLATOR_DIALOG_ID  = "tools_secret_phrase_translator_dialog_id";
 const TOOLS_DB_MANAGEMENT_DIALOG_ID       = "tools_db_management_dialog_id";
+
+const PASSPHRASE_DIALOG_ID                = "passphrase_dialog_id";
+const EDIT_BIP39_BTN_ID                   = "edit_bip39_passphrase_btn_id";
 // ------------------------- Dialogs
+
+const BIP39_PASSPHRASE_TYPE               = "Bip39";
+const BIP38_PASSPHRASE_TYPE               = "Bip38";
 
 const SEED_TAB_LINK_ID                    = "seed_tab_link_id";
 const WALLET_TAB_LINK_ID                  = "wallet_tab_link_id";
@@ -61,7 +67,8 @@ const BIP38_PASSPHRASE_EYE_BTN_ID         = "bip38_passphrase_eye_btn_id";
 const BIP38_PASSPHRASE_EYE_BTN_IMG_ID     = "bip38_passphrase_eye_btn_img_id";
 // -------------------- BIP38
 
-// -------------------- BIP32 --------------------
+
+// -------------------- BIP39 --------------------
 const BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID = "bip32_passphrase_strength_container_id";
 
 const BIP32_PASSPHRASE_ROW_ID             = "bip32_passphrase_row_id";
@@ -78,7 +85,7 @@ const APPLY_BTN_SEPARATOR_ID              = "apply_btn_separator_id";
 const APPLY_PASSWORD_BTN_ID               = "apply_password_btn_id";
 const GENERATE_PASSWORD_BTN_ID            = "generate_password_btn_id";
 const CLEAR_PASSWORD_BTN_ID               = "clear_password_btn_id";
-// -------------------- BIP32
+// -------------------- BIP39
 
 const EYE_BTN_ID                          = "eye_btn_id";
 const EYE_BTN_IMG_ID                      = "eye_btn_img_id";
@@ -117,6 +124,7 @@ const WALLET_BLOCKCHAIN_ID                = "wallet_blockchain_id";
 
 const WALLET_COIN_ID                      = "wallet_coin_id"; 
 
+const BIP32_PROTOCOL_ID                   = "bip32_protocol_id";
 const PURPOSE_ID                          = "purpose_id";
 const COIN_TYPE_ID                        = "coin_type_id";
 

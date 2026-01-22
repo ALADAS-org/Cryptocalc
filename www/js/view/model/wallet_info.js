@@ -18,7 +18,10 @@ class WalletInfo {
 							[EXPECTED_ENTROPY_DIGITS]: 	"",							
 							[WORD_COUNT]: 				"word_count_select_id",			
 							[MNEMONICS]: 				"mnemonics_id",
-							[CHECKSUM]: 				"checksum_id",					
+							[CHECKSUM]: 				"checksum_id",
+							
+                            [BIP32_PROTOCOL]:			"bip32_protocol_id",
+							
 							[BIP32_PASSPHRASE]:			"bip32_passphrase_id",						
 							[BIP38_PASSPHRASE]: 		"bip38_passphrase_id",							
 							[WORD_INDEXES]: 			"word_indexes_id",
@@ -96,10 +99,10 @@ class WalletInfo {
 			
 			let display_value = value;
 			
-			if (attr_name == "address_index") {
+			if ( attr_name == "address_index" ) {
 				// NB: switch to systematic Hardened adresses : Don't display as "'" is already displayed in static
 				// console.log(">> display_value: '" + display_value + "' typeof " + typeof display_value);
-				if (typeof display_value == 'string' && display_value.endsWith("'")) {
+				if ( typeof display_value == 'string' && display_value.endsWith("'") ) {
 					// console.log(">> INCORRECT display_value: <" + display_value + ">"); 
 					display_value = display_value.replaceAll("'", "");
 					// console.log(">> NOW display_value: <" + display_value + ">");

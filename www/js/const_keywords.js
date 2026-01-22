@@ -52,6 +52,7 @@ const WORD_COUNT                  = 'word_count';
 
 const WORDLIST_WORD_INDEXES       = "#WordIndexes";
  
+const BIP32_PROTOCOL              = 'Bip32 Protocol';
 const BIP32_PASSPHRASE            = 'Bip32 Passphrase';
 const BIP38_PASSPHRASE            = 'Bip38 Passphrase';
 
@@ -146,6 +147,7 @@ if ( typeof exports === 'object' ) {
 	exports.WORD_INDEXES          = WORD_INDEXES
 	exports.WORD_COUNT            = WORD_COUNT
 	
+	exports.BIP32_PROTOCOL        = BIP32_PROTOCOL 
 	exports.BIP32_PASSPHRASE      = BIP32_PASSPHRASE	
 	exports.BIP38_PASSPHRASE      = BIP38_PASSPHRASE
 	
