@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.1
+## CryptoCalc 0.5.2
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,7 +6,7 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 14090 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 15281 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by testing and reporting bugs (or asking for enhancements) with [`Issues`](https://github.com/ALADAS-org/Cryptocalc/issues), 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
@@ -15,8 +15,12 @@
    [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
 
 2. Features    
+    2.0. Recently added features
+	- `Wallets Database`: you can now populate a `SQLite` database byb ilporting the _Wallet informations_ (`.wits` files in timestamped subfolders under `_output` folder)    
+	- Added support support of `Bip84` purpose in the `Bip32 derivation path`    
+	
     2.1. Support of HD / Bip32 (multiple wallets)
-    Added support support of `Bip84` purpose in the `Bip32 derivation path` (HD Wallet). Notice that it is usable only with `Bitcoin` and `Litcoin`.    
+    Added support support of `Bip84` purpose in the `Bip32 derivation path` (HD Wallet). Notice that it is usable only with `Bitcoin` and `Litecoin`.    
    
     2.2. Selection of `Entropy size` (between 128 and 256 bits)    
    
@@ -179,7 +183,7 @@
 		- Terminology Fix:
 		    - Terminology `Bip32 passphrase` is the wrong terminology, iut has been replaced by `Bip39 passphrase`  
 	    - New Feature:
-		  Added support support of `Bip84` purpose in the `Bip32 derivation path` (HD Wallet). Notice that it is usable only with `Bitcoin` and `Litcoin`. 
+		  Added support support of `Bip84` purpose in the `Bip32 derivation path` (HD Wallet). Notice that it is usable only with `Bitcoin` and `Litecoin`. 
 		- Ergonomy Fix:
 		  Previously: When you wanted to define a `Bip39 passphrase`, you had to explicitly use the [Apply] button to recompute the _Bip32 Hierarchy_. 
 		  Thus the [Apply] button was often overlooked and the `Bip39 passphrase` was not taken into account. This situation can be qualified ad an `Ergonomy Bug`.    
