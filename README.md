@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.2
+## CryptoCalc 0.5.3
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,7 +6,7 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 15281 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 15639 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by testing and reporting bugs (or asking for enhancements) with [`Issues`](https://github.com/ALADAS-org/Cryptocalc/issues), 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 

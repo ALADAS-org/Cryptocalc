@@ -1,0 +1,5 @@
+>> eMain.evtH(''did-finish-load')> this.cmd_line[PROGRAM]: electron.exe
+>> ElectronMain.setCallbacks
+>> register ToMain_RQ_SELECT_FILE_OR_DIRECTORY_PATH_DIALOG: 'ToMain:Request/select_file_or_directory_path_dialog'
+>> register ToMain_RQ_IMPORT_OUTPUT_FILES_IN_DATABASE: 'ToMain:Request/import_output_files_in_database'
+>> ElectronMain.doFileNew

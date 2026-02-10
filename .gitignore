@@ -1,3 +1,10 @@
 node_modules
 _output/*/
 releases/**
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

@@ -1,0 +1,120 @@
+# Test de validation d'adresses
+name: "Address Validation Tests"
+description: "Test la validation d'adresses pour différentes blockchains"
+
+imports:
+  - CryptoService
+  - AddressValidator
+
+tests:
+  - name: "Validate Bitcoin addresses"
+    steps:
+      - action: validateAddress
+        params:
+          address: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+          blockchain: BTC
+        assign: btc_valid
+        
+      - action: validateAddress
+        params:
+          address: "InvalidBTCAddress123"
+          blockchain: BTC
+        assign: btc_invalid
+        
+    assertions:
+      - property: $btc_valid
+        isTrue: true
+        
+      - property: $btc_invalid
+        isFalse: true
+
+  - name: "Validate Ethereum addresses"
+    steps:
+      - action: validateAddress
+        params:
+          address: "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+          blockchain: ETH
+        assign: eth_valid
+        
+      - action: validateAddress
+        params:
+          address: "0xInvalidAddress"
+          blockchain: ETH
+        assign: eth_invalid
+        
+    assertions:
+      - property: $eth_valid
+        isTrue: true
+        
+      - property: $eth_invalid
+        isFalse: true
+
+  - name: "Generate and validate wallet address"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: val_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $val_entropy
+          blockchain: BTC
+        assign: val_wallet
+        
+      - action: validateAddress
+        params:
+          address: $val_wallet.address
+          blockchain: BTC
+        assign: is_valid
+        
+    assertions:
+      - property: $is_valid
+        isTrue: true
+        
+      - property: $val_wallet.address
+        matches: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$"
+
+  - name: "Cross-blockchain validation should fail"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: cross_entropy
+        
+      # Générer un wallet BTC
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $cross_entropy
+          blockchain: BTC
+        assign: btc_wallet
+        
+      # Valider l'adresse BTC avec le validateur ETH
+      - action: validateAddress
+        params:
+          address: $btc_wallet.address
+          blockchain: ETH
+        assign: cross_valid
+        
+    assertions:
+      # Une adresse BTC ne doit pas être valide pour ETH
+      - property: $cross_valid
+        isFalse: true
+
+fixtures:
+  valid_addresses:
+    BTC:
+      - "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+      - "3J98t1WpEZ73CNmYviecrnyiWrnqRhWNLy"
+    ETH:
+      - "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+      - "0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed"
+    XRP:
+      - "rN7n7otQDd6FczFgLdlqtyMVrn3HMfB28q"
+      
+  invalid_addresses:
+    - "NotAnAddress"
+    - "0xInvalid"
+    - "123456789"
