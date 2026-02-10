@@ -1,0 +1,127 @@
+# Test multi-blockchain
+name: "Multi-Blockchain Wallet Generation"
+description: "Test la génération de wallets pour différentes blockchains"
+
+tests:
+  - name: "Generate Ethereum wallet"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: eth_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $eth_entropy
+          blockchain: ETH
+        assign: eth_wallet
+        
+    assertions:
+      - property: $eth_wallet.blockchain
+        equals: ETH
+        
+      - property: $eth_wallet.address
+        matches: "^0x[a-fA-F0-9]{40}$"
+        
+      - property: $eth_wallet.wif
+        equals: null  # ETH n'utilise pas WIF
+
+  - name: "Generate Ripple (XRP) wallet"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: xrp_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $xrp_entropy
+          blockchain: XRP
+        assign: xrp_wallet
+        
+    assertions:
+      - property: $xrp_wallet.blockchain
+        equals: XRP
+        
+      - property: $xrp_wallet.address
+        matches: "^r[1-9A-HJ-NP-Za-km-z]{25,34}$"
+
+  - name: "Generate Cardano (ADA) wallet"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: ada_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $ada_entropy
+          blockchain: ADA
+        assign: ada_wallet
+        
+    assertions:
+      - property: $ada_wallet.blockchain
+        equals: ADA
+        
+      - property: $ada_wallet.address
+        matches: "^addr1[a-z0-9]{54,}$"
+
+  - name: "Generate Litecoin (LTC) wallet"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: ltc_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $ltc_entropy
+          blockchain: LTC
+        assign: ltc_wallet
+        
+    assertions:
+      - property: $ltc_wallet.blockchain
+        equals: LTC
+        
+      - property: $ltc_wallet.wif
+        isDefined: true  # LTC utilise WIF comme BTC
+        
+      - property: $ltc_wallet.privateKey
+        hasLength: 64
+
+  - name: "Compare wallets from same entropy but different chains"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: shared_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $shared_entropy
+          blockchain: BTC
+        assign: btc_from_shared
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $shared_entropy
+          blockchain: ETH
+        assign: eth_from_shared
+        
+    assertions:
+      - property: $btc_from_shared.entropy
+        equals: $eth_from_shared.entropy
+        
+      # Mais les adresses sont différentes
+      - property: $btc_from_shared.address
+        notEquals: $eth_from_shared.address
+        
+      # Secret phrase identique
+      - property: $btc_from_shared.secretPhrase
+        equals: $eth_from_shared.secretPhrase

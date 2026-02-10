@@ -99,13 +99,11 @@ class SimpleWallet {
 		
 		let new_wallet = SimpleWallet.InitializeWallet();
 		
-		new_wallet[WALLET_MODE] = SIMPLE_WALLET_TYPE;
-		new_wallet[MNEMONICS]   = mnemonics;
-
 		if (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {		
 		    // await CoinKey_API.GetWallet
 			new_wallet = CoinKey_API.GetWallet 
-			             ( private_key, salt_uuid, blockchain, crypto_net );			
+			             ( private_key, salt_uuid, blockchain, crypto_net );
+			new_wallet[BLOCKCHAIN]  = blockchain;				 
 		}
 		else if (   blockchain == ETHEREUM 
 		         || blockchain == AVALANCHE || blockchain == POLYGON ) {		
@@ -132,6 +130,9 @@ class SimpleWallet {
 		else if ( blockchain == TERRA_LUNA ) {		
 			new_wallet = LUNA_API.GetWallet( private_key, salt_uuid );
 		}
+		
+		new_wallet[WALLET_MODE] = SIMPLE_WALLET_TYPE;
+		new_wallet[MNEMONICS]   = mnemonics;
 
 		return new_wallet;
 	} // SimpleWallet.GetWallet()

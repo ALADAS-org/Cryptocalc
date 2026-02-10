@@ -1,0 +1,305 @@
+# Test avancé avec fixtures
+name: "Advanced Wallet Testing with Fixtures"
+description: "Tests complexes utilisant des fixtures pour validation"
+
+setup:
+  entropy_size: 256
+  blockchain: BTC
+  wallet_mode: HD_WALLET
+
+tests:
+  - name: "Regression test with known entropy"
+    description: "Vérifie que la même entropie produit toujours le même résultat"
+    steps:
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: "a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789"
+          blockchain: BTC
+        assign: known_wallet
+        
+    assertions:
+      - property: $known_wallet.entropy
+        equals: "a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789"
+      - property: $known_wallet.entropy
+        hasLength: 64
+      - property: $known_wallet.address
+        isDefined: true
+
+  - name: "Test entropy boundaries"
+    description: "Test les tailles minimales et maximales d'entropie"
+    steps:
+      # Test taille minimale (128 bits)
+      - action: generateEntropy
+        params:
+          size: 128
+        assign: min_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $min_entropy
+          blockchain: BTC
+        assign: min_wallet
+        
+      # Test taille maximale (256 bits)
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: max_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $max_entropy
+          blockchain: BTC
+        assign: max_wallet
+        
+    assertions:
+      - property: $min_entropy
+        hasLength: 32  # 128 bits = 32 hex chars
+      - property: $max_entropy
+        hasLength: 64  # 256 bits = 64 hex chars
+      - property: $min_wallet.address
+        isDefined: true
+      - property: $max_wallet.address
+        isDefined: true
+
+  - name: "Multi-step workflow with BIP38"
+    description: "Workflow complet: génération → chiffrement → validation → sauvegarde"
+    steps:
+      # 1. Générer entropie
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: workflow_entropy
+        
+      # 2. Créer wallet
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $workflow_entropy
+          blockchain: BTC
+          passphrase: "Bip32Pass"
+        assign: workflow_wallet
+        
+      # 3. Chiffrer avec BIP38
+      - action: encrypt
+        params:
+          privateKey: $workflow_wallet.privateKey
+          passphrase: "Bip38Pass"
+          difficulty: 16384
+        assign: workflow_encrypted
+        
+      # 4. Valider l'adresse
+      - action: validateAddress
+        params:
+          address: $workflow_wallet.address
+          blockchain: BTC
+        assign: workflow_valid
+        
+      # 5. Calculer checksum de l'entropie
+      - action: computeChecksum
+        params:
+          data: $workflow_entropy
+          algorithm: sha256
+        assign: workflow_checksum
+        
+      # 6. Sauvegarder
+      - action: save
+        target: $workflow_wallet
+        params:
+          includeEncrypted: true
+        assign: workflow_saved
+        
+    assertions:
+      # Vérifications sur l'entropie
+      - property: $workflow_entropy
+        hasLength: 64
+        
+      # Vérifications sur le wallet
+      - property: $workflow_wallet.type
+        equals: HD_WALLET
+      - property: $workflow_wallet.blockchain
+        equals: BTC
+      - property: $workflow_wallet.passphrase
+        equals: "Bip32Pass"
+      - property: $workflow_wallet.address
+        matches: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$"
+        
+      # Vérifications sur le chiffrement BIP38
+      - property: $workflow_encrypted
+        matches: "^6PR"
+      - property: $workflow_encrypted
+        isDefined: true
+        
+      # Vérifications sur la validation
+      - property: $workflow_valid
+        isTrue: true
+        
+      # Vérifications sur le checksum
+      - property: $workflow_checksum
+        isDefined: true
+      - property: $workflow_checksum
+        hasLength: 64  # SHA256 = 64 hex chars
+        
+      # Vérifications sur la sauvegarde
+      - property: $workflow_saved.success
+        isTrue: true
+      - property: $workflow_saved.path
+        contains: "wallet_"
+
+  - name: "Compare wallets with and without BIP32 passphrase"
+    description: "Vérifie que le passphrase BIP32 change la dérivation"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: compare_entropy
+        
+      # Wallet sans passphrase
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $compare_entropy
+          blockchain: BTC
+        assign: wallet_no_pass
+        
+      # Wallet avec passphrase
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $compare_entropy
+          blockchain: BTC
+          passphrase: "DifferentPass"
+        assign: wallet_with_pass
+        
+    assertions:
+      # Même entropie et secret phrase
+      - property: $wallet_no_pass.entropy
+        equals: $wallet_with_pass.entropy
+      - property: $wallet_no_pass.secretPhrase
+        equals: $wallet_with_pass.secretPhrase
+        
+      # Mais adresses différentes à cause du passphrase
+      - property: $wallet_no_pass.address
+        notEquals: $wallet_with_pass.address
+      - property: $wallet_no_pass.privateKey
+        notEquals: $wallet_with_pass.privateKey
+
+  - name: "Test different wallet types from same entropy"
+    description: "Vérifie que HD_WALLET, SIMPLE_WALLET et SWORD_WALLET utilisent l'entropie"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: shared_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $shared_entropy
+          blockchain: BTC
+        assign: hd_wallet
+        
+      - action: generateWallet
+        params:
+          type: SIMPLE_WALLET
+          entropy: $shared_entropy
+          blockchain: BTC
+        assign: simple_wallet
+        
+      - action: generateWallet
+        params:
+          type: SWORD_WALLET
+          entropy: $shared_entropy
+          blockchain: BTC
+        assign: sword_wallet
+        
+    assertions:
+      # Tous utilisent la même entropie
+      - property: $hd_wallet.entropy
+        equals: $shared_entropy
+      - property: $simple_wallet.entropy
+        equals: $shared_entropy
+      - property: $sword_wallet.entropy
+        equals: $shared_entropy
+        
+      # Mais ont des types différents
+      - property: $hd_wallet.type
+        equals: HD_WALLET
+      - property: $simple_wallet.type
+        equals: SIMPLE_WALLET
+      - property: $sword_wallet.type
+        equals: SWORD_WALLET
+        
+      # Tous ont des adresses valides
+      - property: $hd_wallet.address
+        matches: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$"
+      - property: $simple_wallet.address
+        matches: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$"
+      - property: $sword_wallet.address
+        matches: "^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$"
+
+  - name: "BIP38 encrypt/decrypt roundtrip"
+    description: "Vérifie que encrypt puis decrypt donne la clé originale"
+    steps:
+      - action: generateEntropy
+        params:
+          size: 256
+        assign: roundtrip_entropy
+        
+      - action: generateWallet
+        params:
+          type: HD_WALLET
+          entropy: $roundtrip_entropy
+          blockchain: BTC
+        assign: roundtrip_wallet
+        
+      - action: encrypt
+        params:
+          privateKey: $roundtrip_wallet.privateKey
+          passphrase: "RoundtripPass"
+        assign: roundtrip_encrypted
+        
+      - action: decrypt
+        params:
+          encryptedKey: $roundtrip_encrypted
+          passphrase: "RoundtripPass"
+        assign: roundtrip_decrypted
+        
+    assertions:
+      - property: $roundtrip_encrypted
+        matches: "^6PR"
+      - property: $roundtrip_decrypted
+        isDefined: true
+      - property: $roundtrip_decrypted
+        hasLength: 64
+
+fixtures:
+  # Entropies connues pour tests de régression
+  known_entropies:
+    entropy_128: "0123456789abcdef0123456789abcdef"
+    entropy_256: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+    
+  # Adresses valides pour chaque blockchain
+  valid_addresses:
+    BTC:
+      - "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+      - "3J98t1WpEZ73CNmYviecrnyiWrnqRhWNLy"
+    ETH:
+      - "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb"
+    XRP:
+      - "rN7n7otQDd6FczFgLdlqtyMVrn3HMfB28q"
+    ADA:
+      - "addr1qxy3w0ahypqf7y0v8z2x9x8z2x9x8z2x9x8z2x9x8z2x9x8z2x9x8"
+      
+  # Passphrases de test
+  test_passphrases:
+    weak: "password"
+    medium: "MyP@ssw0rd123"
+    strong: "Tr0ub4dor&3-xK_9#mQ"
+    
+  # Checksums attendus (SHA256) pour entropies connues
+  expected_checksums:
+    entropy_128_sha256: "b4e0a2d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789a"

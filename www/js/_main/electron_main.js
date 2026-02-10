@@ -478,7 +478,9 @@ class ElectronMain {
 			} // 'did-finish-load' callback
 		); // ==================== 'did-finish-load' event handler
 		
-		this.MainWindow.loadFile( './www/index.html' );
+		let index_html_path = app.getAppPath() + '/www/index.html';
+		
+		this.MainWindow.loadFile( index_html_path );
 	} // createWindow()
 	
 	async openWits( wits_path ) {

@@ -1,0 +1,301 @@
+{
+  "config": {
+    "configFile": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\playwright.config.js",
+    "rootDir": "E:/_00_Michel/_00_Lab/_00_GitHub/Cryptocalc/tests/playwright/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\test-setup.js",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "E:/_00_Michel/_00_Lab/_00_GitHub/Cryptocalc/tests/playwright/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "type": "e2e",
+          "platform": "win32"
+        },
+        "id": "electron",
+        "name": "electron",
+        "testDir": "E:/_00_Michel/_00_Lab/_00_GitHub/Cryptocalc/tests/playwright/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "outputFolder": "../playwright-report",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "../playwright-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "app-launch.spec.js",
+      "file": "app-launch.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Lancement de l'application",
+          "file": "app-launch.spec.js",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "L'application se lance avec le bon titre",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "electron",
+                  "projectName": "electron",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 17545,
+                      "error": {
+                        "message": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=18436\u001b[22m\n\u001b[2m  - [pid=18436][out]\u001b[22m\n\u001b[2m  - [pid=18436][err] Debugger listening on ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - [pid=18436][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - [pid=18436][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=18436] <kill>\u001b[22m\n\u001b[2m  - [pid=18436] <will force kill>\u001b[22m\n\u001b[2m  - [pid=18436] taskkill stderr: Erreur�: le processus \"18436\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=18436] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=18436] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=18436] finished temporary directories cleanup\u001b[22m\n",
+                        "stack": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=18436\u001b[22m\n\u001b[2m  - [pid=18436][out]\u001b[22m\n\u001b[2m  - [pid=18436][err] Debugger listening on ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - [pid=18436][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - [pid=18436][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=18436] <kill>\u001b[22m\n\u001b[2m  - [pid=18436] <will force kill>\u001b[22m\n\u001b[2m  - [pid=18436] taskkill stderr: Erreur�: le processus \"18436\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=18436] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=18436] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=18436] finished temporary directories cleanup\u001b[22m\n\n    at launchElectronApp (E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js:32:10)\n    at E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\e2e\\app-launch.spec.js:10:19",
+                        "location": {
+                          "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                          "column": 10,
+                          "line": 32
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m..\\config\\electron-launch.js:32\n\n\u001b[0m \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m electron\u001b[33m.\u001b[39mlaunch(finalOptions)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m }\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m module\u001b[33m.\u001b[39mexports \u001b[33m=\u001b[39m { launchElectronApp }\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                            "column": 10,
+                            "line": 32
+                          },
+                          "message": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=18436\u001b[22m\n\u001b[2m  - [pid=18436][out]\u001b[22m\n\u001b[2m  - [pid=18436][err] Debugger listening on ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - [pid=18436][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96\u001b[22m\n\u001b[2m  - [pid=18436][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58553/5abdc919-aacb-4194-b267-c83e08e99e96 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=18436] <kill>\u001b[22m\n\u001b[2m  - [pid=18436] <will force kill>\u001b[22m\n\u001b[2m  - [pid=18436] taskkill stderr: Erreur�: le processus \"18436\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=18436] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=18436] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=18436] finished temporary directories cleanup\u001b[22m\n\n\n\u001b[90m   at \u001b[39m..\\config\\electron-launch.js:32\n\n\u001b[0m \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m electron\u001b[33m.\u001b[39mlaunch(finalOptions)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m }\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m module\u001b[33m.\u001b[39mexports \u001b[33m=\u001b[39m { launchElectronApp }\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at launchElectronApp (E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js:32:10)\u001b[22m\n\u001b[2m    at E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\e2e\\app-launch.spec.js:10:19\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🚀 Lancement d'Electron avec options: {\n  args: [ \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\main.js'\u001b[39m ],\n  env: {\n    ALLUSERSPROFILE: \u001b[32m'C:\\\\ProgramData'\u001b[39m,\n    ANDROID_ADB_SERVER_PORT: \u001b[32m'7035'\u001b[39m,\n    APPDATA: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming'\u001b[39m,\n    BROWSERSLIST_IGNORE_OLD_DATA: \u001b[32m'true'\u001b[39m,\n    ChocolateyInstall: \u001b[32m'C:\\\\ProgramData\\\\chocolatey'\u001b[39m,\n    COLOR: \u001b[32m'1'\u001b[39m,\n    CommonProgramFiles: \u001b[32m'C:\\\\Program Files\\\\Common Files'\u001b[39m,\n    \u001b[32m'CommonProgramFiles(x86)'\u001b[39m: \u001b[32m'C:\\\\Program Files (x86)\\\\Common Files'\u001b[39m,\n    CommonProgramW6432: \u001b[32m'C:\\\\Program Files\\\\Common Files'\u001b[39m,\n    COMPUTERNAME: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    ComSpec: \u001b[32m'C:\\\\WINDOWS\\\\system32\\\\cmd.exe'\u001b[39m,\n    DEBUG_COLORS: \u001b[32m'1'\u001b[39m,\n    DriverData: \u001b[32m'C:\\\\Windows\\\\System32\\\\Drivers\\\\DriverData'\u001b[39m,\n    EDITOR: \u001b[32m'C:\\\\WINDOWS\\\\notepad.exe'\u001b[39m,\n    ELECTRON_IS_TEST: \u001b[32m'true'\u001b[39m,\n    FORCE_COLOR: \u001b[32m'1'\u001b[39m,\n    FPS_BROWSER_APP_PROFILE_STRING: \u001b[32m'Internet Explorer'\u001b[39m,\n    FPS_BROWSER_USER_PROFILE_STRING: \u001b[32m'Default'\u001b[39m,\n    HOME: \u001b[32m'C:\\\\Users\\\\michel'\u001b[39m,\n    HOMEDRIVE: \u001b[32m'C:'\u001b[39m,\n    HOMEPATH: \u001b[32m'\\\\Users\\\\michel'\u001b[39m,\n    INIT_CWD: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc'\u001b[39m,\n    LOCALAPPDATA: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local'\u001b[39m,\n    LOGONSERVER: \u001b[32m'\\\\\\\\GIGABYTE-NOTEBO'\u001b[39m,\n    NODE: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\node.exe'\u001b[39m,\n    NODE_EXE: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\\\\\node.exe'\u001b[39m,\n    NPM_CLI_JS: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    npm_command: \u001b[32m'run'\u001b[39m,\n    npm_config_cache: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\npm-cache'\u001b[39m,\n    npm_config_globalconfig: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\etc\\\\npmrc'\u001b[39m,\n    npm_config_global_prefix: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm'\u001b[39m,\n    npm_config_init_module: \u001b[32m'C:\\\\Users\\\\michel\\\\.npm-init.js'\u001b[39m,\n    npm_config_local_prefix: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc'\u001b[39m,\n    npm_config_node_gyp: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\node_modules\\\\node-gyp\\\\bin\\\\node-gyp.js'\u001b[39m,\n    npm_config_noproxy: \u001b[32m''\u001b[39m,\n    npm_config_npm_version: \u001b[32m'11.6.2'\u001b[39m,\n    npm_config_prefix: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm'\u001b[39m,\n    npm_config_userconfig: \u001b[32m'C:\\\\Users\\\\michel\\\\.npmrc'\u001b[39m,\n    npm_config_user_agent: \u001b[32m'npm/11.6.2 node/v24.12.0 win32 x64 workspaces/false'\u001b[39m,\n    npm_execpath: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    npm_lifecycle_event: \u001b[32m'gui:e2e'\u001b[39m,\n    npm_lifecycle_script: \u001b[32m'playwright test --config=tests/playwright/config/playwright.config.js'\u001b[39m,\n    npm_node_execpath: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\node.exe'\u001b[39m,\n    npm_package_json: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\package.json'\u001b[39m,\n    npm_package_name: \u001b[32m'@aladas-org/cryptocalc'\u001b[39m,\n    npm_package_version: \u001b[32m'0.5.3'\u001b[39m,\n    NPM_PREFIX_JS: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\\\\\node_modules\\\\npm\\\\bin\\\\npm-prefix.js'\u001b[39m,\n    NPM_PREFIX_NPM_CLI_JS: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    NUMBER_OF_PROCESSORS: \u001b[32m'12'\u001b[39m,\n    OneDrive: \u001b[32m'C:\\\\Users\\\\michel\\\\OneDrive'\u001b[39m,\n    OneDriveConsumer: \u001b[32m'C:\\\\Users\\\\michel\\\\OneDrive'\u001b[39m,\n    OS: \u001b[32m'Windows_NT'\u001b[39m,\n    Path: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\_00_Lab\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\node_modules\\\\.bin;E:\\\\node_modules\\\\.bin;C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\node_modules\\\\@npmcli\\\\run-script\\\\lib\\\\node-gyp-bin;C:\\\\Program Files (x86)\\\\Common Files\\\\Oracle\\\\Java\\\\java8path;C:\\\\Program Files (x86)\\\\Common Files\\\\Oracle\\\\Java\\\\javapath;C:\\\\Python312\\\\Scripts\\\\;C:\\\\Python312\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\Scripts;C:\\\\WINDOWS\\\\system32;C:\\\\WINDOWS;C:\\\\WINDOWS\\\\System32\\\\Wbem;C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;C:\\\\WINDOWS\\\\System32\\\\OpenSSH\\\\;C:\\\\Program Files (x86)\\\\NVIDIA Corporation\\\\PhysX\\\\Common;C:\\\\ProgramData\\\\chocolatey\\\\bin;C:\\\\Program Files\\\\Microsoft SQL Server\\\\150\\\\Tools\\\\Binn\\\\;C:\\\\Program Files\\\\Certbot\\\\bin;C:\\\\Program Files\\\\Inkscape\\\\bin;C:\\\\Program Files\\\\dotnet\\\\;C:\\\\Program Files\\\\NVIDIA Corporation\\\\NVIDIA app\\\\NvDLISR;C:\\\\Program Files\\\\Oracle;C:\\\\Program Files\\\\PuTTY\\\\;C:\\\\Program Files\\\\nodejs\\\\;C:\\\\Users\\\\michel\\\\.cargo\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Scripts\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\activestate\\\\cache\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\ActiveState\\\\StateTool\\\\release\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\Scripts\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\bin;C:\\\\texlive\\\\2022\\\\bin\\\\win32;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\GitHubDesktop\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\usr\\\\bin;C:\\\\Users\\\\michel\\\\.dotnet\\\\tools;C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Ollama'\u001b[39m,\n    PATHEXT: \u001b[32m'.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW'\u001b[39m,\n    PLAYWRIGHT_TEST: \u001b[32m'1'\u001b[39m,\n    PROCESSOR_ARCHITECTURE: \u001b[32m'AMD64'\u001b[39m,\n    PROCESSOR_IDENTIFIER: \u001b[32m'Intel64 Family 6 Model 141 Stepping 1, GenuineIntel'\u001b[39m,\n    PROCESSOR_LEVEL: \u001b[32m'6'\u001b[39m,\n    PROCESSOR_REVISION: \u001b[32m'8d01'\u001b[39m,\n    ProgramData: \u001b[32m'C:\\\\ProgramData'\u001b[39m,\n    ProgramFiles: \u001b[32m'C:\\\\Program Files'\u001b[39m,\n    \u001b[32m'ProgramFiles(x86)'\u001b[39m: \u001b[32m'C:\\\\Program Files (x86)'\u001b[39m,\n    ProgramW6432: \u001b[32m'C:\\\\Program Files'\u001b[39m,\n    PROMPT: \u001b[32m'$P$G'\u001b[39m,\n    PSModulePath: \u001b[32m'C:\\\\Program Files\\\\WindowsPowerShell\\\\Modules;C:\\\\WINDOWS\\\\system32\\\\WindowsPowerShell\\\\v1.0\\\\Modules'\u001b[39m,\n    PUBLIC: \u001b[32m'C:\\\\Users\\\\Public'\u001b[39m,\n    SESSIONNAME: \u001b[32m'Console'\u001b[39m,\n    SystemDrive: \u001b[32m'C:'\u001b[39m,\n    SystemRoot: \u001b[32m'C:\\\\WINDOWS'\u001b[39m,\n    TEMP: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Temp'\u001b[39m,\n    TEST_MODE: \u001b[32m'e2e'\u001b[39m,\n    TEST_PARALLEL_INDEX: \u001b[32m'0'\u001b[39m,\n    TEST_WORKER_INDEX: \u001b[32m'0'\u001b[39m,\n    TMP: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Temp'\u001b[39m,\n    USERDOMAIN: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    USERDOMAIN_ROAMINGPROFILE: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    USERNAME: \u001b[32m'michel'\u001b[39m,\n    USERPROFILE: \u001b[32m'C:\\\\Users\\\\michel'\u001b[39m,\n    VBOX_MSI_INSTALL_PATH: \u001b[32m'C:\\\\Program Files\\\\Oracle\\\\VirtualBox\\\\'\u001b[39m,\n    windir: \u001b[32m'C:\\\\WINDOWS'\u001b[39m,\n    ZES_ENABLE_SYSMAN: \u001b[32m'1'\u001b[39m,\n    __PSLockDownPolicy: \u001b[32m'0'\u001b[39m,\n    NODE_ENV: \u001b[32m'test'\u001b[39m,\n    ELECTRON_ENABLE_LOGGING: \u001b[33mfalse\u001b[39m,\n    TEST_TYPE: \u001b[32m'e2e'\u001b[39m\n  },\n  timeout: \u001b[33m30000\u001b[39m,\n  executablePath: \u001b[90mundefined\u001b[39m\n}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-09T23:02:19.904Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\test-results\\app-launch-Lancement-de-l--0ecfa--se-lance-avec-le-bon-titre-electron\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                        "column": 10,
+                        "line": 32
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "00ee2e5726d8e192143d-98a8fdcb02e829dbc475",
+              "file": "app-launch.spec.js",
+              "line": 22,
+              "column": 3
+            },
+            {
+              "title": "La version de l'application est visible",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "electron",
+                  "projectName": "electron",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 2364,
+                      "error": {
+                        "message": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=16444\u001b[22m\n\u001b[2m  - [pid=16444][out]\u001b[22m\n\u001b[2m  - [pid=16444][err] Debugger listening on ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - [pid=16444][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - [pid=16444][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=16444] <kill>\u001b[22m\n\u001b[2m  - [pid=16444] <will force kill>\u001b[22m\n\u001b[2m  - [pid=16444] taskkill stderr: Erreur�: le processus \"16444\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=16444] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=16444] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=16444] finished temporary directories cleanup\u001b[22m\n",
+                        "stack": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=16444\u001b[22m\n\u001b[2m  - [pid=16444][out]\u001b[22m\n\u001b[2m  - [pid=16444][err] Debugger listening on ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - [pid=16444][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - [pid=16444][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=16444] <kill>\u001b[22m\n\u001b[2m  - [pid=16444] <will force kill>\u001b[22m\n\u001b[2m  - [pid=16444] taskkill stderr: Erreur�: le processus \"16444\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=16444] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=16444] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=16444] finished temporary directories cleanup\u001b[22m\n\n    at launchElectronApp (E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js:32:10)\n    at E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\e2e\\app-launch.spec.js:10:19",
+                        "location": {
+                          "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                          "column": 10,
+                          "line": 32
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m..\\config\\electron-launch.js:32\n\n\u001b[0m \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m electron\u001b[33m.\u001b[39mlaunch(finalOptions)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m }\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m module\u001b[33m.\u001b[39mexports \u001b[33m=\u001b[39m { launchElectronApp }\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                            "column": 10,
+                            "line": 32
+                          },
+                          "message": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=16444\u001b[22m\n\u001b[2m  - [pid=16444][out]\u001b[22m\n\u001b[2m  - [pid=16444][err] Debugger listening on ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - [pid=16444][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91\u001b[22m\n\u001b[2m  - [pid=16444][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58555/35813523-8e64-4bc7-8a1b-c56a86f52d91 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=16444] <kill>\u001b[22m\n\u001b[2m  - [pid=16444] <will force kill>\u001b[22m\n\u001b[2m  - [pid=16444] taskkill stderr: Erreur�: le processus \"16444\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=16444] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=16444] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=16444] finished temporary directories cleanup\u001b[22m\n\n\n\u001b[90m   at \u001b[39m..\\config\\electron-launch.js:32\n\n\u001b[0m \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m electron\u001b[33m.\u001b[39mlaunch(finalOptions)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m }\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m module\u001b[33m.\u001b[39mexports \u001b[33m=\u001b[39m { launchElectronApp }\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at launchElectronApp (E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js:32:10)\u001b[22m\n\u001b[2m    at E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\e2e\\app-launch.spec.js:10:19\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🚀 Lancement d'Electron avec options: {\n  args: [ \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\main.js'\u001b[39m ],\n  env: {\n    ALLUSERSPROFILE: \u001b[32m'C:\\\\ProgramData'\u001b[39m,\n    ANDROID_ADB_SERVER_PORT: \u001b[32m'7035'\u001b[39m,\n    APPDATA: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming'\u001b[39m,\n    BROWSERSLIST_IGNORE_OLD_DATA: \u001b[32m'true'\u001b[39m,\n    ChocolateyInstall: \u001b[32m'C:\\\\ProgramData\\\\chocolatey'\u001b[39m,\n    COLOR: \u001b[32m'1'\u001b[39m,\n    CommonProgramFiles: \u001b[32m'C:\\\\Program Files\\\\Common Files'\u001b[39m,\n    \u001b[32m'CommonProgramFiles(x86)'\u001b[39m: \u001b[32m'C:\\\\Program Files (x86)\\\\Common Files'\u001b[39m,\n    CommonProgramW6432: \u001b[32m'C:\\\\Program Files\\\\Common Files'\u001b[39m,\n    COMPUTERNAME: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    ComSpec: \u001b[32m'C:\\\\WINDOWS\\\\system32\\\\cmd.exe'\u001b[39m,\n    DEBUG_COLORS: \u001b[32m'1'\u001b[39m,\n    DriverData: \u001b[32m'C:\\\\Windows\\\\System32\\\\Drivers\\\\DriverData'\u001b[39m,\n    EDITOR: \u001b[32m'C:\\\\WINDOWS\\\\notepad.exe'\u001b[39m,\n    ELECTRON_IS_TEST: \u001b[32m'true'\u001b[39m,\n    FORCE_COLOR: \u001b[32m'1'\u001b[39m,\n    FPS_BROWSER_APP_PROFILE_STRING: \u001b[32m'Internet Explorer'\u001b[39m,\n    FPS_BROWSER_USER_PROFILE_STRING: \u001b[32m'Default'\u001b[39m,\n    HOME: \u001b[32m'C:\\\\Users\\\\michel'\u001b[39m,\n    HOMEDRIVE: \u001b[32m'C:'\u001b[39m,\n    HOMEPATH: \u001b[32m'\\\\Users\\\\michel'\u001b[39m,\n    INIT_CWD: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc'\u001b[39m,\n    LOCALAPPDATA: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local'\u001b[39m,\n    LOGONSERVER: \u001b[32m'\\\\\\\\GIGABYTE-NOTEBO'\u001b[39m,\n    NODE: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\node.exe'\u001b[39m,\n    NODE_EXE: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\\\\\node.exe'\u001b[39m,\n    NPM_CLI_JS: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    npm_command: \u001b[32m'run'\u001b[39m,\n    npm_config_cache: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\npm-cache'\u001b[39m,\n    npm_config_globalconfig: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\etc\\\\npmrc'\u001b[39m,\n    npm_config_global_prefix: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm'\u001b[39m,\n    npm_config_init_module: \u001b[32m'C:\\\\Users\\\\michel\\\\.npm-init.js'\u001b[39m,\n    npm_config_local_prefix: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc'\u001b[39m,\n    npm_config_node_gyp: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\node_modules\\\\node-gyp\\\\bin\\\\node-gyp.js'\u001b[39m,\n    npm_config_noproxy: \u001b[32m''\u001b[39m,\n    npm_config_npm_version: \u001b[32m'11.6.2'\u001b[39m,\n    npm_config_prefix: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm'\u001b[39m,\n    npm_config_userconfig: \u001b[32m'C:\\\\Users\\\\michel\\\\.npmrc'\u001b[39m,\n    npm_config_user_agent: \u001b[32m'npm/11.6.2 node/v24.12.0 win32 x64 workspaces/false'\u001b[39m,\n    npm_execpath: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    npm_lifecycle_event: \u001b[32m'gui:e2e'\u001b[39m,\n    npm_lifecycle_script: \u001b[32m'playwright test --config=tests/playwright/config/playwright.config.js'\u001b[39m,\n    npm_node_execpath: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\node.exe'\u001b[39m,\n    npm_package_json: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\package.json'\u001b[39m,\n    npm_package_name: \u001b[32m'@aladas-org/cryptocalc'\u001b[39m,\n    npm_package_version: \u001b[32m'0.5.3'\u001b[39m,\n    NPM_PREFIX_JS: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\\\\\node_modules\\\\npm\\\\bin\\\\npm-prefix.js'\u001b[39m,\n    NPM_PREFIX_NPM_CLI_JS: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    NUMBER_OF_PROCESSORS: \u001b[32m'12'\u001b[39m,\n    OneDrive: \u001b[32m'C:\\\\Users\\\\michel\\\\OneDrive'\u001b[39m,\n    OneDriveConsumer: \u001b[32m'C:\\\\Users\\\\michel\\\\OneDrive'\u001b[39m,\n    OS: \u001b[32m'Windows_NT'\u001b[39m,\n    Path: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\_00_Lab\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\node_modules\\\\.bin;E:\\\\node_modules\\\\.bin;C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\node_modules\\\\@npmcli\\\\run-script\\\\lib\\\\node-gyp-bin;C:\\\\Program Files (x86)\\\\Common Files\\\\Oracle\\\\Java\\\\java8path;C:\\\\Program Files (x86)\\\\Common Files\\\\Oracle\\\\Java\\\\javapath;C:\\\\Python312\\\\Scripts\\\\;C:\\\\Python312\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\Scripts;C:\\\\WINDOWS\\\\system32;C:\\\\WINDOWS;C:\\\\WINDOWS\\\\System32\\\\Wbem;C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;C:\\\\WINDOWS\\\\System32\\\\OpenSSH\\\\;C:\\\\Program Files (x86)\\\\NVIDIA Corporation\\\\PhysX\\\\Common;C:\\\\ProgramData\\\\chocolatey\\\\bin;C:\\\\Program Files\\\\Microsoft SQL Server\\\\150\\\\Tools\\\\Binn\\\\;C:\\\\Program Files\\\\Certbot\\\\bin;C:\\\\Program Files\\\\Inkscape\\\\bin;C:\\\\Program Files\\\\dotnet\\\\;C:\\\\Program Files\\\\NVIDIA Corporation\\\\NVIDIA app\\\\NvDLISR;C:\\\\Program Files\\\\Oracle;C:\\\\Program Files\\\\PuTTY\\\\;C:\\\\Program Files\\\\nodejs\\\\;C:\\\\Users\\\\michel\\\\.cargo\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Scripts\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\activestate\\\\cache\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\ActiveState\\\\StateTool\\\\release\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\Scripts\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\bin;C:\\\\texlive\\\\2022\\\\bin\\\\win32;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\GitHubDesktop\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\usr\\\\bin;C:\\\\Users\\\\michel\\\\.dotnet\\\\tools;C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Ollama'\u001b[39m,\n    PATHEXT: \u001b[32m'.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW'\u001b[39m,\n    PLAYWRIGHT_TEST: \u001b[32m'1'\u001b[39m,\n    PROCESSOR_ARCHITECTURE: \u001b[32m'AMD64'\u001b[39m,\n    PROCESSOR_IDENTIFIER: \u001b[32m'Intel64 Family 6 Model 141 Stepping 1, GenuineIntel'\u001b[39m,\n    PROCESSOR_LEVEL: \u001b[32m'6'\u001b[39m,\n    PROCESSOR_REVISION: \u001b[32m'8d01'\u001b[39m,\n    ProgramData: \u001b[32m'C:\\\\ProgramData'\u001b[39m,\n    ProgramFiles: \u001b[32m'C:\\\\Program Files'\u001b[39m,\n    \u001b[32m'ProgramFiles(x86)'\u001b[39m: \u001b[32m'C:\\\\Program Files (x86)'\u001b[39m,\n    ProgramW6432: \u001b[32m'C:\\\\Program Files'\u001b[39m,\n    PROMPT: \u001b[32m'$P$G'\u001b[39m,\n    PSModulePath: \u001b[32m'C:\\\\Program Files\\\\WindowsPowerShell\\\\Modules;C:\\\\WINDOWS\\\\system32\\\\WindowsPowerShell\\\\v1.0\\\\Modules'\u001b[39m,\n    PUBLIC: \u001b[32m'C:\\\\Users\\\\Public'\u001b[39m,\n    SESSIONNAME: \u001b[32m'Console'\u001b[39m,\n    SystemDrive: \u001b[32m'C:'\u001b[39m,\n    SystemRoot: \u001b[32m'C:\\\\WINDOWS'\u001b[39m,\n    TEMP: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Temp'\u001b[39m,\n    TEST_MODE: \u001b[32m'e2e'\u001b[39m,\n    TEST_PARALLEL_INDEX: \u001b[32m'0'\u001b[39m,\n    TEST_WORKER_INDEX: \u001b[32m'1'\u001b[39m,\n    TMP: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Temp'\u001b[39m,\n    USERDOMAIN: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    USERDOMAIN_ROAMINGPROFILE: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    USERNAME: \u001b[32m'michel'\u001b[39m,\n    USERPROFILE: \u001b[32m'C:\\\\Users\\\\michel'\u001b[39m,\n    VBOX_MSI_INSTALL_PATH: \u001b[32m'C:\\\\Program Files\\\\Oracle\\\\VirtualBox\\\\'\u001b[39m,\n    windir: \u001b[32m'C:\\\\WINDOWS'\u001b[39m,\n    ZES_ENABLE_SYSMAN: \u001b[32m'1'\u001b[39m,\n    __PSLockDownPolicy: \u001b[32m'0'\u001b[39m,\n    NODE_ENV: \u001b[32m'test'\u001b[39m,\n    ELECTRON_ENABLE_LOGGING: \u001b[33mfalse\u001b[39m,\n    TEST_TYPE: \u001b[32m'e2e'\u001b[39m\n  },\n  timeout: \u001b[33m30000\u001b[39m,\n  executablePath: \u001b[90mundefined\u001b[39m\n}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-09T23:02:38.419Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\test-results\\app-launch-Lancement-de-l--0cc03-e-l-application-est-visible-electron\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                        "column": 10,
+                        "line": 32
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "00ee2e5726d8e192143d-08ef123cb0977e84ffd1",
+              "file": "app-launch.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "Tous les menus principaux sont présents",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "electron",
+                  "projectName": "electron",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 4518,
+                      "error": {
+                        "message": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=23732\u001b[22m\n\u001b[2m  - [pid=23732][out]\u001b[22m\n\u001b[2m  - [pid=23732][err] Debugger listening on ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - [pid=23732][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - [pid=23732][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=23732] <kill>\u001b[22m\n\u001b[2m  - [pid=23732] <will force kill>\u001b[22m\n\u001b[2m  - [pid=23732] taskkill stderr: Erreur�: le processus \"23732\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=23732] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=23732] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=23732] finished temporary directories cleanup\u001b[22m\n",
+                        "stack": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=23732\u001b[22m\n\u001b[2m  - [pid=23732][out]\u001b[22m\n\u001b[2m  - [pid=23732][err] Debugger listening on ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - [pid=23732][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - [pid=23732][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=23732] <kill>\u001b[22m\n\u001b[2m  - [pid=23732] <will force kill>\u001b[22m\n\u001b[2m  - [pid=23732] taskkill stderr: Erreur�: le processus \"23732\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=23732] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=23732] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=23732] finished temporary directories cleanup\u001b[22m\n\n    at launchElectronApp (E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js:32:10)\n    at E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\e2e\\app-launch.spec.js:10:19",
+                        "location": {
+                          "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                          "column": 10,
+                          "line": 32
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m..\\config\\electron-launch.js:32\n\n\u001b[0m \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m electron\u001b[33m.\u001b[39mlaunch(finalOptions)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m }\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m module\u001b[33m.\u001b[39mexports \u001b[33m=\u001b[39m { launchElectronApp }\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                            "column": 10,
+                            "line": 32
+                          },
+                          "message": "Error: electron.launch: Process failed to launch!\nCall log:\n\u001b[2m  - <launching> \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\electron\\dist\\electron.exe\" \"-r\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\node_modules\\playwright-core\\lib\\server\\electron\\loader.js\" \"--inspect=0\" \"--remote-debugging-port=0\" \"E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\main.js\"\u001b[22m\n\u001b[2m  - <launched> pid=23732\u001b[22m\n\u001b[2m  - [pid=23732][out]\u001b[22m\n\u001b[2m  - [pid=23732][err] Debugger listening on ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - [pid=23732][err] For help, see: https://nodejs.org/en/docs/inspector\u001b[22m\n\u001b[2m  - <ws connecting> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - <ws connected> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0\u001b[22m\n\u001b[2m  - [pid=23732][err] Debugger attached.\u001b[22m\n\u001b[2m  - <ws disconnected> ws://127.0.0.1:58557/d4bfe812-de43-4cb1-90da-b805678bcff0 code=1006 reason=\u001b[22m\n\u001b[2m  - [pid=23732] <kill>\u001b[22m\n\u001b[2m  - [pid=23732] <will force kill>\u001b[22m\n\u001b[2m  - [pid=23732] taskkill stderr: Erreur�: le processus \"23732\" est introuvable.\u001b[22m\n\u001b[2m  - [pid=23732] <process did exit: exitCode=1, signal=null>\u001b[22m\n\u001b[2m  - [pid=23732] starting temporary directories cleanup\u001b[22m\n\u001b[2m  - [pid=23732] finished temporary directories cleanup\u001b[22m\n\n\n\u001b[90m   at \u001b[39m..\\config\\electron-launch.js:32\n\n\u001b[0m \u001b[90m 30 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 32 |\u001b[39m   \u001b[36mreturn\u001b[39m \u001b[36mawait\u001b[39m electron\u001b[33m.\u001b[39mlaunch(finalOptions)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 33 |\u001b[39m }\n \u001b[90m 34 |\u001b[39m\n \u001b[90m 35 |\u001b[39m module\u001b[33m.\u001b[39mexports \u001b[33m=\u001b[39m { launchElectronApp }\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at launchElectronApp (E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js:32:10)\u001b[22m\n\u001b[2m    at E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\e2e\\app-launch.spec.js:10:19\u001b[22m"
+                        }
+                      ],
+                      "stdout": [
+                        {
+                          "text": "🚀 Lancement d'Electron avec options: {\n  args: [ \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\main.js'\u001b[39m ],\n  env: {\n    ALLUSERSPROFILE: \u001b[32m'C:\\\\ProgramData'\u001b[39m,\n    ANDROID_ADB_SERVER_PORT: \u001b[32m'7035'\u001b[39m,\n    APPDATA: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming'\u001b[39m,\n    BROWSERSLIST_IGNORE_OLD_DATA: \u001b[32m'true'\u001b[39m,\n    ChocolateyInstall: \u001b[32m'C:\\\\ProgramData\\\\chocolatey'\u001b[39m,\n    COLOR: \u001b[32m'1'\u001b[39m,\n    CommonProgramFiles: \u001b[32m'C:\\\\Program Files\\\\Common Files'\u001b[39m,\n    \u001b[32m'CommonProgramFiles(x86)'\u001b[39m: \u001b[32m'C:\\\\Program Files (x86)\\\\Common Files'\u001b[39m,\n    CommonProgramW6432: \u001b[32m'C:\\\\Program Files\\\\Common Files'\u001b[39m,\n    COMPUTERNAME: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    ComSpec: \u001b[32m'C:\\\\WINDOWS\\\\system32\\\\cmd.exe'\u001b[39m,\n    DEBUG_COLORS: \u001b[32m'1'\u001b[39m,\n    DriverData: \u001b[32m'C:\\\\Windows\\\\System32\\\\Drivers\\\\DriverData'\u001b[39m,\n    EDITOR: \u001b[32m'C:\\\\WINDOWS\\\\notepad.exe'\u001b[39m,\n    ELECTRON_IS_TEST: \u001b[32m'true'\u001b[39m,\n    FORCE_COLOR: \u001b[32m'1'\u001b[39m,\n    FPS_BROWSER_APP_PROFILE_STRING: \u001b[32m'Internet Explorer'\u001b[39m,\n    FPS_BROWSER_USER_PROFILE_STRING: \u001b[32m'Default'\u001b[39m,\n    HOME: \u001b[32m'C:\\\\Users\\\\michel'\u001b[39m,\n    HOMEDRIVE: \u001b[32m'C:'\u001b[39m,\n    HOMEPATH: \u001b[32m'\\\\Users\\\\michel'\u001b[39m,\n    INIT_CWD: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc'\u001b[39m,\n    LOCALAPPDATA: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local'\u001b[39m,\n    LOGONSERVER: \u001b[32m'\\\\\\\\GIGABYTE-NOTEBO'\u001b[39m,\n    NODE: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\node.exe'\u001b[39m,\n    NODE_EXE: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\\\\\node.exe'\u001b[39m,\n    NPM_CLI_JS: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    npm_command: \u001b[32m'run'\u001b[39m,\n    npm_config_cache: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\npm-cache'\u001b[39m,\n    npm_config_globalconfig: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\etc\\\\npmrc'\u001b[39m,\n    npm_config_global_prefix: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm'\u001b[39m,\n    npm_config_init_module: \u001b[32m'C:\\\\Users\\\\michel\\\\.npm-init.js'\u001b[39m,\n    npm_config_local_prefix: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc'\u001b[39m,\n    npm_config_node_gyp: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\node_modules\\\\node-gyp\\\\bin\\\\node-gyp.js'\u001b[39m,\n    npm_config_noproxy: \u001b[32m''\u001b[39m,\n    npm_config_npm_version: \u001b[32m'11.6.2'\u001b[39m,\n    npm_config_prefix: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm'\u001b[39m,\n    npm_config_userconfig: \u001b[32m'C:\\\\Users\\\\michel\\\\.npmrc'\u001b[39m,\n    npm_config_user_agent: \u001b[32m'npm/11.6.2 node/v24.12.0 win32 x64 workspaces/false'\u001b[39m,\n    npm_execpath: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    npm_lifecycle_event: \u001b[32m'gui:e2e'\u001b[39m,\n    npm_lifecycle_script: \u001b[32m'playwright test --config=tests/playwright/config/playwright.config.js'\u001b[39m,\n    npm_node_execpath: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\node.exe'\u001b[39m,\n    npm_package_json: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\package.json'\u001b[39m,\n    npm_package_name: \u001b[32m'@aladas-org/cryptocalc'\u001b[39m,\n    npm_package_version: \u001b[32m'0.5.3'\u001b[39m,\n    NPM_PREFIX_JS: \u001b[32m'C:\\\\Program Files\\\\nodejs\\\\\\\\node_modules\\\\npm\\\\bin\\\\npm-prefix.js'\u001b[39m,\n    NPM_PREFIX_NPM_CLI_JS: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\bin\\\\npm-cli.js'\u001b[39m,\n    NUMBER_OF_PROCESSORS: \u001b[32m'12'\u001b[39m,\n    OneDrive: \u001b[32m'C:\\\\Users\\\\michel\\\\OneDrive'\u001b[39m,\n    OneDriveConsumer: \u001b[32m'C:\\\\Users\\\\michel\\\\OneDrive'\u001b[39m,\n    OS: \u001b[32m'Windows_NT'\u001b[39m,\n    Path: \u001b[32m'E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\Cryptocalc\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\_00_Lab\\\\_00_GitHub\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\_00_Lab\\\\node_modules\\\\.bin;E:\\\\_00_Michel\\\\node_modules\\\\.bin;E:\\\\node_modules\\\\.bin;C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm\\\\node_modules\\\\npm\\\\node_modules\\\\@npmcli\\\\run-script\\\\lib\\\\node-gyp-bin;C:\\\\Program Files (x86)\\\\Common Files\\\\Oracle\\\\Java\\\\java8path;C:\\\\Program Files (x86)\\\\Common Files\\\\Oracle\\\\Java\\\\javapath;C:\\\\Python312\\\\Scripts\\\\;C:\\\\Python312\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\Scripts;C:\\\\WINDOWS\\\\system32;C:\\\\WINDOWS;C:\\\\WINDOWS\\\\System32\\\\Wbem;C:\\\\WINDOWS\\\\System32\\\\WindowsPowerShell\\\\v1.0\\\\;C:\\\\WINDOWS\\\\System32\\\\OpenSSH\\\\;C:\\\\Program Files (x86)\\\\NVIDIA Corporation\\\\PhysX\\\\Common;C:\\\\ProgramData\\\\chocolatey\\\\bin;C:\\\\Program Files\\\\Microsoft SQL Server\\\\150\\\\Tools\\\\Binn\\\\;C:\\\\Program Files\\\\Certbot\\\\bin;C:\\\\Program Files\\\\Inkscape\\\\bin;C:\\\\Program Files\\\\dotnet\\\\;C:\\\\Program Files\\\\NVIDIA Corporation\\\\NVIDIA app\\\\NvDLISR;C:\\\\Program Files\\\\Oracle;C:\\\\Program Files\\\\PuTTY\\\\;C:\\\\Program Files\\\\nodejs\\\\;C:\\\\Users\\\\michel\\\\.cargo\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\Scripts\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python312\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\activestate\\\\cache\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\ActiveState\\\\StateTool\\\\release\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\Scripts\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python310\\\\;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Microsoft\\\\WindowsApps;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Microsoft VS Code\\\\bin;C:\\\\texlive\\\\2022\\\\bin\\\\win32;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\GitHubDesktop\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\cmd;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\mingw64\\\\bin;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Git\\\\usr\\\\bin;C:\\\\Users\\\\michel\\\\.dotnet\\\\tools;C:\\\\Users\\\\michel\\\\AppData\\\\Roaming\\\\npm;C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Programs\\\\Ollama'\u001b[39m,\n    PATHEXT: \u001b[32m'.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC;.PY;.PYW'\u001b[39m,\n    PLAYWRIGHT_TEST: \u001b[32m'1'\u001b[39m,\n    PROCESSOR_ARCHITECTURE: \u001b[32m'AMD64'\u001b[39m,\n    PROCESSOR_IDENTIFIER: \u001b[32m'Intel64 Family 6 Model 141 Stepping 1, GenuineIntel'\u001b[39m,\n    PROCESSOR_LEVEL: \u001b[32m'6'\u001b[39m,\n    PROCESSOR_REVISION: \u001b[32m'8d01'\u001b[39m,\n    ProgramData: \u001b[32m'C:\\\\ProgramData'\u001b[39m,\n    ProgramFiles: \u001b[32m'C:\\\\Program Files'\u001b[39m,\n    \u001b[32m'ProgramFiles(x86)'\u001b[39m: \u001b[32m'C:\\\\Program Files (x86)'\u001b[39m,\n    ProgramW6432: \u001b[32m'C:\\\\Program Files'\u001b[39m,\n    PROMPT: \u001b[32m'$P$G'\u001b[39m,\n    PSModulePath: \u001b[32m'C:\\\\Program Files\\\\WindowsPowerShell\\\\Modules;C:\\\\WINDOWS\\\\system32\\\\WindowsPowerShell\\\\v1.0\\\\Modules'\u001b[39m,\n    PUBLIC: \u001b[32m'C:\\\\Users\\\\Public'\u001b[39m,\n    SESSIONNAME: \u001b[32m'Console'\u001b[39m,\n    SystemDrive: \u001b[32m'C:'\u001b[39m,\n    SystemRoot: \u001b[32m'C:\\\\WINDOWS'\u001b[39m,\n    TEMP: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Temp'\u001b[39m,\n    TEST_MODE: \u001b[32m'e2e'\u001b[39m,\n    TEST_PARALLEL_INDEX: \u001b[32m'0'\u001b[39m,\n    TEST_WORKER_INDEX: \u001b[32m'2'\u001b[39m,\n    TMP: \u001b[32m'C:\\\\Users\\\\michel\\\\AppData\\\\Local\\\\Temp'\u001b[39m,\n    USERDOMAIN: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    USERDOMAIN_ROAMINGPROFILE: \u001b[32m'GIGABYTE-NOTEBO'\u001b[39m,\n    USERNAME: \u001b[32m'michel'\u001b[39m,\n    USERPROFILE: \u001b[32m'C:\\\\Users\\\\michel'\u001b[39m,\n    VBOX_MSI_INSTALL_PATH: \u001b[32m'C:\\\\Program Files\\\\Oracle\\\\VirtualBox\\\\'\u001b[39m,\n    windir: \u001b[32m'C:\\\\WINDOWS'\u001b[39m,\n    ZES_ENABLE_SYSMAN: \u001b[32m'1'\u001b[39m,\n    __PSLockDownPolicy: \u001b[32m'0'\u001b[39m,\n    NODE_ENV: \u001b[32m'test'\u001b[39m,\n    ELECTRON_ENABLE_LOGGING: \u001b[33mfalse\u001b[39m,\n    TEST_TYPE: \u001b[32m'e2e'\u001b[39m\n  },\n  timeout: \u001b[33m30000\u001b[39m,\n  executablePath: \u001b[90mundefined\u001b[39m\n}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-02-09T23:02:41.760Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "trace",
+                          "contentType": "application/zip",
+                          "path": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\test-results\\app-launch-Lancement-de-l--06601-us-principaux-sont-présents-electron\\trace.zip"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "E:\\_00_Michel\\_00_Lab\\_00_GitHub\\Cryptocalc\\tests\\playwright\\config\\electron-launch.js",
+                        "column": 10,
+                        "line": 32
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "00ee2e5726d8e192143d-aad4019f3087cdbc4978",
+              "file": "app-launch.spec.js",
+              "line": 32,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-02-09T23:02:18.882Z",
+    "duration": 27476.151,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}
