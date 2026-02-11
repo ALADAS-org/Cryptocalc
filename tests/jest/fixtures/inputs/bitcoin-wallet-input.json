@@ -1,0 +1,9 @@
+{
+  "description": "Example test fixture for Bitcoin wallet generation",
+  "coin": "bitcoin",
+  "network": "mainnet",
+  "entropy": "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+  "mnemonic": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+  "passphrase": "",
+  "expectedOutputFile": "bitcoin-wallet-expected.json"
+}

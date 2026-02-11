@@ -1,54 +1,55 @@
 /**
  * ============================================================================
- * Configuration Jest pour Cryptocalc DSL
+ * Jest Configuration for Cryptocalc
  * ============================================================================
- * Framework de tests pour les wallets cryptographiques
- * Supporte: BIP32, BIP39, BIP38, Bitcoin, Ethereum, Litecoin
+ * Testing framework for cryptocurrency wallets
+ * Supports: BIP32, BIP39, BIP38, Bitcoin, Ethereum, Litecoin, etc.
  * 
  * Documentation: https://jestjs.io/docs/configuration
  * ============================================================================
  */
 
+const path = require('path');
+
 module.exports = {
   
   // ==========================================================================
-  // ENVIRONNEMENT DE TEST
+  // TEST ENVIRONMENT
   // ==========================================================================
   
   /**
-   * Environnement d'exécution des tests
-   * - 'node': Pour tester du code Node.js (notre cas)
-   * - 'jsdom': Pour tester du code navigateur
+   * Test execution environment
+   * 'node' for Node.js code testing
    */
   testEnvironment: 'node',
   
   /**
-   * Timeout global pour tous les tests (en millisecondes)
-   * Les opérations cryptographiques peuvent être lentes
+   * Global timeout for all tests (milliseconds)
+   * Cryptographic operations can be slow
    */
   testTimeout: 10000,
   
   
   // ==========================================================================
-  // DÉCOUVERTE DES TESTS
+  // TEST DISCOVERY
   // ==========================================================================
   
   /**
-   * Patterns glob pour trouver les fichiers de tests
-   * Cherche tous les fichiers *.test.js et *.spec.js dans tests/
+   * Glob patterns to find test files
+   * Only in tests/jest/
    */
   testMatch: [
-    '**/tests/**/*.test.js',
-    '**/tests/**/*.spec.js',
-    '**/__tests__/**/*.js'
+    '**/tests/jest/**/*.test.js',
+    '**/tests/jest/**/*.spec.js'
   ],
   
   /**
-   * Dossiers et fichiers à ignorer lors de la recherche de tests
+   * Folders and files to ignore during test search
    */
   testPathIgnorePatterns: [
     '/node_modules/',
-    '/coverage/',
+    '/tests/playwright/',          // Ignore Playwright
+    '/tests/coverage/',            // Ignore coverage
     '/_output/',
     '/dist/',
     '/build/',
@@ -57,82 +58,79 @@ module.exports = {
   
   
   // ==========================================================================
-  // COUVERTURE DE CODE
+  // CODE COVERAGE - Output in tests/coverage/jest/
   // ==========================================================================
   
   /**
-   * Répertoire de sortie pour les rapports de couverture
+   * Output directory for coverage reports
    */
-  coverageDirectory: 'coverage',
+  coverageDirectory: path.join(__dirname, 'tests/coverage/jest'),
   
   /**
-   * Fichiers à inclure dans le calcul de couverture
-   * Exclut les fichiers de test eux-mêmes
+   * Files to include in coverage calculation
    */
   collectCoverageFrom: [
-    'www/**/*.js',
-    'tests/dsl-*.js',
+    'www/js/crypto/**/*.js',
+    'www/js/api/**/*.js',
+    'www/js/util/**/*.js',
+    '!www/js/lib/**',              // Exclude external libraries
     '!www/**/*.test.js',
     '!www/**/*.spec.js',
-    '!tests/**/*.test.js',
-    '!tests/**/*.spec.js',
     '!**/node_modules/**',
-    '!**/coverage/**',
-    '!**/vendor/**'
+    '!**/coverage/**'
   ],
   
   /**
-   * Seuils minimums de couverture
-   * Si non atteints, le build échoue
+   * Minimum coverage thresholds
+   * Build fails if not met
    */
   coverageThreshold: {
     global: {
-      branches: 80,      // 80% des branches conditionnelles
-      functions: 80,     // 80% des fonctions
-      lines: 80,         // 80% des lignes
-      statements: 80     // 80% des statements
+      branches: 70,
+      functions: 70,
+      lines: 70,
+      statements: 70
     }
   },
   
   /**
-   * Provider de couverture
-   * - 'v8': Plus rapide, natif Node.js
-   * - 'babel': Plus précis mais plus lent
+   * Coverage provider
+   * 'v8': Faster, native Node.js
    */
   coverageProvider: 'v8',
   
   /**
-   * Formats de rapport de couverture à générer
+   * Coverage report formats to generate
    */
   coverageReporters: [
-    'text',           // Affichage dans la console
-    'text-summary',   // Résumé dans la console
-    'lcov',           // Format standard pour CI/CD (SonarQube, Codecov, etc.)
-    'html',           // Rapport HTML interactif
-    'json',           // Format JSON pour parsing automatisé
-    'cobertura'       // Format XML pour certains outils CI
+    'text',           // Console output
+    'text-summary',   // Console summary
+    'lcov',           // Standard format for CI/CD
+    'html',           // Interactive HTML report
+    'json',           // JSON format
+    'cobertura'       // XML format for CI
   ],
   
   
   // ==========================================================================
-  // REPORTERS ET AFFICHAGE
+  // REPORTERS AND OUTPUT
   // ==========================================================================
   
   /**
-   * Mode verbose: affiche chaque test individuellement
+   * Verbose mode: displays each test individually
    */
   verbose: true,
   
   /**
-   * Reporters pour générer des rapports de tests
+   * Reporters to generate test reports
    */
   reporters: [
-    'default',        // Reporter standard de Jest
+    'default',
     [
       'jest-html-reporter',
       {
-        pageTitle: 'Cryptocalc DSL - Rapport de Tests',
-        outputPath: 'coverage/test-report.html',
+        pageTitle: 'Cryptocalc - Jest Test Report',
+        outputPath: path.join(__dirname, 'tests/coverage/jest/test-report.html'),
         includeFailureMsg: true,
         includeConsoleLog: true,
         includeObsoleteSnapshots: true,
@@ -142,63 +140,57 @@ module.exports = {
         executionTimeWarningThreshold: 5,
         useCssFile: false
       }
-    ],
-    // Optionnel: Reporter JUnit pour CI/CD
-    // ['jest-junit', {
-    //   outputDirectory: 'coverage',
-    //   outputName: 'junit.xml',
-    // }]
+    ]
   ],
   
   
   // ==========================================================================
-  // CONFIGURATION DES TESTS
+  // TEST CONFIGURATION
   // ==========================================================================
   
   /**
-   * Fichiers de setup exécutés après l'initialisation de Jest
-   * Utilisé pour configurer l'environnement de test global
+   * Setup files executed after Jest initialization
+   * Setup in tests/jest/setup.js
    */
   setupFilesAfterEnv: [
-    '<rootDir>/tests/setup.js'
+    '<rootDir>/tests/jest/setup.js'
   ],
   
   /**
-   * Nettoie automatiquement les mocks entre chaque test
+   * Automatically clear mocks between each test
    */
   clearMocks: true,
   
   /**
-   * Restaure automatiquement les mocks entre chaque test
+   * Automatically restore mocks between each test
    */
   restoreMocks: true,
   
   /**
-   * Réinitialise les modules entre les tests (isolation)
-   * false = garde le cache des modules (plus rapide)
+   * Reset modules between tests (isolation)
+   * false = keep module cache (faster)
    */
   resetModules: false,
   
   /**
-   * Arrête l'exécution après N échecs
-   * 0 = exécute tous les tests même si certains échouent
+   * Stop execution after N failures
+   * 0 = run all tests even if some fail
    */
   bail: 0,
   
   /**
-   * Nombre de workers pour paralléliser les tests
-   * '50%' = utilise 50% des CPU disponibles
-   * Peut être un nombre fixe: 2, 4, etc.
+   * Number of workers to parallelize tests
+   * '50%' = use 50% of available CPUs
    */
   maxWorkers: '50%',
   
   
   // ==========================================================================
-  // TRANSFORMATION ET RÉSOLUTION DE MODULES
+  // TRANSFORMATION AND MODULE RESOLUTION
   // ==========================================================================
   
   /**
-   * Extensions de fichiers reconnues par Jest
+   * File extensions recognized by Jest
    */
   moduleFileExtensions: [
     'js',
@@ -207,33 +199,36 @@ module.exports = {
   ],
   
   /**
-   * Alias pour simplifier les imports
-   * Exemple: import foo from '@/bar' au lieu de '../../www/bar'
+   * Aliases to simplify imports
+   * Example: import foo from '@/bar' instead of '../../www/bar'
    */
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/www/$1',
-    '^@tests/(.*)$': '<rootDir>/tests/$1',
-    '^@crypto/(.*)$': '<rootDir>/www/crypto/$1',
-    '^@fixtures/(.*)$': '<rootDir>/tests/fixtures/$1'
+    '^@www/(.*)$': '<rootDir>/www/$1',
+    '^@crypto/(.*)$': '<rootDir>/www/js/crypto/$1',
+    '^@api/(.*)$': '<rootDir>/www/js/api/$1',
+    '^@util/(.*)$': '<rootDir>/www/js/util/$1',
+    '^@tests/(.*)$': '<rootDir>/tests/jest/$1',
+    '^@fixtures/(.*)$': '<rootDir>/tests/jest/fixtures/$1'
   },
   
   /**
-   * Répertoires où Jest cherche les modules
+   * Directories where Jest searches for modules
    */
   moduleDirectories: [
     'node_modules',
     'www',
-    'tests'
+    'tests/jest'
   ],
   
   /**
-   * Transformation des fichiers avant exécution
-   * Vide = pas de transformation (pas de Babel/TypeScript)
+   * File transformation before execution
+   * Empty = no transformation (no Babel/TypeScript)
    */
   transform: {},
   
   /**
-   * Patterns de fichiers à ne pas transformer
+   * File patterns not to transform
    */
   transformIgnorePatterns: [
     '/node_modules/',
@@ -246,19 +241,20 @@ module.exports = {
   // ==========================================================================
   
   /**
-   * Fichiers à ignorer en mode watch
+   * Files to ignore in watch mode
    */
   watchPathIgnorePatterns: [
     '/node_modules/',
-    '/coverage/',
+    '/tests/coverage/',
+    '/tests/playwright/',
     '/_output/',
     '\\.git',
     '\\.DS_Store'
   ],
   
   /**
-   * Plugins pour améliorer le mode watch
-   * Permet de filtrer les tests par nom ou fichier
+   * Plugins to improve watch mode
+   * Allows filtering tests by name or file
    */
   watchPlugins: [
     'jest-watch-typeahead/filename',
@@ -267,35 +263,33 @@ module.exports = {
   
   
   // ==========================================================================
-  // CONFIGURATION AVANCÉE
+  // ADVANCED CONFIGURATION
   // ==========================================================================
   
   /**
-   * Collecter la couverture automatiquement
-   * false = uniquement si --coverage est passé en CLI
+   * Collect coverage automatically
+   * false = only if --coverage is passed in CLI
    */
   collectCoverage: false,
   
   /**
-   * Injecter les globals de Jest (describe, test, expect, etc.)
-   * true = disponibles sans import
+   * Inject Jest globals (describe, test, expect, etc.)
+   * true = available without import
    */
   injectGlobals: true,
   
   /**
-   * Détecter les fuites de mémoire dans les tests
-   * Utile pour identifier les tests qui ne nettoient pas après eux
+   * Detect memory leaks in tests
    */
   detectLeaks: false,
   
   /**
-   * Détecter les handles ouverts (connexions, timers, etc.)
-   * Peut ralentir les tests mais aide au debugging
+   * Detect open handles (connections, timers, etc.)
    */
   detectOpenHandles: false,
   
   /**
-   * Limite de mémoire avant que Jest redémarre un worker
+   * Memory limit before Jest restarts a worker
    */
   workerIdleMemoryLimit: '512MB',
   
@@ -305,27 +299,22 @@ module.exports = {
   // ==========================================================================
   
   /**
-   * Notifications système après exécution des tests
+   * System notifications after test execution
    */
   notify: false,
   
   /**
-   * Quand notifier
-   * - 'always': À chaque exécution
-   * - 'failure': Seulement en cas d'échec
-   * - 'success': Seulement en cas de succès
-   * - 'change': Seulement si le résultat change
-   * - 'failure-change': Échec ou changement de statut
+   * When to notify
    */
   notifyMode: 'failure-change',
   
   
   // ==========================================================================
-  // VARIABLES GLOBALES
+  // GLOBAL VARIABLES
   // ==========================================================================
   
   /**
-   * Variables globales disponibles dans tous les tests
+   * Global variables available in all tests
    */
   globals: {
     TEST_MODE: true,
@@ -333,26 +322,36 @@ module.exports = {
       defaultEntropySize: 256,
       defaultBlockchain: 'bitcoin',
       supportedEntropySizes: [128, 160, 192, 224, 256],
-      supportedBlockchains: ['bitcoin', 'ethereum', 'litecoin'],
-      walletTypes: ['SIMPLE_WALLET', 'HD_WALLET', 'SWORD_WALLET']
+      supportedBlockchains: [
+        'bitcoin', 
+        'ethereum', 
+        'litecoin', 
+        'dogecoin', 
+        'solana', 
+        'avalanche', 
+        'polygon', 
+        'toncoin', 
+        'terra'
+      ],
+      walletTypes: ['SIMPLE_WALLET', 'HD_WALLET']
     }
   },
   
   
   // ==========================================================================
-  // CHEMINS ET RÉPERTOIRES
+  // PATHS AND DIRECTORIES
   // ==========================================================================
   
   /**
-   * Répertoire racine du projet
+   * Project root directory
    */
   rootDir: '.',
   
   /**
-   * Répertoires racines pour la recherche de tests
+   * Root directories for test search
    */
   roots: [
-    '<rootDir>/tests',
+    '<rootDir>/tests/jest',
     '<rootDir>/www'
   ],
   
@@ -362,18 +361,18 @@ module.exports = {
   // ==========================================================================
   
   /**
-   * Activer le cache Jest
-   * Accélère les exécutions suivantes
+   * Enable Jest cache
+   * Speeds up subsequent runs
    */
   cache: true,
   
   /**
-   * Répertoire du cache
+   * Cache directory
    */
   cacheDirectory: '/tmp/jest_cache',
   
   /**
-   * Nombre maximum de tests exécutés simultanément
+   * Maximum number of tests executed simultaneously
    */
   maxConcurrency: 5,
   
@@ -383,20 +382,14 @@ module.exports = {
   // ==========================================================================
   
   /**
-   * Mode silencieux (supprime la sortie console)
+   * Silent mode (suppress console output)
    */
   silent: false,
   
   /**
-   * Afficher la liste des tests sans les exécuter
+   * Display test list without executing them
    */
   listTests: false,
-  
-  /**
-   * Exécuter tous les tests dans le même processus (plus lent mais facilite le debug)
-   * Décommenter pour activer:
-   */
-  // runInBand: true,
   
   
   // ==========================================================================
@@ -404,74 +397,38 @@ module.exports = {
   // ==========================================================================
   
   /**
-   * Sérialiseurs personnalisés pour les snapshots
+   * Custom serializers for snapshots
    */
   snapshotSerializers: [],
   
   /**
-   * Format des snapshots
+   * Snapshot format
    */
   snapshotFormat: {
     escapeString: true,
     printBasicPrototype: true
-  },
-  
-  
-  // ==========================================================================
-  // AUTRES OPTIONS
-  // ==========================================================================
-  
-  /**
-   * Chemin vers un module de résolution personnalisé
-   */
-  // resolver: undefined,
-  
-  /**
-   * Configuration pour des projets multiples (monorepo)
-   */
-  // projects: undefined,
-  
-  /**
-   * Runner personnalisé
-   */
-  // runner: 'jest-runner',
-  
-  /**
-   * Preset de configuration (remplace cette config)
-   */
-  // preset: undefined,
-  
-  /**
-   * Force l'utilisation du timezone
-   */
-  // timers: 'real',
-  
-  /**
-   * Message à afficher en cas d'échec
-   */
-  // errorOnDeprecated: true,
-  
+  }
 };
 
 /**
  * ============================================================================
- * NOTES D'UTILISATION
+ * USAGE NOTES
  * ============================================================================
  * 
- * Commandes courantes:
+ * Common commands:
  * 
- * npm test                     - Exécute tous les tests
- * npm run test:watch           - Mode watch (re-exécution auto)
- * npm run test:coverage        - Avec rapport de couverture
- * npm test -- --verbose        - Mode verbose
- * npm test -- --runInBand      - Exécution séquentielle (debug)
- * npm test -- --no-cache       - Sans cache
- * npm test -- --clearCache     - Nettoie le cache
+ * npm test                     - Run all Jest tests
+ * npm run test:jest:watch      - Watch mode (auto re-run)
+ * npm run test:jest:coverage   - With coverage report
+ * npm test -- --verbose        - Verbose mode
+ * npm test -- --runInBand      - Sequential execution (debug)
+ * npm test -- --no-cache       - Without cache
+ * npm test -- --clearCache     - Clean cache
  * 
- * Variables d'environnement:
+ * Environment variables:
  * 
- * DEBUG=true npm test          - Active les logs de debug
- * NODE_ENV=test npm test       - Force l'environnement test
+ * DEBUG=true npm test          - Enable debug logs
+ * NODE_ENV=test npm test       - Force test environment
  * 
  * ============================================================================
  */

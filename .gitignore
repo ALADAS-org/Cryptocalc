@@ -3,8 +3,18 @@ _output/*/
 releases/**
 
 # Playwright
-/test-results/
-/playwright-report/
+/playwright/playwright-report/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Test outputs
+/tests/coverage/
+/tests/jest/coverage/
+/tests/playwright/playwright-report/
+/tests/playwright/test-results/
+/tests/playwright/test-results-*/
+
+# Logs
+*.log
+npm-debug.log*
