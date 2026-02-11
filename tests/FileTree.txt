@@ -1,0 +1,23 @@
+tests/
+├── jest/                          # Tests unitaires et intégration
+│   ├── setup.js                   # Configuration Jest
+│   ├── unit/                      # Tests unitaires
+│   │   ├── crypto/                # Tests fonctions crypto
+│   │   ├── wallet/                # Tests wallets
+│   │   └── utils/                 # Tests utilitaires
+│   ├── integration/               # Tests d'intégration
+│   │   └── api/                   # Tests API
+│   └── fixtures/                  # Données de test
+│       ├── inputs/                # Entrées de test
+│       └── expected/              # Sorties attendues
+│
+├── playwright/                    # Tests E2E GUI
+│   ├── setup.js                   # Configuration Playwright
+│   ├── playwright.config.js       # Config Playwright
+│   ├── e2e/                       # Tests E2E
+│   ├── pages/                     # Page Objects
+│   └── fixtures/                  # Fixtures Playwright
+│
+└── coverage/                      # Rapports de couverture
+    ├── jest/                      # Coverage Jest (généré)
+    └── playwright/                # Coverage Playwright (généré)

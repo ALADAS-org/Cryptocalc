@@ -2,38 +2,55 @@ const { defineConfig } = require('@playwright/test');
 const path = require('path');
 
 module.exports = defineConfig({
-  // Dossier des tests
+  
+  // Tests dans tests/playwright/e2e/
   testDir: './e2e',
   
-  // Timeouts
-  timeout: 30 * 1000,
-  expect: { timeout: 5000 },
+  // Sorties dans tests/playwright/
+  outputDir: path.join(__dirname, 'test-results'),
   
-  // Exécution en parallèle
-  fullyParallel: true,
-  workers: 1, // Peut être augmenté si vos tests sont indépendants
-  
-  // Rapport
+  // Rapports dans tests/playwright/playwright-report/
   reporter: [
-    ['list'], // Sortie console
-    ['html', { outputFolder: '../playwright-report', open: 'never' }]
+    ['html', { 
+      outputFolder: path.join(__dirname, 'playwright-report'),
+      open: 'never' 
+    }],
+    ['list'],
+    ['json', { 
+      outputFile: path.join(__dirname, 'playwright-report/results.json') 
+    }]
   ],
   
-  // Configuration partagée (ne pas utiliser pour Electron)
   use: {
-    // Vide - on utilisera electron.launch() directement
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'retain-on-failure',
+    
+    // Dossier pour les traces
+    actionTimeout: 10000,
+    navigationTimeout: 30000
   },
   
-  // Définir un projet Electron
-  projects: [
-    {
-      name: 'electron',
-      metadata: {
-        description: 'Tests E2E pour application Electron'
-      }
-    }
-  ],
+  timeout: 30000,
   
-  // Output directory pour les artefacts
-  outputDir: '../test-results/',
+  expect: {
+    timeout: 5000
+  },
+  
+  // Important pour Electron - pas de parallélisation
+  workers: 1,
+  fullyParallel: false,
+  
+  // Retry sur échec
+  retries: 2,
+  
+  // Configuration globale
+  globalSetup: require.resolve('./setup.js'),
+  
+  // Metadata
+  metadata: {
+    project: 'Cryptocalc',
+    testType: 'E2E GUI Tests',
+    framework: 'Playwright + Electron'
+  }
 });

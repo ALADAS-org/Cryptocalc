@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -13,29 +13,19 @@
     "build": "electron-packager . app --platform win32 --arch x64 --out dist/",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
 	
-    "api:start": "echo \"🚀 Démarrage de l'API...\" && node \"%cd%/www/js/api/api_start.js\"",
-    "api:stop": "echo Arrêt API... && taskkill /F /IM node.exe >nul 2>&1 && echo OK",
-    "api:unit:smoke": "node tests/api/runners/smoke-test.js",
-    "api:smoke": "start cmd /k \"npm run api:start\" && timeout 5 && npm run api:unit:smoke && npm run api:stop",
-    "api:unit:simple": "node tests/api/runners/test-simple-wallet.js",
-    "api:simple": "start cmd /k \"npm run api:start\" && timeout 5 && npm run api:unit:simple && npm run api:stop",
-    "api:unit:allsimple": "node tests/api/runners/test-simple-multi-coins.js",
-    "api:allsimple": "start cmd /k \"npm run api:start\" && timeout 5 && npm run api:unit:allsimple && npm run api:stop",
-    "api:unit:allhd": "node tests/api/runners/test-hd-multi-coins.js",
-    "api:allhd": "start cmd /k \"npm run api:start\" && timeout 5 && npm run api:unit:allhd && npm run api:stop",
-    "api:unit:diagnostic": "node tests/api/runners/diagnostic.js",
-    "api:diagnostic": "start cmd /k \"npm run api:start\" && timeout 5 && npm run api:unit:diagnostic && npm run api:stop",
-    "api:unit:alltests": "node tests/api/runners/verify.js",
-    "api:alltests": "start cmd /k \"npm run api:start\" && timeout 5 && npm run api:unit:allsimple && npm run api:unit:allhd && npm run api:stop",
-    "gui:e2e": "playwright test --config=tests/playwright/config/playwright.config.js",
-    "gui:e2e:ui": "playwright test --ui --config=tests/playwright/config/playwright.config.js",
-    "gui:e2e:debug": "PWDEBUG=1 playwright test --config=tests/playwright/config/playwright.config.js",
-    "gui:e2e:headed": "HEADED=1 playwright test --config=tests/playwright/config/playwright.config.js",
-    "gui:e2e:single": "playwright test --config=tests/playwright/config/playwright.config.js --grep",
-    "gui:e2e:report": "playwright show-report tests/playwright-report",
-    "gui:install": "npm install --save-dev playwright-core",
-    "gui:clean": "rm -rf tests/playwright-report tests/playwright/test-results tests/playwright/reports",
-    "test:all": "npm run unit:allsimple && npm run test:integration && npm run gui:e2e"
+    "test": "jest",
+    "test:jest": "jest --config=jest.config.js",
+    "test:jest:watch": "jest --watch",
+    "test:jest:coverage": "jest --coverage",
+    
+    "test:playwright": "playwright test --config=tests/playwright/playwright.config.js",
+    "test:playwright:ui": "playwright test --ui --config=tests/playwright/playwright.config.js",
+    "test:playwright:debug": "PWDEBUG=1 playwright test --config=tests/playwright/playwright.config.js",
+    "test:playwright:report": "playwright show-report tests/playwright/playwright-report",
+    
+    "test:all": "npm run test:jest && npm run test:playwright",
+    
+    "test:clean": "rimraf coverage tests/playwright/playwright-report tests/playwright/test-results"
   },
   "repository": {
     "type": "git",

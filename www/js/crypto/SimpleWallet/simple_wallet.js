@@ -50,8 +50,7 @@ const { pretty_func_header_log,
 const { COIN,	    
 		BITCOIN, ETHEREUM, DOGECOIN, LITECOIN, 
 		SOLANA, AVALANCHE, POLYGON, TON, TERRA_LUNA, HORIZEN,
-		COIN_ABBREVIATIONS,
-		BLOCKCHAIN
+		COIN_ABBREVIATIONS		
       }                    = require('../const_blockchains.js');
 	  
 const { NULL_HEX, CRYPTO_NET, 
@@ -59,7 +58,7 @@ const { NULL_HEX, CRYPTO_NET,
 		PUBLIC_KEY_HEX
 	  }                    = require('../const_wallet.js');
 	  
-const { NULL_BLOCKCHAIN, 
+const { BLOCKCHAIN, NULL_BLOCKCHAIN, 
         WALLET_MODE, 
         SIMPLE_WALLET_TYPE,
         UUID, MNEMONICS
