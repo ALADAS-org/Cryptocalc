@@ -98,26 +98,26 @@ const btcToZec = (btcAddress) => {
  */
 const btc_addr_to_t_zcash_addr = ( btc_addr_str ) => {
     if ( ! btc_addr_str[0] == '1' ) throw new Error("not a supported Bitcoin address");
-	console.log("> btc_addr_to_t_zcash_addr:   btc_addr_str: " + btc_addr_str);
+	pretty_log("> btc_addr_to_t_zcash_addr:   btc_addr_str: " , btc_addr_str);
     //let btc_addr = bs58check.decode(btc_addr_str).slice(1);  // discard type byte
 	let btc_addr = bs58.decode(btc_addr_str); // discard type byte
-	console.log("> btc_addr_to_t_zcash_addr:   A btc_addr: JSON " + JSON.stringify(btc_addr));
+	pretty_log("> btc_addr_to_t_zcash_addr:   A btc_addr: JSON " ,JSON.stringify(btc_addr));
 	
 	btc_addr = btc_addr.slice(1); // discard type byte
-	console.log("> btc_addr_to_t_zcash_addr:   B btc_addr: JSON " + JSON.stringify(btc_addr));
+	pretty_log("> btc_addr_to_t_zcash_addr:   B btc_addr: JSON " , JSON.stringify(btc_addr));
 	
 	// btc_addr = btc_addr.slice(2); // discard 2 bytes
 	btc_addr = btc_addr.slice(2,22); // discard 2 bytes
-	console.log("> btc_addr_to_t_zcash_addr:   C btc_addr: JSON " + JSON.stringify(btc_addr));
+	pretty_log("> btc_addr_to_t_zcash_addr:   C btc_addr: JSON " , JSON.stringify(btc_addr));
 	
     let zcash_t_addr = new Uint8Array(22);
-	console.log("> btc_addr_to_t_zcash_addr:   1  zcash_t_addr: " + JSON.stringify(zcash_t_addr));	
+	pretty_log("> btc_addr_to_t_zcash_addr:   1  zcash_t_addr: " , JSON.stringify(zcash_t_addr));	
 		
     // zcash_t_addr.set(btc_addr, 2);
 	zcash_t_addr.set(btc_addr,2);
-	console.log("> btc_addr_to_t_zcash_addr:   2  zcash_t_addr: " + JSON.stringify(zcash_t_addr));
+	pretty_log("> btc_addr_to_t_zcash_addr:   2  zcash_t_addr: " , JSON.stringify(zcash_t_addr));
     zcash_t_addr.set([0x1c,0xb8], 0);  // set zcash type bytes
-	console.log("> btc_addr_to_t_zcash_addr:   3  zcash_t_addr: " + JSON.stringify(zcash_t_addr));
+	pretty_log("> btc_addr_to_t_zcash_addr:   3  zcash_t_addr: " , JSON.stringify(zcash_t_addr));
 	
     return bs58.encode(Buffer.from(zcash_t_addr));
 }; // btc_addr_to_t_zcash_addr (BTC to ZCASH address)
@@ -134,10 +134,11 @@ class HDWallet {
 		} 
 		
 		// let options = { [BLOCKCHAIN]: blockchain, [CRYPTO_NET]: crypto_net, [BIP32_PASSPHRASE]: bip32_passphrase, [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
-		let crypto_net     = ( args[CRYPTO_NET] != undefined )     ? args[CRYPTO_NET]           : MAINNET;
-		let blockchain     = ( args[BLOCKCHAIN] != undefined )     ? args[BLOCKCHAIN]           : BITCOIN;
+		let crypto_net       = ( args[CRYPTO_NET] != undefined )       ? args[CRYPTO_NET]       : MAINNET;
 		
-		let bip32_protocol = ( args[BIP32_PROTOCOL] != undefined ) ? args[BIP32_PROTOCOL]       : 44;		
+		let blockchain       = ( args[BLOCKCHAIN] != undefined )       ? args[BLOCKCHAIN]       : BITCOIN;
+		
+		let bip32_protocol   = ( args[BIP32_PROTOCOL] != undefined )   ? args[BIP32_PROTOCOL]   : 44;		
 		
 		let bip32_passphrase = ( args[BIP32_PASSPHRASE] != undefined ) ? args[BIP32_PASSPHRASE] : "";
 		
@@ -175,6 +176,8 @@ class HDWallet {
 		new_wallet[WALLET_MODE] = HD_WALLET_TYPE;
 		new_wallet[BLOCKCHAIN]  = blockchain;
 		new_wallet[MNEMONICS]   = mnemonics;
+		
+		new_wallet[CRYPTO_NET]  = crypto_net;
 				
 		if (   blockchain == BITCOIN   || blockchain == ETHEREUM || blockchain == BINANCE_BSC
 			|| blockchain == AVALANCHE || blockchain == POLYGON	
@@ -192,7 +195,15 @@ class HDWallet {
 			//	 options[BLOCKCHAIN] = BITCOIN;
 			//	 blockchain_was_ZCASH = true;
 			// }	
+			
+			// Trap "console.warn"
+			let save_console_warn = console.warn;
+			console.warn = () => {};
+
 			let hdwallet_info = await Bip32Utils.MnemonicsToHDWalletInfo( mnemonics, options );	
+			
+			console.warn = save_console_warn;
+						
             //console.log("   >> hdwallet_info:\n" + JSON.stringify(hdwallet_info));	
 
             new_wallet[ADDRESS] = hdwallet_info[ADDRESS]; 
