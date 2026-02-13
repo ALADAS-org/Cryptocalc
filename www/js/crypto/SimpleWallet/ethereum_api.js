@@ -42,6 +42,9 @@ const { Base64 }      = require('js-base64');
 
 const { _RED_, _CYAN_, _PURPLE_, 
         _YELLOW_, _END_ }             = require('../../util/color/color_console_codes.js');
+		
+const { pretty_func_header_log,
+        pretty_log }                  = require('../../util/log/log_utils.js');
 
 const { NULL_COIN, 
         ETHEREUM, 
@@ -55,8 +58,8 @@ const { NULL_HEX, NULL_NET, NULL_UUID,
 		
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         UUID, MNEMONICS, WORD_COUNT 
-      }                               = require('../../const_keywords.js'); 
-		
+      }                               = require('../../const_keywords.js');
+
 const { stringify }                   = require('../../util/values/string_utils.js');	 
 const { hexWithPrefix, hexWithoutPrefix,
         hexToBytes, hexToUint8Array } = require('../hex_utils.js'); 
@@ -65,16 +68,17 @@ const { Bip39Utils }                  = require('../bip39_utils.js');
 
 class Ethereum_API {
     static GetWallet( private_key, salt_uuid, blockchain, crypto_net ) {
-		console.log(">> " + _CYAN_ + "Ethereum_API.GetWallet " + _END_ + crypto_net);
+		pretty_log( ">> Ethereum_API.GetWallet", crypto_net );
 		if ( crypto_net == undefined ) {
 			crypto_net = MAINNET;
 		}
-		console.log("   private_key: " + private_key);
+
+		pretty_log( ">> Ethereum_API.GetWallet  private_key", private_key );
 			
 		let new_wallet = Ethereum_API.InitializeWallet();
 			
 		if ( private_key == undefined ) {
-			console.log(">> BlockchainWallet.GetWallet  **ERROR** private_key: " + seed_SHA256_hex);			
+            pretty_log( ">> BlockchainWallet.GetWallet  **ERROR** private_key", seed_SHA256_hex );			
 			return new_wallet;
 		}
 
@@ -108,22 +112,23 @@ class Ethereum_API {
 		    let wallet = web3_sepolia.eth.accounts.wallet.add( hexWithPrefix( private_key ) );
 
 		    //this is how we can access to the first account of the wallet
-		    console.log('Sepolia (ETH testnet):');
+			pretty_log( ">> Sepolia (ETH testnet):", "" );
 			
 			ETH_address = wallet[0].address;
-		    console.log(">> ETH_address:\n"     + ETH_address);
+			pretty_log( ">> ETH_address:", ETH_address );
 			
 			ETH_private_key = wallet[0].privateKey;
-		    console.log(">> ETH_private_key:\n" + ETH_private_key);
+			pretty_log( ">> ETH_private_key:", ETH_private_key );
 			
 			//---------- get ETH wallet public key ----------
 			// https://ethereum.stackexchange.com/questions/12571/getting-an-address-from-ethereumjs-utils-ecrecover
 			// NB: This is 'public key' for "ETH Mainnet" but indeed should be the same in Sepolia
 			const private_key_buffer  = EthUtil.toBuffer( hexWithPrefix( private_key ) );
 			let ETH_wallet    = Wallet.fromPrivateKey(private_key_buffer);
-			console.log(">> Wallet address:\n"     + ETH_wallet.getAddressString());
+			pretty_log( ">> Wallet address:", ETH_wallet.getAddressString() );
+			
 		    ETH_public_key = ETH_wallet.getPublicKeyString();
-			console.log(">> ETH_public_key:\n"  + ETH_public_key);
+			pretty_log( ">> ETH_public_key:", ETH_public_key );
 			//---------- get ETH wallet public key
 		}
 		else {
@@ -141,7 +146,7 @@ class Ethereum_API {
 			ETH_public_key   = eth_wallet.getPublicKeyString();			
         }
 
-        console.log(  ">> " + _CYAN_ + "ETH " + _END_ + "Private Key:\n   " + ETH_private_key);	
+		pretty_log( ">> Private Key:", ETH_private_key );
 		
 		//console.log(">> Ethereum Address: " + stringify(eth_wallet.getAddressString()));
 		
@@ -196,9 +201,9 @@ class Ethereum_API {
 		let wallet = web3_sepolia.eth.accounts.wallet.add(seed_hex);
 
 		// this is how we can access to the first account of the wallet
-		console.log('Sepolia (Eth testnet):');
-		console.log("wallet[0].address:\n"    + wallet[0].address);
-		console.log("wallet[0].privateKey:\n" + wallet[0].privateKey);
+		pretty_log( "Sepolia (Eth testnet):", "" );
+		pretty_log( "wallet[0].address:", wallet[0].address );
+		pretty_log( "wallet[0].privateKey:", wallet[0].privateKey );
 	} // Ethereum_API.GetSepoliaWallet()	
 	
 	static async GetWalletWithKeyStore(seed_SHA256_hex) {
@@ -208,13 +213,17 @@ class Ethereum_API {
 		const privateKeyBuffer = EthUtil.toBuffer(seed_hex);
 		const wallet = Wallet.fromPrivateKey(privateKeyBuffer);
 		const publicKey = wallet.getPublicKeyString();
-		console.log(publicKey);
+		
+		pretty_log( "", publicKey );
+		
 		const address = wallet.getAddressString();
-		console.log(address);
+		pretty_log( "", address );
+		
 		const keystoreFilename = wallet.getV3Filename();
-		console.log(keystoreFilename);
+		pretty_log( "", keystoreFilename );
+		
 		const keystore = await wallet.toV3("");
-		console.log(keystore);
+		pretty_log( "", keystore );
 		
 		let	filename = "keystore.json";
 		//console.log("> frieze_text: \n" + frieze_text);

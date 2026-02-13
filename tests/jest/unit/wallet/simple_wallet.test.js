@@ -7,6 +7,9 @@
  * ============================================================================
  */
 
+// Import PrettyLog and log mode constant to disable console.log from production code
+const { PrettyLog, UNIT_TESTS_LOG_MODE } = require('@util/log/log_utils.js');
+
 // Import required modules
 const { SimpleWallet } = require('@crypto/SimpleWallet/simple_wallet.js');
 const { CryptoServices } = require('@crypto/crypto_services.js');
@@ -30,10 +33,6 @@ const {
   MNEMONICS, UUID
 } = require('@www/js/const_keywords.js');
 
-// Debug: verify constants are loaded
-console.log('DEBUG - BLOCKCHAIN constant:', BLOCKCHAIN);
-console.log('DEBUG - NULL_BLOCKCHAIN constant:', NULL_BLOCKCHAIN);
-
 describe('Simple Wallet Generation', () => {
   
   // Test entropy and UUID
@@ -41,15 +40,15 @@ describe('Simple Wallet Generation', () => {
   let testUuid;
   
   beforeAll(() => {
+    // Disable console.log from pretty_log() calls in production code
+    PrettyLog.This.logMode = UNIT_TESTS_LOG_MODE;
+    
     // Use deterministic test entropy
     testEntropy = CRYPTO_CONFIG.TEST_ENTROPY_256;
     
     // Generate a test UUID
     const cryptoServices = CryptoServices.This;
     testUuid = cryptoServices.getUUID();
-    
-    console.log(`\n🔑 Test Entropy: ${testEntropy}`);
-    console.log(`🆔 Test UUID: ${testUuid}\n`);
   });
   
   // ==========================================================================
@@ -480,11 +479,6 @@ describe('Simple Wallet Generation', () => {
     
     test('InitializeWallet creates null wallet', () => {
       const nullWallet = SimpleWallet.InitializeWallet();
-      
-      // Debug: see what properties are actually set
-      console.log('DEBUG - nullWallet keys:', Object.keys(nullWallet));
-      console.log('DEBUG - nullWallet[BLOCKCHAIN]:', nullWallet[BLOCKCHAIN]);
-      console.log('DEBUG - Expected NULL_BLOCKCHAIN:', NULL_BLOCKCHAIN);
       
       expect(nullWallet).toBeDefined();
       expect(nullWallet[BLOCKCHAIN]).toBe(NULL_BLOCKCHAIN);

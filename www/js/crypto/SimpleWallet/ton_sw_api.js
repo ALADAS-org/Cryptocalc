@@ -8,6 +8,9 @@ const { WalletContractV4, TonClient, internal } = require('@ton/ton');
 const { beginCell }                             = require('@ton/core');
 
 const { _CYAN_, _END_ }        = require('../../util/color/color_console_codes.js');
+
+const { pretty_func_header_log,
+        pretty_log }           = require('../../util/log/log_utils.js');
 		
 const { ETHEREUM, TON,  
 		COIN_ABBREVIATIONS }   = require('../const_blockchains.js');
@@ -23,7 +26,7 @@ const { Bip39Utils }           = require('../bip39_utils.js');
 
 class TON_API {
     static async GetWallet( entropy_hex, salt_uuid, crypto_net ) {
-		console.log(">> " + _CYAN_ + "TON_API.GetWallet " + _END_ + crypto_net);
+		pretty_log("TON_API.GetWallet", crypto_net);
 		
 		try {
 			// Generate a new 24-word mnemonic			
@@ -48,7 +51,7 @@ class TON_API {
 				testOnly:   false // Set to true for testnet
 			}); // TON_address
 			
-			console.log("   TON Address:", TON_address);
+			pretty_log("TON Address:", TON_address);
 			
 			let TON_wallet_data = {
 				mnemonic:   mnemonics_txt,
@@ -63,7 +66,7 @@ class TON_API {
 			
 			//---------- private key ----------
 			new_wallet_infos[PRIVATE_KEY] = TON_wallet_data.privateKey;
-			console.log(  ">> " + _CYAN_ + "TON " + _END_ + "Private Key:\n   " + new_wallet_infos[PRIVATE_KEY]);	
+            pretty_log(">> TON Private Key:", new_wallet_infos[PRIVATE_KEY]);			
 			//---------- private key
 			
 			//---------- mnemonics ----------
@@ -76,7 +79,7 @@ class TON_API {
 				
 			//----------Address ----------
 			new_wallet_infos[ADDRESS] = TON_address;
-			console.log(  ">> " + _CYAN_ + "TON " + _END_ + "Address:\n   " + new_wallet_infos[ADDRESS]);	
+            pretty_log(">> TON Address:", new_wallet_infos[ADDRESS]);			
 			//---------- Address
 	
 			return new_wallet_infos;
