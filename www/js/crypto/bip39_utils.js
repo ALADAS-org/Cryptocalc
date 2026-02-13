@@ -570,7 +570,7 @@ class Bip39Utils {
 	} // Bip39Utils.GetBIP39Dictionary()
 	
 	static GuessMnemonicsLang( mnemonics ) {
-		console.log(">> " + _CYAN_ + "Bip39Utils.GuessMnemonicsLang" + _END_);
+		pretty_log(">> Bip39Utils.GuessMnemonicsLang", "" );
 		let lang         = "EN";
 		let words        = mnemonics.split(' ');
 		let current_lang = "";
@@ -600,7 +600,7 @@ class Bip39Utils {
 	} // Bip39Utils.GuessMnemonicsLang()
 	
 	static CheckMnemonics( mnemonics, args ) {
-		console.log(">> " + _CYAN_ + "Bip39Utils.CheckMnemonics" + _END_);		
+		pretty_log(">> Bip39Utils.CheckMnemonics", "");		
 		
 		args = Bip39Utils.GetArgs( args );
 		let lang       = args[LANG];
@@ -726,9 +726,9 @@ const test_Bip39Utils = () => {
                 + "name yard note silver abuse castle public";
 				
 	let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-	console.log("mnemonics: " + mnemonics);
-	console.log("mnemonics_items[0]: " + mnemonics_items[0]);
-	console.log("mnemonics_items[0]: " + mnemonics_items[1]);
+	pretty_log("mnemonics: " , mnemonics);
+	pretty_log("mnemonics_items[0]: " , mnemonics_items[0]);
+	pretty_log("mnemonics_items[0]: " , mnemonics_items[1]);
 }; // test_EntropyToMnemonics()
 
 // test_Bip39Utils();
@@ -738,11 +738,11 @@ const test_GuessMnemonicsLang = () => {
 	
 	let lang = "";	
 	lang = Bip39Utils.GuessMnemonicsLang( mnemonics_PT );
-	console.log("   lang: " + lang);
+	pretty_log("   lang: " , lang);
 	
 	let mnemonics_RU = "аршин огурец вскоре пощечина режим рояль укол стать нагрузка округ программа шланг";				
 	lang = Bip39Utils.GuessMnemonicsLang( mnemonics_RU );
-	console.log("   lang: " + lang);
+	pretty_log("   lang: " , lang);
 }; // test_GuessMnemonicsLang()
 
 // test_GuessMnemonicsLang();

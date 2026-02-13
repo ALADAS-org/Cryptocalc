@@ -127,7 +127,10 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/setup.
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/smoke.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/utils/fixture_loading.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/utils/hex_utils.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/README_HDWALLET_CORRECTIONS.md
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/README_HDWALLET_TESTS.md
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/address_validation.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/hd_wallet.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/simple_wallet.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/playwright/playwright.config.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/playwright/setup.js

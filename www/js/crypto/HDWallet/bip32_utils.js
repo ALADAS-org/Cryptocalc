@@ -275,7 +275,7 @@ class Bip32Utils {
 		// Generates 'expected_address_count' addresse from index 'address_index'
 		let expected_address_count = 1;
 		
-		console.log("   address_index: <" + address_index + "> " + typeof address_index);
+		pretty_log("   address_index: <" + address_index + "> " , typeof address_index);
 		address_index = address_index.replaceAll("'","");
 		
 		// if ( blockchain == HORIZEN && typeof address_index == "string" ) {
