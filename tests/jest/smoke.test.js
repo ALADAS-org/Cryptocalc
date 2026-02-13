@@ -6,7 +6,15 @@
  * ============================================================================
  */
 
+// Import PrettyLog and log mode constant to disable console.log from production code
+const { PrettyLog, UNIT_TESTS_LOG_MODE } = require('@util/log/log_utils.js');
+
 describe('Jest Configuration', () => {
+  
+  beforeAll(() => {
+    // Disable console.log from pretty_log() calls in production code
+    PrettyLog.This.logMode = UNIT_TESTS_LOG_MODE;
+  });
   
   test('Jest is working correctly', () => {
     expect(true).toBe(true);

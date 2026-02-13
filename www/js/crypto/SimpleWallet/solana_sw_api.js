@@ -32,7 +32,7 @@ const { CRYPTO_NET, UUID, ADDRESS,
 	  
 const { MNEMONICS, WIF 
 	  }                      = require('../../const_keywords.js');
-
+	  
 const { uint8ArrayToHex	}    = require('../hex_utils.js');
 		
 const { b58ToHex }           = require('../base58_utils.js');
@@ -62,7 +62,7 @@ const { computeWIF }         = require('../crypto_utils.js');
 
 class SolanaSW_API { 
 	static GetWallet( entropy_hex, salt_uuid ) {
-		console.log(">> " + _CYAN_ + "[SolanaHD_API.GetWallet]" + _END_ + " " + entropy_hex);
+		pretty_log( ">> [SolanaHD_API.GetWallet]", entropy_hex );
 		
 		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex ); // (mnemonic, password)
 		pretty_log("entropy_hex", entropy_hex);

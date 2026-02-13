@@ -245,15 +245,15 @@ expect.extend({
 // ==========================================================================
 
 beforeAll(() => {
-  console.log('\n' + '='.repeat(80));
-  console.log('🚀 Starting Jest tests for Cryptocalc');
-  console.log('='.repeat(80) + '\n');
+  // console.log('\n' + '='.repeat(80));
+  // console.log('🚀 Starting Jest tests for Cryptocalc');
+  // console.log('='.repeat(80) + '\n');
 });
 
 afterAll(() => {
-  console.log('\n' + '='.repeat(80));
-  console.log('✅ Jest tests completed');
-  console.log('='.repeat(80) + '\n');
+  // console.log('\n' + '='.repeat(80));
+  // console.log('✅ Jest tests completed');
+  // console.log('='.repeat(80) + '\n');
 });
 
 // ==========================================================================

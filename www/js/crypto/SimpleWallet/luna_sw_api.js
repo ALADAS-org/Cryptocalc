@@ -5,8 +5,11 @@
 
 const { MnemonicKey  } = require('@terra-money/feather.js');
 
-const { _CYAN_, _END_ }        = require('../../util/color/color_console_codes.js');
-		
+const { _CYAN_, _END_ }      = require('../../util/color/color_console_codes.js');
+
+const { pretty_func_header_log,
+        pretty_log }                  = require('../../util/log/log_utils.js');
+
 const { TERRA_LUNA,  
 		COIN_ABBREVIATIONS } = require('../const_blockchains.js');
 	  
@@ -22,7 +25,7 @@ const { Bip39Utils } = require('../bip39_utils.js');
 
 class LUNA_API {
     static async GetWallet( entropy_hex, salt_uuid, crypto_net ) {
-		console.log(">> " + _CYAN_ + "LUNA_API.GetWallet " + _END_ + crypto_net);
+		pretty_log(">> LUNA_API.GetWallet ", crypto_net);
 		
 		let new_wallet_infos = LUNA_API.InitializeWallet();
 		
@@ -44,7 +47,7 @@ class LUNA_API {
 			
 			//---------- private key ----------
 			new_wallet_infos[PRIVATE_KEY] = private_key;
-			console.log(  ">> " + _CYAN_ + "LUNA " + _END_ + "Private Key:\n   " + new_wallet_infos[PRIVATE_KEY]);	
+            pretty_log(">> LUNA Private Key:", new_wallet_infos[PRIVATE_KEY]);			
 			//---------- private key
 			
 			//---------- mnemonics ----------
@@ -57,7 +60,7 @@ class LUNA_API {
 				
 			//----------Address ----------
 			new_wallet_infos[ADDRESS] = wallet_address;
-			console.log(  ">> " + _CYAN_ + "LUNA " + _END_ + "Address:\n   " + new_wallet_infos[ADDRESS]);	
+			pretty_log(">> LUNA Address:", new_wallet_infos[ADDRESS]);
 			//---------- Address
 	
 			return new_wallet_infos;

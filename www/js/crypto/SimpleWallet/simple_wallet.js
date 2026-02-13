@@ -45,7 +45,7 @@ const { _RED_, _CYAN_, _PURPLE_,
         _YELLOW_, _END_ }  = require('../../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log,
-        pretty_log }       = require('../../util/log/log_utils.js');
+        pretty_log }       = require('../../util/log/log_utils.js');	 
 		
 const { COIN,	    
 		BITCOIN, ETHEREUM, DOGECOIN, LITECOIN, 
@@ -138,8 +138,7 @@ class SimpleWallet {
 	
 	// https://stackoverflow.com/questions/77158846/how-can-i-derive-a-key-pair-from-mnemonic-phrase-successfully-in-nodejs
 	static GenerateKeyPairFromMnemonic( mnemonics ) {
-	  console.log(  ">> " + _CYAN_ + "SimpleWallet.GenerateKeyPairFromMnemonic " + _END_ 
-		            + mnemonics );
+	  pretty_log(  ">> SimpleWallet.GenerateKeyPairFromMnemonic ", mnemonics );
 					
 	  // Derive a seed from the mnemonic phrase
 	  const seed = bip39.mnemonicToSeedSync( mnemonics );
