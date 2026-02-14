@@ -257,9 +257,9 @@ class Bip32Utils {
 		//-------------------- First Private Key
 
 		
-		//*** BIP44 *********************************************************
-		//************************ First Private Key ************************
-		//*******************************************************************
+		//*** Bip32 Protocol *********************************************************
+		//************************ First Private Key *********************************
+		//****************************************************************************
 		// https://www.npmjs.com/package/hdaddressgenerator
 		// let bip44 = HdAddGen.withMnemonic( mnemonics, false, coin );
 		if ( bip32_passphrase != "" ) {
@@ -267,10 +267,17 @@ class Bip32Utils {
 		}
         pretty_log( "b32.mnk2wi> coin", coin );	
 		
+		// Trap "console.warn"
+		let save_console_warn = console.warn;
+		console.warn = () => {};
+
 		let bip44 = HdAddGen.withMnemonic
 					( mnemonics,  bip32_passphrase, coin,    true,     bip32_protocol,  account );
         //                        bip32_passphrase           hardened  protocol         account        
-		//*** BIP44 *********************************************************
+		
+		console.warn = save_console_warn;
+		//*** Bip32 Protocol *********************************************************		
+		
 
 		// Generates 'expected_address_count' addresse from index 'address_index'
 		let expected_address_count = 1;
@@ -310,11 +317,11 @@ class Bip32Utils {
 		//-ok-------------------- Extended Private key -----------------------
 		let account_derivation_path = "m/" + bip32_protocol + "'/" + coin_type + "'/" + account + "'";
 		pretty_log( "b32.mnk2wi> account_derivation_path", account_derivation_path );	
-		let ACCOUNT_XPRIV = master_node.derivePath( account_derivation_path ).toBase58();
+		let account_xpriv_value = master_node.derivePath( account_derivation_path ).toBase58();
 		
 		// console.log(   "   " + _YELLOW_ 
 		//             + "Account PRIV_KEY:          " + _END_ + ACCOUNT_XPRIV);
-		hdwallet_info[ACCOUNT_XPRIV] = ACCOUNT_XPRIV;
+		hdwallet_info[ACCOUNT_XPRIV] = account_xpriv_value;
 		
 		if ( blockchain == STELLAR ) {
 			hdwallet_info[ACCOUNT_XPRIV] = child_private_key; 

@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.6
+## CryptoCalc 0.5.7
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -16,8 +16,7 @@
 
 2. Features    
     2.0. Recently added features
-	- Added `Unit tests`: these tests use [Jest](https://jestjs.io/fr/) unit test framework. It is an ongoing work (ATM only a test for 
-	`Simple Wallet`). Use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`). 
+	- Added `Unit tests`: these tests use [Jest](https://jestjs.io/fr/) unit test framework. It is an ongoing work (170 tests ATM). Use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`). 
 	- `Wallets Database`: you can now populate a `SQLite` database byb ilporting the _Wallet informations_ (`.wits` files in timestamped subfolders under `_output` folder)    
 	- Added support support of `Bip84` purpose in the `Bip32 derivation path`    
 	
@@ -181,9 +180,12 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.6`: This version 
+    - `0.5.7`: This version 
 	    - Enhancement in Unit tests:
-	      Updates in `Unit tests`: 142 tests ("Simple Wallet" and "GD Wallet") passed.  
+	      Updates in `Unit tests`: 177 tests (`Simple Wallet`, `HD Wallet` and `BI32`) passed. 
+    - `0.5.6` 
+	    - Enhancement in Unit tests:
+	      Updates in `Unit tests`: 142 tests ("Simple Wallet" and "HD Wallet") passed.  
     - `0.5.5` 
 	    -  Enhancement in Unit tests:
 	      Updates in `Unit tests`: use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`).  
