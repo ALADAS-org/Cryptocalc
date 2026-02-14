@@ -125,6 +125,7 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/FileTree.tx
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/coverage/jest/test-report.html
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/setup.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/smoke.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip32_utils.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/utils/fixture_loading.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/utils/hex_utils.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/README_HDWALLET_CORRECTIONS.md
