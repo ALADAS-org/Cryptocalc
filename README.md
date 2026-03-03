@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.8
+## CryptoCalc 0.5.9
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,7 +6,7 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 16110 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 16552 times on [npm](https://www.npmjs.com/).   
    
    You can support this project by testing and reporting bugs (or asking for enhancements) with [`Issues`](https://github.com/ALADAS-org/Cryptocalc/issues), 
    provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
@@ -16,7 +16,7 @@
 
 2. Features    
     2.0. Recently added features
-	- Added `Unit tests`: these tests use [Jest](https://jestjs.io/fr/) unit test framework. It is an ongoing work (292 tests ATM). Use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`). 
+	- Added `Unit tests`: these tests use [Jest](https://jestjs.io/fr/) unit test framework. It is an ongoing work (344 tests ATM). Use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`). 
 	- `Wallets Database`: you can now populate a `SQLite` database byb ilporting the _Wallet informations_ (`.wits` files in timestamped subfolders under `_output` folder)    
 	- Added support support of `Bip84` purpose in the `Bip32 derivation path`    
 	
@@ -180,7 +180,10 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.8`: This version 
+    - `0.5.9`: This version 
+	    - Enhancement in Unit tests:
+	      Updates in `Unit tests`: 344 tests (`Simple Wallet`, `HD Wallet`, `Bip32_utils`, `Bip39_utils`, `Bip38_utils`) passed. 
+    - `0.5.8` 
 	    - Enhancement in Unit tests:
 	      Updates in `Unit tests`: 291 tests (`Simple Wallet`, `HD Wallet`, `Bip32_utils`,`Bip39_utils`) passed. 
     - `0.5.7`
@@ -330,15 +333,6 @@
 	    - Fixes in this README
 		- First tests on `Linux Mint 22.2`: problem with icon filenames
 		- Fix in icon filenames for `Linux` compatibility 
-    - `0.3.50`    
-	    - Added a dynamic link button [3D] to display a 3D representation of the `Secret phrase` (this is a web page
-		which is indeed a copy of a companion project ([CryptoShape](https://www.npmjs.com/package/@aladas-org/cryptoshape))
-	    - Added a link for _Donations_
-	    - Rewrite/Updates in this README
-	    - Replaced `Password` with `Passphrase` in _HD Wallet_ mode
-    - `0.3.49`
-		- Added support of _Bengali_ for the _Secret phrase_
-		- Fixes in the documentation (this `README.md`)
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
