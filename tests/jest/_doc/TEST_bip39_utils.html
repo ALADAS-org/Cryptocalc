@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bip39_utils.js — Tests unitaires</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --pass: #238636;
+    --pass-bg: #0d2b10;
+    --skip: #9e6a03;
+    --skip-bg: #2b1e00;
+    --tag-bg: #1f3a5f;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 40px 24px;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 36px;
+  }
+
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    background: var(--tag-bg);
+    color: var(--accent);
+    border: 1px solid #1f4080;
+    letter-spacing: .04em;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .meta-item strong { color: var(--text); }
+
+  .stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 20px;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  .stat-card .num {
+    font-size: 28px;
+    font-weight: 600;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .stat-card .label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-top: 2px;
+  }
+
+  .num.green { color: var(--accent2); }
+  .num.blue  { color: var(--accent); }
+  .num.orange{ color: var(--accent5); }
+
+  .suite {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .suite-header {
+    background: var(--surface2);
+    padding: 14px 20px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent4);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .suite-header .icon { font-style: normal; }
+
+  .test-list { padding: 8px 0; }
+
+  .test-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 20px;
+    border-bottom: 1px solid #1a2030;
+    transition: background .1s;
+  }
+
+  .test-row:last-child { border-bottom: none; }
+  .test-row:hover { background: #1a2233; }
+
+  .status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+
+  .dot-pass  { background: var(--accent2); }
+  .dot-skip  { background: var(--accent5); }
+
+  .test-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .test-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--tag-bg);
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .tag.skip { background: #2b1e00; color: var(--accent5); }
+
+  .note-box {
+    background: #1a2233;
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin: 0 20px 16px;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  footer {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    justify-content: space-between;
+  }
+</style>
+
+</head>
+<body>
+<div class="container">
+  <header>
+    <div class="badge">UNIT TEST PROTOCOL</div>
+    <h1>bip39_utils.js</h1>
+    <div class="subtitle">www/js/crypto/bip39_utils.js &nbsp;·&nbsp; tests/jest/unit/crypto/bip39_utils.test.js</div>
+    <div class="meta-row">
+      <div class="meta-item">📁 <strong>www/js/crypto/</strong></div>
+      <div class="meta-item">📝 Génération de mnémoniques BIP39, conversion entropie ↔ mnémoniques, validation.</div>
+    </div>
+  </header>
+
+  <div class="stats">
+    <div class="stat-card"><div class="num blue">18</div><div class="label">Tests</div></div>
+    <div class="stat-card"><div class="num green">18</div><div class="label">Passing</div></div>
+    <div class="stat-card"><div class="num orange">0</div><div class="label">Skipped</div></div>
+    <div class="stat-card"><div class="num">4</div><div class="label">Suites</div></div>
+  </div>
+
+  
+  
+  <div class="suite">
+    <div class="suite-header"><span class="icon">▸</span> EntropyToMnemonics</div>
+    <div class="test-list">
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">génère 12 mots pour 128 bits (32 hex chars)</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">génère 24 mots pour 256 bits (64 hex chars)</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">est déterministe</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne une erreur pour un hex invalide</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">accepte le préfixe 0x</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+    </div>
+  </div>
+  <div class="suite">
+    <div class="suite-header"><span class="icon">▸</span> MnemonicsToEntropy</div>
+    <div class="test-list">
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">convertit 12 mots en 32 hex chars</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">convertit 24 mots en 64 hex chars</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">est déterministe</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">EntropyToMnemonics et MnemonicsToEntropy sont inverses</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+    </div>
+  </div>
+  <div class="suite">
+    <div class="suite-header"><span class="icon">▸</span> CheckMnemonics</div>
+    <div class="test-list">
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne true pour un mnémonique 12 mots valide</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne true pour un mnémonique 24 mots valide</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne false pour un mot invalide</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne false pour un nombre de mots incorrect</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne false pour undefined</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+    </div>
+  </div>
+  <div class="suite">
+    <div class="suite-header"><span class="icon">▸</span> PrivateKeyToMnemonics</div>
+    <div class="test-list">
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne 24 mots pour une clé privée 32 bytes</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">est déterministe</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">accepte le préfixe 0x</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+        <div class="test-row">
+          <div class="status-dot dot-pass"></div>
+          <div style="flex:1">
+            <div class="test-name">retourne une erreur pour une clé invalide</div>
+            
+          </div>
+          <span class="tag">pass</span>
+        </div>
+    </div>
+  </div>
+
+  <footer>
+    <span>Cryptocalc — Echopraxium with the collaboration of Claude AI</span>
+    <span>Generated 2026-03-10</span>
+  </footer>
+</div>
+</body>
+</html>

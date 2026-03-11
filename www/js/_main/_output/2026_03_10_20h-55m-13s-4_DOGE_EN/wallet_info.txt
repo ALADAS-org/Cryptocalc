@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 3fc38fc0e04f8166b85aaeccc21d50e4
+Entropy Size            128 bits
+Wallet Address          D66mydQyCTtWe3eYBdttJyfcRM2o3wMeiL
+Blockchain Explorer     https://dogechain.info/address/D66mydQyCTtWe3eYBdttJyfcRM2o3wMeiL
+Private Key             66d907dfb05578a39765119aeab9bb1cbd624da023cc3ab654f42706527cb500
+WIF                     QS4YrFdY7SqoZ1bhvXMjYnXxYSPJraH9LFg8QvsSUCrpKjaKaDWW
+Secret phrase           divert broccoli usual scene way rebuild thumb fiction smoke axis feature silly
+Shortened Secret phrase DiveBrocUsuaScenWayRebuThumFictSmokAxisFeatSill
+Word indexes            510, 227, 1921, 1540, 1984, 1434, 1803, 686, 1638, 135, 673, 1605
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

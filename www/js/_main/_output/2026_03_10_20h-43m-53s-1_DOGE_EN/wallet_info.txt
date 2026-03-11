@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 97a12ba36537578e4ac7a8a380190a82
+Entropy Size            128 bits
+Wallet Address          DMfLgFdRVVG2utxRaNB5uC8uA7KG7hRXnE
+Blockchain Explorer     https://dogechain.info/address/DMfLgFdRVVG2utxRaNB5uC8uA7KG7hRXnE
+Private Key             6a848a9d22514cac8056a9a16e44f46bd8f21e1806ccfbd4c347d208dcbc4a0c
+WIF                     QSBgcnwx8g3v6HLia62tRXoLu8bGYXcJZfu1E5nJcfsEcsY56DmA
+Secret phrase           nut announce trip skill install shrimp climb vital phone absorb dress aisle
+Shortened Secret phrase NutAnnoTripSkilInstShriClimVitaPhonAbsoDresAisl
+Word indexes            1213, 74, 1862, 1619, 939, 1593, 344, 1960, 1308, 6, 533, 45
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 efd5501963c2960bc9b94901d497d476
+Entropy Size            128 bits
+Wallet Address          DF56hKY5paMig945vQMQtzxYFTkeDaRAkL
+Blockchain Explorer     https://dogechain.info/address/DF56hKY5paMig945vQMQtzxYFTkeDaRAkL
+Private Key             9ffa113436839b4ae534b9efc825f24f5443812aeda62ca7ba9c35a4a1fd793b
+WIF                     QTybqBQRpKc4EaTw7WDLWs81ZcWDkS5rZKvcRdbmTJRxqXifhaDw
+Secret phrase           used pride alien shy city album cheap circle achieve pigeon vital unique
+Shortened Secret phrase UsedPridAlieShyCityAlbuCheaCircAchiPigeVitaUniq
+Word indexes            1918, 1364, 50, 1596, 331, 47, 311, 329, 14, 1317, 1960, 1900
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

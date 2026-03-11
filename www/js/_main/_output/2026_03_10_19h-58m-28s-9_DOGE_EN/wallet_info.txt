@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 21067dec59f07f38a310abab759eebc0
+Entropy Size            128 bits
+Wallet Address          D8LMrv9cMtwexCXFwUoa68nb28er1g7HBA
+Blockchain Explorer     https://dogechain.info/address/D8LMrv9cMtwexCXFwUoa68nb28er1g7HBA
+Private Key             26475521a1e31ba4234832484aa589689fa4a1dad7081586a29989b85a458938
+WIF                     QPu33JCmjCMaXTfE5uGtfSqCEUxMChFZoSMcvp4NGNa5eLoSQJib
+Secret phrase           canal crop kitchen recycle among ordinary middle betray problem provide road light
+Shortened Secret phrase CanaCropKitcRecyAmonOrdiMiddBetrProbProvRoadLigh
+Word indexes            264, 415, 984, 1439, 63, 1250, 1122, 171, 1371, 1383, 1495, 1036
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

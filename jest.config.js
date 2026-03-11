@@ -71,8 +71,8 @@ module.exports = {
    */
   collectCoverageFrom: [
     'www/js/crypto/**/*.js',
-    'www/js/api/**/*.js',
     'www/js/util/**/*.js',
+    '!www/js/api/**',              // API no longer in use
     '!www/js/lib/**',              // Exclude external libraries
     '!www/**/*.test.js',
     '!www/**/*.spec.js',

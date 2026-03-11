@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 3ccfe4043bbad2d24315ab3ce6291f08
+Entropy Size            128 bits
+Wallet Address          DJq3vrH37VYSyQoqmNtRRpz915R4uiY9Co
+Blockchain Explorer     https://dogechain.info/address/DJq3vrH37VYSyQoqmNtRRpz915R4uiY9Co
+Private Key             17266dd4e0c6b8257d839cd3112351c5e8838e3f138979f6f51a3f97be19c17a
+WIF                     QPPdPB7M2i8cFp9x7Rpo4LrRQtSUezfNsGLCFVQH9JjA2pyPvSgH
+Secret phrase           devote left absurd jazz pudding hard arrange rely diagram course elephant axis
+Shortened Secret phrase DevoLeftAbsuJazzPuddHardArraRelyDiagCourElepAxis
+Word indexes            486, 1017, 8, 955, 1385, 841, 98, 1451, 487, 394, 574, 135
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

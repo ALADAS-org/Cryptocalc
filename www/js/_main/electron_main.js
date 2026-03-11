@@ -351,28 +351,37 @@ class ElectronMain {
 						 ]
 			},
 			{   label: L10nUtils.GetLocalizedMsg("Help"), //"Help"
-				submenu: [ { label: L10nUtils.GetLocalizedMsg("Resources"),
+				submenu: [ { label: "Setup guide and User's Manual",
+							 click() { 
+								ElectronMain.GetInstance()
+									.createBrowserWindow( app.getAppPath() + "/_doc/README.html");
+							 }
+						   },
+						   
+						   {  label: "Cryptocalc Test protocols",
+							  click() { 
+								 ElectronMain.GetInstance()
+									 .createBrowserWindow( app.getAppPath() + "/tests/_doc/index.html");
+							  }
+						   },
+				
+						   { label: L10nUtils.GetLocalizedMsg("Resources"),
 							 submenu: 							 
 							 [
-							   { label: "Setup guide and User's Manual",
-								  click() { 
-									 ElectronMain.GetInstance()
-									     .createBrowserWindow("https://github.com/ALADAS-org/cryptowallet/blob/master/README.md");
-								  }
-							   },
-							   { label: "Ian Coleman BIP39",
+
+							   {  label: "Ian Coleman BIP39",
 								  click() { 
 									 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
 									 ElectronMain.GetInstance()
 									     .createBrowserWindow("https://iancoleman.io/bip39/");
 								  }
 								},
-								{ label: "Guarda",
-								  click() { 
+								{  label: "Guarda",
+								   click() { 
 									 // https://stackoverflow.com/questions/53390798/opening-new-window-electron
 									 ElectronMain.GetInstance()
 									     .createBrowserWindow("https://guarda.com/");
-								  }
+								   }
 								}						
 							 ]
 						   },
@@ -478,7 +487,8 @@ class ElectronMain {
 			} // 'did-finish-load' callback
 		); // ==================== 'did-finish-load' event handler
 		
-		let index_html_path = app.getAppPath() + '/www/index.html';
+		// let index_html_path = app.getAppPath() + '/www/index.html';
+		let index_html_path = path.join(__dirname, '../../../www/index.html');
 		
 		this.MainWindow.loadFile( index_html_path );
 	} // createWindow()

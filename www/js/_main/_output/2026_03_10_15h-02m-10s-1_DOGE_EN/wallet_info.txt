@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 d16c982d81c1971297bad8d184b5049a
+Entropy Size            128 bits
+Wallet Address          DPGAFYd2LWAebGRsrTJ1SunJfvNhrzymA9
+Blockchain Explorer     https://dogechain.info/address/DPGAFYd2LWAebGRsrTJ1SunJfvNhrzymA9
+Private Key             c03fb2cb37e808611011e05a09b6b3ff13d27eb6427644c67089f42194382e51
+WIF                     QV4LKThfy2Kv9hziHT7rKinvGnmN96RUh7sguCeEoBoRdKZvyr9B
+Secret phrase           sphere gospel arena adjust bonus matter galaxy force spice certain donkey cross
+Shortened Secret phrase SpheGospArenAdjuBonuMattGalaForcSpicCertDonkCros
+Word indexes            1675, 806, 91, 28, 203, 1098, 759, 728, 1676, 301, 521, 416
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

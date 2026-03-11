@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 1c6a9e1619671817b60cb73fdb7f73a2
+Entropy Size            128 bits
+Wallet Address          D5g23iQUHNUqfhL62GaXpvw4kAj4v32HPm
+Blockchain Explorer     https://dogechain.info/address/D5g23iQUHNUqfhL62GaXpvw4kAj4v32HPm
+Private Key             cc37c7cb49e1ba40884547dfb679f1498eb85404b4584d5787c0b4de87d35439
+WIF                     QVTbmKm5jz2vKwchNVGGBJVUZ7YeUqzvH6C4tm8dN71uafzA4q38
+Secret phrase           broccoli female machine crazy immense armed subway notice divert swim table dust
+Shortened Secret phrase BrocFemaMachCrazImmeArmeSubwNotiDiveSwimTablDust
+Word indexes            227, 679, 1068, 406, 908, 94, 1729, 1207, 510, 1759, 1767, 546
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

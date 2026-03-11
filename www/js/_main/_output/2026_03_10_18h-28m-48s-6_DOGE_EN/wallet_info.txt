@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 d1c432180fc8dbbe250a23a7e0eb61f4
+Entropy Size            128 bits
+Wallet Address          DQf4pDQoqaEuQGEpUv41Vx7TQWKzWhH2Ur
+Blockchain Explorer     https://dogechain.info/address/DQf4pDQoqaEuQGEpUv41Vx7TQWKzWhH2Ur
+Private Key             3ec9738a910522b831b47e323054cac65a7da88fa19319d40f2abc603a91ce0d
+WIF                     QQigDEwNdJ1wdzr1vMfWNbwrk8pt7DbYwnLT4AzcC8uVZeeM9yxz
+Secret phrase           spike canoe maid buzz misery tenant neither dutch pony also such trend
+Shortened Secret phrase SpikCanoMaidBuzzMiseTenaNeitDutcPonyAlsoSuchTren
+Word indexes            1678, 268, 1072, 252, 1133, 1784, 1185, 547, 1343, 58, 1731, 1856
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

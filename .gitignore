@@ -2,6 +2,11 @@ node_modules
 _output/*/
 releases/**
 
+.claude/settings.local.json
+CLAUDE.local.md
+.env
+.env.*
+
 # Playwright
 /playwright/playwright-report/
 /blob-report/
@@ -18,3 +23,4 @@ releases/**
 # Logs
 *.log
 npm-debug.log*
+*/log.txt

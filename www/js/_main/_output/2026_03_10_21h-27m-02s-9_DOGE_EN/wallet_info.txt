@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 12fe8bddfdad363a64f9dcde95de85c2
+Entropy Size            128 bits
+Wallet Address          D85SCrEE5qfpE3SpJGvMQo5wuwtRGL2VwL
+Blockchain Explorer     https://dogechain.info/address/D85SCrEE5qfpE3SpJGvMQo5wuwtRGL2VwL
+Private Key             dfae58a35e12572f5a26cef68ee0ef0f8a1c62e4b8611a0153a9b9bcd32c7057
+WIF                     QW7S8HCzCxzzHZPgzGR1SFBgv7LTmSMVY7Vi4G82C2FgjpKrbK2t
+Secret phrase           base violin wash win square brush negative describe teach puzzle pause luxury
+Shortened Secret phrase BaseViolWashWinSquaBrusNegaDescTeacPuzzPausLuxu
+Word indexes            151, 1954, 1979, 2010, 1691, 233, 1183, 476, 1780, 1399, 1291, 1066
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

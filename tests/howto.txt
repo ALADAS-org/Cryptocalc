@@ -1,0 +1,5 @@
+* for unitary tests:
+npm run tests
+
+* for electron E2E GUI tests with Playwright:
+npm run test:playwright

@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 867f07f3673fbacf2e5bcb3ec0d7ee46
+Entropy Size            128 bits
+Wallet Address          DEq2LnkneYVEn6wx1Xm64m6cMqngd6qmas
+Blockchain Explorer     https://dogechain.info/address/DEq2LnkneYVEn6wx1Xm64m6cMqngd6qmas
+Private Key             11c51a3e82a96a9b0fcd7ae1a3f081f797a512876a31fb52b5ece29743a6949a
+WIF                     QPDAoDbHbHPjYasTiyH74Qhw5Abfc2MCi4HTbqaKkN7rGt99Fqua
+Secret phrase           major wealth wolf solar wing guide ride just disagree allow wine miracle
+Shortened Secret phrase MajoWealWolfSolaWingGuidRideJustDisaAlloWineMira
+Word indexes            1075, 1985, 2022, 1651, 2013, 828, 1483, 971, 502, 53, 2012, 1131
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

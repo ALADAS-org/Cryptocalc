@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 077114ee56b13561a7725a511a9b3f61
+Entropy Size            128 bits
+Wallet Address          DFyVWtPuwKLJjC6FWEmWiZJSyoqtJm9FDX
+Blockchain Explorer     https://dogechain.info/address/DFyVWtPuwKLJjC6FWEmWiZJSyoqtJm9FDX
+Private Key             bef4e8b4558c266b6c637118ec34c54eaf6bc6c196ef51ae190373495aceda2f
+WIF                     QV1pdtYxhNVvQHcV2J2kPdK5TVPM5kjL1FBT9YnobniPfZZHkfhL
+Secret phrase           alter master describe pulp battle radio oven ensure extra state sound senior
+Shortened Secret phrase AlteMastDescPulpBattRadiOvenEnsuExtrStatSounSeni
+Word indexes            59, 1093, 476, 1387, 154, 1414, 1262, 602, 648, 1702, 1662, 1565
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 30ff3c0210088803a890b25e2599a66a
+Entropy Size            128 bits
+Wallet Address          D8RznbhZLB3Po8F2So8XjqK7oN2DMwHdGJ
+Blockchain Explorer     https://dogechain.info/address/D8RznbhZLB3Po8F2So8XjqK7oN2DMwHdGJ
+Private Key             0477430f072c974dd11ddbf7d487b1a205b61fe5060a1506f3861c3edd5ce973
+WIF                     QNmJqbGmRaXQtimLJxqnJySvTsBUjy7jRVNLUtftWeUkFPUzhQm9
+Secret phrase           couch wheat above cactus mass achieve pelican bind funny coast hat steak
+Shortened Secret phrase CoucWheaAbovCactMassAchiPeliBindFunnCoasHatStea
+Word indexes            391, 1999, 4, 256, 1092, 14, 1298, 178, 753, 358, 844, 1704
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

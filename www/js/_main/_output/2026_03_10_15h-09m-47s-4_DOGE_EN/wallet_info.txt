@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 e95f28836d126fc2b748836f07be6b58
+Entropy Size            128 bits
+Wallet Address          DAaNSnvM8GwyL6nTUGAuDFAKpCZWtyxg9Y
+Blockchain Explorer     https://dogechain.info/address/DAaNSnvM8GwyL6nTUGAuDFAKpCZWtyxg9Y
+Private Key             9478b5abb48d2a4c991aa8f393ae5d3b7471ea699d28459546a47809cdd300c6
+WIF                     QTbEfyUtdr2bRScHgRNTa9NrhtbTDUThtDAaPEAE4JhyACshkuuZ
+Secret phrase           true welcome camp surface cheap throw tag away humor digital onion radio
+Shortened Secret phrase TrueWelcCampSurfCheaThroTagAwayHumoDigiOnioRadi
+Word indexes            1866, 1994, 262, 1745, 311, 1802, 1769, 131, 888, 495, 1238, 1414
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

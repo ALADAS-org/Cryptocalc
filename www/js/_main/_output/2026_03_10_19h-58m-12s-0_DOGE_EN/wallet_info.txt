@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 db18a87ea5d39613c04614ebec8884cd
+Entropy Size            128 bits
+Wallet Address          DRfeffvEYZsDfWC8DFiEdt46t7XMwW4KFR
+Blockchain Explorer     https://dogechain.info/address/DRfeffvEYZsDfWC8DFiEdt46t7XMwW4KFR
+Private Key             bfd14fda7e07dfe2060d3666aaf97d5832f0842362069427324f37dc9acbf65c
+WIF                     QV3VhnaF1KfteC6KWAps8X6XdTyyEzdaYmrtm7HfjmGCb4XeBGSG
+Secret phrase           swallow shed cabbage entry defense antique absurd secret typical gold cancel opera
+Shortened Secret phrase SwalShedCabbEntrDefeAntiAbsuSecrTypiGoldCancOper
+Word indexes            1752, 1578, 253, 605, 459, 79, 8, 1556, 1887, 802, 265, 1242
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

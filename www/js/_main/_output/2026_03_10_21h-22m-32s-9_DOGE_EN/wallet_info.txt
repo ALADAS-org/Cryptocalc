@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 0b28e7dfb48705b24aee65378665fdc9
+Entropy Size            128 bits
+Wallet Address          DP5mUkcTUiRawrEtrsE9KGVQrJF4UoH2da
+Blockchain Explorer     https://dogechain.info/address/DP5mUkcTUiRawrEtrsE9KGVQrJF4UoH2da
+Private Key             387d4c7a35b5b1671ead84407f7af5a7c1e2b8534611d8a5330a533348d964b4
+WIF                     QQWSCy2mPdvgsUXVpmtbjXzF2atvptRfZKN6fAUc5kdoESJuQRg3
+Secret phrase           arctic elbow wave harbor icon summer close smile daring creek legal mystery
+Shortened Secret phrase ArctElboWaveHarbIconSummClosSmilDariCreeLegaMyst
+Word indexes            89, 569, 1983, 840, 898, 1737, 349, 1637, 444, 409, 1019, 1171
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

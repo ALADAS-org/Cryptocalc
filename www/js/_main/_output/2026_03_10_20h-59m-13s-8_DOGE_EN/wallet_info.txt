@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 95ca226553789c2bad0c3f6cb6345e3f
+Entropy Size            128 bits
+Wallet Address          DF98SMVQkQVzgUGf8TcdnLnH48UwLTr2a9
+Blockchain Explorer     https://dogechain.info/address/DF98SMVQkQVzgUGf8TcdnLnH48UwLTr2a9
+Private Key             6b0b760caa0cb4519a61ebf6c825e684fd62afc06f4270379d11c703142a6656
+WIF                     QSCi38n7ZVHxJSDeW9K275wz19McGE3CNYxcCNpfm9YiFzBwMsYo
+Secret phrase           noise extra off plunge mean beyond reflect margin hole random bleak leave
+Shortened Secret phrase NoisExtrOffPlunMeanBeyoReflMargHoleRandBleaLeav
+Word indexes            1198, 648, 1226, 1335, 1102, 174, 1441, 1087, 869, 1421, 188, 1015
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

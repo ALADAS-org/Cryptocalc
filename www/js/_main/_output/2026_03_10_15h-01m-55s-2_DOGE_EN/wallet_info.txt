@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 10da02d562d11cc87c0ec31904139e71
+Entropy Size            128 bits
+Wallet Address          DR8uFWgZWJrBvThaPZhqEHw4ExyRrTsjWn
+Blockchain Explorer     https://dogechain.info/address/DR8uFWgZWJrBvThaPZhqEHw4ExyRrTsjWn
+Private Key             3e34b9d377cf8a0d9f97435f096421875b625bfd56a7217b41c831f2215324a5
+WIF                     QQhYiFQF6iTiyrpvv1kR8vnjMGZH3MXdeqg41WFhGVfBdAUb6SfP
+Secret phrase           awkward source relief shield balcony goddess usual such boil calm travel toilet
+Shortened Secret phrase AwkwSourReliShieBalcGoddUsuaSuchBoilCalmTravToil
+Word indexes            134, 1664, 1450, 1581, 142, 801, 1921, 1731, 200, 260, 1852, 1822
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

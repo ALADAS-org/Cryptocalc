@@ -16,6 +16,8 @@
 const { app } = require('electron');	
 
 const fs               = require('fs');
+const path             = require('path');
+
 const bwipjs           = require('bwip-js');
 
 const { Skribi }       = require('../util/log/skribi.js'); 
@@ -86,6 +88,20 @@ class MainModel {
         this.app_version = "XX";	
 
 		this.main_window = undefined;	
+		
+		
+		// >>>>> PLAYWRIGHT
+		// Déterminer le chemin de base pour les sauvegardes
+		if ( process.env.CRYPTOWALLET_DATA ) {
+			this.basePath = process.env.CRYPTOWALLET_DATA;
+			console.log('[MainModel] Using CRYPTOWALLET_DATA:', this.basePath);
+		} else {
+			// En développement, utiliser process.cwd() qui est la racine du projet
+			this.basePath = process.cwd();
+			console.log('[MainModel] Using process.cwd():', this.basePath);
+		}
+		// >>>>> PLAYWRIGHT
+		
 	} // ** Private constructor **
 	
 	// https://github.com/metafloor/bwip-js/blob/master/README.md
@@ -172,7 +188,11 @@ class MainModel {
 		pretty_func_header_log( "MainModel.saveWalletInfo" );
 		
 		let timestamp   = getDayTimestamp();
-		let output_path = app.getAppPath() + "/_output/" + timestamp;
+		
+		//let output_path = app.getAppPath() + "/_output/" + timestamp;
+		
+		let output_path = path.join(this.basePath, "_output", timestamp);
+		console.log(`[MainModel] Saving wallet to: ${output_path}`);
 		
 		let blockchain = crypto_info[BLOCKCHAIN];
 		pretty_log( BLOCKCHAIN, crypto_info[BLOCKCHAIN] );
@@ -184,6 +204,7 @@ class MainModel {
 		let lang = crypto_info[LANG];
 		
 		output_path = output_path + "_" + coin + "_" + lang;
+		pretty_log( ">>----- MainModel.saveWalletInfo  output_path: ", output_path );
 		
 		if ( ! fs.existsSync( output_path ) ) {
 			fs.mkdirSync( output_path, { recursive: true } );

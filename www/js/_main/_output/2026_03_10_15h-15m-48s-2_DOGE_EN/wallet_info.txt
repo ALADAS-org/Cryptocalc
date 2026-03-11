@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 e74e7458d2b439ca742e9c76443599b1
+Entropy Size            128 bits
+Wallet Address          D5fzPMFyUHcVUbpHPvoj3Hxmh1fvhs3uk3
+Blockchain Explorer     https://dogechain.info/address/D5fzPMFyUHcVUbpHPvoj3Hxmh1fvhs3uk3
+Private Key             988ffb5673b33ce0733f750a267d8c1572ced4f2658d7c27edfa9b5d3c4c2abf
+WIF                     QTjBu8pyUiURcxBuew8LBSc9mgiWEG4apokxMsYkx3w88t19Ft6v
+Secret phrase           trap inhale bike pistol drum topple spawn squeeze iron canvas grid glimpse
+Shortened Secret phrase TrapInhaBikePistDrumToppSpawSqueIronCanvGridGlim
+Word indexes            1850, 925, 177, 1323, 540, 1833, 1669, 1692, 946, 269, 819, 793
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN

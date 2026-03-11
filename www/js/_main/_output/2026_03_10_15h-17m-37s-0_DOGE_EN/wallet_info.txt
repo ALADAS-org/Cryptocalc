@@ -1,0 +1,14 @@
+Wallet Mode             HD Wallet
+Blockchain              DogeCoin
+Coin                    DOGE
+Entropy                 79bea9d705d891562bdbfeff977377f9
+Entropy Size            128 bits
+Wallet Address          DNWyGcXym3bBRtBYqEqbbAD2TR5tQjFz5H
+Blockchain Explorer     https://dogechain.info/address/DNWyGcXym3bBRtBYqEqbbAD2TR5tQjFz5H
+Private Key             6a799d47d6e8699c79698e8004811e4a07b7c6b8c7739d12c3579b48ffef7857
+WIF                     QSBbog88gSKNcL92thMcNAyRMMUdPDADRdo2ZQp9jehVE1GTXZC2
+Secret phrase           keen vocal into arm math prison quarter lemon zebra romance target vicious
+Shortened Secret phrase KeenVocaIntoArmMathPrisQuarLemoZebrRomaTargVici
+Word indexes            973, 1962, 942, 93, 1096, 1368, 1403, 1022, 2044, 1500, 1775, 1948
+Derivation Path         m/44'/3'/1'/0/3'
+Lang                    EN
