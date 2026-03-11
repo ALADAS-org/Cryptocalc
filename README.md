@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.9
+## CryptoCalc 0.5.10
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -6,17 +6,18 @@
    Even though there is already similar tools online, the purpose is to provide these features
    locally on your computer (non custodial) in order to reduce the risk of your _Private Key_ / _WIF_ 
    or _Secret phrase_ informations being stolen.    
-   NB: Since its first release _CryptoCalc_ has been downloaded 16552 times on [npm](https://www.npmjs.com/).   
+   NB: Since its first release _CryptoCalc_ has been downloaded 16792 times on [npm](https://www.npmjs.com/).   
    
-   You can support this project by testing and reporting bugs (or asking for enhancements) with [`Issues`](https://github.com/ALADAS-org/Cryptocalc/issues), 
-   provide localization files (see 5.1.19) or even by donating to [Aladas](https://aladas.org/?page_id=61), 
-   a non profit organization whose primary goal is to protect Wild bees](https://sites.google.com/view/aladas/accueil).
+   You can support this project by testing and reporting bugs (or asking for enhancements) with [`Issues`](https://github.com/ALADAS-org/Cryptocalc/issues) 
+   or provide localization files (see 5.1.19).  
    
-   [![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/btn_donate_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=SHBL3TVP4QKRJ)
-
+   Cryptocalc is developed by [Aladas](https://aladas.org/?page_id=61), a non profit organization whose primary goal is to protect Wild bees](https://sites.google.com/view/aladas/accueil).
+   
 2. Features    
     2.0. Recently added features
-	- Added `Unit tests`: these tests use [Jest](https://jestjs.io/fr/) unit test framework. It is an ongoing work (344 tests ATM). Use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`). 
+	- Help Enhancement: the `Help menu` provides now an HTML version of `README.md` and a documentation of test protocols
+	- Added `Unit tests`: these tests use [Jest](https://jestjs.io/fr/) unit test framework. It is an ongoing work (694 tests ATM). Use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`). 
+	- Added `e2e tests` (Real user scenario testing): these tests use [Playwright](https://playwright.dev/)
 	- `Wallets Database`: you can now populate a `SQLite` database byb ilporting the _Wallet informations_ (`.wits` files in timestamped subfolders under `_output` folder)    
 	- Added support support of `Bip84` purpose in the `Bip32 derivation path`    
 	
@@ -143,7 +144,7 @@
 	               - e.g. `git clone https://github.com/ALADAS-org/cryptocalc.git`
                - Type `cd cryptocalc`	
                - Type `npm install` 
-			   - You can launch _CryptoCalc_ with a double clik on `_runW.bat` (`W` means _Windows_)    
+			   - You can launch _CryptoCalc_ with a double clik on `_run_Cryptocalc_W.bat` (`W` means _Windows_)    
        - 3.2.b. On `Linux` Operating system	
            - Linux distribution	  
 		       - _CryptoCalc_ was tested on [Linux Mint 22.2](https://linuxmint.com/)
@@ -180,7 +181,13 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.9`: This version 
+    - `0.5.10`: This version 
+	    - Help Enhancement: the `Help menu` provides now an HTML version of `README.md` and a documentation of test protocols
+	    - Updates in Unit tests running on [Jest](https://jestjs.io/fr/): 
+		  Updates in `Unit tests`: 694 tests
+		- Added "e2e" tests (Real user scenario testing) running on [Playwright](https://playwright.dev/): 
+		  Two "e2e" tests added
+    - `0.5.9`
 	    - Enhancement in Unit tests:
 	      Updates in `Unit tests`: 344 tests (`Simple Wallet`, `HD Wallet`, `Bip32_utils`, `Bip39_utils`, `Bip38_utils`) passed. 
     - `0.5.8` 
@@ -324,20 +331,11 @@
         - _Seed phrase_ renamed to _Secret phrase_ because it seems it is the more user friendly terminology (among
         _Mnemonics_, _Seed phrase_, _Secret_, _Passphrase_ and _Secret Recovery Passphrase_).
 		- Added a link (see 5.1.18) to the whitepaper of the _3D representation of a Secret phrase_
-    - `0.3.60`
-	    - Trying to fix _Bullet list hell_ related to how [Github](https://github.com/) renders them
-	    - Rewrite/Updates in this README: 
-		    - Instructions to install on `Linux` (see 3.2.b)
-			- More explanations on the usage of [Guarda](https://guarda.com/) 
-    - `0.3.52`  
-	    - Fixes in this README
-		- First tests on `Linux Mint 22.2`: problem with icon filenames
-		- Fix in icon filenames for `Linux` compatibility 
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
 	or by using the `Wizard's Lair` path (see 3.2): install `NodeJs`, `git` then install the _CryptoCalc_ project and launch it
-	with a double click on `_runW.bat` (`W` means _Windows_) or `_runX.sh` (`X` means _Linux_).    
+	with a double click on `_run_Cryptocalc_W.bat` (`W` means _Windows_) or `_run_Cryptocalc_X.sh` (`X` means _Linux_).    
     - 5.1. Features 
         - 5.1.1. _Cryptocalc Standalone installer_    
 		    - 5.1.1.a: Downloadl [CryptoCalc installer](https://sourceforge.net/projects/aladas-cryptocalc/)

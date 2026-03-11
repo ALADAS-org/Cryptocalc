@@ -298,18 +298,6 @@ describe('BIP32 Utilities', () => {
       expect(typeof result[WIF]).toBe('string');
       expect(result[WIF].length).toBeGreaterThan(0);
     });
-    
-    // Skipping Horizen test due to hdaddressgenerator network configuration issues
-    test.skip('handles Horizen with string address index', async () => {
-      const args = {
-        [BLOCKCHAIN]: HORIZEN,
-        [ADDRESS_INDEX]: "5"
-      };
-      
-      const result = await Bip32Utils.MnemonicsToHDWalletInfo(TEST_MNEMONICS, args);
-      
-      expect(result[ADDRESS]).toBeDefined();
-    });
   });
   
   // ==========================================================================
@@ -520,6 +508,103 @@ describe('BIP32 Utilities', () => {
     });
   });
   
+  // ==========================================================================
+  // USE CASE - HD Wallet with account, address index, and BIP39 passphrase
+  // ==========================================================================
+  // Scenario: user sets mnemonics, then enters Account=2, Address Index=5,
+  //           and a BIP39 passphrase — verifies the full derivation chain.
+  // ==========================================================================
+
+  describe('Use Case - HD Wallet with account, address index, and BIP39 passphrase', () => {
+
+    const USE_CASE_MNEMONICS  = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+    const USE_CASE_PASSPHRASE = "my secret passphrase";
+    const USE_CASE_ACCOUNT    = 2;
+    const USE_CASE_ADDR_INDEX = 5;
+
+    test('Bitcoin: derivation path reflects account=2 and address_index=5', async () => {
+      const result = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, {
+        [BLOCKCHAIN]:       BITCOIN,
+        [ACCOUNT]:          USE_CASE_ACCOUNT,
+        [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
+        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+      });
+
+      expect(result[DERIVATION_PATH]).toBe("m/44'/0'/2'/0/5'");
+    });
+
+    test('Bitcoin: address and private key are deterministic', async () => {
+      const args = {
+        [BLOCKCHAIN]:       BITCOIN,
+        [ACCOUNT]:          USE_CASE_ACCOUNT,
+        [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
+        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+      };
+
+      const result1 = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, args);
+      const result2 = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, args);
+
+      expect(result1[ADDRESS]).toBe(result2[ADDRESS]);
+      expect(result1[PRIVATE_KEY]).toBe(result2[PRIVATE_KEY]);
+    });
+
+    test('Bitcoin: passphrase changes the derived address (same account/index)', async () => {
+      const withPass = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, {
+        [BLOCKCHAIN]:       BITCOIN,
+        [ACCOUNT]:          USE_CASE_ACCOUNT,
+        [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
+        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+      });
+
+      const noPass = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, {
+        [BLOCKCHAIN]:    BITCOIN,
+        [ACCOUNT]:       USE_CASE_ACCOUNT,
+        [ADDRESS_INDEX]: USE_CASE_ADDR_INDEX
+      });
+
+      expect(withPass[ADDRESS]).not.toBe(noPass[ADDRESS]);
+      expect(withPass[PRIVATE_KEY]).not.toBe(noPass[PRIVATE_KEY]);
+    });
+
+    test('Bitcoin: known reference values for account=2, index=5, passphrase', async () => {
+      const result = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, {
+        [BLOCKCHAIN]:       BITCOIN,
+        [ACCOUNT]:          USE_CASE_ACCOUNT,
+        [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
+        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+      });
+
+      expect(result[ADDRESS]).toBe("1BQQ4VjXtPGd3YEV45vuMkNKjo42pjLLUB");
+      expect(result[PRIVATE_KEY]).toBe("ca2dc38c852262d0ac5df670935b1917eb2e3749ccc6afff46fdbd8cf5f8ff0f");
+      expect(result[WIF]).toBe("L3ziiGbcFsFG8j6RaYoBuozsRcCELoehz7Fa9CQm2S35Jwphiju3");
+    });
+
+    test('Ethereum: derivation path reflects account=2 and address_index=5', async () => {
+      const result = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, {
+        [BLOCKCHAIN]:       ETHEREUM,
+        [ACCOUNT]:          USE_CASE_ACCOUNT,
+        [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
+        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+      });
+
+      expect(result[DERIVATION_PATH]).toBe("m/44'/60'/2'/0/5'");
+    });
+
+    test('Ethereum: known reference address for account=2, index=5, passphrase', async () => {
+      const result = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, {
+        [BLOCKCHAIN]:       ETHEREUM,
+        [ACCOUNT]:          USE_CASE_ACCOUNT,
+        [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
+        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+      });
+
+      expect(result[ADDRESS]).toBe("0x67C0ae27e79Ba1B6f58af5DCf3d893f7394ac0e5");
+      expect(result[PRIVATE_KEY]).toBe("cfe52101b07064fb5f04b24efe752399fea57024f0899212b82ba2b481faf71e");
+      expect(result[ADDRESS]).toMatch(/^0x[0-9a-fA-F]{40}$/);
+    });
+
+  });
+
   // ==========================================================================
   // EDGE CASES
   // ==========================================================================

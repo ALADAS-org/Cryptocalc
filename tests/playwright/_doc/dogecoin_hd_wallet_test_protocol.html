@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E2E Test Protocol — Dogecoin HD Wallet (Save & Open)</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0b0d12;
+      --surface:   #111420;
+      --border:    #1e2235;
+      --border-hi: #2e3450;
+      --text:      #cdd3e8;
+      --muted:     #5a6080;
+      --accent:    #f7c948;
+      --accent2:   #3d8ef7;
+      --accent3:   #50e0a0;
+      --accent4:   #e05080;
+      --pass:      #50e0a0;
+      --fail:      #e05080;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Syne', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 0 0 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 56px 64px 40px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 10% 50%, #1a2040 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 90% 20%, #0d1a30 0%, transparent 70%);
+      z-index: 0;
+    }
+    header > * { position: relative; z-index: 1; }
+
+    .header-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800;
+      color: #eef0f8;
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+    h1 span { color: var(--accent); }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .meta-item {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      border-radius: 4px;
+      padding: 5px 12px;
+      color: var(--muted);
+    }
+    .meta-item strong { color: var(--text); }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 48px 64px 0;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── CONTEXT BOX ── */
+    .context-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-bottom: 48px;
+    }
+    .context-block p { color: var(--text); margin-bottom: 16px; }
+    .context-block p:last-child { margin-bottom: 0; }
+
+    /* ── CONSTRAINTS TABLE ── */
+    .constraint-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .constraint-row {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 13px;
+    }
+    .constraint-key {
+      background: #141828;
+      padding: 10px 16px;
+      font-family: var(--mono);
+      color: var(--accent2);
+      border-right: 1px solid var(--border);
+    }
+    .constraint-val {
+      background: var(--surface);
+      padding: 10px 16px;
+      color: var(--muted);
+    }
+
+    /* ── HELPERS BLOCK ── */
+    .helpers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .helper-row {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      font-size: 13px;
+    }
+    .helper-name {
+      font-family: var(--mono);
+      color: var(--accent3);
+      min-width: 280px;
+      flex-shrink: 0;
+    }
+    .helper-desc { color: var(--muted); }
+
+    /* ── TEST CARDS ── */
+    .tests-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .test-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .test-card-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      background: #0f1220;
+    }
+    .test-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      background: #1a2a3a;
+      color: var(--accent2);
+      border: 1px solid #2a4060;
+    }
+    .test-title-wrap { flex: 1; }
+    .test-id {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .test-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #eef0f8;
+    }
+    .test-title code {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      background: #1a1c28;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .test-body {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* sub-sections */
+    .sub-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .objective-text { color: var(--text); font-size: 14px; line-height: 1.65; }
+
+    /* preconditions */
+    .precond-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .precond-chip {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: #141828;
+      border: 1px solid var(--border-hi);
+      color: var(--text);
+    }
+
+    /* steps table */
+    .steps-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .steps-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-align: left;
+      padding: 8px 14px;
+      background: #0f1220;
+      border-bottom: 1px solid var(--border);
+    }
+    .steps-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .steps-table tr:last-child td { border-bottom: none; }
+    .steps-table tr:hover td { background: #141828; }
+    .step-num {
+      font-family: var(--mono);
+      color: var(--muted);
+      width: 30px;
+    }
+    .step-action { color: var(--text); }
+    .step-method {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent3);
+    }
+
+    /* assertion box */
+    .assertion-box {
+      background: #0f1220;
+      border: 1px solid var(--border-hi);
+      border-left: 3px solid var(--accent3);
+      border-radius: 4px;
+      padding: 14px 18px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent3);
+      white-space: pre;
+    }
+    .assertion-box.regex { border-left-color: var(--accent2); color: var(--accent2); }
+    .assertion-box.ineq { border-left-color: var(--accent2); color: var(--accent2); }
+    .assertion-box.eq   { border-left-color: var(--accent4); color: var(--accent4); }
+
+    /* failure list */
+    .failure-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .failure-list li {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      align-items: baseline;
+    }
+    .fail-bullet {
+      font-family: var(--mono);
+      color: var(--fail);
+      flex-shrink: 0;
+    }
+    .fail-text { color: var(--muted); }
+    .fail-text strong { color: var(--text); font-weight: 600; }
+
+    /* design note */
+    .design-note {
+      background: #130d20;
+      border: 1px solid #2a1a40;
+      border-left: 3px solid #a080ff;
+      border-radius: 4px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #9070cc;
+      line-height: 1.65;
+    }
+    .design-note strong { color: #c0a0ff; }
+    .design-note code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #1a1030;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--accent4);
+    }
+
+    /* ── SUMMARY TABLE ── */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .summary-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-align: left;
+      padding: 10px 16px;
+      background: #0f1220;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table tr:hover td { background: #141828; }
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+    .badge-regex  { background: #0f2030; color: var(--accent2); border: 1px solid #1a4060; }
+    .badge-ineq   { background: #101a10; color: var(--accent3); border: 1px solid #1a3020; }
+    .badge-eq     { background: #1a0820; color: var(--accent4); border: 1px solid #300a30; }
+    .badge-doge   { background: #201808; color: var(--accent);  border: 1px solid #403010; }
+
+    /* ── CODE INLINE ── */
+    code {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--accent4);
+      background: #1a1028;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    /* ── PHASE CHIPS ── */
+    .phase-tag {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      background: #1a1c28;
+      border: 1px solid var(--border-hi);
+      color: var(--accent2);
+      margin-right: 8px;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Playwright · Electron E2E</div>
+  <h1>E2E Test Protocol<br><span>Dogecoin HD Wallet (Save & Open)</span></h1>
+  <div class="meta">
+    <div class="meta-item"><strong>File</strong> &nbsp;tests/playwright/e2e/dogecoin_hd_wallet_usecase.test.js</div>
+    <div class="meta-item"><strong>Suite</strong> &nbsp;Use Case - Dogecoin HD Wallet : generate, save, open, edit, save</div>
+    <div class="meta-item"><strong>Tests</strong> &nbsp;1 (complete 6-phase scenario)</div>
+    <div class="meta-item"><strong>Blockchain</strong> &nbsp;Dogecoin</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── GENERAL CONTEXT ── -->
+  <div class="section-title">General Context</div>
+  <div class="context-block">
+    <p>
+      This test drives the Cryptocalc application as a real user would, through its Electron GUI.
+      It launches a fresh instance of the application, performs UI interactions, and verifies
+      the resulting state of wallet fields as well as files saved in the <code>_output/</code> folder.
+    </p>
+
+    <div class="sub-label">Confirmed Application Behavior</div>
+    <div class="constraint-grid">
+      <div class="constraint-row">
+        <div class="constraint-key">Save</div>
+        <div class="constraint-val">No file-picker. Direct write to <code>_output/&lt;timestamp&gt;_&lt;COIN&gt;_&lt;LANG&gt;/</code> followed by an iziToast with "Show" and "Close" buttons</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">Open</div>
+        <div class="constraint-val">Native OS dialog to choose the file — mocked via <code>electronApp.evaluate({ dialog })</code></div>
+      </div>
+    </div>
+
+    <div class="sub-label" style="margin-top:20px;">Key Technical Constraints</div>
+    <div class="constraint-grid">
+      <div class="constraint-row">
+        <div class="constraint-key">#account_id, #address_index_id</div>
+        <div class="constraint-val">Read-only fields — modified via <code>page.evaluate()</code> to bypass Playwright's refusal to fill readonly inputs</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">#refresh_btn_id, #save_icon_id, #file_open_icon_id</div>
+        <div class="constraint-val">May be <code>disabled</code> — clicked via <code>evaluate()</code> after removing the <code>disabled</code> attribute</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">Address generation</div>
+        <div class="constraint-val">Asynchronous — 5s pause after each <code>clickRefresh()</code></div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">Save operation</div>
+        <div class="constraint-val">5s wait after iziToast appears to allow file writes to complete</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">_output/ directory</div>
+        <div class="constraint-val">Cleaned before each test to prevent interference</div>
+      </div>
+    </div>
+
+    <div class="sub-label" style="margin-top:20px;">Shared Helpers</div>
+    <div class="helpers-list">
+      <div class="helper-row"><span class="helper-name">switchToHDWallet(page)</span><span class="helper-desc">Navigate to Wallet tab, select "HD Wallet" mode</span></div>
+      <div class="helper-row"><span class="helper-name">selectBlockchain(page, blockchain)</span><span class="helper-desc">Select a blockchain from the dynamic dropdown</span></div>
+      <div class="helper-row"><span class="helper-name">setFieldValue(page, id, val)</span><span class="helper-desc">Inject a value into any field (readonly-safe), dispatches input + change</span></div>
+      <div class="helper-row"><span class="helper-name">clickRefresh(page)</span><span class="helper-desc">Trigger refresh via evaluate() — generates a new address</span></div>
+      <div class="helper-row"><span class="helper-name">getDisplayedAddress(page)</span><span class="helper-desc">Read the current text content of <code>#address_id</code></span></div>
+      <div class="helper-row"><span class="helper-name">saveWallet(page)</span><span class="helper-desc">Click Save, wait for iziToast, dismiss it, and return the path to the created .wits file</span></div>
+      <div class="helper-row"><span class="helper-name">openWallet(page, electronApp, filePath)</span><span class="helper-desc">Mock the open dialog and click the open icon</span></div>
+      <div class="helper-row"><span class="helper-name">logWalletState(page, label)</span><span class="helper-desc">Log the state of main fields for debugging</span></div>
+      <div class="helper-row"><span class="helper-name">cleanupOutputDir()</span><span class="helper-desc">Delete all folders and files in <code>_output/</code></span></div>
+    </div>
+  </div>
+
+  <!-- ── TEST ── -->
+  <div class="section-title">Test Protocol</div>
+  <div class="tests-grid">
+
+    <!-- SINGLE TEST (COMPLETE SCENARIO) -->
+    <div class="test-card">
+      <div class="test-card-header">
+        <div class="test-number">01</div>
+        <div class="test-title-wrap">
+          <div class="test-id">Complete Workflow</div>
+          <div class="test-title">Generate, save, open, and modify a Dogecoin HD wallet</div>
+        </div>
+      </div>
+      <div class="test-body">
+        <div>
+          <div class="sub-label">Objective</div>
+          <p class="objective-text">
+            Verify the complete lifecycle of a Dogecoin HD wallet:
+            <span class="phase-tag">Phase 1</span> Initial setup (account=1, index=3)<br>
+            <span class="phase-tag">Phase 2</span> Generation + address format validation<br>
+            <span class="phase-tag">Phase 3</span> Save → verify JSON file in _output/<br>
+            <span class="phase-tag">Phase 4</span> Reopen file → verify reload<br>
+            <span class="phase-tag">Phase 5</span> Modify (account=4, index=7) + refresh<br>
+            <span class="phase-tag">Phase 6</span> Second save → verify update
+          </p>
+        </div>
+
+        <div>
+          <div class="sub-label">Preconditions</div>
+          <div class="precond-list">
+            <span class="precond-chip">App launched &amp; ready</span>
+            <span class="precond-chip">Wallet tab active</span>
+            <span class="precond-chip">Mode: HD Wallet</span>
+            <span class="precond-chip">Blockchain: Dogecoin</span>
+            <span class="precond-chip">_output/ folder empty</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="sub-label">Detailed Phases</div>
+          
+          <!-- Phase 1 & 2 -->
+          <table class="steps-table" style="margin-bottom:16px;">
+            <thead><tr><th>Phase</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">1</td><td class="step-action">Set account=1, index=3</td><td class="step-method">setFieldValue(page, 'account_id', '1')<br>setFieldValue(page, 'address_index_id', '3')</td></tr>
+              <tr><td class="step-num">2</td><td class="step-action">Trigger address generation</td><td class="step-method">clickRefresh(page)</td></tr>
+              <tr><td class="step-num">2b</td><td class="step-action">Read generated address</td><td class="step-method">getDisplayedAddress(page) → initialAddress</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Phase 3 -->
+          <table class="steps-table" style="margin-bottom:16px;">
+            <thead><tr><th>Phase</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">3</td><td class="step-action">Save wallet</td><td class="step-method">saveWallet(page) → savedPath1</td></tr>
+              <tr><td class="step-num">3b</td><td class="step-action">Verify file exists</td><td class="step-method">fs.existsSync(savedPath1) === true</td></tr>
+              <tr><td class="step-num">3c</td><td class="step-action">Verify JSON contains address</td><td class="step-method">JSON.parse() .includes(initialAddress)</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Phase 4 -->
+          <table class="steps-table" style="margin-bottom:16px;">
+            <thead><tr><th>Phase</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">4</td><td class="step-action">Open saved file</td><td class="step-method">openWallet(page, electronApp, savedPath1)</td></tr>
+              <tr><td class="step-num">4b</td><td class="step-action">Read reloaded address</td><td class="step-method">getDisplayedAddress(page) → reloadedAddress</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Phase 5 -->
+          <table class="steps-table" style="margin-bottom:16px;">
+            <thead><tr><th>Phase</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">5</td><td class="step-action">Modify account=4, index=7</td><td class="step-method">setFieldValue(page, 'account_id', '4')<br>setFieldValue(page, 'address_index_id', '7')</td></tr>
+              <tr><td class="step-num">5b</td><td class="step-action">Refresh</td><td class="step-method">clickRefresh(page)</td></tr>
+              <tr><td class="step-num">5c</td><td class="step-action">Read new address</td><td class="step-method">getDisplayedAddress(page) → updatedAddress</td></tr>
+            </tbody>
+          </table>
+
+          <!-- Phase 6 -->
+          <table class="steps-table">
+            <thead><tr><th>Phase</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">6</td><td class="step-action">Save modified wallet</td><td class="step-method">saveWallet(page) → savedPath2</td></tr>
+              <tr><td class="step-num">6b</td><td class="step-action">Verify second file exists</td><td class="step-method">fs.existsSync(savedPath2) === true</td></tr>
+              <tr><td class="step-num">6c</td><td class="step-action">Verify JSON contains new address</td><td class="step-method">JSON.parse() .includes(updatedAddress)</td></tr>
+              <tr><td class="step-num">6d</td><td class="step-action">Verify old address is not present</td><td class="step-method">! .includes(initialAddress)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div class="sub-label">Assertions</div>
+          <div class="assertion-box regex">/^D[1-9A-HJ-NP-Za-km-z]{32,34}$/   ← valid Dogecoin address format</div>
+          <div class="assertion-box ineq" style="margin-top:10px;">updatedAddress ≠ initialAddress</div>
+          <div class="assertion-box eq" style="margin-top:10px;">reloadedAddress = initialAddress</div>
+        </div>
+
+        <div>
+          <div class="sub-label">Failure Scenarios</div>
+          <ul class="failure-list">
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Empty address</strong> — generation did not complete within timeout</span></li>
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Invalid address format</strong> — regex not satisfied (wrong blockchain or derivation error)</span></li>
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>No file created</strong> — save failed (incorrect path or write error)</span></li>
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>reloadedAddress ≠ initialAddress</strong> — open did not properly reload the wallet</span></li>
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>updatedAddress = initialAddress</strong> — parameter changes were not applied</span></li>
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Second file contains old address</strong> — update was not saved</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <div class="sub-label">Implementation Note</div>
+          <div class="design-note">
+            <strong>Open dialog mock:</strong> Attempting to mock via <code>electronApp.evaluate()</code> may fail with
+            <code>ReferenceError: require is not defined</code>. The test is designed to continue even if the mock fails —
+            in that case, the real system dialog would appear, but in CI/headless environments, the application typically
+            uses a default path or the test is configured to run without user interaction.<br><br>
+            <strong>Cleanup:</strong> The <code>_output/</code> folder is completely cleaned before each test to ensure
+            no residual files from previous runs interfere.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tests-grid -->
+
+  <!-- ── SUMMARY ── -->
+  <div class="section-title">Summary</div>
+  <div class="context-block" style="padding:0;overflow:hidden;">
+    <table class="summary-table">
+      <thead>
+        <tr><th>Phase</th><th>Action</th><th>Assertion</th><th>Blockchain</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">1-2</td>
+          <td>Initial generation (account=1, index=3)</td>
+          <td><span class="badge badge-regex">regex</span></td>
+          <td><span class="badge badge-doge">Dogecoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">3</td>
+          <td>First save</td>
+          <td><span class="badge badge-eq">file created + contains address</span></td>
+          <td><span class="badge badge-doge">Dogecoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">4</td>
+          <td>Reopen file</td>
+          <td><span class="badge badge-eq">reloaded address = initial address</span></td>
+          <td><span class="badge badge-doge">Dogecoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">5</td>
+          <td>Modify (account=4, index=7)</td>
+          <td><span class="badge badge-ineq">new address ≠ old address</span></td>
+          <td><span class="badge badge-doge">Dogecoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">6</td>
+          <td>Second save</td>
+          <td><span class="badge badge-eq">second file created + contains new address</span></td>
+          <td><span class="badge badge-doge">Dogecoin</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+</body>
+</html>

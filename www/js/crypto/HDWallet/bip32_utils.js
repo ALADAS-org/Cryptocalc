@@ -285,10 +285,10 @@ class Bip32Utils {
 		pretty_log("   address_index: <" + address_index + "> " , typeof address_index);
 		address_index = address_index.replaceAll("'","");
 		
-		// if ( blockchain == HORIZEN && typeof address_index == "string" ) {
+		//if ( blockchain == HORIZEN && typeof address_index == "string" ) {
 		// 	address_index = parseInt(address_index);
 		// 	console.log("   address_index 2: <" + address_index + "> " + typeof address_index);
-		// }
+		//}
 		
 		let addresses = await bip44.generate( expected_address_count, address_index );
 		

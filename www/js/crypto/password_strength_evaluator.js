@@ -135,7 +135,7 @@ class PasswordStrengthEvaluator {
 	
 	is_special_character(str) {
 		// const SPECIAL_CHARACTERS = '+-/=_<>&#$*@%[](){};,.\'"'; 
-		const SPECIAL_CHARACTERS = '-_#+*!§$%&=?@,.;:\'~"/(){}[]\\'; // 28 characters: entropy = 4.81 bit / character 
+		const SPECIAL_CHARACTERS = '-_#+*!Â§$%&=?@,.;:\'~"/(){}[]\\'; // 28 characters: entropy = 4.81 bit / character 
 		return (SPECIAL_CHARACTERS.indexOf(str) !== -1);
 	} // is_digit()
 
@@ -153,11 +153,11 @@ class PasswordStrengthEvaluator {
 		return password_score;
 	} // getPasswordStrengthScore()
 	
-	// 0 – 27 bits	    Very Weak	            Simple words, “password”, “123456”, short names
-	// 28 – 35 bits	    Weak	                Single dictionary word with a few digits (“summer23”)
-	// 36 – 59 bits	    Fair    	            Two random words or a word + symbols (“Blue$Tiger42”)
-	// 60 – 79 bits	    Good	                Three random words or long passphrase
-	// 80 – 127 bits    Strong	                Four or more random words; secure random generator used
+	// 0 â€“ 27 bits	    Very Weak	            Simple words, â€œpasswordâ€, â€œ123456â€, short names
+	// 28 â€“ 35 bits	    Weak	                Single dictionary word with a few digits (â€œsummer23â€)
+	// 36 â€“ 59 bits	    Fair    	            Two random words or a word + symbols (â€œBlue$Tiger42â€)
+	// 60 â€“ 79 bits	    Good	                Three random words or long passphrase
+	// 80 â€“ 127 bits    Strong	                Four or more random words; secure random generator used
 	// 128 bits +	    Very Secure	            Random 16-byte key or long diceware passphrase
 	getPasswordStrengthAsBits( password_str ) {
 		let password_strength = 0;
@@ -178,6 +178,8 @@ class PasswordStrengthEvaluator {
 			return password_strength;	
 		}; // compute_string_entropy()
 		
+		// Ordre du plus restrictif au plus large : une chaîne binaire est aussi hex/base64,
+		// donc on teste binary en premier pour lui attribuer la bonne entropie (1 bit/char).
 		if ( this.is_binary_string( password_str ) ) return compute_string_entropy( password_str, 2 );
 		if ( this.is_octal_string( password_str ) )  return compute_string_entropy( password_str, 8 );
 		if ( this.is_hexa_string( password_str ) )   return compute_string_entropy( password_str, 16 );
@@ -236,11 +238,11 @@ class PasswordStrengthEvaluator {
 		
 		// ChatGPT answer: 
 		// Entropy (bits)	Strength Description	Typical Example
-		// 0 – 27 bits	    Very Weak	            Simple words, “password”, “123456”, short names
-		// 28 – 35 bits	    Weak	                Single dictionary word with a few digits (“summer23”)
-		// 36 – 59 bits	    Moderate / Fair    	    Two random words or a word + symbols (“Blue$Tiger42”)
-		// 60 – 79 bits	    Strong	                Three random words or long passphrase
-		// 80 – 127 bits    Very Strong	            Four or more random words; secure random generator used
+		// 0 â€“ 27 bits	    Very Weak	            Simple words, â€œpasswordâ€, â€œ123456â€, short names
+		// 28 â€“ 35 bits	    Weak	                Single dictionary word with a few digits (â€œsummer23â€)
+		// 36 â€“ 59 bits	    Moderate / Fair    	    Two random words or a word + symbols (â€œBlue$Tiger42â€)
+		// 60 â€“ 79 bits	    Strong	                Three random words or long passphrase
+		// 80 â€“ 127 bits    Very Strong	            Four or more random words; secure random generator used
 		// 128 bits +	    Very Secure	            Random 16-byte key or long diceware passphrase
 		
 		// * < 28 bits Very Weak / Negligible A short, simple password like password or 123456. Easily cracked by any attacker. Instantly to minutes
@@ -292,6 +294,7 @@ class PasswordStrengthEvaluator {
 	
 	// ======== DeepSeek mix zxvcbn and Entropy ========  
 	DS_calculateAdjustedEntropy( password ) {
+		if ( !password || password.length === 0 ) return 0;
 		const charSets = {
 			lower: /[a-z]/.test(password),
 			upper: /[A-Z]/.test(password),
@@ -347,10 +350,10 @@ const test_GetDisplayEntropyForAlphabet = () => {
 		console.log( " > For an alphabet with " + alphabet_size + "\tsymbols the entropy = \t" + entropy + " bits" );
 	}; // compute_and_display_entropy_for_alphabet()
 
-	// · Lowercase letters only:                  26 options (~4.7 bits/char)
-    // · Lowercase + Uppercase:                   52 options (~5.7 bits/char)
-    // · Alphanumeric (a-z, A-Z, 0-9):            62 options (~5.95 bits/char)
-    // · Full keyboard (a-z, A-Z, 0-9, symbols): ~95 options (~6.6 bits/char)	
+	// Â· Lowercase letters only:                  26 options (~4.7 bits/char)
+    // Â· Lowercase + Uppercase:                   52 options (~5.7 bits/char)
+    // Â· Alphanumeric (a-z, A-Z, 0-9):            62 options (~5.95 bits/char)
+    // Â· Full keyboard (a-z, A-Z, 0-9, symbols): ~95 options (~6.6 bits/char)	
 	get_and_display_entropy_for_alphabet(2);  // Binary digits:                      [0..1]
 	get_and_display_entropy_for_alphabet(4);
 	get_and_display_entropy_for_alphabet(8);  // Octal digits:                       [0..7] 

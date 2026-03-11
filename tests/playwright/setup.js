@@ -77,8 +77,9 @@ const test = base.extend({
 
   /**
    * Helper pour les captures d'écran
+   * NB: nommée 'appScreenshot' car 'screenshot' est réservé par Playwright (worker fixture built-in)
    */
-  screenshot: async ({ page }, use, testInfo) => {
+  appScreenshot: [async ({ page }, use, testInfo) => {
     const takeScreenshot = async (name) => {
       const screenshotPath = path.join(
         __dirname, 
@@ -97,7 +98,8 @@ const test = base.extend({
     };
     
     await use(takeScreenshot);
-  }
+  }, { scope: 'test' }]
+
 });
 
 // ==========================================================================
@@ -107,9 +109,11 @@ const test = base.extend({
 /**
  * Attendre que l'application soit prête
  */
+
+// APRÈS
 async function waitForAppReady(page) {
-  await page.waitForLoadState('networkidle');
-  await page.waitForTimeout(1000); // Délai de sécurité
+  await page.waitForLoadState('domcontentloaded');
+  await page.waitForTimeout(3000); // attendre l'init Electron/JS
 }
 
 /**

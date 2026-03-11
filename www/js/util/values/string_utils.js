@@ -61,6 +61,7 @@ String.prototype.replaceAt = function(index, replacement) {
 } // String.replaceAt()
 
 // https://www.tutorialspoint.com/insert-a-character-after-every-n-characters-in-javascript
+/* previous version
 const insertAfterEveryN = (inputString, insertChar, n) => {
 	let outputString = "";
 	for (let i = 0; i < inputString.length; i += n) {
@@ -71,6 +72,20 @@ const insertAfterEveryN = (inputString, insertChar, n) => {
 			outputString += slice;
 	}
 	return outputString;
+}; // insertAfterEveryN()
+*/
+
+const insertAfterEveryN = (inputString, insertChar, n) => {
+    let outputString = "";
+    for (let i = 0; i < inputString.length; i += n) {
+        let slice = inputString.slice(i, i + n);
+        const isLastChunk = (i + n >= inputString.length);
+        if (slice.length == n && !isLastChunk)
+            outputString += slice + insertChar;
+        else
+            outputString += slice;
+    }
+    return outputString;
 }; // insertAfterEveryN()
 
 // https://www.slingacademy.com/article/javascript-convert-string-to-hex-and-vice-versa/

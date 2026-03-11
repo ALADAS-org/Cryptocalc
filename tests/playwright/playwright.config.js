@@ -25,8 +25,6 @@ module.exports = defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
-    
-    // Dossier pour les traces
     actionTimeout: 10000,
     navigationTimeout: 30000
   },
@@ -43,9 +41,6 @@ module.exports = defineConfig({
   
   // Retry sur échec
   retries: 2,
-  
-  // Configuration globale
-  globalSetup: require.resolve('./setup.js'),
   
   // Metadata
   metadata: {

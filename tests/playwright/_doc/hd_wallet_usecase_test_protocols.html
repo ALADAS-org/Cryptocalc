@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>E2E Test Protocols — HD Wallet</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0b0d12;
+      --surface:   #111420;
+      --border:    #1e2235;
+      --border-hi: #2e3450;
+      --text:      #cdd3e8;
+      --muted:     #5a6080;
+      --accent:    #f7c948;
+      --accent2:   #3d8ef7;
+      --accent3:   #50e0a0;
+      --accent4:   #e05080;
+      --pass:      #50e0a0;
+      --fail:      #e05080;
+      --mono:      'JetBrains Mono', monospace;
+      --sans:      'Syne', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 0 0 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      padding: 56px 64px 40px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 10% 50%, #1a2040 0%, transparent 70%),
+        radial-gradient(ellipse 40% 60% at 90% 20%, #0d1a30 0%, transparent 70%);
+      z-index: 0;
+    }
+    header > * { position: relative; z-index: 1; }
+
+    .header-label {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .18em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 800;
+      color: #eef0f8;
+      line-height: 1.15;
+      margin-bottom: 24px;
+    }
+    h1 span { color: var(--accent); }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .meta-item {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      border-radius: 4px;
+      padding: 5px 12px;
+      color: var(--muted);
+    }
+    .meta-item strong { color: var(--text); }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 48px 64px 0;
+    }
+
+    /* ── SECTION TITLES ── */
+    .section-title {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── CONTEXT BOX ── */
+    .context-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 28px 32px;
+      margin-bottom: 48px;
+    }
+    .context-block p { color: var(--text); margin-bottom: 16px; }
+    .context-block p:last-child { margin-bottom: 0; }
+
+    /* ── CONSTRAINTS TABLE ── */
+    .constraint-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 20px 0;
+    }
+    .constraint-row {
+      display: grid;
+      grid-template-columns: 1fr 1.6fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      font-size: 13px;
+    }
+    .constraint-key {
+      background: #141828;
+      padding: 10px 16px;
+      font-family: var(--mono);
+      color: var(--accent2);
+      border-right: 1px solid var(--border);
+    }
+    .constraint-val {
+      background: var(--surface);
+      padding: 10px 16px;
+      color: var(--muted);
+    }
+
+    /* ── HELPERS BLOCK ── */
+    .helpers-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .helper-row {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      font-size: 13px;
+    }
+    .helper-name {
+      font-family: var(--mono);
+      color: var(--accent3);
+      min-width: 280px;
+      flex-shrink: 0;
+    }
+    .helper-desc { color: var(--muted); }
+
+    /* ── TEST CARDS ── */
+    .tests-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .test-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .test-card-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      background: #0f1220;
+    }
+    .test-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .test-card:nth-child(1) .test-number { background: #1a2a3a; color: var(--accent2); border: 1px solid #2a4060; }
+    .test-card:nth-child(2) .test-number { background: #1a2a2a; color: var(--accent3); border: 1px solid #204040; }
+    .test-card:nth-child(3) .test-number { background: #2a2010; color: var(--accent);  border: 1px solid #403010; }
+    .test-card:nth-child(4) .test-number { background: #1a1040; color: #a080ff;        border: 1px solid #302070; }
+    .test-card:nth-child(5) .test-number { background: #2a1018; color: var(--accent4); border: 1px solid #401020; }
+
+    .test-title-wrap { flex: 1; }
+    .test-id {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .test-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #eef0f8;
+    }
+    .test-title code {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      background: #1a1c28;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    .test-body {
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* sub-sections */
+    .sub-label {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .15em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .objective-text { color: var(--text); font-size: 14px; line-height: 1.65; }
+
+    /* preconditions */
+    .precond-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .precond-chip {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: #141828;
+      border: 1px solid var(--border-hi);
+      color: var(--text);
+    }
+
+    /* steps table */
+    .steps-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .steps-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-align: left;
+      padding: 8px 14px;
+      background: #0f1220;
+      border-bottom: 1px solid var(--border);
+    }
+    .steps-table td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .steps-table tr:last-child td { border-bottom: none; }
+    .steps-table tr:hover td { background: #141828; }
+    .step-num {
+      font-family: var(--mono);
+      color: var(--muted);
+      width: 30px;
+    }
+    .step-action { color: var(--text); }
+    .step-method {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent3);
+    }
+
+    /* assertion box */
+    .assertion-box {
+      background: #0f1220;
+      border: 1px solid var(--border-hi);
+      border-left: 3px solid var(--accent3);
+      border-radius: 4px;
+      padding: 14px 18px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent3);
+      white-space: pre;
+    }
+    .assertion-box.ineq { border-left-color: var(--accent2); color: var(--accent2); }
+    .assertion-box.eq   { border-left-color: var(--accent4); color: var(--accent4); }
+
+    /* failure list */
+    .failure-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .failure-list li {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      align-items: baseline;
+    }
+    .fail-bullet {
+      font-family: var(--mono);
+      color: var(--fail);
+      flex-shrink: 0;
+    }
+    .fail-text { color: var(--muted); }
+    .fail-text strong { color: var(--text); font-weight: 600; }
+
+    /* design note */
+    .design-note {
+      background: #130d20;
+      border: 1px solid #2a1a40;
+      border-left: 3px solid #a080ff;
+      border-radius: 4px;
+      padding: 14px 18px;
+      font-size: 13px;
+      color: #9070cc;
+      line-height: 1.65;
+    }
+    .design-note strong { color: #c0a0ff; }
+    .design-note code {
+      font-family: var(--mono);
+      font-size: 12px;
+      background: #1a1030;
+      padding: 1px 5px;
+      border-radius: 3px;
+      color: var(--accent4);
+    }
+
+    /* ── SUMMARY TABLE ── */
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .summary-table th {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: .12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      text-align: left;
+      padding: 10px 16px;
+      background: #0f1220;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-table td {
+      padding: 11px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+    .summary-table tr:last-child td { border-bottom: none; }
+    .summary-table tr:hover td { background: #141828; }
+    .badge {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+    .badge-regex  { background: #0f2030; color: var(--accent2); border: 1px solid #1a4060; }
+    .badge-ineq   { background: #101a10; color: var(--accent3); border: 1px solid #1a3020; }
+    .badge-eq     { background: #1a0820; color: var(--accent4); border: 1px solid #300a30; }
+    .badge-btc    { background: #201808; color: var(--accent);  border: 1px solid #403010; }
+
+    /* ── CODE INLINE ── */
+    code {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--accent4);
+      background: #1a1028;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+
+    /* ── ENTROPY CHIP ── */
+    .entropy-value {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      background: #1a1408;
+      border: 1px solid #403010;
+      padding: 8px 14px;
+      border-radius: 4px;
+      word-break: break-all;
+      margin-top: 8px;
+      display: block;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-hi); border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">Playwright · Electron E2E</div>
+  <h1>E2E Test Protocols<br><span>HD Wallet Use Case</span></h1>
+  <div class="meta">
+    <div class="meta-item"><strong>File</strong> &nbsp;tests/playwright/e2e/hd_wallet_usecase.test.js</div>
+    <div class="meta-item"><strong>Suite</strong> &nbsp;Use Case - HD Wallet : account, address index, BIP39 passphrase</div>
+    <div class="meta-item"><strong>Tests</strong> &nbsp;5</div>
+    <div class="meta-item"><strong>Blockchain</strong> &nbsp;Bitcoin</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ── GENERAL CONTEXT ── -->
+  <div class="section-title">General Context</div>
+  <div class="context-block">
+    <p>
+      These tests drive the Cryptocalc application as a real user would, through its Electron GUI.
+      Each test launches a fresh instance of the application, performs UI interactions, and verifies
+      the resulting state of the wallet fields.
+    </p>
+
+    <div class="sub-label">Key Technical Constraints</div>
+    <div class="constraint-grid">
+      <div class="constraint-row">
+        <div class="constraint-key">#account_id, #address_index_id</div>
+        <div class="constraint-val">Fields are <code>readonly</code> — set via <code>page.evaluate()</code> to bypass Playwright's refusal to fill readonly inputs</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">#bip32_passphrase_id</div>
+        <div class="constraint-val">Also <code>readonly</code> — direct DOM injection with <code>input</code> + <code>change</code> events dispatched</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">#refresh_btn_id</div>
+        <div class="constraint-val">May be <code>disabled</code> — clicked via <code>evaluate()</code> after removing the <code>disabled</code> attribute</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">Refresh regenerates entropy</div>
+        <div class="constraint-val">Each click produces new random entropy — determinism tests inject directly into <code>#entropy_id</code> instead</div>
+      </div>
+      <div class="constraint-row">
+        <div class="constraint-key">BIP32 derivation is async</div>
+        <div class="constraint-val">A <code>waitForTimeout(3000)</code> pause follows every derivation trigger</div>
+      </div>
+    </div>
+
+    <div class="sub-label" style="margin-top:20px;">Shared Helpers</div>
+    <div class="helpers-list">
+      <div class="helper-row"><span class="helper-name">switchToHDWallet(page)</span><span class="helper-desc">Navigate to Wallet tab, select "HD Wallet" mode</span></div>
+      <div class="helper-row"><span class="helper-name">setFieldValue(page, id, val)</span><span class="helper-desc">Inject a value into any field (readonly-safe), dispatches input + change</span></div>
+      <div class="helper-row"><span class="helper-name">setBip39Passphrase(page, val)</span><span class="helper-desc">Wraps setFieldValue for <code>#bip32_passphrase_id</code></span></div>
+      <div class="helper-row"><span class="helper-name">clickRefresh(page)</span><span class="helper-desc">Trigger Refresh via evaluate() — generates new random entropy</span></div>
+      <div class="helper-row"><span class="helper-name">deriveFromFixedEntropy(page, e)</span><span class="helper-desc">Inject entropy into <code>#entropy_id</code> and trigger derivation without Refresh</span></div>
+      <div class="helper-row"><span class="helper-name">getDisplayedAddress(page)</span><span class="helper-desc">Read the current text content of <code>#address_id</code></span></div>
+    </div>
+  </div>
+
+  <!-- ── TESTS ── -->
+  <div class="section-title">Test Protocols</div>
+  <div class="tests-grid">
+
+    <!-- TEST 1 -->
+    <div class="test-card">
+      <div class="test-card-header">
+        <div class="test-number">01</div>
+        <div class="test-title-wrap">
+          <div class="test-id">Format Validation</div>
+          <div class="test-title">Bitcoin address generated with <code>account=2</code>, <code>index=5</code>, passphrase is valid</div>
+        </div>
+      </div>
+      <div class="test-body">
+        <div>
+          <div class="sub-label">Objective</div>
+          <p class="objective-text">
+            Verify that the HD Wallet derivation produces a well-formed Bitcoin address when given
+            a non-default account, address index, and a BIP39 passphrase. The address must match one
+            of the three valid Bitcoin address formats: Legacy (P2PKH), P2SH, or Bech32 (SegWit).
+          </p>
+        </div>
+        <div>
+          <div class="sub-label">Preconditions</div>
+          <div class="precond-list">
+            <span class="precond-chip">App launched &amp; ready</span>
+            <span class="precond-chip">Wallet tab active</span>
+            <span class="precond-chip">Mode: HD Wallet</span>
+            <span class="precond-chip">Blockchain: Bitcoin</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub-label">Steps</div>
+          <table class="steps-table">
+            <thead><tr><th>#</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">1</td><td class="step-action">Set <code>account</code> to <code>2</code></td><td class="step-method">setFieldValue(page, 'account_id', '2')</td></tr>
+              <tr><td class="step-num">2</td><td class="step-action">Set <code>address index</code> to <code>5</code></td><td class="step-method">setFieldValue(page, 'address_index_id', '5')</td></tr>
+              <tr><td class="step-num">3</td><td class="step-action">Set BIP39 passphrase to <code>"my secret passphrase"</code></td><td class="step-method">setBip39Passphrase(page, '...')</td></tr>
+              <tr><td class="step-num">4</td><td class="step-action">Click Refresh to trigger derivation</td><td class="step-method">clickRefresh(page)</td></tr>
+              <tr><td class="step-num">5</td><td class="step-action">Read generated address</td><td class="step-method">getDisplayedAddress(page)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="sub-label">Expected Result</div>
+          <div class="assertion-box">/^(1[a-zA-HJ-NP-Z0-9]{25,34}     ← Legacy P2PKH
+ |3[a-zA-HJ-NP-Z0-9]{25,34}     ← P2SH
+ |bc1[a-z0-9]{6,87})$/           ← Bech32 SegWit</div>
+        </div>
+        <div>
+          <div class="sub-label">Failure Scenarios</div>
+          <ul class="failure-list">
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Empty address</strong> — derivation did not complete within the 3s timeout</span></li>
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Regex mismatch</strong> — wrong blockchain selected, or unexpected address format returned</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 2 -->
+    <div class="test-card">
+      <div class="test-card-header">
+        <div class="test-number">02</div>
+        <div class="test-title-wrap">
+          <div class="test-id">Passphrase Effect</div>
+          <div class="test-title">BIP39 passphrase modifies the derived address (same account/index)</div>
+        </div>
+      </div>
+      <div class="test-body">
+        <div>
+          <div class="sub-label">Objective</div>
+          <p class="objective-text">
+            Verify that the BIP39 passphrase acts as a second factor in HD derivation.
+            With all other parameters identical, a non-empty passphrase must produce a
+            different address than an empty passphrase, demonstrating that the passphrase
+            is actually used in the BIP39 seed computation.
+          </p>
+        </div>
+        <div>
+          <div class="sub-label">Preconditions</div>
+          <div class="precond-list">
+            <span class="precond-chip">App launched &amp; ready</span>
+            <span class="precond-chip">Wallet tab active</span>
+            <span class="precond-chip">Mode: HD Wallet</span>
+            <span class="precond-chip">Blockchain: Bitcoin</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub-label">Steps</div>
+          <table class="steps-table">
+            <thead><tr><th>#</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">1</td><td class="step-action">Set <code>account=2</code>, <code>address index=5</code></td><td class="step-method">setFieldValue(…) × 2</td></tr>
+              <tr><td class="step-num">2</td><td class="step-action">Set passphrase to <code>""</code> (empty)</td><td class="step-method">setBip39Passphrase(page, '')</td></tr>
+              <tr><td class="step-num">3</td><td class="step-action">Click Refresh → read <code>addressWithoutPassphrase</code></td><td class="step-method">clickRefresh + getDisplayedAddress</td></tr>
+              <tr><td class="step-num">4</td><td class="step-action">Set passphrase to <code>"my secret passphrase"</code></td><td class="step-method">setBip39Passphrase(page, '...')</td></tr>
+              <tr><td class="step-num">5</td><td class="step-action">Click Refresh → read <code>addressWithPassphrase</code></td><td class="step-method">clickRefresh + getDisplayedAddress</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="sub-label">Expected Result</div>
+          <div class="assertion-box ineq">addressWithPassphrase ≠ addressWithoutPassphrase</div>
+        </div>
+        <div>
+          <div class="sub-label">Failure Scenarios</div>
+          <ul class="failure-list">
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Both addresses equal</strong> — passphrase is not being incorporated in the BIP39 seed computation</span></li>
+            <li><span class="fail-bullet">ℹ</span><span class="fail-text"><strong>Note:</strong> absolute address values differ between runs (random entropy per Refresh); only the inequality within a single run is asserted</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 3 -->
+    <div class="test-card">
+      <div class="test-card-header">
+        <div class="test-number">03</div>
+        <div class="test-title-wrap">
+          <div class="test-id">Account Level</div>
+          <div class="test-title">Different <code>account</code> produces a different address</div>
+        </div>
+      </div>
+      <div class="test-body">
+        <div>
+          <div class="sub-label">Objective</div>
+          <p class="objective-text">
+            Verify that the BIP44 <em>account</em> level of the derivation path affects the output.
+            Changing the account value while keeping all other parameters constant must produce a different address,
+            confirming that the derivation path <code>m / purpose' / coin_type' / account' / change / index</code>
+            is correctly parameterized.
+          </p>
+        </div>
+        <div>
+          <div class="sub-label">Preconditions</div>
+          <div class="precond-list">
+            <span class="precond-chip">App launched &amp; ready</span>
+            <span class="precond-chip">Wallet tab active</span>
+            <span class="precond-chip">Mode: HD Wallet</span>
+            <span class="precond-chip">Blockchain: Bitcoin</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub-label">Steps</div>
+          <table class="steps-table">
+            <thead><tr><th>#</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">1</td><td class="step-action">Set <code>address index=5</code>, passphrase to <code>"my secret passphrase"</code></td><td class="step-method">setFieldValue + setBip39Passphrase</td></tr>
+              <tr><td class="step-num">2</td><td class="step-action">Set <code>account=0</code>, click Refresh → <code>addressAccount0</code></td><td class="step-method">setFieldValue + clickRefresh + getDisplayedAddress</td></tr>
+              <tr><td class="step-num">3</td><td class="step-action">Set <code>account=2</code>, click Refresh → <code>addressAccount2</code></td><td class="step-method">setFieldValue + clickRefresh + getDisplayedAddress</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="sub-label">Expected Result</div>
+          <div class="assertion-box ineq">addressAccount0 ≠ addressAccount2</div>
+        </div>
+        <div>
+          <div class="sub-label">Failure Scenarios</div>
+          <ul class="failure-list">
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Both addresses equal</strong> — the account field change is not propagated to the BIP44 derivation engine</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 4 -->
+    <div class="test-card">
+      <div class="test-card-header">
+        <div class="test-number">04</div>
+        <div class="test-title-wrap">
+          <div class="test-id">Address Index Level</div>
+          <div class="test-title">Different <code>address index</code> produces a different address</div>
+        </div>
+      </div>
+      <div class="test-body">
+        <div>
+          <div class="sub-label">Objective</div>
+          <p class="objective-text">
+            Verify that the BIP44 <em>address index</em> level of the derivation path affects the output.
+            Changing the address index while keeping all other parameters constant must produce a different address,
+            confirming that address enumeration within an account works correctly.
+          </p>
+        </div>
+        <div>
+          <div class="sub-label">Preconditions</div>
+          <div class="precond-list">
+            <span class="precond-chip">App launched &amp; ready</span>
+            <span class="precond-chip">Wallet tab active</span>
+            <span class="precond-chip">Mode: HD Wallet</span>
+            <span class="precond-chip">Blockchain: Bitcoin</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub-label">Steps</div>
+          <table class="steps-table">
+            <thead><tr><th>#</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">1</td><td class="step-action">Set <code>account=2</code>, passphrase to <code>"my secret passphrase"</code></td><td class="step-method">setFieldValue + setBip39Passphrase</td></tr>
+              <tr><td class="step-num">2</td><td class="step-action">Set <code>address index=0</code>, click Refresh → <code>addressIndex0</code></td><td class="step-method">setFieldValue + clickRefresh + getDisplayedAddress</td></tr>
+              <tr><td class="step-num">3</td><td class="step-action">Set <code>address index=5</code>, click Refresh → <code>addressIndex5</code></td><td class="step-method">setFieldValue + clickRefresh + getDisplayedAddress</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="sub-label">Expected Result</div>
+          <div class="assertion-box ineq">addressIndex0 ≠ addressIndex5</div>
+        </div>
+        <div>
+          <div class="sub-label">Failure Scenarios</div>
+          <ul class="failure-list">
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Both addresses equal</strong> — the address index change is not propagated to the BIP44 derivation engine</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST 5 -->
+    <div class="test-card">
+      <div class="test-card-header">
+        <div class="test-number">05</div>
+        <div class="test-title-wrap">
+          <div class="test-id">Determinism</div>
+          <div class="test-title">Same entropy + same params always produce the same address</div>
+        </div>
+      </div>
+      <div class="test-body">
+        <div>
+          <div class="sub-label">Objective</div>
+          <p class="objective-text">
+            Verify that HD Wallet derivation is fully deterministic: given the same entropy,
+            the same BIP39 passphrase, the same account and the same address index, the derived
+            address is always identical across multiple derivations.
+          </p>
+        </div>
+        <div>
+          <div class="sub-label">Design Note</div>
+          <div class="design-note">
+            <strong>Why Refresh cannot be used here:</strong> <code>clickRefresh()</code> regenerates
+            <em>random</em> entropy on every call — two consecutive Refresh calls will always produce
+            different addresses by design. This is not a bug.<br><br>
+            Instead, this test injects a fixed 256-bit entropy value directly into <code>#entropy_id</code>
+            and dispatches <code>input</code> + <code>change</code> events to trigger the BIP32 derivation
+            waterfall, bypassing the random entropy generation step entirely.
+            <span class="entropy-value">a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2</span>
+            <span style="font-size:11px;color:#604888;display:block;margin-top:6px;">64 hex chars · 256 bits · valid BIP39 entropy</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub-label">Preconditions</div>
+          <div class="precond-list">
+            <span class="precond-chip">App launched &amp; ready</span>
+            <span class="precond-chip">Wallet tab active</span>
+            <span class="precond-chip">Mode: HD Wallet</span>
+            <span class="precond-chip">Blockchain: Bitcoin</span>
+          </div>
+        </div>
+        <div>
+          <div class="sub-label">Steps</div>
+          <table class="steps-table">
+            <thead><tr><th>#</th><th>Action</th><th>Method</th></tr></thead>
+            <tbody>
+              <tr><td class="step-num">1</td><td class="step-action">Set <code>account=2</code>, <code>index=5</code>, passphrase</td><td class="step-method">setFieldValue × 2 + setBip39Passphrase</td></tr>
+              <tr><td class="step-num">2</td><td class="step-action">Inject fixed entropy → trigger derivation → <code>address1</code></td><td class="step-method">deriveFromFixedEntropy + getDisplayedAddress</td></tr>
+              <tr><td class="step-num">3</td><td class="step-action">Re-inject same account, index, passphrase</td><td class="step-method">setFieldValue × 2 + setBip39Passphrase</td></tr>
+              <tr><td class="step-num">4</td><td class="step-action">Inject same fixed entropy again → <code>address2</code></td><td class="step-method">deriveFromFixedEntropy + getDisplayedAddress</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="sub-label">Expected Result</div>
+          <div class="assertion-box eq">address1 = address2   (non-empty)</div>
+        </div>
+        <div>
+          <div class="sub-label">Failure Scenarios</div>
+          <ul class="failure-list">
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>address1 ≠ address2</strong> — derivation is not deterministic; serious BIP32 implementation bug</span></li>
+            <li><span class="fail-bullet">✗</span><span class="fail-text"><strong>Empty address</strong> — derivation waterfall not triggered by the <code>change</code> event on <code>#entropy_id</code></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tests-grid -->
+
+  <!-- ── SUMMARY ── -->
+  <div class="section-title">Summary</div>
+  <div class="context-block" style="padding:0;overflow:hidden;">
+    <table class="summary-table">
+      <thead>
+        <tr><th>#</th><th>Title</th><th>Assertion</th><th>Blockchain</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">01</td>
+          <td>Bitcoin address format validation</td>
+          <td><span class="badge badge-regex">regex</span></td>
+          <td><span class="badge badge-btc">Bitcoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">02</td>
+          <td>Passphrase modifies the derived address</td>
+          <td><span class="badge badge-ineq">inequality</span></td>
+          <td><span class="badge badge-btc">Bitcoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">03</td>
+          <td>Different account produces a different address</td>
+          <td><span class="badge badge-ineq">inequality</span></td>
+          <td><span class="badge badge-btc">Bitcoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">04</td>
+          <td>Different address index produces a different address</td>
+          <td><span class="badge badge-ineq">inequality</span></td>
+          <td><span class="badge badge-btc">Bitcoin</span></td>
+        </tr>
+        <tr>
+          <td style="font-family:var(--mono);color:var(--muted);">05</td>
+          <td>Same entropy + same params → same address (determinism)</td>
+          <td><span class="badge badge-eq">equality</span></td>
+          <td><span class="badge badge-btc">Bitcoin</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+</body>
+</html>

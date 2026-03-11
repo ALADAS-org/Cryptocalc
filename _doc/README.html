@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cryptocalc — README</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 48px 24px;
+  }
+
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+  }
+
+  .top-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #1f3a5f;
+    color: var(--accent);
+    border: 1px solid #1f4080;
+    letter-spacing: .05em;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -.02em;
+    line-height: 1.2;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .version {
+    color: var(--accent2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 16px;
+    margin-bottom: 20px;
+  }
+
+  .stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+
+  .stat-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .stat-item .label {
+    color: var(--text-muted);
+    margin-right: 8px;
+  }
+
+  .stat-item .value {
+    color: var(--accent);
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+  }
+
+  /* Sections */
+  .section {
+    margin: 40px 0;
+    scroll-margin-top: 20px;
+  }
+
+  .section h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .section h2::before {
+    content: '◆';
+    color: var(--accent2);
+    margin-right: 10px;
+    font-size: 18px;
+  }
+
+  .section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    margin: 25px 0 15px;
+  }
+
+  .section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent4);
+    margin: 20px 0 10px;
+  }
+
+  .section p {
+    margin: 15px 0;
+    color: var(--text-muted);
+  }
+
+  .section strong {
+    color: var(--accent2);
+  }
+
+  .section code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: var(--surface2);
+    color: var(--accent3);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .section pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    overflow-x: auto;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    margin: 20px 0;
+  }
+
+  .section ul, .section ol {
+    margin: 15px 0 15px 25px;
+    color: var(--text-muted);
+  }
+
+  .section li {
+    margin: 8px 0;
+  }
+
+  .section li strong {
+    color: var(--accent);
+  }
+
+  .section hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 30px 0;
+  }
+
+  .note-box {
+    background: var(--surface);
+    border-left: 3px solid var(--accent4);
+    padding: 16px 20px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+    color: var(--text-muted);
+  }
+
+  .note-box strong {
+    color: var(--accent4);
+  }
+
+  .badge {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-right: 8px;
+  }
+
+  .badge.blue { color: var(--accent); border-color: var(--accent); }
+  .badge.green { color: var(--accent2); border-color: var(--accent2); }
+  .badge.purple { color: var(--accent4); border-color: var(--accent4); }
+
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .donate-btn {
+    display: inline-block;
+    margin: 20px 0;
+  }
+
+  .donate-btn img {
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all .2s;
+  }
+
+  .donate-btn img:hover {
+    border-color: var(--accent2);
+    transform: translateY(-2px);
+  }
+
+  .gif-container {
+    margin: 20px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .gif-container img {
+    max-width: 100%;
+    display: block;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  tr:hover td {
+    background: var(--surface);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="top-badge">⬡ CRYPTOCALC</div>
+    <h1>CryptoCalc <span>README</span></h1>
+    <div class="version">Version 0.5.10</div>
+    <div class="stats">
+      <div class="stat-item"><span class="label">Downloads:</span><span class="value">16,792</span></div>
+      <div class="stat-item"><span class="label">Cryptocurrencies:</span><span class="value">23</span></div>
+      <div class="stat-item"><span class="label">Languages:</span><span class="value">18</span></div>
+      <div class="stat-item"><span class="label">Unit Tests:</span><span class="value">694</span></div>
+      <div class="stat-item"><span class="label">E2E Tests:</span><span class="value">2</span></div>
+    </div>
+  </header>
+
+  <!-- GIF -->
+  <div class="gif-container">
+    <img src="../_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif?raw=true" alt="CryptoCalc Demo">
+  </div>
+
+  <!-- SECTION 1: PURPOSE -->
+  <div class="section" id="purpose">
+    <h2>1. Purpose</h2>
+    <p><strong>CryptoCalc</strong> is a <em>Cryptocurrency wallet generator</em> provided as a standalone non custodial desktop application. These wallets can be <em>Non Deterministic</em> (<em>Simple Wallet</em>) or <em>Hierarchical Deterministic</em> (<code>BIP32</code>). Even though there are already similar tools online, the purpose is to provide these features locally on your computer (non custodial) in order to reduce the risk of your <em>Private Key</em> / <em>WIF</em> or <em>Secret phrase</em> information being stolen.</p>
+    <p>NB: Since its first release <em>CryptoCalc</em> has been downloaded 16792 times on <a href="https://www.npmjs.com/" style="color: var(--accent);">npm</a>.</p>
+    <p>You can support this project by testing and reporting bugs (or asking for enhancements) with <a href="https://github.com/ALADAS-org/Cryptocalc/issues" style="color: var(--accent);">Issues</a>, provide localization files (see 5.1.19).</p>
+    <p>Cryptocalc is developed by <a href="https://aladas.org/?page_id=61" style="color: var(--accent);">Aladas</a>, a non profit organization whose primary goal is to protect Wild bees.</p>
+  </div>
+
+  <!-- SECTION 2: FEATURES -->
+  <div class="section" id="features">
+    <h2>2. Features</h2>
+    
+    <h3>2.0. Recently added features</h3>
+    <ul>
+      <li><strong>Help Enhancement:</strong> the <code>Help menu</code> provides now an HTML version of <code>README.md</code> and a documentation of test protocols.</li>
+      <li>Added <code>Unit tests</code>: these tests use <a href="https://jestjs.io/fr/" style="color: var(--accent);">Jest</a> unit test framework. It is an ongoing work (694 tests ATM). Use <code>npm test</code> to run the unit tests (to open a CLI console, double click on <code>_open_cmd_window.bat</code>).</li>
+      <li>Added <code>e2e tests</code> (Real user scenario testing): these tests use <a href="https://playwright.dev/" style="color: var(--accent);">Playwright</a>.</li>
+      <li><code>Wallets Database</code>: you can now populate a <code>SQLite</code> database by importing the <em>Wallet informations</em> (<code>.wits</code> files in timestamped subfolders under <code>_output</code> folder).</li>
+      <li>Added support of <code>Bip84</code> purpose in the <code>Bip32 derivation path</code>.</li>
+    </ul>
+
+    <h3>2.1. Support of HD / Bip32 (multiple wallets)</h3>
+    <p>Added support of <code>Bip84</code> purpose in the <code>Bip32 derivation path</code> (HD Wallet). Notice that it is usable only with <code>Bitcoin</code> and <code>Litecoin</code>.</p>
+
+    <h3>2.2. Selection of <code>Entropy size</code> (between 128 and 256 bits)</h3>
+    
+    <h3>2.3. Dynamic conversion between <code>Entropy</code> and <code>Secret phrase</code></h3>
+    
+    <h3>2.4. <code>File/Save/Open..</code> commands</h3>
+    <p>These commands allow edition of <em>Wallet informations</em> after saving (these informations are saved as a <code>.wits</code>, a <code>JSON</code> format file).</p>
+
+    <h3>2.5. Salted Entropy source</h3>
+    <p><code>Entropy</code> value is indeed computed by combining the <code>Salt</code> (currently a dynamically generated <code>UUID</code>) with the value provided by the <code>Entropy source</code>.</p>
+    <ul>
+      <li><code>SHA256</code> hash function is applied to this: <code>Salt + Entropy source</code>.</li>
+    </ul>
+
+    <h3>2.6. Security Layers</h3>
+    <ul>
+      <li><code>Bip38</code> support (first method 'Non-EC').</li>
+    </ul>
+
+    <h3>2.7. Multiple Entropy sources</h3>
+    <p><code>100 d6 dices</code>, <code>Mouse moves</code>, <code>Images</code> and <code>Fortune cookies</code>.</p>
+
+    <h3>2.8. QR code generation</h3>
+    <p>For <em>Wallet address</em>, <em>Private Key</em> (also <em>WIF</em> if applicable) and <em>Mnemonics</em>. There is also an <code>xtras</code> folder with the SVG versions of these QR codes as well as more <em>experimental</em> QR code formats (<em>rectangular Micro QR code</em> and <em>Ultracode</em> which has colored modules).</p>
+
+    <h3>2.9. Customizable options</h3>
+    <p>Options includes <code>Blockchain</code>, <code>Wallet mode</code> (eg: Simple / HD / SWORD) and <code>Entropy size</code>.</p>
+
+    <h3>2.10. Wallets Database</h3>
+    <p>A <a href="https://sqlite.org/" style="color: var(--accent);">SQLite</a> Database is populated by importing <code>.wits</code> files (<em>Wallet informations</em> in a <code>JSON</code> format file). Then the SQLite Database can be explored with <a href="https://dbeaver.io/" style="color: var(--accent);">DBeaver</a>.</p>
+
+    <h3>2.11. Visual feedback of the <code>Passphrase Strength</code> (<code>Bip32/Bip38</code>)</h3>
+
+    <h3>2.12. List of <code>Word indexes</code></h3>
+    <p>The crucial data in the <code>Secret phrase</code> is indeed the list of <code>Word indexes</code> (indexes in the <code>BIP39</code> wordlist), is explicitly displayed so if the language is changed these word indexes are the same.</p>
+
+    <h3>2.13. Internet connection status</h3>
+    <p>Because of the <em>Cold wallet</em> / <em>Non custodial</em> purpose of Cryptocalc, it is not recommended to generate cryptocurrency wallets while being online. The status is displayed on the right of the main horizontal toolbar, it's a red "connected" icon when online and a green "disconnected" icon when offline (the highly recommended way to use Cryptocalc).</p>
+
+    <h3>2.14. Localization</h3>
+    <p>Translations of GUI labels in the user's language (only <em>English</em> and <em>French</em> files provided currently but the localization feature allows translations in other languages as well, they are in <code>JSON</code> format eg. <code>gui-msg-en.json</code>).</p>
+
+    <h3>2.15. Dynamic links</h3>
+    <ul>
+      <li>Address wallet in the appropriate <code>Blockchain Explorer</code> (e.g. <a href="https://www.blockchain.com/fr/explorer" style="color: var(--accent);">blockchain.com</a>).</li>
+      <li>Informations in <code>Coinmarketcap.com</code> for the wallet's cryptocurrency.</li>
+      <li>3D representation of the <code>Secret phrase</code> (see an example here: <a href="https://aladas-org.github.io/aladas.github.io/" style="color: var(--accent);">Cryptoshape</a>).</li>
+    </ul>
+
+    <h3>2.16. Dedicated Tools</h3>
+    <ul>
+      <li>The first dedicated tool is <code>Secret phrase Translator</code>, it allows to import a generated wallet with a <em>Secret phrase</em> in a non <code>Bip39</code> official language (eg. <code>Russian</code>) and translate it to its equivalent in <code>English</code> (because <em>Wallet Managers</em> support only English).</li>
+    </ul>
+
+    <h3>2.17. Standalone installer</h3>
+    <p>It is published on <a href="https://sourceforge.net/projects/aladas-cryptocalc/" style="color: var(--accent);">SourceForge</a>. Once downloaded the installer will install <em>Cryptocalc</em> as a <code>.exe</code> local standalone desktop application (see 3.1.1) with all its prerequisites. This allows users to install <em>Cryptocalc</em> without installing <code>NodeJS</code>, <code>git</code> and <code>npm</code> and using command line instructions (described in 3.2).</p>
+
+    <h3>2.18. Tested on <code>Windows</code> and <code>Linux</code></h3>
+    <ul>
+      <li><code>Windows</code>: tested on <code>Windows 10</code>.</li>
+      <li><code>Linux</code>: tested on <a href="https://linuxmint.com/" style="color: var(--accent);">Linux Mint 22.2</a> (NB: tested on a virtual machine within <a href="https://www.virtualbox.org/" style="color: var(--accent);">VirtualBox</a>).</li>
+    </ul>
+
+    <h3>2.19. Cryptocurrencies: 23 supported Cryptocurrencies</h3>
+    <p><code>BTC</code> (Bitcoin), <code>ETH</code> (Ethereum), <code>XRP</code> (Ripple), <code>BNB</code> (Binance Smart Chain), <code>SOL</code> (Solana), <code>DOGE</code> (Dogecoin), <code>TRX</code> (TRON), <code>ADA</code> (Cardano), <code>XLM</code> (Stellar), <code>SUI</code> (Sui), <code>BCH</code> (Bitcoin Cash), <code>AVAX</code> (Avalanche), <code>TON</code> (Toncoin), <code>LTC</code> (Litecoin), <code>ETC</code> (Ethereum Classic), <code>POL</code> (Polygon), <code>VET</code> (VeChain), <code>BSV</code> (Bitcoin SV), <code>DASH</code> (Dash), <code>RVN</code> (Ravencoin), <code>ZEN</code> (Horizen), <code>LUNA</code> (Terra) and <code>FIRO</code> (Firo).</p>
+    <ul>
+      <li>A list of the <em>Top 50 market cap</em> cryptocurrencies is provided (<code>_doc/top_50_marketcap_coins.txt</code>), the first column indicates (with <code>*</code>) if it is supported in <em>CryptoCalc</em>.</li>
+      <li>Note 1: <code>BNB</code> support is on <em>Binance Smart Chain</em> (in this blockchain <code>BNB</code> is a <code>BEP-20</code> token, see 6.3.4).</li>
+      <li>Note 2: it's <code>LUNA 2.O</code> (on <em>Terra</em> blockchain) not <code>LUNA Classic</code>.</li>
+      <li>Note 3: <code>SUI</code> support was validated with 'Suiet' (Sui wallet), a Chrome extension.</li>
+    </ul>
+
+    <h3>2.20. Languages: 18 supported languages</h3>
+    <ul>
+      <li><strong>Officially supported in <code>Bip39</code>:</strong><br>
+      <em>English</em>, <em>French</em>, <em>Spanish</em>, <em>Italian</em>, <em>Czech</em>, <em>Portuguese</em>, <em>Simplified Chinese</em>, <em>Traditional Chinese</em>, <em>Japanese</em> and <em>Korean</em>.<br>
+      Notice that <em>English</em> is the only supported language by electronic cold wallets (eg. <em>Ledger</em> or <em>Trezor</em>).</li>
+      <li><strong>Non official languages:</strong><br>
+      <em>Deutsch</em>, <em>Russian</em>, <em>Esperanto</em>, <em>Latin</em>, <em>Greek</em>, <em>Hindi</em>, <em>Gujarati</em> and <em>Bengali</em>.</li>
+    </ul>
+    <p>Notice that <em>English</em> has around 1.5 billion speakers, <em>Mandarin</em> has around 1.1 billion speakers while the <em>India triad</em> (<em>Hindi</em>, <em>Bengali</em> and <em>Gujarati</em>) has around 1 billion speakers.</p>
+
+    <h3>2.21. Developed with <code>Javascript</code> and <a href="https://www.electronjs.org/" style="color: var(--accent);">ElectronJS</a></h3>
+    <p><em>CryptoCalc</em> is written in <code>Javascript</code> (both <em>client side</em> and <em>server side</em>) and is built on top of <em>ElectronJS</em>. <em>ElectronJS</em> is used in many modern and popular <a href="https://en.wikipedia.org/wiki/List_of_software_using_Electron" style="color: var(--accent);">Desktop applications</a> (e.g. <a href="https://code.visualstudio.com/" style="color: var(--accent);">Visual Studio Code</a>, <a href="https://discord.com/" style="color: var(--accent);">Discord</a>, <a href="https://www.whatsapp.com/" style="color: var(--accent);">WhatsApp</a>, <a href="https://www.notion.com/" style="color: var(--accent);">Notion</a>, <a href="https://obsidian.md/" style="color: var(--accent);">Obsidian</a>, etc.).</p>
+  </div>
+
+  <!-- SECTION 3: SETUP -->
+  <div class="section" id="setup">
+    <h2>3. Setup</h2>
+    
+    <h3>3.1. <em>Fast and Furious</em> (advised for end users)</h3>
+    <ul>
+      <li><strong>3.1.1.</strong> Download <a href="https://sourceforge.net/projects/aladas-cryptocalc/files/latest/download" style="color: var(--accent);">CryptoCalc installer</a> from <em>SourceForge</em> (NB: the installer was generated with <a href="https://www.npmjs.com/package/@electron/packager" style="color: var(--accent);">electron packager</a> and <a href="https://jrsoftware.org/isinfo.php" style="color: var(--accent);">Inno Setup</a>). Notice that the installer is not signed so <em>Windows Defender Smartscreen</em> will require that you validate yourself the application source. If you don't trust the installer (because it is not signed as this is a 350$ cost per year), you can either:
+        <ul>
+          <li><strong>3.1.1.a.</strong> Rebuild yourself the <em>Installer</em> by downloading <code>Inno Setup</code> and following the <em>Howto</em> provided in the <code>_inno_setup</code> subfolder (<code>Howto build cryptocalc_setup.txt</code>).</li>
+          <li><strong>3.1.1.b.</strong> Else you can proceed to <em>Wizard's Lair</em> setup (see 3.2).</li>
+        </ul>
+      </li>
+      <li><strong>3.1.2.</strong> Default setup folder is <code>C:\Users\$CURRENT_USER\AppData\Local\Programs\Cryptocalc</code>.</li>
+      <li><strong>3.1.3.</strong> Default subfolder where <em>Wallet informations</em> are saved: <code>$DEFAULT_SETUP_FOLDER\resources\app\_output</code>.</li>
+    </ul>
+
+    <h3>3.2. <em>Wizard's Lair</em> (more advised for custom local setup and/or geeks or software developers)</h3>
+    
+    <h4>3.2.a. On <code>Windows</code> Operating system</h4>
+    <ul>
+      <li><strong>Prerequisites</strong>
+        <ul>
+          <li>Install <a href="https://nodejs.org/en/" style="color: var(--accent);">NodeJS</a>.</li>
+          <li>Install <a href="https://git-scm.com/" style="color: var(--accent);">Git</a>.</li>
+        </ul>
+      </li>
+      <li><strong>Open a <em>command line interpreter</em></strong>
+        <ul>
+          <li>Use Windows Menu <em>Start</em> then input <code>cmd</code>.</li>
+          <li>Change <em>current disk</em> to where you plan to install (eg. if its <code>D</code> then type <code>D:</code>).</li>
+          <li>Change <em>current directory</em> to where you to install (eg. <code>md tools</code> then <code>cd tools</code>).</li>
+        </ul>
+      </li>
+      <li><strong>Import <em>CryptoCalc</em> from <em>github</em></strong>
+        <ul>
+          <li>Open the <a href="https://github.com/ALADAS-org/cryptocalc" style="color: var(--accent);">GitHub <em>CryptoCalc</em> repository</a>.</li>
+          <li>Use the [<> Code v] green button.</li>
+          <li>Copy the displayed <a href="https://github.com/ALADAS-org/cryptocalc.git" style="color: var(--accent);">.git URL</a>.</li>
+          <li>In the <em>command line interpreter</em>, type <code>git clone</code> followed by the <code>.git</code> URL: <code>git clone https://github.com/ALADAS-org/cryptocalc.git</code>.</li>
+          <li>Type <code>cd cryptocalc</code>.</li>
+          <li>Type <code>npm install</code>.</li>
+          <li>You can launch <em>CryptoCalc</em> with a double click on <code>_run_Cryptocalc_W.bat</code> (<code>W</code> means <em>Windows</em>).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h4>3.2.b. On <code>Linux</code> Operating system</h4>
+    <ul>
+      <li><strong>Linux distribution</strong>
+        <ul>
+          <li><em>CryptoCalc</em> was tested on <a href="https://linuxmint.com/" style="color: var(--accent);">Linux Mint 22.2</a> and tested as a virtual machine within <a href="https://www.virtualbox.org/" style="color: var(--accent);">VirtualBox</a>. Notice that the <em>Cinnamon</em> desktop was chosen.</li>
+        </ul>
+      </li>
+      <li><strong>Open a <em>command shell</em></strong>
+        <ul>
+          <li>This will open a window where you can input commands (eg. <code>sudo apt-get install nodejs</code>).</li>
+          <li>Create a <em>subdirectory</em> to use it as a <em>workspace</em>, I suggest that you name it <code>dev</code>: <code>mkdir dev</code>.</li>
+          <li>Change <em>current directory</em> to this new <em>subdirectory</em>: <code>cd dev</code>.</li>
+          <li>Create a <em>subdirectory</em> for <a href="https://github.com/" style="color: var(--accent);">Github</a> projects, I suggest that you name it <code>github</code>: <code>mkdir github</code>.</li>
+          <li>Change <em>current directory</em> to this new <em>subdirectory</em>: <code>cd github</code>.</li>
+        </ul>
+      </li>
+      <li><strong>Prerequisites</strong>
+        <ul>
+          <li>Install <a href="https://nodejs.org/en/" style="color: var(--accent);">NodeJS</a>: <code>sudo apt-get install nodejs</code>.</li>
+          <li>Install <a href="https://git-scm.com/" style="color: var(--accent);">Git</a>: <code>sudo apt update; sudo apt install git</code>.</li>
+          <li>Install <a href="https://www.npmjs.com/" style="color: var(--accent);">npm</a>: <code>sudo apt update; sudo apt install npm</code>.</li>
+          <li>Install <code>xdg-utils</code> (<a href="https://www.freedesktop.org/wiki/" style="color: var(--accent);">X Desktop Group</a>): <code>sudo apt-get install xdg-utils</code>.</li>
+        </ul>
+      </li>
+      <li><strong>Import <em>CryptoCalc</em> from <a href="https://github.com/" style="color: var(--accent);">Github</a></strong>
+        <ul>
+          <li><code>cd; cd dev/github</code>.</li>
+          <li><code>git clone https://github.com/ALADAS-org/Cryptocalc.git</code>.</li>
+          <li><code>cd Cryptocalc</code>.</li>
+          <li><code>npm install</code>.</li>
+          <li><code>chmod 777 ./_run_Cryptocalc_X.sh</code>.</li>
+          <li>You can launch <em>CryptoCalc</em> with either:
+            <ul>
+              <li><code>npm start</code>.</li>
+              <li><code>./_run_Cryptocalc_X.sh</code> (<code>X</code> is a reference to <em>LinuX</em> and the family of <em>uniX</em> like <em>Operating Systems</em>).</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- SECTION 4: RELEASE NOTES -->
+  <div class="section" id="releases">
+    <h2>4. Release notes</h2>
+    
+    <ul>
+      <li><strong><code>0.5.10</code>:</strong> This version
+        <ul>
+          <li><strong>Help Enhancement:</strong> the <code>Help menu</code> provides now an HTML version of <code>README.md</code> and a documentation of test protocols.</li>
+          <li>Updates in Unit tests running on <a href="https://jestjs.io/fr/" style="color: var(--accent);">Jest</a>: Updates in <code>Unit tests</code>: 694 tests.</li>
+          <li>Added "e2e" tests (Real user scenario testing) running on <a href="https://playwright.dev/" style="color: var(--accent);">Playwright</a>: Two "e2e" tests added.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.9</code>:</strong>
+        <ul>
+          <li>Enhancement in Unit tests: Updates in <code>Unit tests</code>: 344 tests (<code>Simple Wallet</code>, <code>HD Wallet</code>, <code>Bip32_utils</code>, <code>Bip39_utils</code>, <code>Bip38_utils</code>) passed.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.8</code>:</strong>
+        <ul>
+          <li>Enhancement in Unit tests: Updates in <code>Unit tests</code>: 291 tests (<code>Simple Wallet</code>, <code>HD Wallet</code>, <code>Bip32_utils</code>, <code>Bip39_utils</code>) passed.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.7</code>:</strong>
+        <ul>
+          <li>Enhancement in Unit tests: Updates in <code>Unit tests</code>: 177 tests (<code>Simple Wallet</code>, <code>HD Wallet</code> and <code>BI32</code>) passed.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.6</code>:</strong>
+        <ul>
+          <li>Enhancement in Unit tests: Updates in <code>Unit tests</code>: 142 tests ("Simple Wallet" and "HD Wallet") passed.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.5</code>:</strong>
+        <ul>
+          <li>Enhancement in Unit tests: Updates in <code>Unit tests</code>: use <code>npm test</code> to run the unit tests (to open a CLI console, double click on <code>_open_cmd_window.bat</code>).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.4</code>:</strong>
+        <ul>
+          <li>New Feature: Added <code>Unit tests</code> (these tests use <a href="https://jestjs.io/fr/" style="color: var(--accent);">Jest</a> unit test framework), it is an ongoing work (ATM only a test for <code>Simple Wallet</code>).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.1</code>:</strong>
+        <ul>
+          <li>Terminology Fix: Terminology <code>Bip32 passphrase</code> is the wrong terminology, it has been replaced by <code>Bip39 passphrase</code>.</li>
+          <li>New Feature: Added support of <code>Bip84</code> purpose in the <code>Bip32 derivation path</code> (HD Wallet). Notice that it is usable only with <code>Bitcoin</code> and <code>Litecoin</code>.</li>
+          <li>Ergonomy Fix: Previously: When you wanted to define a <code>Bip39 passphrase</code>, you had to explicitly use the [Apply] button to recompute the <em>Bip32 Hierarchy</em>. Thus the [Apply] button was often overlooked and the <code>Bip39 passphrase</code> was not taken into account. This situation can be qualified as an <code>Ergonomy Bug</code>. Now: With the <code>Ergonomy fix</code>, the <code>Bip39 passphrase</code> is a <code>readonly</code> field so to enter a value you must use the [Edit] button (a button with a 'Pen' icon) then you either use [Apply] (to explicitly ask "Use the Bip39 passphrase and recompute the Bip32 Hierarchy") or [Cancel] (to explicitly ask "Don't Change the Bip39 passphrase").</li>
+          <li>Small Ergonomy upgrade: The [Clear] button (for the input of <code>Bip39 passphrase</code> or <code>Bip38 passphrase</code>) is now an icon (a 'Cross' shape).</li>
+          <li>Documentation: There is now only the <em>most straightforward way</em> to explore the <code>SQLite Database</code> which is with <a href="https://dbeaver.io/" style="color: var(--accent);">DBeaver</a>.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.5.0</code>:</strong>
+        <ul>
+          <li>New Feature: <code>Tools/Database Management</code>: A <a href="https://sqlite.org/" style="color: var(--accent);">SQLite</a> Database is populated by importing the <code>.wits</code> files (in <code>_output</code> generated subfolder). Then the Database can be explored by <a href="https://www.adminer.org/en/" style="color: var(--accent);">Adminer</a> (a <a href="https://www.php.net/" style="color: var(--accent);">PHP</a> application, successor of <a href="https://www.phpmyadmin.net/" style="color: var(--accent);">phpMyAdmin</a>). The <code>Http server/SQLite/PHP</code> stack is supported by <a href="https://github.com/cztomczak/phpdesktop" style="color: var(--accent);">phpdesktop</a>. See <code>document _00_README_PhPDesktop-AdMiner-SQLite.txt</code> (in <code>www\js\_main\db\Howto AdMiner</code>) for the setup guide. Note: you can also use <a href="https://dbeaver.io/" style="color: var(--accent);">DBeaver</a>, which provides much more features like the visualization of the <em>DB Schema</em>.</li>
+          <li>Bug Fixes: <code>.wits</code> files (in <code>_output</code> generated subfolder) were missing fields of <code>wallet_info.txt</code>: namely <code>Bip38 Encrypted PK</code> and <code>Derivation Path</code>. <em>Event Handlers</em> were added multiple times in <em>Dialog Boxes</em>. Now fixed in <code>Tools/Bip38 Encrypt/Decrypt</code>, <code>Tools/Bip38 Secret phrase Translator</code> and the more recent <code>Tools/Database Management</code>. Updated <code>SUI</code> required module (<code>@mysten/sui</code> instead of <code>@mysten/sui.js</code>).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.25</code>:</strong>
+        <ul>
+          <li>Enhancement: in <code>Tools/Secret phrase Translator</code>: a <em>special language</em> (<code>Word Indexes</code>) is now provided to get the indexes of the words in the <em>Secret phrase</em> (they are independent from the language).</li>
+          <li>Bug Fix: When you provide a Bip32 passphrase, <code>File/Save As...</code> was not disabled (it should be disabled until you use the [Apply] button to recompute the wallet addresses in the Bip32 hierarchy).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.24</code>:</strong>
+        <ul>
+          <li>Bug Fix: in <code>Tools/Bip38 Encrypt/Decrypt</code>: the <code>Encrypt/Decrypt</code> state value was not get/set properly.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.23</code>:</strong>
+        <ul>
+          <li>A dedicated tool in <code>Tools/Secret phrase Translator</code> eases importation of a generated wallet in a <em>Wallet Manager</em>. Use case: You can use a <em>Secret phrase</em> in a non <code>Bip39</code> official language (eg. <code>Russian</code>) and translate it to its equivalent in <code>English</code> which allows to import the generated wallet in a <em>Wallet Manager</em> (because <em>Wallet Managers</em> support only English).</li>
+          <li>Changes in <em>Tools/Bip38 Encrypt/Decrypt dialog</em>: <em>Progress bar</em> is now displayed again (when pushing [Compute] button). Length of Dialog window is shorter.</li>
+          <li>Changes in <em>Passphrase strength</em> (<code>Bip39/Bip38</code>): Adjectives changed to <em>Very Weak</em>, <em>Weak</em>, <em>Good</em>, <em>Strong</em>, <em>Very Strong</em>. Minimum bar length is now 5% (for a score of 0 / <em>Very Weak</em>).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.22</code>:</strong>
+        <ul>
+          <li>Enhancement: <code>Strength</code> evaluation of <code>Bip39/Bip38 Passphrase</code> (see 5.1.7) was not enough reliable, because it was a computation of Entropy (in bits) and not taking into account the <em>guessable</em> cases (eg. <code>aaaaaa</code>, <code>123456789</code>, frequently used words used in passwords and even usage of <em>Leetspeak</em>). It has been replaced by <a href="https://www.npmjs.com/package/zxcvbn" style="color: var(--accent);"><code>zxcvbn</code></a>, a popular and much more reliable solution (it is provided by <a href="https://www.dropbox.com/" style="color: var(--accent);"><em>DropBox</em></a>).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.21</code>:</strong>
+        <ul>
+          <li>Bug Fix: <code>Bip39</code> and <code>Bip38</code> changing to same color when <code>passphrase strength</code> is different.</li>
+          <li>Documentation Fix: Update see in 5.1.7 because this sub feature was not documented: When hovering on <code>strength adjective</code>, the strength (in bits) is displayed in an info bubble.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.20</code>:</strong>
+        <ul>
+          <li>New Feature: <code>Passphrase Strength</code> for <code>Bip39/Bip38</code> (see 5.1.7).</li>
+          <li>Bug Fix: it was possible to input a 9 digits value in <code>account</code> and <code>address index</code> fields, which was a range of 1 billion (<code>10^9</code>) possible values for each field. Now the range is 1.000.000 ([0..999999]).</li>
+          <li>Documentation Fix: in 5.1.4.b. number of possible values for <code>account</code> and <code>address index</code> is now 1 million ([0..999999]).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.10</code>:</strong>
+        <ul>
+          <li>Ergonomy: A <em>Progress Bar</em> is also displayed when saving a wallet with a <code>BIP38 Passphrase</code>. This is also to give a feedback to the user why it takes more time.</li>
+          <li>Documentation Fixes: Changes in 'BIP38' instructions (see 5.1.5). Instructions to install and run on <code>Linux</code>.</li>
+          <li>Icon Fix: Mirror on <code>Cryptocalc_ico.ico</code>.</li>
+          <li>Refactoring: <code>html_components</code> (folder for <em>Html modules</em> like <em>MenuBar</em>, <em>ToolBar</em>, <em>StatusBar</em> and <em>Dialog boxes</em>) renamed to <code>vizjets</code>. <code>js/renderer/const_renderer.js</code> moved to <code>js/view/const_gui.js</code>.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.7</code>:</strong>
+        <ul>
+          <li>Bug Fix: regression in <code>Bip38</code> feature (since implementation of 'Progress Bar' as a feedback for encrypt/decrypt time). Update of <a href="https://sourceforge.net/projects/aladas-cryptocalc/" style="color: var(--accent);">Cryptocalc installer</a> on <a href="https://sourceforge.net" style="color: var(--accent);">SourceForge</a>.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.6</code>:</strong>
+        <ul>
+          <li>Update of <a href="https://sourceforge.net/projects/aladas-cryptocalc/" style="color: var(--accent);">Cryptocalc installer</a> on <a href="https://sourceforge.net" style="color: var(--accent);">SourceForge</a>.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.5</code>:</strong>
+        <ul>
+          <li>Updates of images: Update of screenshots. Logo images mirrored to be like a <code>Z</code> because it is the new version. This new version of the logo is also published on the <a href="https://sourceforge.net/projects/aladas-cryptocalc/" style="color: var(--accent);">SourceForge installer</a>.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.4</code>:</strong>
+        <ul>
+          <li>Enhancements in <code>Bip38</code> feature: Default difficulty set to 16384 (the recommended default). A Progress bar now shows a better feedback on the time needed to encrypt / decrypt.</li>
+        </ul>
+      </li>
+      <li><strong><code>0.4.0</code>:</strong>
+        <ul>
+          <li>Minor Version number changed to <code>4</code> to reflect the fact that <code>Bip38</code> support is a taller "step forward". Documentation Fixes: in this document (<code>README.md</code>).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.3.65</code>:</strong>
+        <ul>
+          <li>New Feature: Support of <code>BIP38</code> (<em>passphrase encrypted private key</em>, see 6.3.5) for an additional security layer by Encrypting the Private Key. NB: Please notice that only the first encryption method ('NON-EC') is supported (see also 5.2.2).</li>
+          <li>Bug Fixes: <code>Save</code> command (in <em>Main menu</em> and <em>Main Toolbar</em>) is disabled while it should be enabled. This was identified in some use cases with <code>File/New</code> followed by <code>File/Open</code>.</li>
+          <li>Documentation Fixes: Update, fixes and some rewrites of this document (<code>README.md</code>).</li>
+          <li>Refactoring: In <code>html_utils.js</code>: <code>Node</code> replaced by <code>Element</code> in all functions because it is a better terminology for HTML entities (eg. <code>INPUT</code>,'TEXTAREA', etc...). Move of <em>Model</em> related code to <code>www/js/model</code> and <em>View</em> related code to <code>www/js/view</code> (cf. <a href="https://www.geeksforgeeks.org/system-design/mvc-design-pattern/" style="color: var(--accent);"><code>MVC</code> <em>Design Pattern</em></a>) also as <code>MVC</code> may be recursive, <code>wallet_info.js</code> (which is a is <em>Model</em>) has been moved to <code>www/js/view/model</code>.</li>
+          <li>Usability: <code>password</code> (Bip32 / HD Wallet mode) replaced by <code>Passphrase</code> because it is a better terminology. In <code>wallet_info.txt</code>: <code>WIF</code> always provided. Order of "fields" is now predefined (see <code>js/model/wallet_inf_tmpl.js</code>). Changed Label for <code>Help/About...</code> dialog to a more consistent text ("A cryptocurrency wallet generator").</li>
+        </ul>
+      </li>
+      <li><strong><code>0.3.63</code>:</strong>
+        <ul>
+          <li>Fixed bug found on <code>Linux</code>: when saving, the [Show] button does nothing. Fixed a Bug found when testing the [Show] button because the output folder is showed not the <em>latest wallet subfolder</em>. Note that on <code>Linux</code>, you must also now install <code>xdg-utils</code> (see 3.2.b).</li>
+        </ul>
+      </li>
+      <li><strong><code>0.3.62</code>:</strong>
+        <ul>
+          <li>GUI Updates: A Label Online/Offline is now at the left of the <em>Internet connection status</em> icon. <em>Seed phrase</em> renamed to <em>Secret phrase</em> because it seems it is the more user friendly terminology (among <em>Mnemonics</em>, <em>Seed phrase</em>, <em>Secret</em>, <em>Passphrase</em> and <em>Secret Recovery Passphrase</em>). Added a link (see 5.1.18) to the whitepaper of the <em>3D representation of a Secret phrase</em>.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <!-- SECTION 5: USER'S GUIDE -->
+  <div class="section" id="users-guide">
+    <h2>5. User's Guide</h2>
+    <p>You can launch <em>CryptoCalc</em> either by first installing it with the <em>CryptoCalc Standalone installer</em> (see 3.1) or by using the <code>Wizard's Lair</code> path (see 3.2): install <code>NodeJs</code>, <code>git</code> then install the <em>CryptoCalc</em> project and launch it with a double click on <code>_run_Cryptocalc_W.bat</code> (<code>W</code> means <em>Windows</em>) or <code>_run_Cryptocalc_X.sh</code> (<code>X</code> means <em>Linux</em>).</p>
+    
+    <h3>5.1. Features</h3>
+    
+    <h4>5.1.1. <em>Cryptocalc Standalone installer</em></h4>
+    <ul>
+      <li><strong>5.1.1.a:</strong> Download <a href="https://sourceforge.net/projects/aladas-cryptocalc/" style="color: var(--accent);">CryptoCalc installer</a>.</li>
+      <li><strong>5.1.1.b.</strong> Default subfolder where <em>Wallet informations</em> are saved: <code>$DEFAULT_SETUP_FOLDER\resources\app\_output</code>: Notice that this folder won't be automatically deleted if you uninstall <em>CryptoCalc</em>.</li>
+    </ul>
+
+    <h4>5.1.2. Generate <em>Entropy</em> from <em>Entropy Source</em></h4>
+    <p>Use [Generate] button to draw a random image (cf. 5.1.3) which then will be used as the <em>Entropy</em> (with the <em>Salt</em>) to generate a new <em>Secret phrase</em> (between 12 and 24 words) which is derived to get the <em>Private Key</em> from which the <em>Wallet Address</em> is obtained (NB: <em>Private Key</em> and <em>Wallet Address</em> are in the <em>Wallet</em> Tab). There is also a conversion to the <em>Shortened secret phrase</em>: as only the 4 first characters of each <em>mnemonic</em> are meaningful (cf. <code>BIP39</code> specification) then in the <em>Shortened secret phrase</em> each <em>mnemonic</em> is represented only by its 4 first characters (with the first character in Uppercase as a mean to separate <em>mnemonics</em>). NB: As some <em>mnemonics</em> are only 3 characters long, the abbreviation will of course only be whole <em>mnemonic</em>. Here is an example below:</p>
+    <p><em>Secret phrase</em><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;rent expand super sea summer pull catalog mobile proud solve oven goose<br>
+    <em>Shortened secret phrase</em><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RentExpaSupeSeaSummPullCataMobiProuSolvOvenGoos<br>
+    NB: Please notice that the <em>Shortened Secret phrase</em> is not meant to be used to import a wallet in a <em>Wallet Manager</em>, it's only a trick to <em>compress</em> the <em>Secret phrase</em> and make it easier to store on a device with limited memory like a <code>NTAG213 NFC</code> (see 5.2.3).</p>
+
+    <h4>5.1.3. <em>Entropy Source</em> : <code>D6 Dices</code>, <code>Mouse moves</code>, <code>Image</code> or <code>Fortunes</code></h4>
+    <ul>
+      <li><code>D6 Dices</code>: default source, the number of rolls depends on <em>Entropy size</em> (e.g. 100 rolls for 256 bits).</li>
+      <li><code>Mouse moves</code>: entropy bytes are generated when the user moves the mouse pointer.</li>
+      <li><code>Images</code>: You can <em>Drag'n'Drop</em> images (<code>png</code>, <code>jpg</code> or <code>svg</code>) from your local folders. Image samples are provided in <code>www/img</code> folder. When using [Generate], <em>Cryptocurrency logos</em> are drawn from <code>www/img/CryptoCurrency</code>.</li>
+      <li><code>Fortunes</code>: <em>Fortune cookies</em> are drawn from a compilation of 12803 quotes.</li>
+    </ul>
+
+    <h4>5.1.4. Choose <em>Wallet Mode</em>: <em>Simple Wallet</em>, <em>HD Wallet</em> or <em>SWORD Wallet</em> (choice is in the <code>Wallet</code> tab page)</h4>
+    <ul>
+      <li><strong>5.1.4.a. <em>Simple Wallet</em></strong><br>
+      This is the default <em>Wallet Mode</em>. In this mode, each wallet is separated. (no need to understand the principles of the <em>HD Wallet Wallet Tree</em> and the purpose of the <code>Derivation Path</code> used by <em>HD Wallets</em>). So it's a good fit to <em>Give it a Try</em> and start creating your <em>Cryptocurrency Wallets</em> with minimum knowledge. On the other hand it's less secure than <em>HD Wallets</em> (especially if you use low security entropy text like your firstname, city/birth year etc.... Indeed it will be vulnerable to <a href="https://en.wikipedia.org/wiki/Dictionary_attack" style="color: var(--accent);"><em>dictionary attacks</em></a>) and it becomes clumsy if you need to split your assets between many wallets.</li>
+      <li><strong>5.1.4.b. <em>HD Wallet</em></strong><br>
+      This <em>Wallet Mode</em> allows to create / manage a whole hierarchy of Wallets (<em>HD</em> is the acronym for <em>Hierarchical Deterministic</em>) in the same <em>BIP32 tree</em>.
+      <blockquote style="color: var(--text-muted); border-left: 2px solid var(--accent4); padding-left: 15px; margin: 10px 0;">Please notice that the <code>Derivation Path</code> is now <code>Hardened</code> by default and mandatory (since <code>0.3.18</code>). This is for <em>Security</em> purpose (see 5.2.3).</blockquote>
+      The <code>BIP32</code> HD wallet tree is fully determined by the <em>Entropy</em> (or <em>Secret phrase</em> which is equivalent) and an optional <em>Password</em>. The <em>Entropy</em> may be represented by a more human friendly representation: the <em>Mnemonics Sequence</em> which may also be called a <em>Secret phrase</em>, <em>Mnemonics</em>, <em>Seed phrase</em>, <em>Secret</em> or even <em>SRP</em> (<em>Secret Recovery Passphrase</em>).
+      <blockquote style="color: var(--text-muted); border-left: 2px solid var(--accent4); padding-left: 15px; margin: 10px 0;">
+        <strong>How to Generate a new wallet with a given <em>Entropy</em>:</strong><br>
+        Paste a new <em>Entropy</em> (or <em>Secret phrase</em>) in the <code>Entropy</code> wallet tab. Notice that this will hide the <em>Entropy Source</em> and <em>Salt</em> fields (meaningless in this situation).<br>
+        You can then change either the <em>Account</em> or <em>Address Index</em> fields (the maximum number of digits is 6 so you can input a decimal value between 0 and 999999, 1.000.000 possible values for each field) in the <em>Wallet</em> tab page. This will show a [Refresh] button to recompute the wallet once you have finished.<br>
+        Pushing the [Refresh] button (or hitting either [Return] or [Enter] keys while the cursor is in either <em>Account</em> or <em>Address Index</em> field) will recompute the wallet address (and <em>Private key</em> or <em>WIF</em>) accordingly.
+      </blockquote></li>
+      <li><strong>5.1.4.c. <em>SWORD Wallet</em></strong><br>
+      <code>SWORD</code> is an acronym which means <code>Simple Wallet Over Randomized Deterministic</code>, it's a hybrid between <code>Simple Wallet</code> and <code>HD Wallet</code> because it hides the <code>Derivation Path</code> logic (which contains <code>Account</code> and <code>Address Index</code>), thus you don't need to care or understand the principles of <em>Hierarchical Deterministic</em> wallets, but it allows to generate all the cryptocurrencies provided by <code>HD Wallet</code>.</li>
+      <li><strong>5.1.4.d.</strong> Please notice that for <code>Cardano</code> HD wallets, the <code>Account</code> and <code>Address Index</code> parameters are not taken into account by the <em>Wallet Managers</em> which I have tested (namely <code>Guarda</code> and <code>Yoroi</code>) because they ask for the <code>Mnemonics</code> (<code>Secret phrase</code> in <em>CryptoCalc</em>). This is why in <em>CryptoCalc</em>, these parameters are <em>hard-coded</em> to Zero (for <code>Cardano</code> HD wallets only).</li>
+      <li><strong>5.1.4.e.</strong> You can check generated <em>HD Wallets</em> with <em>Ian Coleman BIP39</em> homepage. Its <a href="https://iancoleman.io/bip39/" style="color: var(--accent);">URL</a> is provided as an item in the <code>Help menu</code> (<code>Help/Resources/Ian Coleman BIP39</code>).</li>
+    </ul>
+
+    <h4>5.1.5. 'BIP38' Encryption of the <em>Private Key</em></h4>
+    <ul>
+      <li><code>BIP38</code> (<em>passphrase encrypted private key</em>, see 6.3.5) is supported for an added security layer by Encrypting the <em>Private Key</em>.</li>
+      <li>How to: just input a value in <code>Bip38 passphrase</code> field then use the [Save] button (or <code>File/Save</code> menu item, cf 5.1.12). This generates a <code>Bip38 Encrypted PK</code>.</li>
+      <li>Note 1: Notice that only the first method ('NON-EC': <em>encrypt the private Key with the passphrase</em>) is supported.</li>
+      <li>Note 2: Notice that the level of security is proportional to the length and complexity (diversity of characters like [A..Z][a..z][0..9] and special characters) of the <code>passphrase</code> (like with a password).</li>
+      <li>Note 3: A new QR code is generated (<code>Bip38 Encrypted PK</code>) as both a <code>PNG</code> file and an <code>SVG</code> file (in <code>xtras</code> subfolder of the generated wallet folder under <code>_output</code>).</li>
+      <li>Note 4: The <em>Private Key</em> is still provided (both in <code>wallet_info.txt</code> and as a QR code), but notice it is your responsibility to not disclose the <em>Private Key</em> (the <code>Bip38 Encrypted PK</code> may be disclosed in some use cases cf. 5.3.2).</li>
+      <li>Note 5: A new <em>Tool</em> (in <em>Main menu</em> : <code>Tool/Bip38 Encrypt/Decrypt</code>) is provided to decrypt the <em>Private Key</em> from the <em>Bip38 Encrypted PK</em> (or conversely encrypt the <em>Private Key</em> to the <em>Bip38 Encrypted PK</em>).</li>
+    </ul>
+
+    <h4>5.1.6. <em>Bip39 Passphrase feature</em> (<em>HD Wallet</em> only)</h4>
+    <p>The <code>Bip39 passphrase</code> is like an optional <code>password</code>. If you decide to define it, then it will generate a completely different <code>Bip32 hierarchy</code> (HD Wallet). The ergonomy has been fixed so now to input a <code>Bip39 passphrase</code> you must use the [Edit] button (a 'Pen' shape) and use the [Apply] button in order to recompute the <code>Bip32 Hierarchy</code> (which is parameterized by the <code>Bip39 passphrase</code>).</p>
+    <p>Note 1: Notice that you can still use the [Generate] button (a 'Circular arrow' icon) to generate the <code>Bip39 passphrase</code> and the [Clear] button (a 'Cross' shape) but they are now in the <em>Bip39 passphrase Input</em> Dialog Box.</p>
+    <p>Note 2: You can check that the computed <code>Wallet address</code> and <code>Private Key</code> (or <code>WIF</code>) are correct by using <a href="https://iancoleman.io/bip39/" style="color: var(--accent);">Ian Coleman Bip39</a>, just take care to provide <code>Entropy</code> then provide the <code>BIP39 Passphrase (optional)</code> (as well as <code>Account</code> and <code>Address Index</code> if different from 0) then don't forget to check <code>Use hardened addresses</code>.</p>
+
+    <h4>5.1.7. Passphrase Strength (<code>Bip39/Bip38</code>)</h4>
+    <p>This is a visual feedback of the <code>Passphrase Strength</code> (<code>Bip39/Bip38</code>). The measure of the passphrase's strength is a score (an integer between 0 and 4) computed with the help of <a href="https://www.npmjs.com/package/zxcvbn" style="color: var(--accent);"><code>zxcvbn</code></a> library. This score is displayed as a colored line (whose length is proportional to the score) as well as an adjective (i.e: Weak, Moderate, Strong, etc..).</p>
+    <ul>
+      <li>0 <code>Very Weak</code> (Red)</li>
+      <li>1 <code>Weak</code> (Orange)</li>
+      <li>2 <code>Fair</code> (Yellow)</li>
+      <li>3 <code>Good</code> (Green)</li>
+      <li>4 <code>Strong</code> (Violet)</li>
+    </ul>
+    <p>NB: It is strongly advised to use the [Random] button (a circular arrow icon) because it would probably be much less predictable (and thus more secure) than a <em>Passphrase</em> that you provide because (even unconsciously) there is a higher probability that it will be predictable (even with <em>Tricks</em> like <em>Acronyms</em>, <em>Abbreviations</em> and even usage of <code>L33+5p34|<</code>).</p>
+
+    <h4>5.1.8. <em>Salted Entropy</em></h4>
+    <p><em>Entropy</em> is generated from <em>Entropy Source</em> then a <em>Salt</em> (a generated <code>UUID</code> currently, this is 128 bits of Entropy) is added to provide the <code>Salted Entropy</code>. This is a way to make sure the <em>Entropy</em> is unique at each Generation even if the <em>Entropy Source</em> value is the same (e.g. reusing the same <em>Image</em> or <em>Fortune cookie</em>). Thus the <em>Entropy</em> value will be unique at each press of [Generate] button.</p>
+
+    <h4>5.1.9. Choose <em>Entropy Size</em></h4>
+    <p>The <em>Entropy Size</em> is between 128 to 256 bits (32 to 64 hexadecimal digits). This is equivalent to the size of the <em>Secret phrase</em> (between 12 and 24 words). Changing <em>Entropy Size</em> impacts the size of the <em>Secret phrase</em> and conversely.</p>
+
+    <h4>5.1.10. <em>Wallet Address</em></h4>
+    <p><em>Wallet Address</em> is displayed in the <code>Wallet</code> tab page. There's also an [Explorer...] button which allows to check the generated address in the appropriate <em>Blockchain Explorer</em>.</p>
+
+    <h4>5.1.11. <em>Internet Connection Status</em></h4>
+    <p>This is to secure <em>Offline wallet creation</em> (<em>non custodial</em>). An icon at the right of the <em>Main Toolbar</em> shows if the Internet is connected (<code>Wifi ON</code> red icon) or not connected (<code>Wifi OFF</code> green icon).</p>
+
+    <h4>5.1.12. <code>Save</code> <em>Wallet Informations</em></h4>
+    <p>With <code>File/Save</code> (or the <em>Save</em> icon in the main toolbar), you can save the <em>Wallet Informations</em> in a timestamped subfolder (eg. <code>2024_10_07_21h-4m-4s-3_BTC_EN</code>) under <code>_output</code> folder. This subfolder contains <code>wallet_info.txt</code> and a <code>wallet.json</code> with the informations displayed in <em>Entropy</em> and <em>Wallet</em> tab pages.</p>
+    <ul>
+      <li><strong>5.1.12.a.</strong> When you save the current generated wallet a Popup dialog confirms the saving and allows to show where it is saved.</li>
+      <li><strong>5.1.12.b.</strong> The <em>Wallet Informations</em> subfolder contains <em>QR Codes</em> (<code>png</code> images) for <code>Address</code>, <code>Private Key</code>, <code>Secret phrase</code>, <code>Entropy</code> and <code>WIF</code> (if applicable). Notice that there is a <code>xtras</code> subfolder where these <em>QR codes</em> are provided in the <code>svg</code> format. There is also a <em>Rectangular Micro QR code</em> (<code>rMQR</code>) of the <code>Entropy</code> (<em>Rectangular Micro QR Code</em>, <code>R15x59</code> or <code>R15x77</code> version depending on <code>Entropy size</code>) and an experimental <code>Ultracode</code> color QR code of the <code>Entropy</code>.</li>
+      <li><strong>5.1.12.c: How to retrieve a <em>Wallet Address</em> from the <em>Rectangular Micro QR Code</em></strong>
+        <ul>
+          <li><strong>5.1.12.c.I:</strong> Notice that most Android <em>QR Code reader</em> apps will not be compatible with <em>Rectangular Micro QR Code</em> but it works with <a href="https://play.google.com/store/apps/details?id=com.arara.q&hl=en" style="color: var(--accent);"><code>QRQR</code></a>, an Android <em>QR Code reader</em> published by <em>Arara</em> on the <em>Google Play Store</em>.</li>
+          <li><strong>5.1.12.c.II:</strong> Then convert the <em>Entropy</em> to the matching <em>Secret phrase</em> by doing a copy/paste in the <code>Entropy</code> field of <em>CryptoCalc</em>. <strong>Caution</strong>: Take care to set <em>CryptoCalc</em> with the same <code>Entropy Size</code> and <code>Derivation path</code> (if applicable, don't forget to use the [Refresh] button) than those used when the wallet was created (these informations are provided either in the <code>wallet_info.txt</code> or in <code>wallet_info.wits</code>).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h4>5.1.13. <code>Open</code> <em>Wallet Informations</em> of a previously saved wallet</h4>
+    <ul>
+      <li><strong>5.1.13.a.</strong> <em>Wallet informations</em> are saved both as a <code>.txt</code> but also as a <code>.wits</code> file (<code>JSON</code> format).</li>
+      <li><strong>5.1.13.b.</strong> A <code>.wits</code> file can be opened either with <code>File.Open...</code> menu item or 'Open...' icon in the toolbar. It can be also be opened in <code>Cryptocalc.exe</code> by double clicking on the <code>.wits</code> (<em>File extension to Application</em> feature): this will launch <code>Cryptocalc.exe</code> (cf. 3.1 for installing <code>Cryptocalc.exe</code> with the <em>CryptoCalc Standalone installer</em>).</li>
+      <li><strong>5.1.13.c.</strong> Once opened, a wallet can't be saved on itself (it is to prevent accidental overwrite of the original wallet), but you can use <code>File.Save As...</code> which will save the wallet with a different timestamp than the original one.</li>
+      <li><strong>5.1.13.d.</strong> Notice that for a <em>HD Wallet</em> you can change the <code>Account</code> and/or the <code>Address Index</code> (don't forget to push the [Refresh] button). Now you can save the new wallet with <code>File.Save As...</code> and if you didn't change the <code>Entropy</code> then this new wallet will belong to the same <code>Bip32 HD Wallet Tree</code> (see A.2) as the original one.</li>
+    </ul>
+
+    <h4>5.1.14. Import a wallet in <a href="https://guarda.com/" style="color: var(--accent);">Guarda</a></h4>
+    <p>An item in the menu (Help / Resources / Guarda) eases importing a wallet in a <em>Wallet Manager</em> application.</p>
+    <ul>
+      <li><strong>Notes on <code>Guarda</code></strong>
+        <ul>
+          <li>It is a <em>Non custodial</em> wallet because the <em>Private Keys</em> are stored on your local computer so keep in mind that you are responsible to take care and make backups by yourself (eg. if you reinstall the Operating system without having made a security backup then your <em>Private Keys</em> and then your assets will be lost).</li>
+          <li>It is a <em>Hot</em> wallet because it is also a web service which allows to send funds to another wallet and also to change a cryptocurrency in another (eg ETH to SOL).</li>
+          <li><code>Guarda</code> was chosen mainly to validate that a generated wallet by <em>CryptoCalc</em> is accepted and thus validated.</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h4>5.1.15. Select <em>Secret phrase Language</em></h4>
+    <p>You can select the <em>Wordlist Language</em> (eg. <em>English</em>, <em>French</em>, <em>Deutsch</em>, etc...). Please notice that only <em>English</em> is accepted for most <em>Wallet Manager</em> applications. Changing <em>Wordlist Language</em> is indeed a mean to add an "obfuscation/information hiding" step in order to make it harder to steal your <em>Secret Recovery Passphrase</em> because it should be translated to <em>English</em> to be used with a <em>Wallet Manager</em>. NB: it is important to highlight that indeed the crucial information is the list of <em>Word Indexes</em>. That's why translation between languages is easy in <em>CryptoCalc</em> because the reference is the <em>Word Indexes</em> (see 6.1.14) not the words.</p>
+
+    <h4>5.1.16. Display of <em>Word Indexes</em></h4>
+    <p>The <em>Word Indexes</em> are between 0 and 2047, it is the index of each of the <em>Secret phrase</em> words in the <code>BIP39</code> wordlist (see also 6.1.1). You can choose to display these indexes in <em>Decimal</em> or <em>Binary</em> (in <em>Binary</em> you can check that the computed <em>Checksum bits</em> are added at the end of the converted <em>Entropy</em> to determine the index of the last word).</p>
+
+    <h4>5.1.17. Display of the <em>BIP32 Derivation Path</em></h4>
+    <p>The <em>BIP32 Derivation Path</em> is displayed in the <em>Wallet</em> tab page. You can edit the <em>Account</em> or <em>Address Index</em> fields to generate new wallets which belong to the same <code>BIP32</code> hierarchy that is determined by the <em>Secret phrase</em> (also called the <em>Secret Recovery Passphrase</em>).</p>
+
+    <h4>5.1.18. Secret phrase Translator</h4>
+    <ul>
+      <li>This dedicated tool (<code>Tools/Secret phrase Translator</code>) is meant to import a generated wallet in a <em>Wallet Manager</em>. Usage: Paste a <em>Secret phrase</em>, choose an output language (with the <code>Output</code> dropdown list) then use [Translate] button (the Green arrow button) to get the translated <em>Secret phrase</em>.</li>
+      <li>Use case: You can use a <em>Secret phrase</em> in a non <code>Bip39</code> official language (eg. <code>Russian</code>) and translate it to its equivalent in <code>English</code> (because <em>Wallet Managers</em> support only English).</li>
+      <li>Note 1: A <em>special language</em> (<code>Word Indexes</code>) is provided to get the indexes of the words in the <em>Secret phrase</em> (they are independent from the language).</li>
+      <li>Note 2: Once a first translation has been performed, you can change the <em>Output language</em> and translate at the same time by selecting the new <em>Output language</em> in the <code>Output</code> dropdown list.</li>
+    </ul>
+
+    <h4>5.1.19. Wallets Database</h4>
+    <p>A <a href="https://sqlite.org/" style="color: var(--accent);">SQLite</a> Database is populated by importing <code>.wits</code> files (<em>Wallet informations</em> in a <code>JSON</code> format file). Then the SQLite Database can be explored with <a href="https://dbeaver.io/" style="color: var(--accent);">DBeaver</a>.</p>
+
+    <h4>5.1.20. Dynamic Links</h4>
+    <ul>
+      <li>Address wallet in the appropriate <code>Blockchain Explorer</code> (e.g. <a href="https://www.blockchain.com/fr/explorer" style="color: var(--accent);">blockchain.com</a>).</li>
+      <li>Informations in <code>Coinmarketcap.com</code> for the wallet's cryptocurrency.</li>
+      <li>3D representation of the <code>Secret phrase</code> (<a href="https://aladas-org.github.io/aladas.github.io/" style="color: var(--accent);">Cryptoshape</a>). The description of this 3D representation is in this <a href="https://zenodo.org/records/14579720" style="color: var(--accent);">whitepaper</a>.</li>
+    </ul>
+
+    <h4>5.1.21. Change/Reset of <em>Options</em> (<code>Tools/Options</code>)</h4>
+    <p>Currently it allows to set default values for <code>Default Blockchain</code>, <code>Wallet Mode</code> and <code>Entropy Size</code>. These values are defined in <code>www/config/options.json</code> file. It is also possible to reset <em>Options</em> to <em>Default Options</em> (defined in <code>www/config/defaults/options.json</code>).</p>
+
+    <h4>5.1.22. <em>Localization</em></h4>
+    <p><em>Localization</em> (<code>l10n</code>) feature is the translation of <em>GUI Labels</em> to adapt to the user's language, it's called the <em>locale</em> (eg. <code>en</code>). A <em>locale</em> name can be composed of a base language, country (territory) of use and optionally a codeset (eg. <code>de_CH.UTF-8</code>). The <em>locale</em> is provided as part of your machine's environment. <em>CryptoCalc</em> only uses the 2 letter language part (eg. <code>en</code>). Localization is enabled by a <code>JSON</code> file in the <code>www/js/L10n</code> folder (eg. <code>gui-msg-en.json</code>). Notice that currently only <code>en</code> and <code>fr</code> are provided.</p>
+
+    <h3>5.2. Security Issues</h3>
+    <ul>
+      <li>Notice that you should never disclose the <em>Private Key</em>.</li>
+      <li>NB: In the case of <em>Bip38 Encryption</em>, you may share the <em>Bip38 Encrypted PK</em> but never neither the <em>Private Key</em> nor the <em>Bip38 Passphrase</em>.</li>
+    </ul>
+
+    <h3>5.3. Unit Tests</h3>
+    <ul>
+      <li>Unit tests is an ongoing work (since 0.5.4) it uses <a href="https://jestjs.io/fr/" style="color: var(--accent);">Jest</a> unit test framework.</li>
+      <li>How to run the tests: double click on <code>_open_cmd_window.bat</code> then input <code>npm test</code>.</li>
+      <li>Status: 694 unit tests covering:
+        <ul>
+          <li>"Simple Wallet" (<code>www/js/crypto/SimpleWallet/simple_wallet.js</code>)</li>
+          <li>"HD Wallet" (<code>www/js/crypto/HDWallet/hd_wallet.js</code>)</li>
+          <li>And other utility modules.</li>
+        </ul>
+      </li>
+      <li>The code for unitary tests for Jest is in <code>tests/jest/unit/wallet</code>.</li>
+    </ul>
+
+    <h3>5.4. Use cases</h3>
+    <ul>
+      <li><strong>5.4.1. Generate a new <em>Wallet</em> and import it in a <em>Wallet manager</em></strong><br>
+      With a <em>Wallet Manager</em> like <a href="https://guarda.com/" style="color: var(--accent);"><code>Guarda</code></a> you can import a wallet generated by <em>CryptoCalc</em>:
+        <ul>
+          <li>Choose <em>Wallet Mode</em>: <em>Simple Wallet</em>, <em>HD Wallet</em> or <em>SWORD</em>.</li>
+          <li>Choose a coin: <code>BTC</code>, <code>ETH</code>, <code>XRP</code>, <code>ADA</code>, <code>DOGE</code>, <code>LTC</code>, <code>SOL</code>, <code>AVAX</code>, <code>TRX</code>, <code>BCH</code>, <code>DASH</code>, <code>FIRO</code>.</li>
+          <li>Enter <em>Private Key</em> (NB: or <em>WIF</em> for <code>BTC</code> wallets).</li>
+        </ul>
+      </li>
+      <li><strong>5.4.2. <code>BIP38</code> Encryption of the Private Key</strong><br>
+      The first method (NON-EC) of <code>BIP38</code> adds a security layer by encrypting the <em>Private Key</em> with a <em>Passphrase</em>. The <em>Bip38 Encrypted Private Key</em> allows to subcontract the printing of a <em>Paper Wallet</em> with <em>premium features</em> (eg. Watermark, Embossing, Hologram, Custom <em>Credit card</em>, etc..) without disclosing the Private Key to the subcontractor (and providing the <em>Passphrase</em> to your customer via a different channel than the delivery of the <em>Printed paper wallet</em>).</li>
+      <li><strong>5.4.3. Store <em>Shortened Secret phrase</em> in a <em>NFC SmartRing</em></strong><br>
+      The entry level <em>SmartRings</em> (price range: 7..15$) contains a <code>NTAG213 NFC</code> with 144 bytes usable capacity. This is enough to store the <em>Shortened Secret phrase</em>, with a 24 words <em>Shortened Secret phrase</em> the maximum required capacity is 96 bytes/characters (24*4, cf. 5.1.2) or even less (as some mnemonics have only three characters).</li>
+      <li><strong>5.4.4. Store <em>Master password</em></strong><br>
+      This is similar to the previous case, but the <em>Shortened Secret phrase</em> can be used as a <em>Master password</em> for a <em>Password Manager</em> or for tools like <a href="https://pgptool.github.io" style="color: var(--accent);"><em>PGP Tool</em></a> which provides encryption/decryption of your documents.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 6: APPENDIX -->
+  <div class="section" id="appendix">
+    <h2>6. Appendix</h2>
+    
+    <h3>6.1. <code>BIP39</code>: a <em>Dictionary</em> of 2048 words</h3>
+    <p><code>BIP39</code> (<code>BIP</code> is the acronym for <em>Bitcoin Improvement Proposal</em>) is a specification regarding:</p>
+    <ul>
+      <li><strong>6.1.1. A <em>Dictionary</em> of 2048 <em>mnemonics</em></strong><br>
+      The <em>Dictionary</em> (also called a <em>wordlist</em>) contains 2048 <em>English</em> <em>mnemonics</em> (words) each with their unique 4 starting characters (or 3 if the mnemonic is 3 characters long). This dictionary exists also in other languages (e.g. <em>French</em>, <em>Deutsch</em>, <em>Spanish</em>, <em>Italian</em>, <em>Portuguese</em>, etc...) but <em>Wallet Managers</em> (e.g. <em>Guarda</em>, <em>Metamask</em>, <em>Atomic Wallet</em>, etc...) and <em>Hardware Wallets</em> (eg. <em>Ledger</em>, <em>Trezor</em>, <em>Tangem</em>, etc...) will only accept <em>English</em> words.</li>
+      <li><strong>6.1.2. Conversion of <em>Secret phrase</em> from and to <em>Entropy</em></strong><br>
+      The <em>Secret phrase</em> is obtained by drawing words (also called <em>mnemonics</em>) from the dictionary. Drawing a word is indeed choosing an index between 0 and 2047. This index can be represented by 11 bits in <em>Binary</em> (because 2^11 = 2048).
+        <ul>
+          <li><strong>Conversion from <em>Entropy</em> to <em>Secret phrase</em>:</strong> The <em>Entropy</em> is represented in <em>Binary</em> and divided in 11 bits segments but the entropy is a multiple of 8 bits (128, 160, 192, 224, 256) there are "missing bits" for choosing the last word. These "missing bits" are provided by computing the <em>Entropy Checksum</em>. e.g. For an <em>Entropy Size</em> of 128 bits (converted to a 12 words <em>Secret phrase</em>), 132 bits are needed (11 * 12), so the <em>Entropy Checksum</em> provides the missing 4 bits.</li>
+          <li><strong>Conversion from <em>Secret phrase</em> to <em>Entropy</em>:</strong> For each word its index is retrieved from the <em>Dictionary</em>, its value is represented as a 11 bits segment and a number of bits corresponding to the <em>Entropy Checksum</em> are removed at the end of the concatenation of 11 bits segments. e.g. For a <em>Secret phrase</em> of 12 words (converted to a 128 bits <em>Entropy</em>), 132 bits are obtained from the <em>Word Indexes</em> (11 * 12), and because the <em>Entropy Checksum</em> is 4 bits long (in the case of a 128 bits <em>Entropy</em>) then the 4 bits at the end are removed.</li>
+        </ul>
+      </li>
+      <li><strong>Reference:</strong> <a href="https://medium.com/@sundar.sat84/bip39-mnemonic-generation-with-detailed-explanation-84abde9da4c1" style="color: var(--accent);">BIP39 — Mnemonic Generation with detailed explanation</a></li>
+    </ul>
+
+    <h3>6.2. <code>BIP32</code>: Hierarchic Deterministic wallets</h3>
+    <p><code>BIP32</code> specifies how to generate wallets which are all derived from the same <em>Entropy</em> or <em>Secret phrase</em> (also called the <em>Secret Recovery Passphrase</em>). A <em>Secret phrase</em> of only 12 words is enough in most <em>Wallet Managers</em> but it is much more secure to use a 24 words <em>Secret phrase</em> if possible (e.g. <em>Ledger</em> hardware wallet manager).</p>
+    <p>Example: meaning of each part for <code>m/44'/60'/0'/0/0'</code> (a <em>Hardened Derivation Path</em>):</p>
+    <ul>
+      <li>Start at the master key (m)</li>
+      <li>Follow the <code>BIP44</code> specification (44')</li>
+      <li>Derive the key for <em>Ethereum</em> (for which <em>Coin type</em> is 60) (60')</li>
+      <li>Access the first account (0')</li>
+      <li>Choose the external chain, used for public addresses (0)</li>
+      <li>And finally, generate the first address in this sequence (0')</li>
+    </ul>
+
+    <h3>6.3. References</h3>
+    <ul>
+      <li><strong>6.3.1.</strong> <a href="https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address)" style="color: var(--accent);">Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide</a></li>
+      <li><strong>6.3.2.</strong> <a href="https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786" style="color: var(--accent);">Hierarchical key generation</a></li>
+      <li><strong>6.3.3.</strong> <a href="https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets" style="color: var(--accent);">BIP32 Key Derivation with HD Wallets</a></li>
+      <li><strong>6.3.4.</strong> <a href="https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain" style="color: var(--accent);">The evolution of the Binance Smart Chain</a></li>
+      <li><strong>6.3.5.</strong> <a href="https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki" style="color: var(--accent);">BIP38: Passphrase-protected private key</a></li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <span>© 2025 Aladas — Cryptocalc 0.5.10</span>
+    <span>Documentation built from README.md</span>
+  </footer>
+
+</div>
+</body>
+</html>

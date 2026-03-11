@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cryptocalc — Unit Test Protocols</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2330;
+    --border: #30363d;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --accent3: #f78166;
+    --accent4: #d2a8ff;
+    --accent5: #ffa657;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 48px 24px;
+    min-height: 100vh;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* Home button */
+  .home-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    transition: all .2s;
+    z-index: 100;
+    backdrop-filter: blur(5px);
+  }
+
+  .home-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .home-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  header {
+    margin-bottom: 48px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 28px;
+  }
+
+  .top-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #1f3a5f;
+    color: var(--accent);
+    border: 1px solid #1f4080;
+    letter-spacing: .05em;
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -.02em;
+  }
+
+  h1 span { color: var(--accent); }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    margin-bottom: 20px;
+  }
+
+  .global-stats {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .gstat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    text-align: center;
+    min-width: 90px;
+  }
+
+  .gstat .n {
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .gstat .l {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+
+  .n.blue   { color: var(--accent); }
+  .n.green  { color: var(--accent2); }
+  .n.purple { color: var(--accent4); }
+
+  /* Search */
+  .search-wrap {
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .search-wrap input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px 10px 40px;
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap input::placeholder { color: var(--text-muted); }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 15px;
+    pointer-events: none;
+  }
+
+  /* Filter tabs */
+  .filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    transition: all .15s;
+    letter-spacing: .02em;
+  }
+
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: #1f3a5f; border-color: var(--accent); color: var(--accent); }
+
+  /* Cards grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color .15s, transform .15s, background .15s;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+    background: #1a2233;
+    transform: translateY(-2px);
+  }
+
+  .card.hidden { display: none; }
+
+  .card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .card-icon {
+    font-size: 22px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .card-cat {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  .cat-crypto  { background: #1f3a5f; color: var(--accent); border: 1px solid #1f4080; }
+  .cat-wallet  { background: #1a2f1a; color: var(--accent2); border: 1px solid #2a5a2a; }
+  .cat-utils   { background: #2b1e3a; color: var(--accent4); border: 1px solid #4a2a6a; }
+  .cat-infra   { background: #2b1e00; color: var(--accent5); border: 1px solid #6a4a00; }
+
+  .card-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .card-path {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 75%;
+  }
+
+  .card-arrow {
+    color: var(--accent);
+    font-size: 14px;
+    transition: transform .15s;
+  }
+
+  .card:hover .card-arrow { transform: translateX(3px); }
+
+  .no-results {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 48px 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    display: none;
+  }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+</style>
+</head>
+<body>
+
+<!-- HOME BUTTON -->
+<a href="../../_doc/index.html" class="home-btn">
+  <svg viewBox="0 0 24 24">
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+    <polyline points="9 22 9 12 15 12 15 22"/>
+  </svg>
+  HOME
+</a>
+
+<div class="container">
+
+  <header>
+    <div class="top-badge">⬡ CRYPTOCALC</div>
+    <h1>Unit Test <span>Protocols</span></h1>
+    <p class="subtitle">Documentation des protocoles de tests unitaires Jest — 17 suites, 694 tests</p>
+    <div class="global-stats">
+      <div class="gstat"><div class="n blue">17</div><div class="l">Fichiers</div></div>
+      <div class="gstat"><div class="n blue">694</div><div class="l">Tests</div></div>
+      <div class="gstat"><div class="n green">694</div><div class="l">Passing</div></div>
+      <div class="gstat"><div class="n" style="color:var(--accent5)">1</div><div class="l">Skipped</div></div>
+      <div class="gstat"><div class="n purple">0</div><div class="l">Failed</div></div>
+    </div>
+  </header>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Rechercher un fichier, une fonction…" oninput="filterCards()">
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">Tous</button>
+    <button class="filter-btn" onclick="setFilter('crypto', this)">Crypto</button>
+    <button class="filter-btn" onclick="setFilter('wallet', this)">Wallet</button>
+    <button class="filter-btn" onclick="setFilter('utils', this)">Utils</button>
+    <button class="filter-btn" onclick="setFilter('infra', this)">Infra</button>
+  </div>
+
+  <div class="grid" id="grid">
+
+    <!-- CRYPTO -->
+    <a class="card" href="TEST_password_strength_evaluator.html" data-cat="crypto" data-keywords="password strength entropy zxcvbn binary hex base58 base64 adjective">
+      <div class="card-top">
+        <div class="card-icon">🔐</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">password_strength_evaluator.js</div>
+      <div class="card-desc">Force de mot de passe : entropie par alphabet, adjectifs, scores zxcvbn, entropie ajustée DS.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_bip32_utils.html" data-cat="crypto" data-keywords="bip32 bip44 hd wallet derivation path mnemonics blockchain address">
+      <div class="card-top">
+        <div class="card-icon">🌳</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">bip32_utils.js</div>
+      <div class="card-desc">Dérivation HD (BIP32/BIP44), génération d'adresses multi-blockchain, chemins de dérivation.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/HDWallet/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_bip38_utils.html" data-cat="crypto" data-keywords="bip38 encrypt decrypt passphrase private key 6P non-EC scrypt">
+      <div class="card-top">
+        <div class="card-icon">🔒</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">bip38_utils.js</div>
+      <div class="card-desc">Chiffrement/déchiffrement BIP38 méthode Non-EC d'une clé privée par passphrase (préfixe 6P).</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_bip39_utils.html" data-cat="crypto" data-keywords="bip39 mnemonic entropy mnemonics 12 24 words check validate">
+      <div class="card-top">
+        <div class="card-icon">📋</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">bip39_utils.js</div>
+      <div class="card-desc">Génération de mnémoniques BIP39, conversion entropie ↔ mnémoniques, validation.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_bip39_extras.html" data-cat="crypto" data-keywords="bip39 extras 4letter two parts label size MnemonicsAs4letter MnemonicsAsTwoParts">
+      <div class="card-top">
+        <div class="card-icon">📝</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">bip39_utils.js — Extras</div>
+      <div class="card-desc">Fonctions complémentaires BIP39 : MnemonicsAs4letter, MnemonicsAsTwoParts, LabelWithSize.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_base58_utils.html" data-cat="crypto" data-keywords="base58 encode decode hex convert isBase58 alphabet bitcoin">
+      <div class="card-top">
+        <div class="card-icon">🔢</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">base58_utils.js</div>
+      <div class="card-desc">Encodage/décodage Base58, validation de chaînes, aller-retour hex ↔ Base58.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_crypto_services.html" data-cat="crypto" data-keywords="crypto services UUID WIF private key singleton">
+      <div class="card-top">
+        <div class="card-icon">⚙️</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">crypto_services.js</div>
+      <div class="card-desc">Services cryptographiques : génération UUID v4, conversion clé privée → WIF.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_entropy_size.html" data-cat="crypto" data-keywords="entropy size bits words count checksum SHA256 substring BIP39">
+      <div class="card-top">
+        <div class="card-icon">📐</div>
+        <span class="card-cat cat-crypto">crypto</span>
+      </div>
+      <div class="card-title">entropy_size.js</div>
+      <div class="card-desc">Calcul bits/mots d'une entropie hex, gestion tailles BIP39 (128–256 bits), checksum.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- WALLET -->
+    <a class="card" href="TEST_hd_wallet.html" data-cat="wallet" data-keywords="hd wallet hierarchical deterministic BIP44 bitcoin ethereum litecoin passphrase testnet">
+      <div class="card-top">
+        <div class="card-icon">💼</div>
+        <span class="card-cat cat-wallet">wallet</span>
+      </div>
+      <div class="card-title">hd_wallet.js</div>
+      <div class="card-desc">Wallets HD multi-blockchain depuis entropie + UUID sel : Bitcoin, Ethereum, Litecoin, Solana, Cardano…</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/HDWallet/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_simple_wallet.html" data-cat="wallet" data-keywords="simple wallet bitcoin ethereum litecoin dogecoin solana polygon ton terra horizen">
+      <div class="card-top">
+        <div class="card-icon">👛</div>
+        <span class="card-cat cat-wallet">wallet</span>
+      </div>
+      <div class="card-title">simple_wallet.js</div>
+      <div class="card-desc">Wallets simples (non-HD) pour toutes les blockchains : Bitcoin, ETH, SOL, TON, Terra, Horizen…</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/SimpleWallet/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_address_validation.html" data-cat="wallet" data-keywords="address validation bitcoin ethereum WIF mnemonic custom matchers jest P2SH SegWit">
+      <div class="card-top">
+        <div class="card-icon">✅</div>
+        <span class="card-cat cat-wallet">wallet</span>
+      </div>
+      <div class="card-title">Address Validation</div>
+      <div class="card-desc">Validation d'adresses Bitcoin (Legacy, P2SH, SegWit), Ethereum, WIF, mnémoniques via matchers Jest.</div>
+      <div class="card-footer">
+        <span class="card-path">tests/jest/unit/wallet/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- UTILS -->
+    <a class="card" href="TEST_hex_utils.html" data-cat="utils" data-keywords="hex utils binary base64 prefix 0x isHexString hexToBinary binaryToHex random">
+      <div class="card-top">
+        <div class="card-icon">🔀</div>
+        <span class="card-cat cat-utils">utils</span>
+      </div>
+      <div class="card-title">hex_utils.js</div>
+      <div class="card-desc">Conversions hex ↔ binaire, hex ↔ base64, gestion préfixe 0x, validation, random.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/crypto/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_number_utils.html" data-cat="utils" data-keywords="number utils format validation integer float separator">
+      <div class="card-top">
+        <div class="card-icon">🔢</div>
+        <span class="card-cat cat-utils">utils</span>
+      </div>
+      <div class="card-title">number_utils.js</div>
+      <div class="card-desc">Formatage et validation de nombres : séparateurs de milliers, entiers, flottants, négatifs.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/util/values/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_string_utils.html" data-cat="utils" data-keywords="string utils truncate pad isEmpty empty null undefined format">
+      <div class="card-top">
+        <div class="card-icon">🔤</div>
+        <span class="card-cat cat-utils">utils</span>
+      </div>
+      <div class="card-title">string_utils.js</div>
+      <div class="card-desc">Utilitaires de chaînes : troncature, padding gauche/droit, isEmpty, gestion null/undefined.</div>
+      <div class="card-footer">
+        <span class="card-path">www/js/util/values/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <!-- INFRA -->
+    <a class="card" href="TEST_fixture_loading.html" data-cat="infra" data-keywords="fixture loading JSON inputs expected bitcoin ethereum format">
+      <div class="card-top">
+        <div class="card-icon">📦</div>
+        <span class="card-cat cat-infra">infra</span>
+      </div>
+      <div class="card-title">Fixture Loading</div>
+      <div class="card-desc">Vérification que les fichiers de fixtures Jest sont lisibles et au bon format JSON.</div>
+      <div class="card-footer">
+        <span class="card-path">tests/jest/unit/utils/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="TEST_smoke.html" data-cat="infra" data-keywords="smoke test jest configuration globals TEST_MODE CRYPTO_CONFIG TEST_PATHS">
+      <div class="card-top">
+        <div class="card-icon">💨</div>
+        <span class="card-cat cat-infra">infra</span>
+      </div>
+      <div class="card-title">smoke.test.js</div>
+      <div class="card-desc">Smoke test : Jest opérationnel, globals TEST_MODE, CRYPTO_CONFIG et TEST_PATHS accessibles.</div>
+      <div class="card-footer">
+        <span class="card-path">tests/jest/</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="no-results" id="no-results">Aucun résultat pour cette recherche.</div>
+
+  <footer>
+    <span>Cryptocalc — Echopraxium with the collaboration of Claude AI</span>
+    <span>Generated 2026-03-10</span>
+  </footer>
+</div>
+
+<script>
+  let currentFilter = 'all';
+
+  function setFilter(cat, btn) {
+    currentFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterCards();
+  }
+
+  function filterCards() {
+    const q = document.getElementById('search').value.toLowerCase().trim();
+    const cards = document.querySelectorAll('.card');
+    let visible = 0;
+
+    cards.forEach(card => {
+      const catMatch = currentFilter === 'all' || card.dataset.cat === currentFilter;
+      const keywords = (card.dataset.keywords + ' ' + card.querySelector('.card-title').textContent + ' ' + card.querySelector('.card-desc').textContent).toLowerCase();
+      const textMatch = !q || keywords.includes(q);
+
+      if (catMatch && textMatch) {
+        card.classList.remove('hidden');
+        visible++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+  }
+</script>
+</body>
+</html>
