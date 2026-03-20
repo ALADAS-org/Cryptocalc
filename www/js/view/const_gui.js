@@ -47,6 +47,31 @@ const ENTROPY_SIZE_SELECT_ID              = "entropy_size_select_id";
 const SW_ENTROPY_SIZE_ID                  = "sw_entropy_size_id";
 
 
+// -------------------- BIP39 --------------------
+const BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID = "bip32_passphrase_strength_container_id";
+
+const BIP32_PASSPHRASE_ROW_ID                = "bip32_passphrase_row_id";
+
+const BIP32_PASSPHRASE_ID                    = "bip32_passphrase_id";
+
+const BIP32_PASSPHRASE_STRENGTH_ID           = "bip32_passphrase_strength_id";
+const BIP32_PASSPHRASE_STRENGTH_LABEL_ID     = "bip32_passphrase_strength_label_id";
+
+const CLEAR_BIP39_PASSPHRASE_BTN_ID          = "clear_bip39_passphrase_btn_id";
+
+const PASSWORD_WITH_APPLY_CSS_CLASS          = "PasswordFielWithApplyButton";
+const PASSWORD_WITHOUT_APPLY_CSS_CLASS       = "PasswordFielWithoutApplyButton";
+
+const APPLY_BTN_SEPARATOR_ID                 = "apply_btn_separator_id";
+const APPLY_PASSWORD_BTN_ID                  = "apply_password_btn_id";
+
+const GENERATE_BIP39_PASSPHRASE_BTN_ID       = "generate_bip39_passphrase_btn_id";
+const CLEAR_PASSWORD_BTN_ID                  = "clear_password_btn_id";
+
+const BIP39_PASSPHRASE_EYE_BTN_IMG_ID        = "bip39_passphrase_eye_btn_img_id";
+// -------------------- BIP39
+
+
 // -------------------- BIP38 --------------------
 const BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID = "bip38_passphrase_strength_container_id";
 
@@ -67,25 +92,6 @@ const BIP38_PASSPHRASE_EYE_BTN_ID         = "bip38_passphrase_eye_btn_id";
 const BIP38_PASSPHRASE_EYE_BTN_IMG_ID     = "bip38_passphrase_eye_btn_img_id";
 // -------------------- BIP38
 
-
-// -------------------- BIP39 --------------------
-const BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID = "bip32_passphrase_strength_container_id";
-
-const BIP32_PASSPHRASE_ROW_ID             = "bip32_passphrase_row_id";
-
-const BIP32_PASSPHRASE_ID                 = "bip32_passphrase_id";
-
-const BIP32_PASSPHRASE_STRENGTH_ID        = "bip32_passphrase_strength_id";
-const BIP32_PASSPHRASE_STRENGTH_LABEL_ID  = "bip32_passphrase_strength_label_id";
-
-const PASSWORD_WITH_APPLY_CSS_CLASS       = "PasswordFielWithApplyButton";
-const PASSWORD_WITHOUT_APPLY_CSS_CLASS    = "PasswordFielWithoutApplyButton";
-
-const APPLY_BTN_SEPARATOR_ID              = "apply_btn_separator_id";
-const APPLY_PASSWORD_BTN_ID               = "apply_password_btn_id";
-const GENERATE_PASSWORD_BTN_ID            = "generate_password_btn_id";
-const CLEAR_PASSWORD_BTN_ID               = "clear_password_btn_id";
-// -------------------- BIP39
 
 const EYE_BTN_ID                          = "eye_btn_id";
 const EYE_BTN_IMG_ID                      = "eye_btn_img_id";

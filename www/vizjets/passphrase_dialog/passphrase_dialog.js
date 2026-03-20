@@ -80,7 +80,7 @@ class PassphraseDialog {
 							
 								this_obj.addEventHandler
 									( PASSPHRASE_DIALOG_APPLY_BTN_ID, 'click', 
-									  () => { PassphraseDialog.This.onApply(); } );	
+									  async () => { await PassphraseDialog.This.onApply(); } );	
 									  
 								this_obj.addEventHandler
 									( PASSPHRASE_DIALOG_CANCEL_BTN_ID, 'click', 

@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.10
+## CryptoCalc 0.5.11
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -174,14 +174,18 @@
 	           - `git clone https://github.com/ALADAS-org/Cryptocalc.git`
                - `cd Cryptocalc`	
                - `npm install`
-			   - `chmod 777 ./_runX.sh`			   
+			   - `chmod 777 ./_run_Cryptocalc_X.sh`			   
 			   - You can launch _CryptoCalc_ with either:
 			       - `npm start` 
-				   - `./_runX.sh` 
+				   - `./_run_Cryptocalc_X.sh` 
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.10`: This version 
+    - `0.5.11`: This version 
+	    - Ergonomy Enhancements of `Bip39 Passphrase` input field:
+		  - Added Generate Passphrase button (a 'Circular arrow' icon)
+	      - Added Clear button (displayed as a `X` icon)  
+    - `0.5.10`
 	    - Help Enhancement: the `Help menu` provides now an HTML version of `README.md` and a documentation of test protocols
 	    - Updates in Unit tests running on [Jest](https://jestjs.io/fr/): 
 		  Updates in `Unit tests`: 694 tests
