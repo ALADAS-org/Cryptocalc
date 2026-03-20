@@ -172,8 +172,8 @@ hr {
 }
 
 #bip32_passphrase_id {
-	width:     92%; !important; 
-    min-width: 92%; !important;	
+	width:     86%; !important; 
+    min-width: 86%; !important;	
 }
 
 #bip38_passphrase_id {

@@ -31,7 +31,7 @@
 // * async  updateOptionsFields( json_data )
 // * async  updateFields()
 // * async  updateWalletMode( wallet_mode )
-// * async  updatePassword( password )
+// * async  updateBip39Passphrase( password )
 // * async  updateEntropySize( entropy_size )
 // * async  updateEntropy( entropy )
 // *        updateBlockchain( blockchain )
@@ -866,7 +866,8 @@ class MainGUI {
 			
 		this.setEventHandler( TOGGLE_DEVTOOLS_ICON_ID, 'click', 
 		    (evt) => { if (this.cb_enabled) this.onToggleDebug(evt); } );		
-		// -------------------- Toolbar icon buttons	
+		// -------------------- Toolbar icon buttons
+		
 		
 		this.setEventHandler( ENTROPY_SRC_FORTUNES_ID, 'focus', 
 		    (evt) => { if (this.cb_enabled) this.onGuiFocus(evt); } );
@@ -900,29 +901,26 @@ class MainGUI {
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateWordCount(evt); } );
 		this.setEventHandler( LANG_SELECT_ID,           'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateLang(evt); } );	
+			
 
-		// -------------------- Bip39/Bip38 Passphrase --------------------
-		//this.setEventHandler( BIP32_PASSPHRASE_ID, 'keyup',   
-		//    async (evt) => { await this.onGuiChangePassphrase( evt ); } );
+		// -------------------- BIP39 Passphrase --------------------		
 		this.setEventHandler( EDIT_BIP39_BTN_ID, 'click',   
 		     (evt) => { PassphraseDialog.This.showDialog( BIP39_PASSPHRASE_TYPE ); } );
+			 
+		this.setEventHandler( GENERATE_BIP39_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiGenerateBip39Passphrase(); } );
 			
-		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
-		   async (evt) => { await this.onGuiChangePassphrase( evt ); } );
-		// -------------------- Bip39/Bip38 Passphrase	
-			
-		this.setEventHandler( APPLY_PASSWORD_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiApplyPassword(); } );
-	
-		this.setEventHandler( GENERATE_PASSWORD_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiGenerateBip32Passphrase(); } );
-			
-		this.setEventHandler( CLEAR_PASSWORD_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip32Passphrase(); } );
-
 		this.setEventHandler( EYE_BTN_ID, 'click',   
-		    (evt) => { if (this.cb_enabled) this.GuiToggleBip32PassphraseVisibility(); } );
-				
+		    (evt) => { if (this.cb_enabled) this.GuiToggleBip32PassphraseVisibility(); } )
+			
+		this.setEventHandler( CLEAR_BIP39_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip39Passphrase(); } );	
+		// -------------------- BIP39 Passphrase	
+		
+		
+		// -------------------- BIP38 Passphrase --------------------			
+		this.setEventHandler( CLEAR_PASSWORD_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip32Passphrase(); } );;				
 
 		this.setEventHandler( CLEAR_BIP38_PASSPHRASE_BTN_ID, 'click',   
 		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip38Passphrase(); } );			
@@ -932,7 +930,10 @@ class MainGUI {
 
 		this.setEventHandler( BIP38_PASSPHRASE_EYE_BTN_ID, 'click',   
 		    (evt) => { if (this.cb_enabled) this.GuiToggleBip38PassphraseVisibility(); } );
-		// -------------------- Bip32/Bip38 Passphrase	
+			
+		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
+		    async (evt) => { await this.onGuiChangeBip38Passphrase( evt ); } );
+		// -------------------- BIP38 Passphrase	
 		
 		
 		this.setEventHandler( WALLET_MODE_SELECT_ID,    'change',   
@@ -1450,11 +1451,11 @@ class MainGUI {
 		}
 	} // updateStatusbarInfo	
 	
-	async updatePassword( bip32_passphrase ) {
+	async updateBip39Passphrase( bip39_passphrase ) {
 		trace2Main( "===== rGUI.upPW ===============================================================" );
-		trace2Main( pretty_func_header_format( "MainGUI.updatePassword", bip32_passphrase ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip39Passphrase", bip39_passphrase ) );
 		await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
-	}  // async updatePassword()
+	}  // async updateBip39Passphrase()
 	
 	async updateEntropy( entropy_hex ) {
 		trace2Main( pretty_func_header_format( "MainGUI.updateEntropy", entropy_hex ) );		
@@ -2101,10 +2102,10 @@ class MainGUI {
 	} // async onGuiPassphraseMouseOver()	
 	*/
 	
-	async onGuiChangePassphrase( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.onGuiChangePassphrase" ) );
+	async onGuiChangeBip38Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiChangeBip38Passphrase" ) );
 		await this.updatePassphraseStrength( evt.target.id );			
-	} // async onGuiChangePassphrase()
+	} // async onGuiChangeBip38Passphrase()
 	
 	async updatePassphraseStrength( target_id ) {
 		trace2Main( pretty_func_header_format( "MainGUI.updatePassphraseStrength" ) );
@@ -2213,23 +2214,11 @@ class MainGUI {
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
 		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", bip32_passphrase ) );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
-		await this.updatePassword( bip32_passphrase );
+		await this.updateBip39Passphrase( bip32_passphrase );
 
 		this.GuiSetPasswordApplyState( false );
 	} // async GuiApplyPassword()
 
-	// https://www.npmjs.com/package/generate-password
-	async GuiGenerateBip32Passphrase( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip32Passphrase" ) );
-		let data = {};
-		let bip32_passphrase = await window.ipcMain.GeneratePassword( data );
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase);
-		
-		this.updatePassphraseStrength( BIP32_PASSPHRASE_ID );
-
-		this.GuiSetPasswordApplyState( true );
-	} // async GuiGenerateBip32Passphrase()	
-	
 	GuiSetPasswordApplyState( visible ) {
 		if ( visible ) {
 			HtmlUtils.ShowElement( APPLY_PASSWORD_BTN_ID );
@@ -2247,13 +2236,41 @@ class MainGUI {
 		}
 	} // GuiSetPasswordApplyState()
 	
-	GuiClearBip32Passphrase( update_wallet ) {
-		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip32Passphrase" ) );
+	
+	
+	// --------------------  BIP39 (ex: 'BIP32') --------------------
+	// https://www.npmjs.com/package/generate-password
+	async GuiGenerateBip39Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip39Passphrase" ) );
+		
+		let data = {};
+		let bip39_passphrase = await window.ipcMain.GeneratePassword( data );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip39_passphrase);
+		
+		await this.updateBip39Passphrase( bip39_passphrase );
+		
+		this.updatePassphraseStrength( BIP32_PASSPHRASE_ID );
+		
+		await this.GuiApplyPassword();
+		
+		await this.updatePassphraseStrength( BIP39_MAIN_WINDOW_PASSPHRASE_ID );
+
+		this.GuiSetPasswordApplyState( true );
+	} // async GuiGenerateBip39Passphrase()	
+	
+	async GuiClearBip39Passphrase( update_wallet ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip39Passphrase" ) );
+
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '');
 		HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
+		
+		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", '' ) );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '' );
+		await this.updateBip39Passphrase( '' );
 
 		this.GuiSetPasswordApplyState( false );	
-	} // GuiClearBip32Passphrase()
+	} // GuiClearBip39Passphrase()
+	
 	
 	GuiToggleBip32PassphraseVisibility() {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiToggleBip32PassphraseVisibility" ) );	
@@ -2276,7 +2293,10 @@ class MainGUI {
 		}
 		this.password_visible = ! this.password_visible;
 	} // GuiToggleBip32PassphraseVisibility()
-
+	// --------------------  BIP39 (ex: 'BIP32')
+	
+	
+    // --------------------  BIP38  --------------------
 	async GuiGenerateBip38Passphrase( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip38Passphrase" ) );
 		let data = {};
@@ -2317,7 +2337,7 @@ class MainGUI {
 		}
 		this.bip38_passphrase_visible = ! this.bip38_passphrase_visible;
 	} // GuiToggleBip38PassphraseVisibility()
-	// ------------------------ Bip32/Bip38 Passphrase
+	// --------------------  BIP38
 		
 
 	async onFileNewWallet( evt ) {
