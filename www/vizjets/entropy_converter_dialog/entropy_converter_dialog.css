@@ -1,0 +1,141 @@
+.Dialog_Form {
+    background:        #F5F5DC;
+}
+
+.DialogBox {
+    font-size:         12px;
+    background:        #F5F5DC;
+}
+
+#econverter_small_vertical_interspace_id {
+    height:            0;
+    border:            none;
+    border-top:        5px solid #F5F5DC;
+    margin:            0;
+}
+
+.EConverterLabel {
+	text-align:    	   center;
+	font-size:         14px;
+	padding-left:      0px;
+	width:             140px !important; /* 90px */
+	min-width:         140px !important;
+	max-width:         140px !important;
+	height:            25px;
+}
+
+.EConverterLabelColumn {
+	text-align:    	   center;
+	font-size:         14px;
+	padding-left:      0px;
+	width:             140px !important; /* 90px */
+	min-width:         140px !important;
+	max-width:         140px !important;
+	height:            25px;
+}
+
+.EConverterEntropyLine {
+	font-size:         14px;
+	padding-left:      10px;
+	width:             90%;
+	min-width:         90%;
+	max-width:         90%;
+	height:            25px;
+}
+
+.EConverterFieldColumn {
+	font-size:         14px;
+	padding-left:      10px;
+	width:             90%;
+	min-width:         90%;
+	max-width:         90%;
+	height:            25px;
+}
+
+.EConverterInputField {
+    font-size:         12px  !important; 
+    width:    		   455px !important;
+    min-width:         455px !important;
+	max-width:         455px !important;
+    height:   		   19px  !important; 
+	min-height:        19px  !important;
+	max-height:        19px  !important;
+    background-color:  white;
+}
+
+.EConverterTextAreaInputField {
+    font-size:         16px  !important; 
+    width:    		   455px !important;
+    min-width:         455px !important;
+	max-width:         455px !important;
+	
+    height:   		   125px  !important; 
+	min-height:        125px  !important;
+	max-height:        125px  !important;
+    background-color:  white;
+}
+
+.EConverterTextAreaBinaryInputField {
+    font-size:         12px  !important; 
+    width:    		   455px !important;
+    min-width:         455px !important;
+	max-width:         455px !important;
+    height:   		   55px  !important; 
+	min-height:        55px  !important;
+	max-height:        55px  !important;
+    background-color:  white;
+}
+
+#econverter_lang_select_id, #econverter_word_count_select_id {
+  width:    		   150px;
+  height:   		   18px;  
+  background-color:    white;
+}
+
+#econverter_translated_label_id {
+  width:               70px !important; /* 90px */	
+  text-align:    	   center;
+}
+
+.EConverterButton {
+	font-size:          18px !important;
+	width: 				120px;
+	height: 			30px;
+	color:              white;
+	background-color: 	#2196D3; /* Blue */
+}
+
+.EConverterTable {
+	border:             none; */
+	/* border:          1px solid black; */ 
+	margin:             0px;
+	padding:            0px;
+}
+
+.EConverterDialog_FieldColumn {
+	font-size:         14px; 
+	padding-left:      10px;
+	width:             100%;
+	min-width:         100%;
+}
+
+.EConverterTranslateButton {
+	border:             none;
+	background-color:   #F5F5DC;
+}
+
+.EConverterCopyButton {
+	display:           flex;
+	align-items: 	   center;
+	padding:           8px;
+	width:             22px;
+	height:            22px;
+	margin-left:       4px;
+	padding-left:      2px;
+	margin-top:        1px;
+}
+
+.EConverter_DataFieldWithButton_Container {
+	display:           flex;
+	align-items: 	   center;
+}

@@ -1,0 +1,181 @@
+<table class="Dialog_Form" height="100%">	
+	<!-- ------------ 'Input' Entropy Bits ------------ -->
+	<tr>
+		<td class="EConverterLabelColumn">
+			<span class="EConverterLabel">Entropy Size</span>			
+		</td>
+		<td class="EConverterFieldColumn">
+			<span id="entropy_size_value_id"></span>&nbsp;bits
+		</td>
+	</tr>
+	<!-- ------------ 'Input' Entropy Bits -->
+	
+	
+	<!-- ------------ 'Input' Entropy (Raw text) ------------ -->
+	<tr>
+		<td class="EConverterLabelColumn">
+			<span class="EConverterLabel">Raw Text</span>			
+		</td>
+		<td class="EConverterFieldColumn">
+			<div class="Translator_DataFieldWithButton_Container">
+				<input class="EConverterInputField" id="rawtext_input_id"
+					   type="text" spellcheck="false" value="">
+				<button class="TranslatorCopyButton" id="rawtext_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ------------ 'Input' Entropy (Raw text) -->
+	
+	
+	<!-- ------------ Input' Entropy (Hexadecimal) ------------ -->
+	<tr>
+		<td class="EConverterLabelColumn">
+			<span class="EConverterLabel">Hexadecimal</span>			
+		</td>
+		<td class="EConverterFieldColumn">
+			<div class="Translator_DataFieldWithButton_Container">
+				<input class="EConverterInputField" id="hex_input_id"
+					   type="text" spellcheck="false" value="">
+				<button class="TranslatorCopyButton" id="hexadecimal_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ------------ 'Input' Secret phrase -->
+		
+	
+	<!-- ------------ Input' Entropy (Base64) ------------ -->
+	<tr>
+		<td class="EConverterLabelColumn">
+			<span class="EConverterLabel">Base 64</span>			
+		</td>
+		<td class="EConverterFieldColumn">
+			<div class="Translator_DataFieldWithButton_Container">
+				<input class="EConverterInputField" id="base64_input_id"
+					   type="text" spellcheck="false" value="">
+				<button class="TranslatorCopyButton" id="base64_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ------------ 'Input' (Base64) -->
+	
+	
+	<!-- ------------ Input' Entropy (Base58) ------------ -->
+	<tr>
+		<td class="EConverterLabelColumn">
+			<span class="EConverterLabel">Base 58</span>			
+		</td>
+		<td class="EConverterFieldColumn">
+			<div class="Translator_DataFieldWithButton_Container">
+				<input class="EConverterInputField" id="base58_input_id"
+					   type="text" spellcheck="false" value="">
+				<button class="TranslatorCopyButton" id="base58_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ------------ 'Input' (Base58) -->
+	
+	
+	<!-- ------------ Input' Entropy (Secret Phrase) ------------ -->
+	<tr>
+		<td class="EConverterLabelColumn">
+			<span class="EConverterLabel">Secret Phrase</span>
+			<select class="InputField LabelValueSelector" id="econverter_lang_select_id">										
+				<option value="EN" selected>English</option>															
+				<option value="FR">French</option>
+				<option value="ES">Spanish</option>
+				<option value="PT">Portuguese</option>
+				<option value="IT">Italian</option>
+				<option value="CS">Czech</option>
+				<option value="SC">Simplified Chinese</option>	
+				<option value="TC">Traditional Chinese</option>	
+				<option value="JP">Japanese</option>
+				<option value="KO">Korean</option>	
+				
+				<option value="#WordIndexes">[..] WordIndexes</option>
+				
+				<option value="DE">Deutsch</option>
+				<option value="LA">Latin</option>
+				<option value="EL">Greek</option>	
+				<option value="EO">Esperanto</option>															
+				<option value="RU">Russian</option>																							
+
+				<option value="HI">Hindi</option>	
+				<option value="BN">Bengali</option>
+				<option value="GU">Gujarati</option>
+				<option value="UNKNOWN">*Unknown*</option>																
+			</select>			
+		</td>
+		<td class="EConverterFieldColumn">
+			<div class="Translator_DataFieldWithButton_Container">
+				<textarea class="EConverterTextAreaInputField" id="secret_phrase_input_id"
+					      rows="2" type="text" spellcheck="false" value=""></textarea>
+				<button class="EConverterCopyButton" id="secret_phrase_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ------------ 'Input' (Secret Phrase) -->
+	
+	
+		<!-- ------------ Input' Entropy (Binary) ------------ -->
+	<tr>
+		<td class="EConverterLabelColumn">
+			<span class="EConverterLabel">Binary</span>
+		<td class="EConverterFieldColumn">
+			<div class="Translator_DataFieldWithButton_Container">
+				<textarea class="EConverterTextAreaBinaryInputField" id="binary_input_id"
+					      rows="4" type="text" spellcheck="false" value=""></textarea>
+				<button class="EConverterCopyButton" id="binary_copy_btn_id">
+					<img src="./icons/copy_16px_icn.png" 
+						 alt="Copy to Clipboard" border="0"/>
+				</button>
+			</div>
+		</td>
+	</tr>
+	<!-- ------------ 'Input' (Binary) -->
+	
+	
+	<tr>
+	  <td colspan="2">&nbsp;
+	  </td>
+	</tr>
+	
+	
+	<!-- ---------------- 'Buttons Bar' ( Clear / Quit) ---------------- -->
+	<tr>
+		<td colspan="2">
+			<table width="100%">
+				<tr>
+					<td width="25%"><span>&nbsp;
+					</td>
+					<td width="12.5%">
+						<button class="BottomButton" id="econverter_clear_btn_id">Clear
+						</button>
+					</td>
+					<td width="25%"><span>&nbsp;
+					<td width="12.5%">
+						<button class="BottomButton" id="econverter_quit_btn_id">Quit
+						</button>
+					</td>
+					<td width="25%"><span>&nbsp;
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- ---------------- 'Buttons Bar' ( Clear / Quit) -->
+</table>

@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.11
+## CryptoCalc 0.5.12
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -181,7 +181,10 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.11`: This version 
+    - `0.5.12`: This version 
+	    - New Feature:
+		  - `Tools/Private Key Converter`: 
+    - `0.5.11` 
 	    - Ergonomy Enhancements of `Bip39 Passphrase` input field:
 		  - Added Generate Passphrase button (a 'Circular arrow' icon)
 	      - Added Clear button (displayed as a `X` icon)  
@@ -326,15 +329,6 @@
 			    - `WIF` always provided 
 				- Order of "fields" is now predefined (see `js/model/wallet_inf_tmpl.js`)   
 		    - Changed Label for `Help/About...` dialog to a more consistent text ("A cryptocurrency wallet generator")	
-    - `0.3.63`  
-	    - Fixed bug found on `Linux`: when saving, the [Show] button does nothing
-		- Fixed a Bug found when testing the [Show] button because the output folder is showed not the _latest wallet subfolder_
-		- Note that on `Linux`, you must also now also install `xdg-utils` (see 3.2.b)
-    - `0.3.62`: GUI Updates
-	    - A Label Online/Offline is now at the left of the _Internet connection_status_  icon. 
-        - _Seed phrase_ renamed to _Secret phrase_ because it seems it is the more user friendly terminology (among
-        _Mnemonics_, _Seed phrase_, _Secret_, _Passphrase_ and _Secret Recovery Passphrase_).
-		- Added a link (see 5.1.18) to the whitepaper of the _3D representation of a Secret phrase_
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)

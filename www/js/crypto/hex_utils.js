@@ -18,6 +18,11 @@ const getKeyByValue = (object, value) => {
 	return Object.keys(object).find(key => object[key] === value);
 }; // getKeyByValue()
 
+const isBinaryString = ( in_str ) => {
+	if (!in_str || typeof in_str !== 'string') return false;
+    return /^[01]+$/.test(in_str);
+}; // isBinaryString	
+
 const binaryToHex = (in_binary_str) => {
 	let hex_str = "";
     //let binary_str = hex_to_binary(hex_str);
@@ -46,7 +51,8 @@ const hexToBinary = (in_hex_str, trace) => {
 		//	console.log("   hex_digit[" + i + "]: " + hex_digit);
 		//	console.log("   nibble[" + i + "]: " + nibble);
 		//}
-		//console.log("nibble: " + nibble);		
+		
+		// console.log("hex_digit: " + hex_digit + "  nibble: " + nibble);		
 		
         binary_str += nibble;
     }
@@ -241,6 +247,7 @@ if (typeof exports === 'object') {
 	exports.hexWithoutPrefix  = hexWithoutPrefix
 	exports.hexWithPrefix     = hexWithPrefix
 	exports.isHexString       = isHexString
+	exports.isBinaryString    = isBinaryString
 	exports.hexToBinary       = hexToBinary
 	exports.binaryToHex       = binaryToHex
 	exports.hexToB64          = hexToB64

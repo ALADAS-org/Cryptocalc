@@ -1,5 +1,5 @@
 // ====================================================================================================
-// =========================================   const_gui.js   =========================================
+// =======================================     const_gui.js     =======================================
 // ====================================================================================================
 "use strict";
 
@@ -8,6 +8,7 @@ const CRYPTOWALLET_VERSION                = "Cryptowallet_version";
 // ------------------------- Dialogs -------------------------
 const TOOLS_OPTIONS_DIALOG_ID             = "tools_options_dialog_id";
 const SECRET_PHRASE_TRANSLATOR_DIALOG_ID  = "tools_secret_phrase_translator_dialog_id";
+const ENTROPY_CONVERTER_DIALOG_ID         = "tools_entropy_converter_dialog_id";
 const TOOLS_DB_MANAGEMENT_DIALOG_ID       = "tools_db_management_dialog_id";
 
 const PASSPHRASE_DIALOG_ID                = "passphrase_dialog_id";
@@ -224,8 +225,9 @@ const trace2Main = ( msg ) => {
 if (typeof exports === 'object') {
 	exports.CRYPTOWALLET_VERSION          = CRYPTOWALLET_VERSION
 	
-	exports.TOOLS_DB_MANAGEMENT_DIALOG_ID = TOOLS_DB_MANAGEMENT_DIALOG_ID;
-	
+	exports.TOOLS_DB_MANAGEMENT_DIALOG_ID = TOOLS_DB_MANAGEMENT_DIALOG_ID
+	exports.ENTROPY_CONVERTER_DIALOG_ID   = ENTROPY_CONVERTER_DIALOG_ID
+
 	exports.ENTROPY_LABEL_ID              = ENTROPY_LABEL_ID	
 	exports.ENTROPY_SRC_FORTUNES_ID       = ENTROPY_SRC_FORTUNES_ID
 	exports.ENTROPY_ID                    = ENTROPY_ID

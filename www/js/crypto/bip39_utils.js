@@ -383,18 +383,22 @@ class Bip39Utils {
 		} 
 		
 		if ( lang == undefined )  lang = "EN";
-		pretty_log("Mnk2Einf> mnemonics(" + lang + ")", mnemonics);
+		pretty_log("Mnk2Einf> mnemonics(" + lang + "): " + mnemonics);
 		
 		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
-		let words = mnemonics.split(" ");
-		let entropy_binary = "";
+		console.log("   LANG_WORDLIST: " + LANG_WORDLIST.length);
+		
+		let words = mnemonics.split(' ');
+		let entropy_binary = '';
 		// * Case 1: 24 words (24*11 = 264) => 256 bits (SHA256) + last 11 bits = "checksum word index"
 		// * Case 2: 12 words (12*11 = 132) => 128 bits (SHA-1)  + last 11 bits = "checksum word index"
 		for ( let i=0; i < words.length; i++ ) {
 			let current_word = words[i];
-			//console.log("   words[" + i + "]: " + current_word);
+			// console.log("   words[" + i + "]: '" + current_word + "'");
+			
 			let word_index = LANG_WORDLIST.indexOf( current_word );
-		    //console.log("   word_index: " + word_index);
+		    // console.log("   word_index: " + word_index);
+			
 			let word_index_binary = parseInt(word_index, 10).toString(2).padStart(11, "0");
 		    //console.log(">> " + "ToPrivateKey index_binary(" + i + "): " + index_binary);
 			entropy_binary += word_index_binary;
@@ -568,6 +572,22 @@ class Bip39Utils {
 		
 		return mnemonics_dictionary;
 	} // Bip39Utils.GetBIP39Dictionary()
+	
+	static GetMnemonicFromWordIndex( word_index, lang ) {	
+		//console.log(">> " + _CYAN_ + "Bip39Utils.GetMnemonicFromWordIndex " + _END_);	
+		if ( word_index < 0 || word_index > 2047 ) return '';
+			
+		if (lang == undefined) {
+			lang = "EN";
+		}
+		//console.log("   lang: " + lang);
+
+		let mnemonics_dictionary = Bip39Utils.GetBIP39Dictionary( lang );
+		
+		let mnemonic = mnemonics_dictionary[word_index];
+		
+		return mnemonic;
+	} // Bip39Utils.GetMnemonicFromWordIndex()
 	
 	static GuessMnemonicsLang( mnemonics ) {
 		pretty_log(">> Bip39Utils.GuessMnemonicsLang", "" );
