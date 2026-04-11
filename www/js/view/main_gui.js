@@ -1985,6 +1985,11 @@ class MainGUI {
 				SecretPhraseTranslatorDialog.This.showDialog();
 				break;
 				
+			case FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG + _END_ );
+				EntropyConverterDialog.This.showDialog();
+				break;
+				
 			case FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG:
 				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG + _END_ );
 				Bip38ProgressbarDialog.This.showDialog();

@@ -51,11 +51,16 @@ const ToMain_RQ_ENTROPY_TO_MNEMONICS              = "ToMain:Request/entropy_to_m
 const ToMain_RQ_ENTROPY_TO_CHECKSUM               = "ToMain:Request/entropy_to_checksum";
 const ToMain_RQ_ENTROPY_SRC_TO_PK                 = "ToMain:Request/entropy_src_to_pk";
 
+const ToMain_RQ_TO_HEX_CONVERSIONS                = "ToMain:Request/to_hex_conversions";
+const ToMain_RQ_FROM_HEX_CONVERSIONS              = "ToMain:Request/from_hex_conversions";
+
 const ToMain_RQ_GENERATE_PASSWORD                 = "ToMain:Request/GeneratePassword";
 
 const ToMain_RQ_MNEMONICS_AS_4LETTER              = "ToMain:Request/mnemonics_as_4letter";
 const ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = "ToMain:Request/mnemonics_as_two_parts";
 const ToMain_RQ_CHECK_MNEMONICS                   = "ToMain:Request/check_mnemonics";
+
+const ToMain_RQ_WORD_INDEX_TO_MNEMONIC            = "ToMain:Request/word_index_to_mnemonic";
 
 const ToMain_RQ_WORD_INDEXES_TO_MNEMONICS         = "ToMain:Request/word_indexes_to_mnemonics";
 const ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = "ToMain:Request/mnemonics_to_word_indexes";
@@ -107,6 +112,8 @@ const FromMain_TOOLS_OPTIONS_DIALOG                  = "FromMain:ToolsOptionsDia
 const FromMain_TOOLS_DB_MANAGEMENT_DIALOG            = "FromMain:ToolsDatabaseManagement";
 const FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG    = "FromMain:ToolsBip38EncryptDecryptDialog";
 const FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG = "FromMain:ToolsSecretPhraseTranslatorDialog";
+
+const FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG        = "FromMain:ToolsEntropyConverterDialog";
 // ---------- Tools
 
 const FromMain_BIP38_PROGRESS_TICK                = "FromMain:Bip38ProgressTick";
@@ -163,6 +170,9 @@ if ( typeof exports === 'object' ) {
 	exports.ToMain_RQ_ENTROPY_SRC_TO_PK                 = ToMain_RQ_ENTROPY_SRC_TO_PK
 	exports.ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO       = ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO
 	
+	exports.ToMain_RQ_TO_HEX_CONVERSIONS                = ToMain_RQ_TO_HEX_CONVERSIONS
+	exports.ToMain_RQ_FROM_HEX_CONVERSIONS              = ToMain_RQ_FROM_HEX_CONVERSIONS
+	
 	exports.ToMain_RQ_GENERATE_PASSWORD                 = ToMain_RQ_GENERATE_PASSWORD
 	
 	exports.ToMain_RQ_OPEN_URL                          = ToMain_RQ_OPEN_URL	
@@ -178,6 +188,8 @@ if ( typeof exports === 'object' ) {
 	
 	exports.ToMain_RQ_MNEMONICS_AS_4LETTER              = ToMain_RQ_MNEMONICS_AS_4LETTER
 	exports.ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = ToMain_RQ_MNEMONICS_AS_TWO_PARTS
+	
+	exports.ToMain_RQ_WORD_INDEX_TO_MNEMONIC            = ToMain_RQ_WORD_INDEX_TO_MNEMONIC
 	
 	exports.ToMain_RQ_WORD_INDEXES_TO_MNEMONICS         = ToMain_RQ_WORD_INDEXES_TO_MNEMONICS
 	exports.ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = ToMain_RQ_MNEMONICS_TO_WORD_INDEXES
@@ -219,6 +231,8 @@ if ( typeof exports === 'object' ) {
 	exports.FromMain_TOOLS_DB_MANAGEMENT_DIALOG            = FromMain_TOOLS_DB_MANAGEMENT_DIALOG
 	exports.FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG    = FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG
 	exports.FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG = FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG
+	
+	exports.FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG     = FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG
 	
 	exports.FromMain_BIP38_PROGRESS_TICK                = FromMain_BIP38_PROGRESS_TICK
 	exports.FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG     = FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG 

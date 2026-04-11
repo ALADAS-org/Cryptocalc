@@ -13,6 +13,7 @@
   "DatabaseManagementTool":      "Database Management",
   "Bip38EncryptDecryptTool":     "Bip38 Encrypt/Decrypt",
   "SecretPhraseTranslatorTool":  "Secret phrase Translator",
+  "EntropyConverterTool":        "Entropy Converter",  
   
   "View":                        "View",
   "ToggleDebug":                 "Toggle Debug Panel",

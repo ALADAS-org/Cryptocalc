@@ -14,10 +14,13 @@ const hexToB58 = ( hex_str ) => {
 
 const b58ToHex = ( b58_str ) => {
 	//const address = '16UjcYNBG9GTK4uq2f7yYEbuifqCzoLMGS'
-	const bytes = bs58.decode( b58_str );
+	//const bytes = bs58.decode( b58_str );
 	// See uint8array-tools package for helpful hex encoding/decoding/compare tools
-	return Buffer.from( bytes ).toString('hex');
+	//return Buffer.from( bytes ).toString('hex');
 	// => 003c176e659bea0f29a3e9bf7880c112b1b31b4dc826268187
+	
+	const hex = Buffer.from(bs58.decode(b58_str)).toString('hex');
+	return hex;
 }; // b58ToHex()
 
 const isBase58String = ( in_str ) => {

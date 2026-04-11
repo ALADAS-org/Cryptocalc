@@ -74,7 +74,10 @@ const { APP_VERSION,
 		OUTPUT_DIR_PATH, INVALID_OUTPUT_DIR_PATH,
 		SELECT_DIRECTORY_PATH_MODE, SELECT_FILE_PATH_MODE,		
 		WITS_PATH, PATH, ARGS,
-		BLOCKCHAIN, BIP32_PASSPHRASE, BIP32_PROTOCOL, ACCOUNT, ADDRESS_INDEX 
+		BLOCKCHAIN, BIP32_PASSPHRASE, BIP32_PROTOCOL, ACCOUNT, ADDRESS_INDEX,
+
+		TO_RAW_TEXT, TO_BASE64, TO_BASE58, TO_MNEMONICS, TO_BINARY,
+		FROM_RAW_TEXT, FROM_BASE64, FROM_BASE58, FROM_MNEMONICS, FROM_BINARY  		
       }                = require('../const_keywords.js');
 	  
 const { CRYPTO_NET        
@@ -121,6 +124,8 @@ const { CMD_OPEN_WALLET,
 		
 		ToMain_RQ_CHECK_MNEMONICS, 
 		
+		ToMain_RQ_WORD_INDEX_TO_MNEMONIC,
+		
 		ToMain_RQ_WORD_INDEXES_TO_MNEMONICS,
 		ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, 
 		
@@ -128,7 +133,9 @@ const { CMD_OPEN_WALLET,
 		ToMain_RQ_SAVE_OPTIONS, ToMain_RQ_RESET_OPTIONS, ToMain_RQ_UPDATE_OPTIONS,
 		ToMain_RQ_GET_FORTUNE_COOKIE,	
 
-        ToMain_RQ_GENERATE_PASSWORD,		
+        ToMain_RQ_GENERATE_PASSWORD,
+
+        ToMain_RQ_FROM_HEX_CONVERSIONS, ToMain_RQ_TO_HEX_CONVERSIONS,			
 		
 		ToMain_RQ_GET_HD_WALLET,	
 		
@@ -146,6 +153,8 @@ const { CMD_OPEN_WALLET,
 		FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG,
 		FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG,
 		
+		FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG,
+		
 		FromMain_UPDATE_OPTIONS, 
 		FromMain_SEND_IMG_URL,
 		FromMain_SET_FORTUNE_COOKIE, 
@@ -153,7 +162,8 @@ const { CMD_OPEN_WALLET,
 		FromMain_INTERNET_CONNECTED		
 	  }                                 = require('../const_events.js');
 	  
-const { ENTROPY_SOURCE_IMG_ID
+const { ENTROPY_SOURCE_IMG_ID,
+        ENTROPY_CONVERTER_DIALOG_ID
       }                                 = require('../view/const_gui.js');
 
 const { DEFAULT_OPTIONS
@@ -167,7 +177,13 @@ const { Bip38Utils }                    = require('../crypto/bip38_utils.js');
 
 const { PasswordStrengthEvaluator }     = require('../crypto/password_strength_evaluator.js');
 
-const { getRandomInt  }                 = require('../crypto/hex_utils.js');
+const { isHexString, 
+        hexToB64,    b64ToHex,
+        hexToBinary, binaryToHex, 
+        getRandomInt  }                 = require('../crypto/hex_utils.js');
+		
+const { hexToB58, b58ToHex }            = require('../crypto/base58_utils.js');
+		
 const { getFortuneCookie }              = require('../util/fortune/fortune.js');
 const { L10nUtils }                     = require('../L10n/L10n_utils.js');
 
@@ -326,6 +342,7 @@ class ElectronMain {
 									);
 							  }		 
 						   },
+						   
 						   {  label: L10nUtils.GetLocalizedMsg("SecretPhraseTranslatorTool"),
 							  click() {
                                   pretty_func_header_log( "[Electron]", TOOLS_SECRET_PHRASE_TRANSLATOR );								  
@@ -337,6 +354,19 @@ class ElectronMain {
 									);
 							  }		 
 						   },
+						   
+						   {  label: L10nUtils.GetLocalizedMsg("EntropyConverterTool"),
+							  click() {
+                                  pretty_func_header_log( "[Electron]", ENTROPY_CONVERTER_DIALOG_ID );								  
+								  ElectronMain.GetInstance().getMainWindow()
+								    .webContents.send
+									( 'fromMain', 
+									  [ FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG, 
+									    ElectronMain.GetInstance().Options ] 
+									);
+							  }		 
+						   },
+						   
 						   {  label: L10nUtils.GetLocalizedMsg("Bip38EncryptDecryptTool"),
 							  click() {
                                   pretty_func_header_log( "[Electron]", TOOLS_BIP38_ENCRYPTER_DECRYTER );								  
@@ -1121,6 +1151,113 @@ class ElectronMain {
 			return new_password;
 		}); // "ToMain:Request/GeneratePassword event handler
 		
+		
+		// ================== ToMain_RQ_FROM_HEX_CONVERSIONS ==================
+		// called like this by Renderer: await window.ipcMain.ConvertFromHexToBases( data )
+		// https://www.npmjs.com/package/generate-password
+		ipcMain.handle( ToMain_RQ_FROM_HEX_CONVERSIONS, async (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_FROM_HEX_CONVERSIONS );
+			
+			let hex_str = data;
+			
+			const validateString = ( in_str ) => {
+				// Cette regex accepte :
+				// - Lettres majuscules/minuscules (incluant accentuées)
+				// - Chiffres
+				// - Caractères spéciaux courants
+				const regex = /^[a-zA-Z0-9À-ÿ\s\p{P}\p{S}]+$/u;				
+				return regex.test( in_str );
+			}; // validateString() 
+			
+			const hex_to_ascii = ( hex_value ) => {
+				let hex_str = hex_value.toString(); // force conversion
+				console.log("   hex_str: " + hex_str);	
+				let ascii_str = '';
+				for (let i = 0; i < hex_str.length; i += 2) {
+					let hex_byte = hex_str.substr(i, 2);
+					// console.log("   hex_byte(" + i + "): " + hex_byte);
+					
+					let char_code = parseInt( hex_byte, 16 );
+					// console.log("   char_code(" + i + "): " + char_code);	
+					// if ( char_code >= 32 ) {
+				    let new_character = String.fromCharCode(char_code);		
+					if ( validateString( new_character ) ) {
+						ascii_str += new_character;
+						// console.log("   ascii_str(" + i + "): " + ascii_str);
+					}
+				}
+				return ascii_str;
+			}; // hex_to_ascii()
+			
+			let raw_text_value  = '';
+			let base64_value    = '';
+			let base58_value    = '';
+			// let mnemonics_value = '';
+			let binary_value    = '';
+			
+			raw_text_value  = hex_to_ascii( hex_str );
+			base64_value    = hexToB64( hex_str );
+			base58_value    = hexToB58( hex_str );
+			binary_value    = hexToBinary( hex_str );
+			
+			// mnemonics_value = hexa_to_ascii( hex_str );			
+			
+			let conversions_to_bases = {
+				[TO_RAW_TEXT]:  raw_text_value, 
+				[TO_BASE64]:    base64_value,
+				[TO_BASE58]:    base58_value,
+				[TO_BINARY]:    binary_value  	
+			};
+			
+			// console.log("   conversions_to_bases: " + JSON.stringify(conversions_to_bases));
+
+			return conversions_to_bases;
+		}); // "ToMain:Request/from_hex_conversions event handler
+		
+		
+		// ================== ToMain_RQ_TO_HEX_CONVERSIONS ==================
+		// called like this by Renderer: await window.ipcMain.ConvertFromBasesToHex( data )
+		// https://www.npmjs.com/package/generate-password
+		ipcMain.handle( ToMain_RQ_TO_HEX_CONVERSIONS, async (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_TO_HEX_CONVERSIONS );
+			
+			let bases_data = data;
+			
+			const ascii_to_hex = ( in_str ) => {
+				// Initialize an empty array to store the hexadecimal values
+				let hex_str = [];
+				// Iterate through each character in the input string
+				for (let i = 0; i < in_str.length; i++) {
+					// Convert the ASCII value of the current character to its hexadecimal representation
+					let hex = in_str.charCodeAt(i).toString(16).padStart(2, '0');
+					// Push the hexadecimal value to the array
+					hex_str.push(hex);
+				}
+				// Join the hexadecimal values in the array to form a single string
+				return hex_str.join('');
+			}; // ascii_to_hex()
+			
+			let hex_value = '';
+			
+            if ( bases_data[FROM_RAW_TEXT] != undefined && bases_data[FROM_RAW_TEXT] != '' ) {
+				hex_value = ascii_to_hex(  bases_data[FROM_RAW_TEXT] );
+			}
+			else if ( bases_data[FROM_BASE64] != undefined && bases_data[FROM_BASE64] != '' ) {
+				hex_value = b64ToHex(  bases_data[FROM_BASE64] );
+			}
+			else if ( bases_data[FROM_BASE58] != undefined && bases_data[FROM_BASE58] != '' ) {
+				hex_value = b58ToHex(  bases_data[FROM_BASE58] );
+			}
+			else if ( bases_data[FROM_BINARY] != undefined && bases_data[FROM_BINARY] != '' ) {
+				hex_value = binaryToHex(  bases_data[FROM_BINARY] );
+			}
+			
+			// if ( this.getEntropyBip39ByteCount( hex_value ) == 0 ) hex_value = ''; 
+
+			return hex_value;
+		}); // "ToMain:Request/to_hex_conversions event handler
+		
+		
 		// ========================= ToMain_RQ_BIP38_ENCRYPT =========================
 		// called like this by Renderer: await window.ipcMain.Bip38Encrypt( data )
 		ipcMain.handle( ToMain_RQ_BIP38_ENCRYPT, async ( event, data ) => {
@@ -1278,6 +1415,16 @@ class ElectronMain {
 			return fortune_cookie;
 		}); // "ToMain:Request/get_FortuneCookie"
 		
+		// =============== ToMain_RQ_WORD_INDEX_TO_MNEMONIC ===============
+		// called like this by Renderer: await window.ipcMain.WordIndexToMnemonic( data )
+		ipcMain.handle( ToMain_RQ_WORD_INDEX_TO_MNEMONIC, async (event, data) => {
+			Skribi.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + ToMain_RQ_WORD_INDEX_TO_MNEMONIC + _END_);
+			const { word_index, lang } = data;
+			let mnemonic = Bip39Utils.GetMnemonicFromWordIndex( word_index, lang );
+						
+			return mnemonic;
+		}); // "ToMain:Request/word_index_to_mnemonic" event handler
+		
 		// =============== ToMain_RQ_WORD_INDEXES_TO_MNEMONICS ===============
 		// called like this by Renderer: await window.ipcMain.WordIndexesToMnemonics( data )
 		ipcMain.handle( ToMain_RQ_WORD_INDEXES_TO_MNEMONICS, async (event, data) => {
@@ -1353,6 +1500,17 @@ class ElectronMain {
 			menu_elt.enabled = enabled;
 		}); // "ToMain:Request/set_menu_item_state" event handler	
 	} // setCallbacks()
+	
+	getEntropyBip39ByteCount( hex_str ) {
+		// Initialize an empty array to store the hexadecimal values
+        if ( ! isHexString( hex_str ) || hex_str.length % 2 != 0) return 0;
+		let bytes_count = hex_str.length / 2;
+		const BIP39_ALLOWED_BYTES_COUNT = [ 16, 20, 24, 28, 32 ];
+		if ( BIP39_ALLOWED_BYTES_COUNT.indexOf( bytes_count ) != -1 ) {
+			return bytes_count;
+		}
+		return 0;
+	} // getEntropyBip39ByteCount()
 } // ElectronMain class
 
 

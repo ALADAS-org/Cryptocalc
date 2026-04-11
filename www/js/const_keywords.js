@@ -17,6 +17,18 @@ const VERSION                     = 'Version';
 const NULL_KEY                    = 'Null Key';
 const NULL_KEYPAIR_VALUE          = 'Null KeyPair value';
 
+const TO_RAW_TEXT                 = 'to_raw_text';  
+const TO_BASE64                   = 'to_base64'; 
+const TO_BASE58                   = 'to_base58'; 
+const TO_MNEMONICS                = 'to_mnemonics'; 
+const TO_BINARY                   = 'to_binary'; 
+
+const FROM_RAW_TEXT               = 'from_raw_text';  
+const FROM_BASE64                 = 'from_base64'; 
+const FROM_BASE58                 = 'from_base58'; 
+const FROM_MNEMONICS              = 'from_mnemonics'; 
+const FROM_BINARY                 = 'from_binary'; 
+
 const QR_CODE                     = 'qrcode';
 const QR_SCALE                    = 'scale';
 
@@ -109,7 +121,19 @@ if ( typeof exports === 'object' ) {
 	exports.VERSION               = VERSION	
 	
 	exports.NULL_KEY              = NULL_KEY
-	exports.NULL_KEYPAIR_VALUE    = NULL_KEYPAIR_VALUE	
+	exports.NULL_KEYPAIR_VALUE    = NULL_KEYPAIR_VALUE		
+	
+	exports.TO_RAW_TEXT           = TO_RAW_TEXT  
+	exports.TO_BASE64             = TO_BASE64 
+	exports.TO_BASE58             = TO_BASE58 
+	exports.TO_MNEMONICS          = TO_MNEMONICS 
+	exports.TO_BINARY             = TO_BINARY 
+	
+	exports.FROM_RAW_TEXT         = FROM_RAW_TEXT 
+	exports.FROM_BASE64           = FROM_BASE64 
+	exports.FROM_BASE58           = FROM_BASE58 
+	exports.FROM_MNEMONICS        = FROM_MNEMONICS 
+	exports.FROM_BINARY           = FROM_BINARY 
 	
 	exports.QR_CODE               = QR_CODE
 	exports.QR_SCALE              = QR_SCALE	 

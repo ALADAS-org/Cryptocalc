@@ -46,6 +46,9 @@ contextBridge.exposeInMainWorld(
 		MnemonicsToHDWalletInfo:     (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_hd_wallet_info", data),
 		MnemonicsAsTwoParts:         (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_two_parts", data),
 		
+		ConvertFromBasesToHex:       (data) => ipcRenderer.invoke("ToMain:Request/to_hex_conversions", data),
+		ConvertFromHexToBases:       (data) => ipcRenderer.invoke("ToMain:Request/from_hex_conversions", data),
+		
 		GeneratePassword:            (data) => ipcRenderer.invoke("ToMain:Request/GeneratePassword", data),
 		
 		GetSimpleWallet:             (data) => ipcRenderer.invoke("ToMain:Request/get_simple_wallet", data),
@@ -59,6 +62,8 @@ contextBridge.exposeInMainWorld(
 		MnemonicsAs4letter:          (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_4letter", data),		
 		
 		CheckMnemonics:              (data) => ipcRenderer.invoke("ToMain:Request/check_mnemonics", data),
+		
+		WordIndexToMnemonic:         (data) => ipcRenderer.invoke("ToMain:Request/word_index_to_mnemonic", data),
 		
 		WordIndexesToMnemonics:      (data) => ipcRenderer.invoke("ToMain:Request/word_indexes_to_mnemonics", data),
 		MnemonicsToWordIndexes:      (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_word_indexes", data),

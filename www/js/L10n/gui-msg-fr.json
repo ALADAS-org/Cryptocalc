@@ -13,6 +13,7 @@
   "DatabaseManagementTool":      "Gestion de la Base de Données",
   "Bip38EncryptDecryptTool":     "Bip38 Encryptage/Decryptage",
   "SecretPhraseTranslatorTool":  "Traducteur de Phrase secrète",
+  "EntropyConverterTool":        "Convertisseur d'Entropie",  
   
   "View":                        "Affichage",
   "ToggleDebug":                 "Basculer panneau de Debug",
