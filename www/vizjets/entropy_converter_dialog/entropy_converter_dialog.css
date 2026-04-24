@@ -1,7 +1,6 @@
 .Dialog_Form {
     background:        #F5F5DC;
 }
-
 .DialogBox {
     font-size:         12px;
     background:        #F5F5DC;
@@ -11,26 +10,28 @@
     height:            0;
     border:            none;
     border-top:        5px solid #F5F5DC;
-    margin:            0;
+    margin:            0px;
 }
 
 .EConverterLabel {
 	text-align:    	   center;
 	font-size:         14px;
+	margin-left:       0px;
 	padding-left:      0px;
-	width:             140px !important; /* 90px */
-	min-width:         140px !important;
-	max-width:         140px !important;
+	width:             110px !important; /* 105px */
+	min-width:         110px !important;
+	max-width:         110px !important;
 	height:            25px;
 }
 
 .EConverterLabelColumn {
 	text-align:    	   center;
 	font-size:         14px;
+	margin-left:       0px;
 	padding-left:      0px;
-	width:             140px !important; /* 90px */
-	min-width:         140px !important;
-	max-width:         140px !important;
+	width:             110px !important; /* 105px */
+	min-width:         110px !important;
+	max-width:         110px !important;
 	height:            25px;
 }
 
@@ -54,9 +55,9 @@
 
 .EConverterInputField {
     font-size:         12px  !important; 
-    width:    		   455px !important;
-    min-width:         455px !important;
-	max-width:         455px !important;
+    width:    		   500px !important;
+    min-width:         500px !important;
+	max-width:         500px !important;
     height:   		   19px  !important; 
 	min-height:        19px  !important;
 	max-height:        19px  !important;
@@ -65,9 +66,9 @@
 
 .EConverterTextAreaInputField {
     font-size:         16px  !important; 
-    width:    		   455px !important;
-    min-width:         455px !important;
-	max-width:         455px !important;
+    width:    		   500px !important;
+    min-width:         500px !important;
+	max-width:         500px !important;
 	
     height:   		   125px  !important; 
 	min-height:        125px  !important;
@@ -77,20 +78,42 @@
 
 .EConverterTextAreaBinaryInputField {
     font-size:         12px  !important; 
-    width:    		   455px !important;
-    min-width:         455px !important;
-	max-width:         455px !important;
+    width:    		   500px !important;
+    min-width:         500px !important;
+	max-width:         500px !important;
     height:   		   55px  !important; 
 	min-height:        55px  !important;
 	max-height:        55px  !important;
     background-color:  white;
 }
 
-#econverter_lang_select_id, #econverter_word_count_select_id {
+#econverter_hexadecimal_input_id {
+    width:    		   475px !important;
+    min-width:         475px !important;
+	max-width:         475px !important;
+}
+
+#econverter_grid_img_id {
+  margin-left:    	   0px;   !important;
+  background-color:    red;
+}
+
+#econverter_lang_select_id {
+  font-size:           13px;
+  margin-left:    	   0px;   !important;
+  width:    		   115px; !important;
+  min-width:    	   115px; !important;
+  max-width:    	   115px; !important;
+  height:   		   18px;  
+  background-color:    white;
+}
+
+#econverter_word_count_select_id {
   width:    		   150px;
   height:   		   18px;  
   background-color:    white;
 }
+
 
 #econverter_translated_label_id {
   width:               70px !important; /* 90px */	

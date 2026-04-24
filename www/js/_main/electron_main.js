@@ -107,7 +107,7 @@ const { CMD_OPEN_WALLET,
 		ToMain_RQ_OPEN_URL, ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER,
 		ToMain_RQ_LOAD_IMG_FROM_FILE, ToMain_RQ_DRAW_RND_CRYPTO_LOGO,
 		
-		ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO, 
+		ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO, ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM,
 		
 		ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO, 
 		ToMain_RQ_GET_SIMPLE_WALLET,		
@@ -124,16 +124,15 @@ const { CMD_OPEN_WALLET,
 		
 		ToMain_RQ_CHECK_MNEMONICS, 
 		
-		ToMain_RQ_WORD_INDEX_TO_MNEMONIC,
+		ToMain_RQ_WORD_INDEX_TO_MNEMONIC, ToMain_RQ_WORD_INDEXES_TO_MNEMONICS,
 		
-		ToMain_RQ_WORD_INDEXES_TO_MNEMONICS,
-		ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, 
+		ToMain_RQ_MNEMONIC_TO_WORD_INDEX, ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, 
 		
 		ToMain_RQ_GUESS_MNEMONICS_LANG,		
 		ToMain_RQ_SAVE_OPTIONS, ToMain_RQ_RESET_OPTIONS, ToMain_RQ_UPDATE_OPTIONS,
 		ToMain_RQ_GET_FORTUNE_COOKIE,	
 
-        ToMain_RQ_GENERATE_PASSWORD,
+        ToMain_RQ_GENERATE_ENTROPY, ToMain_RQ_GENERATE_PASSWORD,
 
         ToMain_RQ_FROM_HEX_CONVERSIONS, ToMain_RQ_TO_HEX_CONVERSIONS,			
 		
@@ -177,10 +176,9 @@ const { Bip38Utils }                    = require('../crypto/bip38_utils.js');
 
 const { PasswordStrengthEvaluator }     = require('../crypto/password_strength_evaluator.js');
 
-const { isHexString, 
-        hexToB64,    b64ToHex,
+const { isHexString, hexToB64, b64ToHex,        
         hexToBinary, binaryToHex, 
-        getRandomInt  }                 = require('../crypto/hex_utils.js');
+        getRandomInt, getRandomHexValue } = require('../crypto/hex_utils.js');
 		
 const { hexToB58, b58ToHex }            = require('../crypto/base58_utils.js');
 		
@@ -1130,7 +1128,22 @@ class ElectronMain {
 			
 			let img_data_asURL = loadImageFromFile( image_file_path );
             return img_data_asURL;			
-		}); // "ToMain:Request/drop_rnd_crypto_logo" event handler		
+		}); // "ToMain:Request/drop_rnd_crypto_logo" event handler	
+
+
+		// ================== ToMain_RQ_GENERATE_ENTROPY ==================
+		// called like this by Renderer: await window.ipcMain.GenerateEntropy( data )
+		// https://www.npmjs.com/package/generate-password
+		ipcMain.handle( ToMain_RQ_GENERATE_ENTROPY, async (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_GENERATE_ENTROPY );
+			let entropy_size = data;
+			let bytes_count = data / 8;
+
+            let random_entropy_hex = getRandomHexValue( bytes_count );            
+
+			return random_entropy_hex;
+		}); // "ToMain:Request/GenerateEntropy event handler
+		
 		
 		// ================== ToMain_RQ_GENERATE_PASSWORD ==================
 		// called like this by Renderer: await window.ipcMain.GeneratePassword( data )
@@ -1344,6 +1357,17 @@ class ElectronMain {
 			let entropy_info = Bip39Utils.MnemonicsToEntropyInfo( mnemonics, lang );
 			return entropy_info;
 		}); // "ToMain:Request/mnemonics_to_entropy_info" event handler
+		
+		// ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM
+		// ================== ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM ===================
+		// called like this by Renderer: await window.ipcMain.MnemonicsToEntropyInfoCustom( data )
+		ipcMain.handle( ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM, async (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM );
+			const { mnemonics, lang } = data;
+			// Skribi.log("   lang: " + lang);
+			let entropy_info = Bip39Utils.MnemonicsToEntropyInfoCustom( mnemonics, lang );
+			return entropy_info;
+		}); // "ToMain:Request/mnemonics_to_entropy_info_custom" event handler
 
 		// ================== ToMain_RQ_ENTROPY_TO_MNEMONICS ===================
 		// called like this by Renderer: await window.ipcMain.EntropyToMnemonics( data )
@@ -1435,16 +1459,37 @@ class ElectronMain {
 			return mnemonics;
 		}); // "ToMain:Request/word_indexes_to_mnemonics" event handler
 		
+		
+		// =============== ToMain_RQ_MNEMONIC_TO_WORD_INDEX ===============
+		// called like this by Renderer: await window.ipcMain.MnemonicToWordIndex( data )
+		ipcMain.handle( ToMain_RQ_MNEMONIC_TO_WORD_INDEX, async (event, data) => {
+            Skribi.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + _END_);
+			let { mnemonics, options } = data;
+			mnemonics = mnemonics.normalize('NFC');
+			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  mnemonics: " + JSON.stringify(mnemonics));
+			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  options: " + JSON.stringify(options));
+			
+			let word_indexes = Bip39Utils.GetWordIndexes( mnemonics, options );
+			
+			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  word_indexes: " + JSON.stringify(word_indexes));
+			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  word_indexes.length: " + word_indexes.length);
+			
+			let word_index = -1;	
+            if ( word_indexes.length == 1 ) word_index = word_indexes[0];			
+			return word_index;
+		}); // "ToMain:Request/mnemonic_to_word_index" event handler
 
 		// =============== ToMain_RQ_MNEMONICS_TO_WORD_INDEXES ===============
 		// called like this by Renderer: await window.ipcMain.MnemonicsToWordIndexes( data )
 		ipcMain.handle( ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, async (event, data) => {
 			// Skribi.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + ToMain_RQ_MNEMONICS_TO_WORD_INDEXES + _END_);
 			const { mnemonics, options } = data;
+
 			let word_indexes = Bip39Utils.GetWordIndexes( mnemonics, options );
 						
 			return word_indexes;
 		}); // "ToMain:Request/mnemonics_to_word_indexes" event handler
+		
 
 		// =============== ToMain_RQ_GUESS_MNEMONICS_LANG ===============
 		// called like this by Renderer: await window.ipcMain.GuessMnemonicsLang( data )

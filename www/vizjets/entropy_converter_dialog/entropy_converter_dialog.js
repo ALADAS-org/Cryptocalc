@@ -5,14 +5,15 @@
 
 const ECONVERTER_DIALOG_LABEL_ID           = "econverter_dialog_label_id";
 
-const ECONVERTER_ENTROPY_SIZE_SELECT_ID    = "econverter_entropy_size_select_id";
 const ECONVERTER_ENTROPY_SIZE_VALUE_ID     = "econverter_entropy_size_value_id";
 const ECONVERTER_ENTROPY_WORD_COUNT_ID     = "econverter_entropy_word_count_id";
+const ECONVERTER_ENTROPY_SIZE_SELECT_ID    = "econverter_entropy_size_select_id";
 
 const ECONVERTER_RAWTEXT_INPUT_ID          = "econverter_rawtext_input_id";
 const ECONVERTER_RAWTEXT_COPY_BTN_ID       = "econverter_rawtext_copy_btn_id";
 
 const ECONVERTER_HEXADECIMAL_INPUT_ID      = "econverter_hexadecimal_input_id";
+const ECONVERTER_GENERATE_ENTROPY_BTN_ID   = "econverter_generate_random_entropy_btn_id";
 const ECONVERTER_HEXADECIMAL_COPY_BTN_ID   = "econverter_hexadecimal_copy_btn_id";
 
 const ECONVERTER_BASE64_INPUT_ID           = "econverter_base64_input_id";
@@ -68,6 +69,8 @@ class EntropyConverterDialog {
 	    this.displayed               = false;
 		this.encrypt_mode            = true; 
 		this.previous_lang           = 'EN';
+		
+		this.allow_cb = true;
 	} // ** Private constructor **
 	
 	initialize() {
@@ -83,16 +86,20 @@ class EntropyConverterDialog {
 				// https://stackoverflow.com/questions/18992081/trigger-event-on-dialog-box-open
 				// https://stackoverflow.com/questions/394491/passing-data-to-a-jquery-ui-dialog/3458299#3458299
 				
-				width:   670, // 680
+				width:   685, // 680
 				
 				open:   function( event, ui ) {	
 							let this_obj = EntropyConverterDialog.This;						
 							
-							if ( ! this_obj.event_handlers_attached ) {								
+							if ( ! this_obj.event_handlers_attached ) {		
 							
 								this_obj.addEventHandler
 									( ECONVERTER_RAWTEXT_COPY_BTN_ID, 'click', 
-									  () => { EntropyConverterDialog.This.onCopyField(ECONVERTER_RAWTEXT_INPUT_ID); } );									  
+									  () => { EntropyConverterDialog.This.onCopyField(ECONVERTER_RAWTEXT_INPUT_ID); } );
+		
+								this_obj.addEventHandler
+									( ECONVERTER_GENERATE_ENTROPY_BTN_ID, 'click', 
+									  async () => { await EntropyConverterDialog.This.onGenerateEntropy(); } );							  
 									  
 								this_obj.addEventHandler
 									( ECONVERTER_HEXADECIMAL_COPY_BTN_ID, 'click', 
@@ -141,27 +148,39 @@ class EntropyConverterDialog {
 									  async ( evt ) => 
 									  { await EntropyConverterDialog.This.onChangeInputField( ECONVERTER_BINARY_INPUT_ID ); } ); 
 									  
+									  
+ 							    this_obj.addEventHandler
+									( ECONVERTER_SECRET_PHRASE_INPUT_ID, 'keypress', 
+									  async ( evt ) => 
+									  { await EntropyConverterDialog.This.onSecretPhraseKeypress( evt ); } );
+									  
+								this_obj.addEventHandler
+									( ECONVERTER_SECRET_PHRASE_INPUT_ID, 'keydown', 
+									  async ( evt ) => 
+									  { await EntropyConverterDialog.This.onSecretPhraseKeydown( evt ); } );
+									  
+									  
 								this_obj.addEventHandler
 									( ECONVERTER_SECRET_PHRASE_INPUT_ID, 'change', 
-									  async ( evt ) => 
-									  { await EntropyConverterDialog.This.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID ); } );	
+									  async ( evt ) => { 
+									    if ( this_obj.allow_cb ) {
+											 await EntropyConverterDialog.This.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID ); 
+										 } 
+									  });	
 
 								this_obj.addEventHandler
 									( ECONVERTER_LANG_SELECT_ID, 'change', 
 									  async ( evt ) => 
 									  { await EntropyConverterDialog.This.onChangeLang( ECONVERTER_LANG_SELECT_ID ); } );								
 							  
-						  
-							    /*								
-								this_obj.addEventHandler
-									( ECONVERTER_DIALOG_INPUT_ID, 'paste', 
-									  async ( evt ) => { await EntropyConverterDialog.This.onPasteText( evt ); } );			
-								*/
 								
 								this_obj.addEventHandler
-									( ECONVERTER_GRID_IMG_ID, 'mousemove', 
-									  async ( evt ) => 
-									  { await EntropyConverterDialog.This.onImgGridHover( evt ); } );
+									( ECONVERTER_GRID_IMG_ID, 'mousemove',						  
+									  async ( evt ) => { 
+									    if ( this_obj.allow_cb ) {
+											 await EntropyConverterDialog.This.onImgGridHover( evt ); 
+										 } 
+									  });
 									  
 								this_obj.addEventHandler
 									( ECONVERTER_GRID_IMG_ID, 'click', 
@@ -235,13 +254,13 @@ class EntropyConverterDialog {
 		var ascii_str = '';
 		for (let i = 0; i < hex_str.length; i += 2) {
 			let hex_byte  = hex_str.substr(i, 2);
-			console.log("   hex_byte(" + i + "): " + hex_byte);
+			// console.log("   hex_byte(" + i + "): " + hex_byte);
 			
 			let char_code = parseInt( hex_byte, 16 );
-			console.log("   char_code(" + i + "): " + char_code);	
+			// console.log("   char_code(" + i + "): " + char_code);	
 		    if ( char_code >= 32 ) {
 				ascii_str += String.fromCharCode(char_code);
-				console.log("   ascii_str(" + i + "): " + ascii_str);
+				// console.log("   ascii_str(" + i + "): " + ascii_str);
 			}
 		}
 		return ascii_str;
@@ -266,6 +285,8 @@ class EntropyConverterDialog {
 		let binary_value        = '';
 		
 		let entropy         = '';
+		
+		let mnemonics       = '';
 		let lang            = '';
 		
 		let mnemonics_value = "";
@@ -283,16 +304,13 @@ class EntropyConverterDialog {
 			}
 			else if ( field_id == ECONVERTER_SECRET_PHRASE_INPUT_ID ) {
 				mnemonics_value = HtmlUtils.GetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID );
-				let mnemonics_items = mnemonics_value.split(' ');
-				
-				let lang      = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
-  	            let mnemonics = mnemonics_value;	
-                if ( BIP39_ALLOWED_WORD_COUNT.indexOf(mnemonics_items.length) !=-1 ) {  				
-					data = { mnemonics, lang };
-					entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
-						
-					hex_value = entropy_info[ENTROPY_HEX];
-				}
+		
+		        mnemonics = mnemonics_value;
+				lang      = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );  	                            		
+				data = { mnemonics, lang };
+				// entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );		
+                entropy_info = await window.ipcMain.MnemonicsToEntropyInfoCustom( data );							
+				hex_value = entropy_info[ENTROPY_HEX];
 			}
 			else {
 				let bases_data = {};  
@@ -347,59 +365,75 @@ class EntropyConverterDialog {
 			if ( current_field_id == ECONVERTER_HEXADECIMAL_INPUT_ID ) {
 			    hex_value = HtmlUtils.GetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID ).trim();				
 				bit_size = hex_value.length * 4;
-				console.log(" STEP 0 HEX: bit_size: " + bit_size);
+				// console.log(" STEP 0 HEX: bit_size: " + bit_size);
 			}	
 			else if ( current_field_id == ECONVERTER_RAWTEXT_INPUT_ID ) {
 			    raw_value = HtmlUtils.GetElementValue( ECONVERTER_RAWTEXT_INPUT_ID );
 				bit_size = raw_value.length * 8;
-				console.log(" STEP 0 RAW: bit_size: " + bit_size);
+				// console.log(" STEP 0 RAW: bit_size: " + bit_size);
                 hex_value = await getHexValue( ECONVERTER_RAWTEXT_INPUT_ID );				
 			}	
 			else if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {
 			    base64_value = HtmlUtils.GetElementValue( ECONVERTER_BASE64_INPUT_ID ).trim();	
-                base64_value = base64_value.replaceAll('=',''); 				
-                bit_size = base64_value.length * 6;	
-				console.log(" STEP 0 BASE64: bit_size: " + bit_size);
+                // base64_value = base64_value.replaceAll('=',''); 				
+                bit_size = base64_value.replaceAll('=','').length * 6;	
+				// console.log(" STEP 0 BASE64: bit_size: " + bit_size);
 				hex_value = await getHexValue( ECONVERTER_BASE64_INPUT_ID );
 				hex_value_bit_size = hex_value.length * 4;	
-                bit_size = hex_value_bit_size;				
+                bit_size = hex_value_bit_size;	
 			}
 			else if ( current_field_id == ECONVERTER_BASE58_INPUT_ID ) {
 			    base58_value = HtmlUtils.GetElementValue( ECONVERTER_BASE58_INPUT_ID ).trim();	
-                base58_value = base58_value.replaceAll('=',''); 				
-                bit_size = base58_value.length * 5.86;	
-				console.log(" STEP 0 BASE58: bit_size: " + bit_size);
+                // base64_value = base64_value.replaceAll('=',''); 				
+                // bit_size = base58_value.length * 5.86;	
+				// console.log(" STEP 0 BASE64: bit_size: " + bit_size);
 				hex_value = await getHexValue( ECONVERTER_BASE58_INPUT_ID );
 				hex_value_bit_size = hex_value.length * 4;	
-                bit_size = hex_value_bit_size;				
-			}			
+                bit_size = hex_value_bit_size;
+			}
+			// else if ( current_field_id == ECONVERTER_BASE58_INPUT_ID ) {
+			//     base58_value = HtmlUtils.GetElementValue( ECONVERTER_BASE58_INPUT_ID ).trim();	
+            //     base58_value = base58_value.replaceAll('=',''); 				
+            //     bit_size = base58_value.length * 5.86;	
+			// 	// console.log(" STEP 0 BASE58: bit_size: " + bit_size);
+			// 	hex_value = await getHexValue( ECONVERTER_BASE58_INPUT_ID );
+			// 	hex_value_bit_size = hex_value.length * 4;	
+            //    bit_size = hex_value_bit_size;				
+			// }			
 			else if ( current_field_id == ECONVERTER_SECRET_PHRASE_INPUT_ID ) {
 			    secret_phrase_value = HtmlUtils.GetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID ).trim();
-                console.log(" STEP 0 SECRET_PHRASE: secret_phrase_value: " + secret_phrase_value);				
-                let words = secret_phrase_value.trim().split(' ');
-				word_count = words.length;
-				console.log(" STEP 0 SECRET_PHRASE: word_count: " + word_count);
-				HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_WORD_COUNT_ID, word_count );
-				bit_size = word_count * 11;	
-                hex_value = await getHexValue( ECONVERTER_SECRET_PHRASE_INPUT_ID );
-				hex_value_bit_size = hex_value.length * 4;
-				bit_size = hex_value_bit_size;
-                console.log(" STEP 0 SECRET_PHRASE: bit_size: " + bit_size);				
+				if ( secret_phrase_value == '' ) {
+					bit_size   = 0;
+					word_count = 0;
+				}
+				else {
+					// console.log(" STEP 0 SECRET_PHRASE: secret_phrase_value: " + secret_phrase_value);				
+					let words = secret_phrase_value.trim().split(' ');
+					word_count = words.length;
+					// console.log(" STEP 0 SECRET_PHRASE: word_count: " + word_count);
+					HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_WORD_COUNT_ID, word_count );
+					bit_size = word_count * 11;	
+					hex_value = await getHexValue( ECONVERTER_SECRET_PHRASE_INPUT_ID );
+					hex_value_bit_size = hex_value.length * 4;
+					bit_size = hex_value_bit_size;
+					// console.log(" STEP 0 SECRET_PHRASE: bit_size: " + bit_size);
+				}					
 			}	
 			else if ( current_field_id == ECONVERTER_BINARY_INPUT_ID ) {
 			    binary_value = HtmlUtils.GetElementValue( ECONVERTER_BINARY_INPUT_ID ).trim();
-				console.log(" binary_value: " + binary_value + "   isBinaryString: " + isBinaryString(binary_value));				
+				// console.log(" binary_value: " + binary_value + "   isBinaryString: " + isBinaryString(binary_value));				
                 if ( isBinaryString(binary_value) ) {
 					bit_size = binary_value.length;
-				    console.log(" STEP 1 BINARY: bit_size: " + bit_size);
+				    // console.log(" STEP 1 BINARY: bit_size: " + bit_size);
 				    if ( bit_size % 4 == 0 ) {
 						hex_value = binaryToHex( binary_value );
-						console.log(" hex_value (4 binary digits): " + hex_value);
+						// console.log(" hex_value (4 binary digits): " + hex_value);
 						hex_value_bit_size = hex_value.length * 4;
 						bit_size = hex_value_bit_size; 
-						console.log(" STEP 1 BINARY: bit_size (hex digits): " + bit_size);
+
+						// console.log(" STEP 1 BINARY: bit_size (hex digits): " + bit_size);
 					}
-                    console.log(" STEP 0 BINARY: bit_size: " + bit_size);					
+                    // console.log(" STEP 0 BINARY: bit_size: " + bit_size);					
 				}				
 			}
 			else {
@@ -411,7 +445,7 @@ class EntropyConverterDialog {
 				HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_SIZE_VALUE_ID, '0' );
 			}
             else if ( bit_size > 0 ) {
-				console.log(" STEP 2: bit_size: " + bit_size);
+				// console.log(" STEP 2: bit_size: " + bit_size);
 				bit_size = Number( bit_size );
 				if ( ! Number.isInteger(bit_size) )	bit_size = bit_size.toFixed(2);
 				// console.log(" STEP 2: bit_size 2 decimales: " + bit_size);
@@ -419,10 +453,10 @@ class EntropyConverterDialog {
 			}
 			
 			if ( word_count == 0 ) {
-				HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_WORD_COUNT_ID, '0' );
+				word_count = HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_WORD_COUNT_ID, '0' );
 			}
             else if ( word_count > 0 ) {
-				console.log(" STEP 2: word_count: " + word_count);
+				// console.log(" STEP 2: word_count: " + word_count);
 				HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_WORD_COUNT_ID, word_count  ); 	
 			}
 			
@@ -434,7 +468,41 @@ class EntropyConverterDialog {
 		    }
 			
 			if ( hex_value != '' ) {
-				base64_value = hexToB64( hex_value );
+				if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {
+					let current_base64_value = HtmlUtils.GetElementValue( ECONVERTER_BASE64_INPUT_ID );
+					console.log("current_base64_value(" + current_base64_value.length + "): " + current_base64_value);
+					
+					let bip39_base64_value = hexToB64( hex_value );					
+					console.log("bip39_base64_value(" + bip39_base64_value.length + "): " + bip39_base64_value);	
+
+					let base64_value_without_padding = base64_value.replaceAll('=','');
+					console.log("base64_value_without_padding(" + base64_value_without_padding.length + "): " + base64_value_without_padding);	
+				}		
+				
+				if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {
+					if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {
+						let current_base64_value = HtmlUtils.GetElementValue( ECONVERTER_BASE64_INPUT_ID );
+						console.log("current_base64_value(" + current_base64_value.length + "): " + current_base64_value);						
+
+						let bip39_base64_value = hexToB64( hex_value );
+						console.log("bip39_base64_value(" + bip39_base64_value.length + "): " + bip39_base64_value);
+						
+						if ( current_base64_value.length > bip39_base64_value.length ) {
+							base64_value = current_base64_value;
+						}
+						else {
+							base64_value = bip39_base64_value;
+						}
+					}
+					else {
+						base64_value = hexToB64( hex_value );	
+					}
+					
+					HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base64_value );
+				}	
+				
+				lang = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
+				this.previous_lang = lang; 
 			
 				entropy = hex_value;
 				data    = { entropy, lang };
@@ -447,23 +515,31 @@ class EntropyConverterDialog {
 				let target_field_id = INPUT_FIELDS_IDS [ j ];
 				
 				if ( source_elt_id != target_field_id   &&  hex_value != '' ) {
-					console.log(">> target_field_id: " + target_field_id + "  hex_value(" + hex_value.length/2 + " bytes): " + hex_value);
+					// console.log(">> target_field_id: " + target_field_id + "  hex_value(" + hex_value.length/2 + " bytes): " + hex_value);
 					
 					if ( target_field_id == ECONVERTER_RAWTEXT_INPUT_ID  &&  base_conversions[TO_RAW_TEXT] != undefined ) {
 						HtmlUtils.SetElementValue( ECONVERTER_RAWTEXT_INPUT_ID, base_conversions[TO_RAW_TEXT] );
 					}
 					else if ( target_field_id == ECONVERTER_HEXADECIMAL_INPUT_ID  &&  hex_value != '' ) {
 						HtmlUtils.SetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID, hex_value );
+						if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {
+							HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base64_value );	
+						}							
 					}
-					else if ( target_field_id == ECONVERTER_BASE64_INPUT_ID  &&  base_conversions[TO_BASE64] != undefined ) {
-						HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base_conversions[TO_BASE64] );
+					else if ( target_field_id == ECONVERTER_BASE64_INPUT_ID  &&  base_conversions[TO_BASE64] != undefined ) {						
+						if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {
+							HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base64_value );	
+						}	
+						else {						
+							HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base_conversions[TO_BASE64] );
+						}	
 					}
 					else if ( target_field_id == ECONVERTER_BASE58_INPUT_ID  &&  base_conversions[TO_BASE58] != undefined ) {
 						HtmlUtils.SetElementValue( ECONVERTER_BASE58_INPUT_ID, base_conversions[TO_BASE58] );
 					}
 					else if ( target_field_id == ECONVERTER_BINARY_INPUT_ID  &&  base_conversions[TO_BINARY] != undefined ) {
 						let binary_value = base_conversions[TO_BINARY];
-						console.log(">> binary_value: " + binary_value);
+						// console.log(">> binary_value: " + binary_value);
 						HtmlUtils.SetElementValue( ECONVERTER_BINARY_INPUT_ID, base_conversions[TO_BINARY] );
 					}
 					else if ( target_field_id == ECONVERTER_SECRET_PHRASE_INPUT_ID  &&  mnemonics_value != '' ) {
@@ -472,59 +548,185 @@ class EntropyConverterDialog {
 						HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_WORD_COUNT_ID, words.length );
 					}
 				}
+			}	
+
+			if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {	
+				HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_SIZE_SELECT_ID, (hex_value.length*4).toString() );			
 			}			
 		}
 	} // async propagateNewValue()
 	
+	async onGenerateEntropy() {
+		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onGenerateEntropy" + _END_;
+		window.ipcMain.logToMain(log_msg);
+		
+		let entropy_size = HtmlUtils.GetElementValue( ECONVERTER_ENTROPY_SIZE_SELECT_ID );
+		// console.log( " entropy_size: " + entropy_size + " bits");
+		
+		let random_entropy_hex = await window.ipcMain.GenerateEntropy( entropy_size );
+		// console.log( "random_entropy_hex: " + random_entropy_hex + " " + random_entropy_hex.length*4 + " bits" );
+		
+		HtmlUtils.SetElementValue( ECONVERTER_LANG_SELECT_ID, 'EN' );
+		
+		HtmlUtils.SetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID, random_entropy_hex );
+		await this.propagateNewValue( ECONVERTER_HEXADECIMAL_INPUT_ID );
+	} // async onGenerateEntropy()
+	
 	async onChangeLang() {
+		this.allow_cb = false;
+
 		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onChangeLang" + _END_;
 		window.ipcMain.logToMain(log_msg);
 		
 		let data = {};
-		let lang = this.previous_lang;
+		let current_lang = this.previous_lang;
+		// console.log("> current_lang: " + this.previous_lang );
 		
-		let mnemonics = HtmlUtils.GetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID );	
+		let secret_phrase_value = HtmlUtils.GetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID ).trim();
+        // console.log("> secret_phrase_value: '" + secret_phrase_value + "'" );	
 		
-		if ( lang == WORDLIST_WORD_INDEXES ) {
-			lang = 'EN';
-            // console.log("   word indexes of mnemonics: '" + mnemonics + "'" );			
-			let word_indexes = mnemonics.split(' ');	
-            // console.log("   word indexes typeof " + typeof word_indexes );
-            // console.log("   word indexes: " + JSON.stringify(word_indexes) );			
-			data = { word_indexes, lang };
-			mnemonics = await window.ipcMain.WordIndexesToMnemonics( data );
-			// console.log("   word indexes to mnemonics: '" + mnemonics + "'" );
-		}		
-  	    
-        console.log("   current mnemonics(" + lang + "): " + mnemonics);
+		let translated_secret_phrase_value = '';
 		
-	  	data = { mnemonics, lang };
-		let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+		let mnemonics    = '';
+		let lang         = '';
+		let word_index   = '';
+		let word_indexes = [];
+
+        let options      = {};		
 		
-		let entropy_value = entropy_info[ENTROPY_HEX];
-		console.log("   entropy_value: " + entropy_value);
-		
-		let entropy = entropy_value;
-		let new_lang = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
-		
+		let current_mnemonics = secret_phrase_value.split(' '); 
 		let new_mnemonics = '';
 		
-		if ( new_lang == WORDLIST_WORD_INDEXES ) {
-		    let options = { [LANG]: this.previous_lang };			
-			data = { mnemonics, options };
-			let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
-			new_mnemonics = word_indexes.join(' ');
-		}
-		else {	
-		    lang = new_lang;
-			data = { entropy, lang };
-			new_mnemonics  = await window.ipcMain.EntropyToMnemonics( data );
-			console.log("   new_mnemonics(" + lang + "): " + new_mnemonics);
-		}
+		let new_lang = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
+		// console.log("> new_lang: " + new_lang );
 		
-		HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, new_mnemonics );
-		
-		this.previous_lang = new_lang;
+		if ( current_mnemonics.length < 12 || [12,15,18,22,24].indexOf(current_mnemonics.length) == -1 ) { 
+			// console.log("> Non Standard Word Count: " + current_mnemonics.length );	
+			
+			let translated_mnemonics = '';
+			let current_mnemonic     = '';
+			let new_mnemonic         = '';
+			
+			options = {};				
+
+			// console.log("++++++++++++++++++++++++");
+			// console.log("> secret_phrase_value: " + secret_phrase_value );	
+			
+			const normalizeBip39 = (str) =>{
+				if (!str) return '';
+				// Convertir TOUT en forme décomposée, puis supprimer les accents combinants
+				return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+			}; // normalizeBip39()			
+			
+			for ( let i=0; i < current_mnemonics.length; i++ ) {
+				console.log("--------------- " + i);
+				current_mnemonic = current_mnemonics[ i ];
+				// current_mnemonic = normalizeBip39( current_mnemonic );
+				// console.log("current_mnemonic: <" + current_mnemonic + ">   current_lang: " + current_lang);
+				
+				if ( current_mnemonic == '' ) continue;
+				
+				if ( current_lang == WORDLIST_WORD_INDEXES ) {
+					word_index = parseInt( current_mnemonic ).toString(); 
+				}
+				else {
+					try  {
+						// console.log("mnemonics BEFORE normalize: '" + current_mnemonic + "'");
+						// mnemonics = normalizeBip39( current_mnemonic );
+						mnemonics = current_mnemonic;
+						//-------------
+			
+						// console.log("mnemonics AFTER normalize: '" + mnemonics + "'  LANG: " + LANG);
+				        options   = { ['Lang']: current_lang };
+						data = { mnemonics, options };
+						word_index = await window.ipcMain.MnemonicToWordIndex( data );
+					}
+					catch ( err ) { 	
+						throw new Error("**** Error **** in EntropyConverterDialog.onChangeLang Line 544"); 
+					}
+				}
+				
+				word_index = parseInt(word_index);	
+				// console.log("word_index: " + word_index + " From: " + current_lang + "  To: " + new_lang);
+                
+				if ( new_lang == WORDLIST_WORD_INDEXES ) {	
+					new_mnemonic = word_index.toString();
+				}				
+				else {
+					lang = new_lang;
+					data = { word_index, lang };					
+					try  {
+						new_mnemonic = await window.ipcMain.WordIndexToMnemonic( data );
+					}
+					catch ( err ) { 	
+						throw new Error("**** Error **** in EntropyConverterDialog.onChangeLang Line 556"); 
+					}	
+				}					
+				
+				// console.log("new_mnemonic: " + new_mnemonic);
+				new_mnemonic = new_mnemonic.normalize('NFC');
+				console.log("[" + i + "," + current_lang + "] idx:" + word_index + ": <" +  current_mnemonic + "> to " + new_lang + ": <" + new_mnemonic + ">");	
+
+				translated_secret_phrase_value += new_mnemonic + ' ';				
+			}
+
+			translated_secret_phrase_value = translated_secret_phrase_value.trim(' ');
+			HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, translated_secret_phrase_value );
+			
+			this.previous_lang = new_lang;			
+		}
+		else { // Standard Word Count
+		    // console.log("   Standard Word Count: " + current_mnemonics.length);
+			if ( current_lang == WORDLIST_WORD_INDEXES ) {
+				// console.log("   current_lang = WORDLIST_WORD_INDEXES");
+				// console.log("> current_lang: "  + current_lang );
+				// console.log("> new_lang: "      + new_lang );
+				// console.log("> previous_lang: " + this.previous_lang );
+				// console.log("  current_mnemonics: '" + current_mnemonics + "'");
+				
+				lang = 'EN';
+				// console.log("   word indexes of mnemonics: '" + mnemonics + "'" );			
+				let word_indexes = current_mnemonics; //..split(' ');	
+				// console.log("   word indexes typeof " + typeof word_indexes );
+				// console.log("   word indexes: " + JSON.stringify(word_indexes) );
+				data = { word_indexes, lang };
+				secret_phrase_value = await window.ipcMain.WordIndexesToMnemonics( data );
+				// console.log("   word indexes to mnemonics: '" + mnemonics + "'" );
+			}		
+			
+			console.log("   current mnemonics: " + secret_phrase_value);
+			
+			mnemonics = secret_phrase_value;
+			lang      = current_lang;
+			data = { mnemonics, lang };
+			let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			
+			let entropy_value = entropy_info[ENTROPY_HEX];
+			// console.log("   entropy_value: " + entropy_value);
+			
+			let entropy = '';				
+					
+			if ( new_lang == WORDLIST_WORD_INDEXES ) {			
+				mnemonics = secret_phrase_value;		
+				options = { [LANG]: this.previous_lang };				
+				data = { mnemonics, options };
+				let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
+				new_mnemonics = word_indexes.join(' ');
+			}
+			else {					
+				entropy = entropy_value;
+				lang    = new_lang;
+				data = { entropy, lang };
+				new_mnemonics = await window.ipcMain.EntropyToMnemonics( data );
+				console.log("   new_mnemonics(" + lang + "): " + new_mnemonics);
+			}
+			
+			HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, new_mnemonics );
+			
+			this.previous_lang = new_lang;
+		} // if (check if  Standard Word Count)
+
+		this.allow_cb = true;		
 	} // async onChangeLang()
 	
 	async onChangeInputField( source_elt_id ) {
@@ -542,34 +744,61 @@ class EntropyConverterDialog {
 			}
 		}
 		
+		const convertInputValueToValidBaseValue = ( field_value, base_alphabet, max_length ) => {
+            let valid_base_value = '';	
+			// console.log("base_alphabet: " + base_alphabet);
+            // console.log("max_length: "    + max_length);			
+			if ( max_length === undefined ) max_length = -1;
+			for ( let j=0; j < field_value.length; j++ ) {
+				let c = field_value[ j ];
+				if ( base_alphabet.indexOf( c ) != -1 )  {
+					// console.log("max_length: "    + max_length);
+                    if (  max_length > 0 ) {
+						let accepted_base_length = parseInt( valid_base_value.length ) + 1;  
+						// console.log("accepted_base_length: " + accepted_base_length );
+						if ( accepted_base_length <= max_length ) {   
+							valid_base_value += c;
+						}
+					}
+				}
+			}
+			return valid_base_value;
+		}; // convertInputValueToValidBaseValue()
+		
+		const BASE58_ALPHABET      = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+		const BASE64_ALPHABET      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+		const HEXADECIMAL_ALPHABET = "0123456789ABCDEFabcdef";
+		const BINARY_ALPHABET      = "01";
+		
 		for ( let i=0; i < INPUT_FIELDS_IDS.length; i++ ) {
 			let current_field_id = INPUT_FIELDS_IDS[ i ];	
             if ( current_field_id == source_elt_id ) {	
-                if ( current_field_id == ECONVERTER_BASE58_INPUT_ID ) {
-					const BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-					let base58_value = '';
-					console.log("   BASE58 BEFORE CHECKING field_value: " + field_value);	
-                    for ( let j=0; j < field_value.length; j++ ) {
-						let c = field_value[ j ];
-						if ( BASE58_ALPHABET.indexOf( c ) != -1 ) base58_value += c;
-                    }
-
-					console.log("   BASE58 AFTER CHECKING field_value: " + base58_value);					
-				    HtmlUtils.SetElementValue( ECONVERTER_BASE58_INPUT_ID, base58_value );
-					
+				if ( current_field_id == ECONVERTER_RAWTEXT_INPUT_ID) {
+					let rawtext_value = HtmlUtils.GetElementValue( ECONVERTER_RAWTEXT_INPUT_ID );
+					if ( rawtext_value.length > 32 ) {
+						rawtext_value = rawtext_value.slice(0, 32);
+					}
+					HtmlUtils.SetElementValue( ECONVERTER_RAWTEXT_INPUT_ID, rawtext_value );
+                }
+			    else if ( current_field_id == ECONVERTER_HEXADECIMAL_INPUT_ID ) {
+					field_value = HtmlUtils.GetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID );					
+					field_value = convertInputValueToValidBaseValue( field_value, HEXADECIMAL_ALPHABET, 64 );
+					HtmlUtils.SetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID, field_value );
+                }
+                else if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {		
+					field_value = HtmlUtils.GetElementValue( ECONVERTER_BASE64_INPUT_ID ).trim();				
+					// field_value = convertInputValueToValidBaseValue( field_value, BASE64_ALPHABET, 43 );
+					// field_value = convertInputValueToValidBaseValue( field_value, BASE64_ALPHABET, 60 );
+					field_value = convertInputValueToValidBaseValue( field_value, BASE64_ALPHABET, 43);
+				    HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, field_value );					
+                }
+				else if ( current_field_id == ECONVERTER_BASE58_INPUT_ID ) {					
+					let base58_value = convertInputValueToValidBaseValue( field_value, BASE58_ALPHABET, 43 );
+				    HtmlUtils.SetElementValue( ECONVERTER_BASE58_INPUT_ID, base58_value );				
                 }	
-                else if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {
-					const BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-					let base64_value = '';
-					console.log("   BASE64 BEFORE CHECKING field_value: " + field_value);	
-                    for ( let j=0; j < field_value.length; j++ ) {
-						let c = field_value[ j ];
-						if ( BASE64_ALPHABET.indexOf( c ) != -1 ) base64_value += c;
-                    }
-
-					console.log("   BASE64 AFTER CHECKING field_value: " + base64_value);					
-				    HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base64_value );
-					
+				else if ( current_field_id == ECONVERTER_BINARY_INPUT_ID ) {					
+					let binary_value = convertInputValueToValidBaseValue( field_value, BINARY_ALPHABET, 256 );
+				    HtmlUtils.SetElementValue( ECONVERTER_BINARY_INPUT_ID, binary_value );					
                 }
 				
 				field_value = HtmlUtils.GetElementValue( current_field_id );
@@ -608,7 +837,9 @@ class EntropyConverterDialog {
 		return word_index;
 	} // getWordIndexFromEvent()
 	
-	async getMnemonicFromEvent( evt ) { 
+	async getMnemonicFromEvent( evt ) {
+        // console.log("EntropyConverterDialog.getMnemonicFromEvent");	
+		
 		let evt_X = evt.offsetX;
 		let evt_Y = evt.offsetY;
 		
@@ -616,19 +847,34 @@ class EntropyConverterDialog {
 		let Y = Math.round(evt_Y / 2);
 		
 		let word_index = Y*46 + X;
-		if ( word_index > 2047 ) word_index = 2047;
+		
+		if ( word_index < 0 )         word_index = 0;
+		else if ( word_index > 2047 ) word_index = 2047;
 		
 		// console.log(" word_index: " + word_index);
 		
-		let lang = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
+		this.previous_lang = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
+		
+		let lang = this.previous_lang;
+		// console.log("EntropyConverterDialog.getMnemonicFromEvent   lang: " + lang);
+		
 		let data = { word_index, lang };
-		let mnemonic = await window.ipcMain.WordIndexToMnemonic( data );
+		
+		let mnemonic = '';
+		if ( this.previous_lang == WORDLIST_WORD_INDEXES ) {
+			mnemonic = word_index.toString();
+		}	
+		else {
+			mnemonic = await window.ipcMain.WordIndexToMnemonic( data );
+		}
+		// console.log("EntropyConverterDialog.getMnemonicFromEvent   mnemonic: " + mnemonic);
+		
 		return mnemonic;
 	} // async getMnemonicFromEvent()
 	
 	getSecretPhrase() {		
 	    let secret_phrase = HtmlUtils.GetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID ).trim();
-		console.log(" secret_phrase: <" + secret_phrase + ">");
+		// console.log(" secret_phrase: <" + secret_phrase + ">");
 		return secret_phrase;
 	} // getSecretPhrase()
 	
@@ -650,7 +896,6 @@ class EntropyConverterDialog {
 	} // async onImgGridHover()
 	
 	async onImgGridClick( evt ) {
-		console.log("==========================================");
 		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onImgGridClick" + _END_;
 		window.ipcMain.logToMain(log_msg);
 		
@@ -664,7 +909,63 @@ class EntropyConverterDialog {
 			HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, secret_phrase);
 			await this.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID );
 		}
-	} // async onImgGridClick()
+	} // async onImgGridClick()	
+	
+	
+	async onSecretPhraseKeydown( evt ) {
+		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onSecretPhraseKeydown" + _END_;
+		window.ipcMain.logToMain(log_msg);
+		
+		// console.log( "evt.charCode: " + evt.charCode );
+		
+		const deleteWordFromTextCursorPos = ( chaine, index ) => {
+			// Règle 1 & 2: Vérifications préalables
+			if ( index === 0 )               return chaine;
+			if ( chaine[index - 1 ] === ' ') return chaine;
+			
+			// Trouver le début du mot à supprimer
+			let debut = index - 1;
+			while (debut > 0 && chaine[debut - 1] !== ' ') {
+				debut--;
+			}
+			
+			// Trouver la fin du mot à supprimer
+			let fin = index - 1;
+			while (fin < chaine.length - 1 && chaine[fin + 1] !== ' ') {
+				fin++;
+			}
+			
+			// Supprimer le mot
+			return (chaine.slice(0, debut) + chaine.slice(fin + 1)).replace(/\s+/g, ' ').trim();
+		} // deleteWordFromTextCursorPos()
+		
+		evt.preventDefault();
+		
+		if ( evt.keyCode == BACKSPACE_KEY_CODE || evt.keyCode == DEL_KEY_CODE ) {
+			let text_cursor_pos = HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionStart;
+			console.log( "text_cursor_pos: " + text_cursor_pos );
+			let current_secret_phrase = HtmlUtils.GetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID );
+			// console.log( "BEFORE DEL Secret Phrase: '" + current_secret_phrase + "'");
+			let new_secret_phrase = deleteWordFromTextCursorPos( current_secret_phrase, text_cursor_pos );
+			// console.log( "AFTER DEL Secret Phrase: '" + new_secret_phrase + "'");
+			if ( new_secret_phrase != current_secret_phrase ) {
+				HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, new_secret_phrase );
+				await this.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID );
+			}
+		}		
+	} // async onSecretPhraseKeydown()
+	
+	async onSecretPhraseKeypress( evt ) {
+		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onSecretPhraseKeypress" + _END_;
+		window.ipcMain.logToMain(log_msg);
+		
+		// console.log( "evt.charCode: " + evt.charCode );
+		let new_char = String.fromCharCode(evt.charCode);
+		trace2Main( pretty_format( "new_char: '" +  new_char + "'" ) );
+		
+		// Default desired behavior: no character input		
+		evt.preventDefault();
+	} // onSecretPhraseKeypress()
 	
 	onQuit() {
 		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onQuit" + _END_;
@@ -722,9 +1023,9 @@ class EntropyConverterDialog {
 		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onCopyField" + _END_;
 		window.ipcMain.logToMain(log_msg);
 		
-		console.log("   elt_id: " + elt_id);		
+		// console.log("   elt_id: " + elt_id);		
 		let copy_text = HtmlUtils.GetElementValue( elt_id );
-		console.log("   copy_text: " + copy_text);
+		// console.log("   copy_text: " + copy_text);
 		
 		if ( copy_text == "") {
 			return; 
@@ -743,6 +1044,10 @@ class EntropyConverterDialog {
 	clearFields() {
 		HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_SIZE_VALUE_ID,   '0' ); 	
 		HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_WORD_COUNT_ID,   '0' );
+		
+		HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_SIZE_SELECT_ID, '128' ); 
+		
+		HtmlUtils.SetElementValue( ECONVERTER_LANG_SELECT_ID,          'EN' ); 
 				
 		HtmlUtils.SetElementValue( ECONVERTER_RAWTEXT_INPUT_ID,        '' );
 		HtmlUtils.SetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID,    '' );

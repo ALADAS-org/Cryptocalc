@@ -10,10 +10,10 @@
 >> MainGUI.openTabPage Seed elt:seed_tab_link_id
 >> MainGUI.onGUIEvent: FromMain:SetVariable
    rGUI.onGUI>  data.length:                 3
-   rGUI.onGUI>  data:                        ["FromMain:SetVariable","0.3.2","0.5.12"]
-   rGUI.onGUI>  SET VARIABLE(0.3.2):         0.5.12
+   rGUI.onGUI>  data:                        ["FromMain:SetVariable","0.3.2","0.5.13"]
+   rGUI.onGUI>  SET VARIABLE(0.3.2):         0.5.13
    variable_name:                            0.3.2
-   rGUI.onGUI>  cryptowallet_version:        0.5.12
+   rGUI.onGUI>  cryptowallet_version:        0.5.13
 >> MainGUI.onGUIEvent: FromMain:UpdateOptions
 >> MainGUI.updateOptionsFields
    rGUI.upOpt> wallet_mode:                  Simple Wallet
@@ -59,74 +59,74 @@
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            4816f07b8b87fa5d235cca669b51ebb8beba551000befa8664b1647e96e709df
-   rGUI.saltE> entropy_src_value:            17025b70f7c1f9ed106f9bc11c2bc4141afee6376f0d63fc44741401d2828fe6
-   rGUI.saltE> entropy_src_value:            c69c072c8abd1e31b314343bdd04c1f6794b53917c8f8fbaeb30e78db911f283
-   rGUI.upFields> entropy:                   0660e115eee9322371558a2346118caf24a77bb3de0a46ffc2a06d50d7735dcd
->> MainGUI.propagateFields 0660e115eee9322371558a2346118caf24a77bb3de0a46ffc2a06d50d7735dcd
+   rGUI.saltE> entropy_src_value:            ca0fc26144c4656ed91bf3d423d3e388eb36846a1cfd04b8c03e56bcf6458334
+   rGUI.saltE> entropy_src_value:            5d2f9a0da9d493b836df3a8a9a5f5c7b7f6673320034010408e5c7311437b0d3
+   rGUI.saltE> entropy_src_value:            3080be688e3f271d42e6b419564e57d7c9c628a99b4609aa035960e086f5c913
+   rGUI.upFields> entropy:                   d66caebdd1afc7c7a3b4a2f90aa6186f02b5f807e9e4f842c489bf3f226ff933
+>> MainGUI.propagateFields d66caebdd1afc7c7a3b4a2f90aa6186f02b5f807e9e4f842c489bf3f226ff933
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
-   rGUI.upFields> entropy:                   9c3c26d58f2e768ed88ecc8aaf6fe0e3479351247b76c8d5d8d9aaa3fcd00d1c
->> MainGUI.propagateFields 9c3c26d58f2e768ed88ecc8aaf6fe0e3479351247b76c8d5d8d9aaa3fcd00d1c
+   rGUI.upFields> entropy:                   a12314b824c12710ee7699c5ef02a9f367dd2c3222d2f434b959fa0d71455c01
+>> MainGUI.propagateFields a12314b824c12710ee7699c5ef02a9f367dd2c3222d2f434b959fa0d71455c01
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
-   rGUI.upFields> entropy:                   b90f80ccf7284d8dd20529a44d9ee81a711e6908e7789b8ca4f152c95040c39d
->> MainGUI.propagateFields b90f80ccf7284d8dd20529a44d9ee81a711e6908e7789b8ca4f152c95040c39d
+   rGUI.upFields> entropy:                   59b44bde68f09f67068cb3632047f902869aa74ed696eae7fedf00f91cb8a9b5
+>> MainGUI.propagateFields 59b44bde68f09f67068cb3632047f902869aa74ed696eae7fedf00f91cb8a9b5
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
->> MainGUI.updateEntropy 0660e115eee9322371558a2346118caf24a77bb3de0a46ffc2a06d50d7735dcd
+>> MainGUI.updateEntropy d66caebdd1afc7c7a3b4a2f90aa6186f02b5f807e9e4f842c489bf3f226ff933
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
->> MainGUI.updateEntropy 9c3c26d58f2e768ed88ecc8aaf6fe0e3479351247b76c8d5d8d9aaa3fcd00d1c
+>> MainGUI.updateEntropy a12314b824c12710ee7699c5ef02a9f367dd2c3222d2f434b959fa0d71455c01
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
->> MainGUI.updateEntropy b90f80ccf7284d8dd20529a44d9ee81a711e6908e7789b8ca4f152c95040c39d
+>> MainGUI.updateEntropy 59b44bde68f09f67068cb3632047f902869aa74ed696eae7fedf00f91cb8a9b5
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   ribbon lab creek unusual luggage shoulder elite pioneer picture hollow ring crunch
-                                             ball cruel castle upper oppose gown detail pitch never call attack piano
-   rGUI.upWidx> mnemonics:                   ribbon lab creek unusual luggage shoulder elite pioneer picture hollow ring crunch
-                                             ball cruel castle upper oppose gown detail pitch never call attack piano
-   rGUI.upWidx> mnemonics:                   ribbon lab creek unusual luggage shoulder elite pioneer picture hollow ring crunch
-                                             ball cruel castle upper oppose gown detail pitch never call attack piano
->> MainGUI.updateChecksum 01101110
-   rGUI.upE> entropy_hex:                    0660e115eee9322371558a2346118caf24a77bb3de0a46ffc2a06d50d7735dcd
+   rGUI.upWidx> mnemonics:                   fluid pelican wasp spin antique receive boss nose glimpse acquire wrestle agree
+                                             have father deputy spot turtle divide result acid mushroom fox plug private
+   rGUI.upWidx> mnemonics:                   fluid pelican wasp spin antique receive boss nose glimpse acquire wrestle agree
+                                             have father deputy spot turtle divide result acid mushroom fox plug private
+   rGUI.upWidx> mnemonics:                   fluid pelican wasp spin antique receive boss nose glimpse acquire wrestle agree
+                                             have father deputy spot turtle divide result acid mushroom fox plug private
+>> MainGUI.updateChecksum 00111101
+   rGUI.upE> entropy_hex:                    d66caebdd1afc7c7a3b4a2f90aa6186f02b5f807e9e4f842c489bf3f226ff933
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin Image
-   rGUI.genSW> private_key:                  0660e115eee9322371558a2346118caf24a77bb3de0a46ffc2a06d50d7735dcd
->> MainGUI.updateChecksum 00100110
-   rGUI.upE> entropy_hex:                    9c3c26d58f2e768ed88ecc8aaf6fe0e3479351247b76c8d5d8d9aaa3fcd00d1c
+   rGUI.genSW> private_key:                  d66caebdd1afc7c7a3b4a2f90aa6186f02b5f807e9e4f842c489bf3f226ff933
+>> MainGUI.updateChecksum 01010110
+   rGUI.upE> entropy_hex:                    a12314b824c12710ee7699c5ef02a9f367dd2c3222d2f434b959fa0d71455c01
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  9c3c26d58f2e768ed88ecc8aaf6fe0e3479351247b76c8d5d8d9aaa3fcd00d1c
->> MainGUI.updateChecksum 00100000
-   rGUI.upE> entropy_hex:                    b90f80ccf7284d8dd20529a44d9ee81a711e6908e7789b8ca4f152c95040c39d
+   rGUI.genSW> private_key:                  a12314b824c12710ee7699c5ef02a9f367dd2c3222d2f434b959fa0d71455c01
+>> MainGUI.updateChecksum 01011001
+   rGUI.upE> entropy_hex:                    59b44bde68f09f67068cb3632047f902869aa74ed696eae7fedf00f91cb8a9b5
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  b90f80ccf7284d8dd20529a44d9ee81a711e6908e7789b8ca4f152c95040c39d
-   rGUI.genSW> new_wallet[WIF]:              KwS7KNE4FNNuqNF9S2wmEZM5yjYH9FnrSESKegpLqHwwNb7oNPts
-   rGUI.genSW> wallet_address:               1KBD6wJTMz8RTfZEY8bqs5HrvjtswPduV7
-   rGUI.genSW> WIF:                          KwS7KNE4FNNuqNF9S2wmEZM5yjYH9FnrSESKegpLqHwwNb7oNPts
+   rGUI.genSW> private_key:                  59b44bde68f09f67068cb3632047f902869aa74ed696eae7fedf00f91cb8a9b5
+   rGUI.genSW> new_wallet[WIF]:              L4QXMZVH8oNTSL76gyHGTJtL6pmFtTKWuncTWAKSKMGaCyFK5ons
+   rGUI.genSW> wallet_address:               17JVWG5SKovkXEMGeQW7Vbs5Ei9kZFS6iw
+   rGUI.genSW> WIF:                          L4QXMZVH8oNTSL76gyHGTJtL6pmFtTKWuncTWAKSKMGaCyFK5ons
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
-   rGUI.genSW> new_wallet[WIF]:              L2TQofy9GQEPbAVi74kByFNCKwF3AdAjUepoP3GEgKHHcbSaikKo
-   rGUI.genSW> wallet_address:               1LhyeT1ZHhryHzT5cWm3vZHrnGn1Xqanpt
-   rGUI.genSW> WIF:                          L2TQofy9GQEPbAVi74kByFNCKwF3AdAjUepoP3GEgKHHcbSaikKo
+   rGUI.genSW> new_wallet[WIF]:              L2cwV9zKUAicVUJtecneuF4La34kpoWjoQKafa7zSd5HKYtchBny
+   rGUI.genSW> wallet_address:               14VeP5vgjMAVAMRj214WgsxQWtpJDdb2wu
+   rGUI.genSW> WIF:                          L2cwV9zKUAicVUJtecneuF4La34kpoWjoQKafa7zSd5HKYtchBny
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
-   rGUI.genSW> new_wallet[WIF]:              L3RSjJQLAx7b7dUQ7YbPtCBGH98JaWf4ncCKHbw1u5u2jzjDmyBH
-   rGUI.genSW> wallet_address:               1BExFeyhq8NKe26WJJP38qsNHxUGkck9XL
-   rGUI.genSW> WIF:                          L3RSjJQLAx7b7dUQ7YbPtCBGH98JaWf4ncCKHbw1u5u2jzjDmyBH
+   rGUI.genSW> new_wallet[WIF]:              KzE5qnctQEwJxHf5XQvhFJBMgsr1YkaxRXdiTT54kv9DLfupmBqU
+   rGUI.genSW> wallet_address:               1NTxz9szrx5GauNdhaokmdfb4TjeBU6eG1
+   rGUI.genSW> WIF:                          KzE5qnctQEwJxHf5XQvhFJBMgsr1YkaxRXdiTT54kv9DLfupmBqU
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
@@ -134,12 +134,12 @@
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   ribbon lab creek unusual luggage shoulder elite pioneer picture hollow ring crunch
-                                             ball cruel castle upper oppose gown detail pitch never call attack piano
-   rGUI.upWidx> mnemonics:                   ribbon lab creek unusual luggage shoulder elite pioneer picture hollow ring crunch
-                                             ball cruel castle upper oppose gown detail pitch never call attack piano
-   rGUI.upWidx> mnemonics:                   ribbon lab creek unusual luggage shoulder elite pioneer picture hollow ring crunch
-                                             ball cruel castle upper oppose gown detail pitch never call attack piano
+   rGUI.upWidx> mnemonics:                   fluid pelican wasp spin antique receive boss nose glimpse acquire wrestle agree
+                                             have father deputy spot turtle divide result acid mushroom fox plug private
+   rGUI.upWidx> mnemonics:                   fluid pelican wasp spin antique receive boss nose glimpse acquire wrestle agree
+                                             have father deputy spot turtle divide result acid mushroom fox plug private
+   rGUI.upWidx> mnemonics:                   fluid pelican wasp spin antique receive boss nose glimpse acquire wrestle agree
+                                             have father deputy spot turtle divide result acid mushroom fox plug private
 >> MainGUI.updateWalletMode
    rGUI.upWmode> wallet_mode:                Simple Wallet
    rGUI.upWmode> default_blockchain:         Bitcoin
@@ -149,94 +149,128 @@
    rGUI.upBlkCHN> wallet_mode:               Simple Wallet
    rGUI.upBlkCHN> CMD:                       cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  b90f80ccf7284d8dd20529a44d9ee81a711e6908e7789b8ca4f152c95040c39d
-   rGUI.genSW> new_wallet[WIF]:              L3RSjJQLAx7b7dUQ7YbPtCBGH98JaWf4ncCKHbw1u5u2jzjDmyBH
-   rGUI.genSW> wallet_address:               1BExFeyhq8NKe26WJJP38qsNHxUGkck9XL
-   rGUI.genSW> WIF:                          L3RSjJQLAx7b7dUQ7YbPtCBGH98JaWf4ncCKHbw1u5u2jzjDmyBH
+   rGUI.genSW> private_key:                  59b44bde68f09f67068cb3632047f902869aa74ed696eae7fedf00f91cb8a9b5
+   rGUI.genSW> new_wallet[WIF]:              KzE5qnctQEwJxHf5XQvhFJBMgsr1YkaxRXdiTT54kv9DLfupmBqU
+   rGUI.genSW> wallet_address:               1NTxz9szrx5GauNdhaokmdfb4TjeBU6eG1
+   rGUI.genSW> WIF:                          KzE5qnctQEwJxHf5XQvhFJBMgsr1YkaxRXdiTT54kv9DLfupmBqU
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
-   rGUI.upBlkCHN> WIF:                       L3RSjJQLAx7b7dUQ7YbPtCBGH98JaWf4ncCKHbw1u5u2jzjDmyBH
+   rGUI.upBlkCHN> WIF:                       KzE5qnctQEwJxHf5XQvhFJBMgsr1YkaxRXdiTT54kv9DLfupmBqU
    rGUI.upBlkCHN> coin:                      BTC
-   rGUI.upBlkCHN> wallet_address:            1BExFeyhq8NKe26WJJP38qsNHxUGkck9XL
+   rGUI.upBlkCHN> wallet_address:            1NTxz9szrx5GauNdhaokmdfb4TjeBU6eG1
 >> MainGUI.updateWalletURL
    rGUI.newW> blockchain:                    Bitcoin
 >> MainGUI.updateEntropySize 256 bits
    rGUI.upEsz> entropy_size:                 256
    rGUI.upEsz> entropy_elt:                  entropy_id
 >> MainGUI.updateFields
-   rGUI.upFields> wallet[ENTROPY]:           b90f80ccf7284d8dd20529a44d9ee81a711e6908e7789b8ca4f152c95040c39d
+   rGUI.upFields> wallet[ENTROPY]:           59b44bde68f09f67068cb3632047f902869aa74ed696eae7fedf00f91cb8a9b5
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            267420dcf490c0726b7a2acd343326227e8cb7c79dd2f5f529a080ce7592515d
-   rGUI.upFields> entropy:                   bae4fb1201df7f3965f3b0fb15d76bf51e89e60c676b414e8229070eccf2ed94
->> MainGUI.propagateFields bae4fb1201df7f3965f3b0fb15d76bf51e89e60c676b414e8229070eccf2ed94
+   rGUI.saltE> entropy_src_value:            3209db63d1e43f7b9bb537507ca4b54c2194aed72511512403ad24b51d5580ec
+   rGUI.upFields> entropy:                   f684e740dd2896e8a63e0e0fbacf079c502f0534ee83f1a9ec47e4db2b79edcb
+>> MainGUI.propagateFields f684e740dd2896e8a63e0e0fbacf079c502f0534ee83f1a9ec47e4db2b79edcb
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
->> MainGUI.updateEntropy bae4fb1201df7f3965f3b0fb15d76bf51e89e60c676b414e8229070eccf2ed94
+>> MainGUI.updateEntropy f684e740dd2896e8a63e0e0fbacf079c502f0534ee83f1a9ec47e4db2b79edcb
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   road chief setup admit wave original oak invite wild push sustain tuition
-                                             trigger vessel cover uniform donor inject medal asthma under just rent lucky
->> MainGUI.updateChecksum 00100101
-   rGUI.upE> entropy_hex:                    bae4fb1201df7f3965f3b0fb15d76bf51e89e60c676b414e8229070eccf2ed94
+   rGUI.upWidx> mnemonics:                   walk cheese south ripple maximum inmate ocean scrub autumn stool sea december
+                                             actual little squirrel spare vast exhaust ball situate razor rude rescue hamster
+>> MainGUI.updateChecksum 01000101
+   rGUI.upE> entropy_hex:                    f684e740dd2896e8a63e0e0fbacf079c502f0534ee83f1a9ec47e4db2b79edcb
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  bae4fb1201df7f3965f3b0fb15d76bf51e89e60c676b414e8229070eccf2ed94
-   rGUI.genSW> new_wallet[WIF]:              L3V1VUb2ryzwbosqFa5JKETYtdBqoykgoQt5PQY7St82Moo9kkZG
-   rGUI.genSW> wallet_address:               13vyun9sXTjQZA76MP6S7ywaad2WkLJGyx
-   rGUI.genSW> WIF:                          L3V1VUb2ryzwbosqFa5JKETYtdBqoykgoQt5PQY7St82Moo9kkZG
+   rGUI.genSW> private_key:                  f684e740dd2896e8a63e0e0fbacf079c502f0534ee83f1a9ec47e4db2b79edcb
+   rGUI.genSW> new_wallet[WIF]:              L5UuqtjASXyLDt9FwHXLTTRBow9PZue7f1JBVouTEDHvPRy3TnvQ
+   rGUI.genSW> wallet_address:               15KVLeQ3rmg9fYCLQWaqNAkLmvqM3c9pod
+   rGUI.genSW> WIF:                          L5UuqtjASXyLDt9FwHXLTTRBow9PZue7f1JBVouTEDHvPRy3TnvQ
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   road chief setup admit wave original oak invite wild push sustain tuition
-                                             trigger vessel cover uniform donor inject medal asthma under just rent lucky
+   rGUI.upWidx> mnemonics:                   walk cheese south ripple maximum inmate ocean scrub autumn stool sea december
+                                             actual little squirrel spare vast exhaust ball situate razor rude rescue hamster
    rGUI.newW> entropy_size:                  256
 >> MainGUI.generateEntropyFromEntropySource
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            23f597d34c7f7abfea1baaf825ca4ff5ec7ea23d6c636ecf136d79ed0ad06b29
-   rGUI.genEsrc2E> entropy:                  99f66d7ded2d84638186c66b23a1bf618ed816f1d286d2a376b8cfb4a0ab3d87
-   rGUI.newW> entropy:                       99f66d7ded2d84638186c66b23a1bf618ed816f1d286d2a376b8cfb4a0ab3d87
->> MainGUI.updateChecksum 01011011
+   rGUI.saltE> entropy_src_value:            50652809c34ebe0ee81b0bea88b933c9ffb5a9845c8888350bf0564cddd7eafa
+   rGUI.genEsrc2E> entropy:                  1575ca530fb5d854893e679853a3262d7232eee895de6b4adf78a94aa21d33ae
+   rGUI.newW> entropy:                       1575ca530fb5d854893e679853a3262d7232eee895de6b4adf78a94aa21d33ae
+>> MainGUI.updateChecksum 00100000
 >> MainGUI.updateLanguage lang: 'EN'
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   okay recall garage surge success crack alcohol sugar hen brown hurt seek
-                                             unique arena shrug express sport brick purchase panda energy few voyage twin
->> MainGUI.updateFields 99f66d7ded2d84638186c66b23a1bf618ed816f1d286d2a376b8cfb4a0ab3d87
-   rGUI.upFields> wallet[ENTROPY]:           99f66d7ded2d84638186c66b23a1bf618ed816f1d286d2a376b8cfb4a0ab3d87
+   rGUI.upWidx> mnemonics:                   betray purity network buyer frown clean ceiling smooth obscure other sister foot
+                                             case jazz pelican rookie hero finger taste family pretty attend solid series
+>> MainGUI.updateFields 1575ca530fb5d854893e679853a3262d7232eee895de6b4adf78a94aa21d33ae
+   rGUI.upFields> wallet[ENTROPY]:           1575ca530fb5d854893e679853a3262d7232eee895de6b4adf78a94aa21d33ae
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            4ca69ef25a4a7aee6087976052e306acecc1f165136e629b0bdded3ee7141198
-   rGUI.upFields> entropy:                   c82f3e33c67b34b7cef862f3d8d966215832f173aa760c9bd4ae7ea34356afdd
->> MainGUI.propagateFields c82f3e33c67b34b7cef862f3d8d966215832f173aa760c9bd4ae7ea34356afdd
+   rGUI.saltE> entropy_src_value:            2bb8b4bca3f12ed4b83e75f54a3aaea086bb08c32b5c4fd007e211919a910c34
+   rGUI.upFields> entropy:                   6143471143a5ea3bbc606c916a2a2fe4f712c0acb398029cc83c473e007afae3
+>> MainGUI.propagateFields 6143471143a5ea3bbc606c916a2a2fe4f712c0acb398029cc83c473e007afae3
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
->> MainGUI.updateEntropy c82f3e33c67b34b7cef862f3d8d966215832f173aa760c9bd4ae7ea34356afdd
+>> MainGUI.updateEntropy 6143471143a5ea3bbc606c916a2a2fe4f712c0acb398029cc83c473e007afae3
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   sight ketchup mind mind rebuild fossil desk arrange video short flower dress
-                                             lobster judge solid excite arrive team clog wool crouch prize satoshi raise
->> MainGUI.updateChecksum 10001001
-   rGUI.upE> entropy_hex:                    c82f3e33c67b34b7cef862f3d8d966215832f173aa760c9bd4ae7ea34356afdd
+   rGUI.upWidx> mnemonics:                   genuine boss session mansion gadget build various assault multiply eyebrow message size
+                                             illness gate ready indoor action town audit mobile theme dice twist host
+>> MainGUI.updateChecksum 01110000
+   rGUI.upE> entropy_hex:                    6143471143a5ea3bbc606c916a2a2fe4f712c0acb398029cc83c473e007afae3
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  c82f3e33c67b34b7cef862f3d8d966215832f173aa760c9bd4ae7ea34356afdd
-   rGUI.genSW> new_wallet[WIF]:              L3vqshVMJtQxXBwMi1EtMnfEck5RpkJgkUaYApnhMY3rv6WoF2ww
-   rGUI.genSW> wallet_address:               1PBWtAFTLe4nTnaHu9j5mYqoCgf7n2Hkn7
-   rGUI.genSW> WIF:                          L3vqshVMJtQxXBwMi1EtMnfEck5RpkJgkUaYApnhMY3rv6WoF2ww
+   rGUI.genSW> private_key:                  6143471143a5ea3bbc606c916a2a2fe4f712c0acb398029cc83c473e007afae3
+   rGUI.genSW> new_wallet[WIF]:              KzUn2HZ7HvyN9Q98QABhQoSYTCgthv1UKKeZjkLZSnf2XG28yNtq
+   rGUI.genSW> wallet_address:               113TQ2vhofimGVTSC2HosKiaQnExdmN6Hj
+   rGUI.genSW> WIF:                          KzUn2HZ7HvyN9Q98QABhQoSYTCgthv1UKKeZjkLZSnf2XG28yNtq
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   sight ketchup mind mind rebuild fossil desk arrange video short flower dress
-                                             lobster judge solid excite arrive team clog wool crouch prize satoshi raise
+   rGUI.upWidx> mnemonics:                   genuine boss session mansion gadget build various assault multiply eyebrow message size
+                                             illness gate ready indoor action town audit mobile theme dice twist host
+>> MainGUI.onGUIEvent: FromMain:ToolsEntropyConverterDialog
+>> EntropyConverterDialog.showDialog
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onChangeInputField
+>> EntropyConverterDialog.onGenerateEntropy
+>> EntropyConverterDialog.onGenerateEntropy
+>> EntropyConverterDialog.onGenerateEntropy
+>> EntropyConverterDialog.onGenerateEntropy
+>> EntropyConverterDialog.onGenerateEntropy

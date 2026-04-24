@@ -16,72 +16,76 @@ const functionName = ( fun ) => {
 
 contextBridge.exposeInMainWorld(
 	"ipcMain", {
-		QuitApp:                     ()     => ipcRenderer.invoke("ToMain:Request/quit_app"),
+		QuitApp:                         ()     => ipcRenderer.invoke("ToMain:Request/quit_app"),
 		
-		logToMain:                   (data) => ipcRenderer.send("ToMain:Request/log2main", data),
-		logToMainSync:               (data) => ipcRenderer.invoke("ToMain:Request/log2main_sync", data),
+		logToMain:                       (data) => ipcRenderer.send("ToMain:Request/log2main", data),
+		logToMainSync:                   (data) => ipcRenderer.invoke("ToMain:Request/log2main_sync", data),
 		
-		GetAppPath:                  (data) => ipcRenderer.invoke("ToMain:Request/get_app_path", data),
+		GetAppPath:                      (data) => ipcRenderer.invoke("ToMain:Request/get_app_path", data),
 		
-		ExecuteCommand:              (data) => ipcRenderer.invoke("ToMain:Request/ExecCmd", data),
+		ExecuteCommand:                  (data) => ipcRenderer.invoke("ToMain:Request/ExecCmd", data),
 		
-		SetWindowTitle:              (data) => ipcRenderer.send("ToMain:Request/set_window_title", data),		
-		ToggleDebugPanel:            (data) => ipcRenderer.send("ToMain:Request/toggle_debug_panel", data),
+		SetWindowTitle:                  (data) => ipcRenderer.send("ToMain:Request/set_window_title", data),		
+		ToggleDebugPanel:                (data) => ipcRenderer.send("ToMain:Request/toggle_debug_panel", data),
 		
 		SelectFileOrDirectoryPathDialog: (data) => ipcRenderer.invoke("ToMain:Request/select_file_or_directory_path_dialog", data),
 		ImportOutputFilesInDatabase:     (data) => ipcRenderer.invoke("ToMain:Request/import_output_files_in_database", data),
 		
-		NewWalletInfo:               (data) => ipcRenderer.invoke("ToMain:Request/new_wallet_info",  data),
-		OpenWalletInfo:              (data) => ipcRenderer.invoke("ToMain:Request/open_wallet_info", data),
-		SaveWalletInfo:              (data) => ipcRenderer.invoke("ToMain:Request/save_wallet_info", data),
+		NewWalletInfo:                   (data) => ipcRenderer.invoke("ToMain:Request/new_wallet_info",  data),
+		OpenWalletInfo:                  (data) => ipcRenderer.invoke("ToMain:Request/open_wallet_info", data),
+		SaveWalletInfo:                  (data) => ipcRenderer.invoke("ToMain:Request/save_wallet_info", data),
+		  
+		SaveOptions:                     (data) => ipcRenderer.invoke("ToMain:Request/save_options", data),
+		ResetOptions:                    (data) => ipcRenderer.invoke("ToMain:Request/reset_options", data),
+		UpdateOptions:                   (data) => ipcRenderer.invoke("ToMain:Request/update_options", data),
 		
-		SaveOptions:                 (data) => ipcRenderer.invoke("ToMain:Request/save_options", data),
-		ResetOptions:                (data) => ipcRenderer.invoke("ToMain:Request/reset_options", data),
-		UpdateOptions:               (data) => ipcRenderer.invoke("ToMain:Request/update_options", data),
+		EntropySourceToEntropy:          (data) => ipcRenderer.invoke("ToMain:Request/entropy_src_to_entropy", data),
+		MnemonicsToEntropyInfo:          (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_entropy_info", data),
+		MnemonicsToEntropyInfoCustom:    (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_entropy_info_custom", data),
 		
-		EntropySourceToEntropy:      (data) => ipcRenderer.invoke("ToMain:Request/entropy_src_to_entropy", data),
-		MnemonicsToEntropyInfo:      (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_entropy_info", data),
-		EntropyToMnemonics:          (data) => ipcRenderer.invoke("ToMain:Request/entropy_to_mnemonics", data),
-		EntropyToChecksum:           (data) => ipcRenderer.invoke("ToMain:Request/entropy_to_checksum", data),
-		MnemonicsToHDWalletInfo:     (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_hd_wallet_info", data),
-		MnemonicsAsTwoParts:         (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_two_parts", data),
+		EntropyToMnemonics:              (data) => ipcRenderer.invoke("ToMain:Request/entropy_to_mnemonics", data),
+		EntropyToChecksum:               (data) => ipcRenderer.invoke("ToMain:Request/entropy_to_checksum", data),
+		MnemonicsToHDWalletInfo:         (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_hd_wallet_info", data),
+		MnemonicsAsTwoParts:             (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_two_parts", data),
 		
-		ConvertFromBasesToHex:       (data) => ipcRenderer.invoke("ToMain:Request/to_hex_conversions", data),
-		ConvertFromHexToBases:       (data) => ipcRenderer.invoke("ToMain:Request/from_hex_conversions", data),
+		ConvertFromBasesToHex:           (data) => ipcRenderer.invoke("ToMain:Request/to_hex_conversions", data),
+		ConvertFromHexToBases:           (data) => ipcRenderer.invoke("ToMain:Request/from_hex_conversions", data),
 		
-		GeneratePassword:            (data) => ipcRenderer.invoke("ToMain:Request/GeneratePassword", data),
+		GenerateEntropy:				 (data) => ipcRenderer.invoke("ToMain:Request/GenerateEntropy", data),
+		GeneratePassword:                (data) => ipcRenderer.invoke("ToMain:Request/GeneratePassword", data),
 		
-		GetSimpleWallet:             (data) => ipcRenderer.invoke("ToMain:Request/get_simple_wallet", data),
-		GetHDWallet:                 (data) => ipcRenderer.invoke("ToMain:Request/get_hd_wallet", data),
+		GetSimpleWallet:                 (data) => ipcRenderer.invoke("ToMain:Request/get_simple_wallet", data),
+		GetHDWallet:                     (data) => ipcRenderer.invoke("ToMain:Request/get_hd_wallet", data),
 		
-		Bip38Encrypt:                (data) => ipcRenderer.invoke("ToMain:Request/bip38_encrypt", data),
-		Bip38Decrypt:                (data) => ipcRenderer.invoke("ToMain:Request/bip38_decrypt", data),
+		Bip38Encrypt:                    (data) => ipcRenderer.invoke("ToMain:Request/bip38_encrypt", data),
+		Bip38Decrypt:                    (data) => ipcRenderer.invoke("ToMain:Request/bip38_decrypt", data),
 		
-		GetPasswordStrength:         (data) => ipcRenderer.invoke("ToMain:Request/get_password_strength", data),
+		GetPasswordStrength:             (data) => ipcRenderer.invoke("ToMain:Request/get_password_strength", data),
+		 
+		MnemonicsAs4letter:              (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_4letter", data),		
 		
-		MnemonicsAs4letter:          (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_as_4letter", data),		
+		CheckMnemonics:                  (data) => ipcRenderer.invoke("ToMain:Request/check_mnemonics", data),
 		
-		CheckMnemonics:              (data) => ipcRenderer.invoke("ToMain:Request/check_mnemonics", data),
+		WordIndexToMnemonic:             (data) => ipcRenderer.invoke("ToMain:Request/word_index_to_mnemonic", data),		
+		WordIndexesToMnemonics:          (data) => ipcRenderer.invoke("ToMain:Request/word_indexes_to_mnemonics", data),
 		
-		WordIndexToMnemonic:         (data) => ipcRenderer.invoke("ToMain:Request/word_index_to_mnemonic", data),
+		MnemonicsToWordIndexes:          (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_word_indexes", data),
+		MnemonicToWordIndex:             (data) => ipcRenderer.invoke("ToMain:Request/mnemonic_to_word_index", data),
 		
-		WordIndexesToMnemonics:      (data) => ipcRenderer.invoke("ToMain:Request/word_indexes_to_mnemonics", data),
-		MnemonicsToWordIndexes:      (data) => ipcRenderer.invoke("ToMain:Request/mnemonics_to_word_indexes", data),
+		GuessMnemonicsLang:              (data) => ipcRenderer.invoke("ToMain:Request/guess_mnemonics_lang", data),
+		GetUUID:                         (data) => ipcRenderer.invoke("ToMain:Request/get_UUID", data),
+		GetFortuneCookie:                (data) => ipcRenderer.invoke("ToMain:Request/get_FortuneCookie", data),
 		
-		GuessMnemonicsLang:          (data) => ipcRenderer.invoke("ToMain:Request/guess_mnemonics_lang", data),
-		GetUUID:                     (data) => ipcRenderer.invoke("ToMain:Request/get_UUID", data),
-		GetFortuneCookie:            (data) => ipcRenderer.invoke("ToMain:Request/get_FortuneCookie", data),
+		GetL10nKeyPairs:                 (data) => ipcRenderer.invoke("ToMain:Request/get_L10n_keypairs", data),
+		GetLocalizedMsg:                 (data) => ipcRenderer.invoke("ToMain:Request/get_L10n_Msg", data),
 		
-		GetL10nKeyPairs:             (data) => ipcRenderer.invoke("ToMain:Request/get_L10n_keypairs", data),
-		GetLocalizedMsg:             (data) => ipcRenderer.invoke("ToMain:Request/get_L10n_Msg", data),
-		
-		SetMenuItemState:            (data) => ipcRenderer.send("ToMain:Request/set_menu_item_state", data),
+		SetMenuItemState:                (data) => ipcRenderer.send("ToMain:Request/set_menu_item_state", data),
 
-		OpenURL:                     (data) => ipcRenderer.send("ToMain:Request/open_URL", data),
-        ShowOutputFolderInExplorer:  (data) => ipcRenderer.send("ToMain:Request/show_output_folder_in_explorer", data),		
+		OpenURL:                         (data) => ipcRenderer.send("ToMain:Request/open_URL", data),
+        ShowOutputFolderInExplorer:      (data) => ipcRenderer.send("ToMain:Request/show_output_folder_in_explorer", data),		
 		
-        LoadImageFromFile:           (data) => ipcRenderer.invoke("ToMain:Request/load_image_from_file", data),		
-	    DrawRandomCryptoLogo:        (data) => ipcRenderer.invoke("ToMain:Request/draw_rnd_crypto_logo", data),
+        LoadImageFromFile:               (data) => ipcRenderer.invoke("ToMain:Request/load_image_from_file", data),		
+	    DrawRandomCryptoLogo:            (data) => ipcRenderer.invoke("ToMain:Request/draw_rnd_crypto_logo", data),
 		//send: (channel, data) => {
         //     // whitelist channels
         //    let validChannels = ['toMain'];

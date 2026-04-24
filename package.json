@@ -1,6 +1,6 @@
 {
-  "name": "@aladas-org/Cryptocalc-priv",
-  "version": "0.5.12",
+  "name": "@aladas-org/cryptocalc",
+  "version": "0.5.13",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -29,7 +29,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ALADAS-org/Cryptocalc-priv.git"
+    "url": "git+https://github.com/ALADAS-org/Cryptocalc.git"
   },
   "keywords": [
     "cryptocurrency",
@@ -49,9 +49,9 @@
   "author": "Daniel Rodet & Michel Kern",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/ALADAS-org/Cryptocalc-priv/issues"
+    "url": "https://github.com/ALADAS-org/Cryptocalc/issues"
   },
-  "homepage": "https://github.com/ALADAS-org/Cryptocalc-priv#readme",
+  "homepage": "https://github.com/ALADAS-org/Cryptocalc#readme",
   "devDependencies": {
     "@electron/packager": "^18.4.4",
     "@types/node": "^25.2.2",

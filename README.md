@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.12
+## CryptoCalc 0.5.13
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -15,6 +15,7 @@
    
 2. Features    
     2.0. Recently added features
+	- Added `Entropy Converter Tool`: `Entropy Converter` is in the `Tool menu` and provides multiple conversions (among `Raw text`, `Hexadecimal`, `Base64`, `Base58`, `Bip39 mnemonics` and `Binary`)  
 	- Help Enhancement: the `Help menu` provides now an HTML version of `README.md` and a documentation of test protocols
 	- Added `Unit tests`: these tests use [Jest](https://jestjs.io/fr/) unit test framework. It is an ongoing work (694 tests ATM). Use `npm test` to run the unit tests (to open a CLI console, double click on `_open_cmd_window.bat`). 
 	- Added `e2e tests` (Real user scenario testing): these tests use [Playwright](https://playwright.dev/)
@@ -181,7 +182,9 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.12`: This version 
+    - `0.5.13`: This version 
+         - Added `Entropy Converter Tool`: `Entropy Converter` is in the `Tool menu` and provides multiple conversions (raw text, hexadecimal, base64, base58, mnemonics and binary)  
+    - `0.5.12`
 	    - New Feature:
 		  - `Tools/Private Key Converter`: 
     - `0.5.11` 
@@ -526,20 +529,26 @@
             Note 1: A _special language_ (`Word Indexes`) is provided to get the indexes of the words in the _Secret phrase_ (they are independent from the language).    
             Note 2: Once a first translation has been performed, you can change the _Output language_ and translate at the same time by selecting the new
             _Output language_ in the `Output` dropdown list.
-		- 5.1.19. Wallets Database
+	    - 5.1.19. Entropy Converter  
+	        - This dedicated tool (`Tools/Entropy Converter`) provides multiple conversions (among `Raw text`, `Hexadecimal`, `Base64`, `Base58`, `Bip39 mnemonics` and `Binary`)
+            Usage: you can either characters for each `Base` (eg: `Base64`) field or select a mnemonics for the `Secret Phrase` field by moving
+            the mouse cursor over the _checkerboard_ image (this returns an index between 0 and 2047 which is converted to a `Bip39 mnemonic` of the selected language).    
+			Use case: if you select the _special language_ called `[..] (Word Indexes` then you will get the `Word Indexes` (instead of `Bip39 mnemonics`). 
+			This is the _Language-independent_ encoding of the Secret Phrase.   	 		
+		- 5.1.20. Wallets Database
 		A [SQLite](https://sqlite.org/) Database is populated by importing `.wits` files (_Wallet informations_ in a `JSON` format file).
 		Then the SQLite Database can be explored with [DBeaver](https://dbeaver.io/)
-		- 5.1.20. Dynamic Links
+		- 5.1.21. Dynamic Links
             - Address wallet in the appropriate `Blockchain Explorer` (e.g. [blockchain.com](https://www.blockchain.com/fr/explorer))   
             - Informations in `Coinmarketcap.com` for the wallet's cryptocurrency    
             - 3D representation of the `Secret phrase` ([Cryptoshape](https://aladas-org.github.io/aladas.github.io/)) 
             The whitepaper The description of this 3D representation is in this [whitepaper](https://zenodo.org/records/14579720)			
-		- 5.1.21. Change/Reset of _Options_ (`Tools/Options`)    
+		- 5.1.22. Change/Reset of _Options_ (`Tools/Options`)    
 		Currently it allows to set default values for `Default Blockchain`, `Wallet Mode` and `Entropy Size`.
 		These values are defined in `www/config/options.json` file.    
 		It is also possible to reset _Options_ to _Default Options_
 		(defined in `www/config/defaults/options.json`)
-        - 5.1.22. _Localization_    
+        - 5.1.23. _Localization_    
         _Localization_ (`l10n`) feature is the translation of _GUI Labels_ to adapt to the user's language, it' called the _locale_ (eg. `en`).
         A _locale_ name can be composed of a base language, country (territory) of use and optionnally a codeset (eg. `de_CH.UTF-8`).		
 		The _locale_ is provided as part of your machine's environment. _CryptoCalc_ only uses the 2 letter language part (eg. `en`). 
