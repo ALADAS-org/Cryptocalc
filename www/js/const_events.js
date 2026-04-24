@@ -44,6 +44,7 @@ const ToMain_RQ_SHOW_OUTPUT_FOLDER_IN_EXPLORER    = "ToMain:Request/show_output_
 
 const ToMain_RQ_ENTROPY_SRC_TO_ENTROPY            = "ToMain:Request/entropy_src_to_entropy";
 const ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO         = "ToMain:Request/mnemonics_to_entropy_info";
+const ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM  = "ToMain:Request/mnemonics_to_entropy_info_custom";
 
 const ToMain_RQ_MNEMONICS_TO_HD_WALLET_INFO       = "ToMain:Request/mnemonics_to_hd_wallet_info";
 
@@ -54,6 +55,7 @@ const ToMain_RQ_ENTROPY_SRC_TO_PK                 = "ToMain:Request/entropy_src_
 const ToMain_RQ_TO_HEX_CONVERSIONS                = "ToMain:Request/to_hex_conversions";
 const ToMain_RQ_FROM_HEX_CONVERSIONS              = "ToMain:Request/from_hex_conversions";
 
+const ToMain_RQ_GENERATE_ENTROPY                  = "ToMain:Request/GenerateEntropy";
 const ToMain_RQ_GENERATE_PASSWORD                 = "ToMain:Request/GeneratePassword";
 
 const ToMain_RQ_MNEMONICS_AS_4LETTER              = "ToMain:Request/mnemonics_as_4letter";
@@ -61,8 +63,9 @@ const ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = "ToMain:Request/mnemonics_as
 const ToMain_RQ_CHECK_MNEMONICS                   = "ToMain:Request/check_mnemonics";
 
 const ToMain_RQ_WORD_INDEX_TO_MNEMONIC            = "ToMain:Request/word_index_to_mnemonic";
-
 const ToMain_RQ_WORD_INDEXES_TO_MNEMONICS         = "ToMain:Request/word_indexes_to_mnemonics";
+
+const ToMain_RQ_MNEMONIC_TO_WORD_INDEX            = "ToMain:Request/mnemonic_to_word_index";
 const ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = "ToMain:Request/mnemonics_to_word_indexes";
 
 const ToMain_RQ_GUESS_MNEMONICS_LANG              = "ToMain:Request/guess_mnemonics_lang";
@@ -164,7 +167,10 @@ if ( typeof exports === 'object' ) {
 	exports.ToMain_RQ_SAVE_WALLET_INFO                  = ToMain_RQ_SAVE_WALLET_INFO
 	
 	exports.ToMain_RQ_ENTROPY_SRC_TO_ENTROPY            = ToMain_RQ_ENTROPY_SRC_TO_ENTROPY	
+	
     exports.ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO         = ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO
+	exports.ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM  = ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO_CUSTOM
+	
 	exports.ToMain_RQ_ENTROPY_TO_MNEMONICS              = ToMain_RQ_ENTROPY_TO_MNEMONICS
 	exports.ToMain_RQ_ENTROPY_TO_CHECKSUM               = ToMain_RQ_ENTROPY_TO_CHECKSUM	
 	exports.ToMain_RQ_ENTROPY_SRC_TO_PK                 = ToMain_RQ_ENTROPY_SRC_TO_PK
@@ -173,6 +179,7 @@ if ( typeof exports === 'object' ) {
 	exports.ToMain_RQ_TO_HEX_CONVERSIONS                = ToMain_RQ_TO_HEX_CONVERSIONS
 	exports.ToMain_RQ_FROM_HEX_CONVERSIONS              = ToMain_RQ_FROM_HEX_CONVERSIONS
 	
+	exports.ToMain_RQ_GENERATE_ENTROPY                  = ToMain_RQ_GENERATE_ENTROPY
 	exports.ToMain_RQ_GENERATE_PASSWORD                 = ToMain_RQ_GENERATE_PASSWORD
 	
 	exports.ToMain_RQ_OPEN_URL                          = ToMain_RQ_OPEN_URL	
@@ -189,12 +196,14 @@ if ( typeof exports === 'object' ) {
 	exports.ToMain_RQ_MNEMONICS_AS_4LETTER              = ToMain_RQ_MNEMONICS_AS_4LETTER
 	exports.ToMain_RQ_MNEMONICS_AS_TWO_PARTS            = ToMain_RQ_MNEMONICS_AS_TWO_PARTS
 	
-	exports.ToMain_RQ_WORD_INDEX_TO_MNEMONIC            = ToMain_RQ_WORD_INDEX_TO_MNEMONIC
-	
+	exports.ToMain_RQ_WORD_INDEX_TO_MNEMONIC            = ToMain_RQ_WORD_INDEX_TO_MNEMONIC	
 	exports.ToMain_RQ_WORD_INDEXES_TO_MNEMONICS         = ToMain_RQ_WORD_INDEXES_TO_MNEMONICS
+	
+	exports.ToMain_RQ_MNEMONIC_TO_WORD_INDEX            = ToMain_RQ_MNEMONIC_TO_WORD_INDEX
 	exports.ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = ToMain_RQ_MNEMONICS_TO_WORD_INDEXES
 	
 	exports.ToMain_RQ_GUESS_MNEMONICS_LANG              = ToMain_RQ_GUESS_MNEMONICS_LANG
+	
 	exports.ToMain_RQ_GET_FORTUNE_COOKIE                = ToMain_RQ_GET_FORTUNE_COOKIE
 	
 	exports.ToMain_RQ_SAVE_OPTIONS                      = ToMain_RQ_SAVE_OPTIONS

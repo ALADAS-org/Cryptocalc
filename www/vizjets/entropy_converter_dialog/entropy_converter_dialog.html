@@ -2,18 +2,21 @@
 	<!-- ------------ 'Input' Entropy Bits ------------ -->
 	<tr>
 		<td class="EConverterLabelColumn">
-			<span class="EConverterLabel">Bip39 Entropy</span>	
+			<span class="EConverterLabel">Bip39 Entropy</span>		
+		</td>
+		<td class="EConverterFieldColumn">		
+		    <span class="EConverterLabel">Bits:</span>&nbsp;<span id="econverter_entropy_size_value_id"></span>&nbsp;&nbsp;-&nbsp;
+            <span class="EConverterLabel">Words:</span>&nbsp;<span id="econverter_entropy_word_count_id"></span>
+			<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+			<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span class="EConverterLabel">&nbsp;&nbsp;&nbsp;&nbsp;Generated Entropy Size</span>			
 			<select class="InputField LabelValueSelector" id="econverter_entropy_size_select_id">
 				<option value="128" selected>128 bits</option>	
 				<option value="160">160 bits</option>
 				<option value="192">192 bits</option>
 				<option value="224">224 bits</option>				
 				<option value="256">256 bits</option>														
-			</select>			
-		</td>
-		<td class="EConverterFieldColumn">
-		    <span class="EConverterLabel">Bits:</span>&nbsp;<span id="econverter_entropy_size_value_id"></span>&nbsp;&nbsp;-&nbsp;
-            <span class="EConverterLabel">Words:</span>&nbsp;<span id="econverter_entropy_word_count_id"></span>		
+			</select>				
 		</td>
 	</tr>
 	<!-- ------------ 'Input' Entropy Bits -->
@@ -47,6 +50,10 @@
 			<div class="Translator_DataFieldWithButton_Container">
 				<input class="EConverterInputField" id="econverter_hexadecimal_input_id"
 					   type="text" spellcheck="false" value="">
+				<button class="TranslatorCopyButton" id="econverter_generate_random_entropy_btn_id"
+						title="Random Hexadecimal Entropy">
+						<img id="generate_random_entropy_btn_img_id" src="./icons/regenerate_16px_icn.png" border="0"/>
+				</button>
 				<button class="TranslatorCopyButton" id="econverter_hexadecimal_copy_btn_id">
 					<img src="./icons/copy_16px_icn.png" 
 						 alt="Copy to Clipboard" border="0"/>
@@ -125,17 +132,19 @@
 				<option value="UNKNOWN">*Unknown*</option>																
 			</select>
 			<hr id ="econverter_small_vertical_interspace_id">
-		    <img id="econverter_grid_img_id"
-			     src="./icons/Cryptocalc_Grid_92x90px.png"	
-			     alt="Pick Mnemonic" border="1"/>	
+			<div style="text-align: left;">
+				<img id="econverter_grid_img_id"
+					 src="./icons/Cryptocalc_Grid_92x90px.png"	
+					 alt="Pick Mnemonic" border="1"/>	
+			</div>
 		</td>
 		<td class="EConverterFieldColumn">
 			<div class="Translator_DataFieldWithButton_Container">
 				<textarea class="EConverterTextAreaInputField" id="econverter_secret_phrase_input_id"
 					      rows="2" type="text" spellcheck="false" value=""></textarea>
 				<button class="EConverterCopyButton" id="econverter_secret_phrase_copy_btn_id">
-					<img src="./icons/copy_16px_icn.png" 
-						 alt="Copy to Clipboard" border="0"/>
+						<img src="./icons/copy_16px_icn.png" 
+							 alt="Copy to Clipboard" border="0"/>
 				</button>
 			</div>
 		</td>

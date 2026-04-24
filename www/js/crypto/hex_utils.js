@@ -7,10 +7,10 @@ const HEX_ALPHABET = "0123456789abcdefABCDEF";
 
 // https://gist.github.com/bugventure/36cb8923ec212e47b47602e3821d1005
 const HEX_LOOKUP_TABLE = {
-  '0': '0000', '1': '0001', '2': '0010', '3': '0011', 
-  '4': '0100', '5': '0101', '6': '0110', '7': '0111',
-  '8': '1000', '9': '1001', 'a': '1010', 'b': '1011', 
-  'c': '1100', 'd': '1101', 'e': '1110', 'f': '1111'
+  '0': '0000', '1': '0001', '2': '0010', '3': '0011', '4': '0100',
+  '5': '0101', '6': '0110', '7': '0111', '8': '1000', '9': '1001', 
+  'a': '1010', 'b': '1011', 'c': '1100', 'd': '1101', 'e': '1110', 'f': '1111',
+  'A': '1010', 'B': '1011', 'C': '1100', 'D': '1101', 'E': '1110', 'F': '1111'
 }; // HEX_LOOKUP_TABLE
 
 // https://stackoverflow.com/questions/9907419/how-to-get-a-key-in-a-javascript-object-by-its-value
@@ -23,13 +23,22 @@ const isBinaryString = ( in_str ) => {
     return /^[01]+$/.test(in_str);
 }; // isBinaryString	
 
-const binaryToHex = (in_binary_str) => {
-	let hex_str = "";
-    //let binary_str = hex_to_binary(hex_str);
-    for (let i=0; i < in_binary_str.length; i+=4) {
-		let nibble = in_binary_str.substring(i, i+4); // [i..i+3]
-		//console.log("nibble: " + nibble);
-		let hex_digit = getKeyByValue(HEX_LOOKUP_TABLE, nibble);
+const binaryToHex = ( in_binary_str ) => {
+	let hex_str   = '';
+	let nibble    = '';
+	let hex_digit = '';
+	
+	// console.log("in_binary_str: '" + in_binary_str + "'");
+
+    for ( let i=0; i < in_binary_str.length; i+=4 ) {
+		nibble = in_binary_str.substring(i, i+4); // [i..i+3]
+		// console.log("nibble(" + i + "): '" + nibble + "'");
+		
+		hex_digit = getKeyByValue(HEX_LOOKUP_TABLE, nibble);
+		
+		if ( hex_digit == undefined ) {
+			throw new Error("**ERROR** in hex_utils.binaryToHex");
+		}
 		//console.log("hex_digit: " + hex_digit);
         hex_str += hex_digit;
     }
@@ -40,12 +49,15 @@ const binaryToHex = (in_binary_str) => {
 const hexToBinary = (in_hex_str, trace) => {
 	let hex_str = hexWithoutPrefix(in_hex_str);
 	//if (trace != undefined && trace == true) {
-	//	console.log("   hex_str:                    " + hex_str);
+	// console.log("   hex_str: '" + hex_str + "'");
 	//}
-    let binary_str = "";
-    for (let i=0; i < hex_str.length; i++) {
-		let hex_digit = hex_str[i].toLowerCase();		
-		let nibble = HEX_LOOKUP_TABLE[hex_digit];
+    let binary_str = '';
+	let nibble     = '';
+	let hex_digit  = '';
+	
+    for ( let i=0; i < hex_str.length; i++ ) {
+		hex_digit = hex_str[i].toLowerCase();		
+		nibble    = HEX_LOOKUP_TABLE[hex_digit];
 		
 		//if (trace != undefined && trace == true) {
 		//	console.log("   hex_digit[" + i + "]: " + hex_digit);
@@ -201,7 +213,7 @@ function getRandomByte() {
 	return getRandomInt(255);
 }; // getRandomByte()
 
-const getRandomHexValue = (byte_count) => {
+const getRandomHexValue = ( byte_count ) => {
     let hex_str = "";
 	for (let i=0; i < byte_count; i++) {
 		let current_uint = getRandomInt(255); 
