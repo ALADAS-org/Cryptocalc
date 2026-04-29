@@ -40,7 +40,28 @@ const BIP39_ALLOWED_BIT_SIZES   = [ 128, 160, 192, 224, 256 ];
  
 const INPUT_FIELDS_IDS = [ ECONVERTER_RAWTEXT_INPUT_ID,       ECONVERTER_HEXADECIMAL_INPUT_ID, 
                            ECONVERTER_BASE64_INPUT_ID,        ECONVERTER_BASE58_INPUT_ID,
-						   ECONVERTER_SECRET_PHRASE_INPUT_ID, ECONVERTER_BINARY_INPUT_ID  ];
+						   ECONVERTER_SECRET_PHRASE_INPUT_ID, ECONVERTER_BINARY_INPUT_ID  ];	 
+	  
+const BASE256U_ALPHABET    = "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ !\"#$%&'()*+,-./0123456789:;<=>?@" +
+                             "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~à"   +							  
+                             "âçèéêëîïôûùüÿœŒÀİıĲĳĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőĨĴŔŕŖŗŘřŚśŜŝŞşŠš"  +
+                             "ŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠ";
+						   
+const BASE64_ALPHABET      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const BASE58_ALPHABET      = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const HEXADECIMAL_ALPHABET = "0123456789ABCDEFabcdef";
+const BINARY_ALPHABET      = "01";
+
+const convertirEnHexAvecZero = (n) => {
+	// Convertir en hexadécimal (en majuscules pour A-F)
+	let hex = n.toString(16).toUpperCase();
+	// Ajouter un zéro à gauche si n <= 9
+	if (n <= 9) {
+		hex = '0' + hex;
+	}
+	return hex;
+}; // convertirEnHexAvecZero()
+
 
 class EntropyConverterDialog {
 	static #Key           = Symbol();
@@ -240,9 +261,12 @@ class EntropyConverterDialog {
 		// Iterate through each character in the input string
 		for (let i = 0; i < in_str.length; i++) {
 			// Convert the ASCII value of the current character to its hexadecimal representation
-			let hex = in_str.charCodeAt(i).toString(16).padStart(2, '0');
+			// let hex = in_str.charCodeAt(i).toString(16).padStart(2, '0');
+			let current_char = in_str[i];
+			let char_code = BASE256U_ALPHABET.indexOf(current_char);
+			let hex_digits = convertirEnHexAvecZero(char_code);
 			// Push the hexadecimal value to the array
-			hex_str.push(hex);
+			hex_str.push(hex_digits);
 		}
 		// Join the hexadecimal values in the array to form a single string
 		return hex_str.join('');
@@ -258,10 +282,11 @@ class EntropyConverterDialog {
 			
 			let char_code = parseInt( hex_byte, 16 );
 			// console.log("   char_code(" + i + "): " + char_code);	
-		    if ( char_code >= 32 ) {
-				ascii_str += String.fromCharCode(char_code);
-				// console.log("   ascii_str(" + i + "): " + ascii_str);
-			}
+			
+			// let new_char = String.fromCharCode(char_code);
+			let new_char = BASE256U_ALPHABET[char_code];
+			// console.log("   new_char(" + i + "): " + new_char);
+			ascii_str += new_char;
 		}
 		return ascii_str;
 	} // hexa_to_ascii()
@@ -284,15 +309,15 @@ class EntropyConverterDialog {
 		let secret_phrase_value = '';
 		let binary_value        = '';
 		
-		let entropy         = '';
+		let entropy             = '';
 		
-		let mnemonics       = '';
-		let lang            = '';
+		let mnemonics           = '';
+		let lang                = '';
 		
-		let mnemonics_value = "";
+		let mnemonics_value     = "";
 		
-		let data            = {}; 
-		let entropy_info    = {};
+		let data                = {}; 
+		let entropy_info        = {};
 		
 		const getHexValue = async ( field_id ) => {
 			let hex_value       = '';
@@ -328,14 +353,25 @@ class EntropyConverterDialog {
 					bases_data[FROM_BINARY] = field_value;
 				}
 			
+
 				data = bases_data;
 				hex_value = await window.ipcMain.ConvertFromBasesToHex( data );
+				
+				if ( field_id == ECONVERTER_RAWTEXT_INPUT_ID ) {
+					hex_value = '';
+					for ( let i=0; i < field_value.length; i++ ) {
+						let current_char = field_value[ i ];
+						let char_pos_Base256 = BASE256U_ALPHABET.indexOf(current_char);
+						let char_code_as_hex = convertirEnHexAvecZero(char_pos_Base256);
+						hex_value += char_code_as_hex;
+					}
+				}
 			}
 			
 			return hex_value;
 		}; // async getHexValue()
 		
-		let base_conversions = {};
+		let base_conversions   = {};
         const BIP39_ALLOWED_BYTES_COUNT = [ 16, 20, 24, 28, 32 ];	
 
         let bit_size           = 0;
@@ -369,7 +405,7 @@ class EntropyConverterDialog {
 			}	
 			else if ( current_field_id == ECONVERTER_RAWTEXT_INPUT_ID ) {
 			    raw_value = HtmlUtils.GetElementValue( ECONVERTER_RAWTEXT_INPUT_ID );
-				bit_size = raw_value.length * 8;
+				bit_size  = raw_value.length * 8;
 				// console.log(" STEP 0 RAW: bit_size: " + bit_size);
                 hex_value = await getHexValue( ECONVERTER_RAWTEXT_INPUT_ID );				
 			}	
@@ -518,7 +554,9 @@ class EntropyConverterDialog {
 					// console.log(">> target_field_id: " + target_field_id + "  hex_value(" + hex_value.length/2 + " bytes): " + hex_value);
 					
 					if ( target_field_id == ECONVERTER_RAWTEXT_INPUT_ID  &&  base_conversions[TO_RAW_TEXT] != undefined ) {
-						HtmlUtils.SetElementValue( ECONVERTER_RAWTEXT_INPUT_ID, base_conversions[TO_RAW_TEXT] );
+						raw_value = this.hexa_to_ascii( hex_value );
+						HtmlUtils.SetElementValue( ECONVERTER_RAWTEXT_INPUT_ID, raw_value );
+						// HtmlUtils.SetElementValue( ECONVERTER_RAWTEXT_INPUT_ID, base_conversions[TO_RAW_TEXT] );
 					}
 					else if ( target_field_id == ECONVERTER_HEXADECIMAL_INPUT_ID  &&  hex_value != '' ) {
 						HtmlUtils.SetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID, hex_value );
@@ -765,19 +803,12 @@ class EntropyConverterDialog {
 			return valid_base_value;
 		}; // convertInputValueToValidBaseValue()
 		
-		const BASE58_ALPHABET      = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-		const BASE64_ALPHABET      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-		const HEXADECIMAL_ALPHABET = "0123456789ABCDEFabcdef";
-		const BINARY_ALPHABET      = "01";
-		
 		for ( let i=0; i < INPUT_FIELDS_IDS.length; i++ ) {
 			let current_field_id = INPUT_FIELDS_IDS[ i ];	
             if ( current_field_id == source_elt_id ) {	
 				if ( current_field_id == ECONVERTER_RAWTEXT_INPUT_ID) {
-					let rawtext_value = HtmlUtils.GetElementValue( ECONVERTER_RAWTEXT_INPUT_ID );
-					if ( rawtext_value.length > 32 ) {
-						rawtext_value = rawtext_value.slice(0, 32);
-					}
+					let rawtext_value = HtmlUtils.GetElementValue( ECONVERTER_RAWTEXT_INPUT_ID );					
+					rawtext_value = convertInputValueToValidBaseValue( field_value, BASE256U_ALPHABET, 32 );					
 					HtmlUtils.SetElementValue( ECONVERTER_RAWTEXT_INPUT_ID, rawtext_value );
                 }
 			    else if ( current_field_id == ECONVERTER_HEXADECIMAL_INPUT_ID ) {
