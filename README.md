@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.16
+## CryptoCalc 0.5.17
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -182,7 +182,10 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.13`: This version 
+    - `0.5.17`: This version 
+         - Upgrade for `Raw Text` field in `Entropy Converter Tool`. This field now uses a custom `Base256U` alphabet to ensure isomorphism with other fields like `Hexadecimal`
+		 when ine of the bytes has a value which is a non displayable code in ASCII.
+    - `0.5.13` 
          - Added `Entropy Converter Tool`: `Entropy Converter` is in the `Tool menu` and provides multiple conversions (raw text, hexadecimal, base64, base58, mnemonics and binary)  
     - `0.5.12`
 	    - New Feature:
