@@ -91,6 +91,8 @@ class EntropyConverterDialog {
 		this.encrypt_mode            = true; 
 		this.previous_lang           = 'EN';
 		
+		this.word_has_been_replaced  = false;
+		
 		this.allow_cb = true;
 	} // ** Private constructor **
 	
@@ -208,6 +210,11 @@ class EntropyConverterDialog {
 									  async ( evt ) => 
 									  { await EntropyConverterDialog.This.onImgGridClick( evt ); } );
 								
+								this_obj.addEventHandler
+									( ECONVERTER_GRID_IMG_ID, 'mouseleave', 
+									  ( evt ) => 
+									  { EntropyConverterDialog.This.onImgGridMouseLeave( evt ); } );
+
 								
 								this_obj.addEventHandler
 									( ECONVERTER_CLEAR_BTN_ID, 'click', 
@@ -274,7 +281,7 @@ class EntropyConverterDialog {
 	
 	hexa_to_ascii( hex_value ) {
 		let hex_str = hex_value.toString(); //force conversion
-		console.log("   hex_str: " + hex_str);	
+		// console.log("   hex_str: " + hex_str);	
 		var ascii_str = '';
 		for (let i = 0; i < hex_str.length; i += 2) {
 			let hex_byte  = hex_str.substr(i, 2);
@@ -917,30 +924,263 @@ class EntropyConverterDialog {
 		// console.log(" mnemonic: " + mnemonic);
 		
 		let secret_phrase = this.getSecretPhrase();
+		
+		HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).focus();
+		
+		let secrete_phrase_field_elt = HtmlUtils.GetElement(ECONVERTER_SECRET_PHRASE_INPUT_ID);
+		
+		let selection_start = secrete_phrase_field_elt.selectionStart;
+		
+		let text_cursor_pos = secrete_phrase_field_elt.selectionStart;
+		let word_index_at_cursor = this.getWordIndexAtCursor( secret_phrase, text_cursor_pos );
+		// console.log(" word_index_at_cursor:" + word_index_at_cursor + " text_cursor_pos:" + text_cursor_pos + " total length:" + secret_phrase.length);
+				
 		let words = secret_phrase.split(' ');
+		
+		let selected_text = secrete_phrase_field_elt.value.substring(secrete_phrase_field_elt.selectionStart, secrete_phrase_field_elt.selectionEnd);
+		selected_text = selected_text.trim(' ');		
+
+        let word_index = -1;   
+
+		// NB: Tried to "select last word" when none selected: Regression !!
+		//if ( selected_text == '' ) {
+		//	if (secret_phrase != '') {
+		//		selected_text = words[words.length-1].trim();
+		//		
+		//		selection_start = secret_phrase.length - selected_text.length;                				
+		//		HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionStart = selection_start;
+		//		HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionEnd   = selection_start + selected_text.length;
+		//	}
+		//}
+		
+		let tmp_secret_phrase = secret_phrase; 
+        let tmp_words         = JSON.parse(JSON.stringify(words));
+        let selected_text_pos = -1;	
+		
+		const OUT_OF_RANGE_WORD_INDEX = 100;
+		
+		let tmp_word_index = OUT_OF_RANGE_WORD_INDEX;
+		
+		console.log(" 1 selected_text: '" + selected_text + "'  word_index:" + word_index + "'  mnemonic: '" + mnemonic + "'");
+		
+        if ( selected_text != '' ) {		
+			selected_text_pos = tmp_secret_phrase.indexOf(selected_text);
+		
+			while ( selected_text_pos != -1 && tmp_word_index != -1) {									
+				if (selected_text_pos == selection_start) {
+					word_index = tmp_words.indexOf(selected_text);
+					break;					
+                }
+				
+				tmp_word_index = tmp_words.indexOf(selected_text);	
+				if (tmp_word_index != -1) {
+					word_index = tmp_word_index;				
+					tmp_secret_phrase.replace(selected_text, "####");
+					tmp_words[tmp_word_index] = "####";
+					selected_text_pos = tmp_secret_phrase.indexOf(selected_text);
+				}
+				else {	
+					selected_text_pos = -1;
+				}
+		 	}		
+		}
+		
+		console.log(" 2 selected_text: '" + selected_text + "'  word_index:" + word_index + "'  mnemonic: '" + mnemonic + "'");
+		
+		this.word_has_been_replaced = false;
+		
 		if ( words.length < 24 ) {
-			if ( words.length > 0 ) words[words.length-1] = mnemonic; 
+			if ( words.length > 0 ) {
+				if ( word_index == -1 ) word_index = words.length-1; 
+				else {
+					words[word_index] = mnemonic; 
+					this.word_has_been_replaced = true;
+				}
+		    }
+			else {
+				words = [mnemonic]; 
+		    }
 			secret_phrase = words.join(' '); 
+			// console.log(" secret_phrase: '" + secret_phrase + "'");
 			HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, secret_phrase);
+			
+			//let updated_cursor = this.getPositionCurseurDepuisIndexMot(secret_phrase, word_index);
+			HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).focus();
+			
+			if ( this.word_has_been_replaced ) {
+				selection_start = secret_phrase.indexOf(mnemonic);                				
+				HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionStart = selection_start;
+				HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionEnd   = selection_start + mnemonic.length;
+			}
+			else {
+				selection_start = secret_phrase.length;
+				HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionStart = selection_start;
+				HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionEnd   = selection_start;
+			}
 			await this.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID );
 		}		
 	} // async onImgGridHover()
+	
+	onImgGridMouseLeave( evt ) {
+		console.log(">> onImgGridMouseLeave");
+		let secret_phrase = this.getSecretPhrase();
+		let selection_start = secret_phrase.length;
+		HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionStart = selection_start;
+		HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionEnd   = selection_start;
+		this.word_has_been_replaced = false;
+	} // onImgGridMouseLeave()
 	
 	async onImgGridClick( evt ) {
 		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onImgGridClick" + _END_;
 		window.ipcMain.logToMain(log_msg);
 		
 		let mnemonic = await this.getMnemonicFromEvent( evt );
-		// console.log(" mnemonic: " + mnemonic);		
+		// console.log(" mnemonic: " + mnemonic);	
+		let secret_phrase = this.getSecretPhrase();
 		
-        let secret_phrase = this.getSecretPhrase();
-		let words = secret_phrase.split(' ');
-		if ( words.length < 24 ) {
-			secret_phrase += ' ' + mnemonic; 
-			HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, secret_phrase);
-			await this.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID );
+		if ( ! this.word_has_been_replaced ) {
+			let words = secret_phrase.split(' ');
+			if ( words.length < 24 ) {
+				if (secret_phrase == '') secret_phrase = mnemonic; 
+				else                     secret_phrase += ' ' + mnemonic; 
+				HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, secret_phrase);				
+				await this.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID );
+			}
 		}
+		
+		this.word_has_been_replaced = false;
+		
+		let selection_start = secret_phrase.length;
+		HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionStart = selection_start;
+		HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionEnd   = selection_start;
 	} // async onImgGridClick()	
+	
+	getWordIndexAtCursor(chaine, curseur) {
+		if (typeof chaine !== 'string' || chaine.trim() === '') return -1;
+		curseur = Math.min(Math.max(curseur, 0), chaine.length);
+		
+		// Extraire les mots avec positions
+		const mots = [];
+		let i = 0;
+		const len = chaine.length;
+		while (i < len) {
+			if (chaine[i] === ' ') {
+				i++;
+				continue;
+			}
+			const debut = i;
+			while (i < len && chaine[i] !== ' ') i++;
+			const fin = i - 1;
+			mots.push({ debut, fin, index: mots.length });
+		}
+		
+		if (mots.length === 0) return -1;
+		
+		// Chercher selon les règles
+		for (const mot of mots) {
+			if (curseur >= mot.debut && curseur <= mot.fin) return mot.index; // à l'intérieur
+			if (curseur === mot.debut) return mot.index; // juste avant
+			if (curseur === mot.fin + 1) return mot.index; // juste après
+		}
+		
+		// Si on est dans un espace ou avant premier mot ou après dernier, trouver le plus proche
+		let meilleur = 0;
+		let minDist = Infinity;
+		for (const mot of mots) {
+			const distDebut = Math.abs(curseur - mot.debut);
+			const distFin = Math.abs(curseur - (mot.fin + 1));
+			const dist = Math.min(distDebut, distFin);
+			if (dist < minDist) {
+				minDist = dist;
+				meilleur = mot.index;
+			} else if (dist === minDist && mot.index < meilleur) {
+				meilleur = mot.index;
+			}
+		}
+		return meilleur;
+	} // getWordIndexAtCursor()
+	
+	getPositionCurseurDepuisIndexMot( texte, indexMot ) {
+	  const mots = [];
+	  const regex = /\S+/g;
+	  let match;
+	  while ((match = regex.exec(texte)) !== null) {
+		mots.push({
+		  index: mots.length,
+		  debut: match.index
+		});
+	  }
+
+	  if (indexMot < 0 || indexMot >= mots.length) {
+		return -1;
+	  }
+
+	  return mots[indexMot].debut;
+	} // getPositionCurseurDepuisIndexMot()
+	
+	getNearestWordIndex( chaine, curseur ) {
+		// Gestion des cas extrêmes
+		if (typeof chaine !== 'string' || chaine.trim() === '') return -1;
+		// curseur peut être entre 0 et chaine.length (inclus)
+		if (curseur < 0) curseur = 0;
+		if (curseur > chaine.length) curseur = chaine.length;
+
+		// Étape 1 : découper la chaîne en mots avec leurs positions (début, fin inclus)
+		const mots = [];
+		let i = 0;
+		const len = chaine.length;
+		while (i < len) {
+			if (chaine[i] === ' ') {
+				i++;
+				continue;
+			}
+			const debut = i;
+			while (i < len && chaine[i] !== ' ') {
+				i++;
+			}
+			const fin = i - 1; // dernière lettre du mot
+			mots.push({ debut, fin, index: mots.length });
+		}
+
+		if (mots.length === 0) return -1;
+
+		// Étape 2 : trouver le mot le plus proche
+		let meilleurMot = null;
+		let meilleureDistance = Infinity;
+
+		for (const mot of mots) {
+			const { debut, fin, index: motIndex } = mot;
+			const apresMot = fin + 1;
+
+			// Cas exacts
+			if (curseur >= debut && curseur <= fin) {
+				return motIndex; // à l'intérieur
+			}
+			if (curseur === debut) {
+				return motIndex; // juste avant
+			}
+			if (curseur === apresMot) {
+				return motIndex; // juste après
+			}
+
+			// Distance minimale entre le curseur et les limites du mot
+			const distDebut = Math.abs(curseur - debut);
+			const distFin = Math.abs(curseur - apresMot);
+			const distance = Math.min(distDebut, distFin);
+
+			if (distance < meilleureDistance) {
+				meilleureDistance = distance;
+				meilleurMot = motIndex;
+			} else if (distance === meilleureDistance && meilleurMot !== null) {
+				// égalité : on garde l'index le plus petit (mot de gauche)
+				if (motIndex < meilleurMot) {
+					meilleurMot = motIndex;
+				}
+			}
+		}
+
+		return meilleurMot !== null ? meilleurMot : 0;
+	} // getNearestWordIndex()
 	
 	
 	async onSecretPhraseKeydown( evt ) {
@@ -949,19 +1189,19 @@ class EntropyConverterDialog {
 		
 		// console.log( "evt.charCode: " + evt.charCode );
 		
-		const deleteWordFromTextCursorPos = ( chaine, index ) => {
+		const deleteWordFromTextCursorPos = ( chaine, cursor_pos ) => {
 			// Règle 1 & 2: Vérifications préalables
-			if ( index === 0 )               return chaine;
-			if ( chaine[index - 1 ] === ' ') return chaine;
+			if ( cursor_pos === 0 )               return chaine;
+			if ( chaine[cursor_pos - 1 ] === ' ') return chaine;
 			
 			// Trouver le début du mot à supprimer
-			let debut = index - 1;
+			let debut = cursor_pos - 1;
 			while (debut > 0 && chaine[debut - 1] !== ' ') {
 				debut--;
 			}
 			
 			// Trouver la fin du mot à supprimer
-			let fin = index - 1;
+			let fin = cursor_pos - 1;
 			while (fin < chaine.length - 1 && chaine[fin + 1] !== ' ') {
 				fin++;
 			}
