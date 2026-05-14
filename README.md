@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.17
+## CryptoCalc 0.5.18
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -182,7 +182,10 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.17`: This version 
+    - `0.5.18`: This version 
+         - Bug Fix (in `Entropy Converter Tool`): In the `Secret Phrase` field, you can now change any mnemonic by selecting it then move the 
+         mouse cursor over the _checkerboard_ image and left click to validate the new mnemonic chosen at the selected position within the secret phrase.   		 
+    - `0.5.17` 
          - Upgrade for `Raw Text` field in `Entropy Converter Tool`. This field now uses a custom `Base256U` alphabet to ensure isomorphism with other fields like `Hexadecimal`
 		 when ine of the bytes has a value which is a non displayable code in ASCII.
     - `0.5.13` 
@@ -311,30 +314,6 @@
 	    - Enhancements in `Bip38` feature:
 		    - Default difficulty set to 16384 (the recommended default)
 			- A Progress bar now shows a better feedback on the time needed to encrypt / decrypt
-    - `0.4.0`
-	    - Minor Version number changed to `4` to reflect the fact that `Bip38` support is a taller "step forward"
-		- Documentation Fixes: in this document (`README.md`)	
-    - `0.3.65`
-		- New Feature:
-			- Support of `BIP38` (_passphrase encrypted private key_, see 6.3.5) for an additional security layer by Encrypting the Private Key.    
-			NB: Please notice that only the first encryption method ('NON-EC') is supported (see also 5.2.2). 
-        - :Bug Fixes	
-		    - `Save` command (in _Main menu_ and _Main Toolbar_) is disabled while it should be enabled. 
-			This was identified in some use cases with `File/New` followed by `File/Open`.	
-		- Documentation Fixes:	
-		    - Update, fixes and some rewrites of this document (`README.md`).		
-	    - Refactoring:
-		    - In `html_utils.js`: `Node` replaced by `Element` in all functions because it is a better terminology 
-			for HTML entities (eg. `INPUT`,'TEXTAREA', etc...).
-			- Move of _Model_ related code to `www/js/model` and _View_ related code 
-			to `www/js/view` (cf. [`MVC`](https://www.geeksforgeeks.org/system-design/mvc-design-pattern/) _Design Pattern_)
-			also as `MVC` may be recursive, `wallet_info.js` (which is a is _Model_) bas been moved to `www/js/view/model`
-		- Usability:
-		    - `password` (Bip32 / HD Wallet mode) replaced by `Passphrase` because it is a better terminology
-			- In `wallet_info.txt`: 
-			    - `WIF` always provided 
-				- Order of "fields" is now predefined (see `js/model/wallet_inf_tmpl.js`)   
-		    - Changed Label for `Help/About...` dialog to a more consistent text ("A cryptocurrency wallet generator")	
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
