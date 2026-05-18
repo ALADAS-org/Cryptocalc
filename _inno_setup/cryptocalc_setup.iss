@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Cryptocalc"
-#define MyAppVersion "0.4.9"
+#define MyAppVersion "0.5.19"
 #define MyAppPublisher "Aladas"
 #define MyAppURL "https://www.npmjs.com/package/@aladas-org/cryptocalc"
 #define MyAppExeName "cryptocalc.exe"
@@ -13,7 +13,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{B014D290-D00A-4059-8D6C-E9B4B94873C2}
+AppId={{E9A032BD-6CC5-4C0A-9031-75AC42E790FC}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
@@ -43,7 +43,7 @@ OutputBaseFilename=cryptocalc_setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
-SetupIconFile={#SourcePath}\..\www\icons\Silverquote_30_ico.ico
+SetupIconFile={#SourcePath}\..\www\icons\Cryptocalc_ico.ico
 WizardImageFile={#SourcePath}\..\www\img\InnoSetup\Cryptocalc_InnoSetup_Left.bmp
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

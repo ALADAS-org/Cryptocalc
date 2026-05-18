@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.18
+## CryptoCalc 0.5.19
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -182,7 +182,9 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.18`: This version 
+	- `0.5.19`: This version
+	     - Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net)
+    - `0.5.18` 
          - Bug Fix (in `Entropy Converter Tool`): In the `Secret Phrase` field, you can now change any mnemonic by selecting it then move the 
          mouse cursor over the _checkerboard_ image and left click to validate the new mnemonic chosen at the selected position within the secret phrase.   		 
     - `0.5.17` 

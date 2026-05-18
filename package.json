@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.5.18",
+  "version": "0.5.19",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -12,19 +12,15 @@
     "start": "electron . --enable-logging",
     "build": "electron-packager . app --platform win32 --arch x64 --out dist/",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
-	
     "test": "jest",
     "test:jest": "jest --config=jest.config.js",
     "test:jest:watch": "jest --watch",
     "test:jest:coverage": "jest --coverage",
-    
     "test:playwright": "playwright test --config=tests/playwright/playwright.config.js",
     "test:playwright:ui": "playwright test --ui --config=tests/playwright/playwright.config.js",
     "test:playwright:debug": "PWDEBUG=1 playwright test --config=tests/playwright/playwright.config.js",
     "test:playwright:report": "playwright show-report tests/playwright/playwright-report",
-    
     "test:all": "npm run test:jest && npm run test:playwright",
-    
     "test:clean": "rimraf coverage tests/playwright/playwright-report tests/playwright/test-results"
   },
   "repository": {
@@ -74,7 +70,7 @@
     "@terra-money/feather.js": "^2.1.0-beta.3",
     "@terra-money/terra.js": "^3.1.10",
     "@terra-money/terra.proto": "^5.3.0-beta.0",
-	"@ton/core": "^0.62.0",
+    "@ton/core": "^0.62.0",
     "@ton/ton": "^15.3.1",
     "@tonejs/midi": "^2.0.28",
     "ansi-styles": "^6.2.3",
