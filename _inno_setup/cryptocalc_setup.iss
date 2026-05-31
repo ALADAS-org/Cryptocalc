@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Cryptocalc"
-#define MyAppVersion "0.5.19"
+#define MyAppVersion "0.5.20"
 #define MyAppPublisher "Aladas"
 #define MyAppURL "https://www.npmjs.com/package/@aladas-org/cryptocalc"
 #define MyAppExeName "cryptocalc.exe"
@@ -13,7 +13,7 @@
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
-AppId={{E9A032BD-6CC5-4C0A-9031-75AC42E790FC}
+AppId={{B824B0D4-6F57-4F62-9EE7-B0BDA4407B8D}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
