@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.20
+## CryptoCalc 0.5.21
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -182,7 +182,12 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-	- `0.5.20`: This version
+	- `0.5.21`: This version
+	     - Issue #3 Fix: 
+		   - Title: [BUG] HD wallet Coin SUI BIP38c bug SUI passphrase BIP38gfd messagafenetre #3
+		     URL: https://github.com/[ton-compte]/[ton-repo]/issues/3
+		   - Fix: Hide `BIP38 (Non-EC) passphrase` if Blockchain is `SUI`
+	- `0.5.20`
 	     - Update of Cryptocalc Logo
 	     - Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net)
 	- `0.5.19`
@@ -192,7 +197,7 @@
          mouse cursor over the _checkerboard_ image and left click to validate the new mnemonic chosen at the selected position within the secret phrase.   		 
     - `0.5.17` 
          - Upgrade for `Raw Text` field in `Entropy Converter Tool`. This field now uses a custom `Base256U` alphabet to ensure isomorphism with other fields like `Hexadecimal`
-		 when ine of the bytes has a value which is a non displayable code in ASCII.
+		 when one of the bytes has a value which is a non displayable code in ASCII.
     - `0.5.13` 
          - Added `Entropy Converter Tool`: `Entropy Converter` is in the `Tool menu` and provides multiple conversions (raw text, hexadecimal, base64, base58, mnemonics and binary)  
     - `0.5.12`
@@ -308,17 +313,6 @@
 	    - Bug Fix: 
 		    - regression in `Bip38` feature (since implementation of 'Progress Bar' as a feedback for encrypt/decrypt time)
 			- Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net) 
-    - `0.4.6`
-	    - Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net) 
-    - `0.4.5` 
-	    - Updates of images:     
-            - Update of screnshots   		
-		    - Logo images mirrored to be like a `Z` because it is the new version. This new version of the
-            logo is also published on the [SourceForge installer](https://sourceforge.net/projects/aladas-cryptocalc/) 			
-    - `0.4.4`
-	    - Enhancements in `Bip38` feature:
-		    - Default difficulty set to 16384 (the recommended default)
-			- A Progress bar now shows a better feedback on the time needed to encrypt / decrypt
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)

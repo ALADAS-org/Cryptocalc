@@ -1073,7 +1073,7 @@ class MainGUI {
 			HtmlUtils.HideElement( DERIVATION_PATH_ROW );
 			
 			//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
-		   HtmlUtils.ShowElement( TR_1ST_PK_ID );	
+		    HtmlUtils.ShowElement( TR_1ST_PK_ID );
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
            HtmlUtils.ShowElement( BIP32_PASSPHRASE_ROW_ID );
@@ -1139,7 +1139,16 @@ class MainGUI {
 				HtmlUtils.ShowElement( TR_1ST_PK_ID );
 				//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
 			}				
+		}
+
+        // ------------------- Hide "BIP38" if coin is SUI --------------------
+		if ( blockchain == SUI ) {
+			HtmlUtils.HideElement( BIP38_PASSPHRASE_ROW_ID );			
+		}
+		else {
+			HtmlUtils.ShowElement( BIP38_PASSPHRASE_ROW_ID );			
 		}	
+        // ------------------- Hide "BIP38" if coin is SUI		
 
 		// ------------------- WIF --------------------
 		let wif = this.wallet_info.getAttribute(WIF);
