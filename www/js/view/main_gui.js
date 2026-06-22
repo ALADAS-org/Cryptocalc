@@ -2840,7 +2840,7 @@ class MainGUI {
 	async onRefreshButton() {
 		trace2Main( pretty_func_header_format( "MainGUI.onRefreshButton" ) );
 		await this.updateWalletAddress();
-		setSaveCmdState( true );
+		this.setSaveCmdState( true );
     } // onRefreshButton()
 	
 	onGuiFocus( evt ) {

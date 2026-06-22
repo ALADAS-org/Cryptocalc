@@ -1,6 +1,6 @@
 {
   "name": "@aladas-org/cryptocalc",
-  "version": "0.5.21",
+  "version": "0.5.22",
   "description": "Cryptocurrency wallet generator",
   "main": "./www/js/_main/electron_main.js",
   "// electron .": "",
@@ -82,6 +82,7 @@
     "bip32": "^4.0.0",
     "bip38": "^3.1.1",
     "bip39": "^3.1.0",
+    "bip86": "^0.0.4",
     "bitcoinjs-lib": "^6.1.0",
     "bitcore-lib": "^10.10.7",
     "bitcore-lib-cash": "^10.10.5",
