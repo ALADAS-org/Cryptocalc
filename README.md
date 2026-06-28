@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.22
+## CryptoCalc 0.5.25
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -182,7 +182,9 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-	- `0.5.22`: This version
+	- `0.5.25`: This version
+	     - Enhancement of Base256U character set
+	- `0.5.22`
 	     - Bug Fix: error in `main_gui.js` line 2843: `setSaveCmdState( true );` => `this.setSaveCmdState( true )`; 
 	- `0.5.21`
 	     - Issue #3 Fix: 

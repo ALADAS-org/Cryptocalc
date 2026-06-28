@@ -40,12 +40,26 @@ const BIP39_ALLOWED_BIT_SIZES   = [ 128, 160, 192, 224, 256 ];
  
 const INPUT_FIELDS_IDS = [ ECONVERTER_RAWTEXT_INPUT_ID,       ECONVERTER_HEXADECIMAL_INPUT_ID, 
                            ECONVERTER_BASE64_INPUT_ID,        ECONVERTER_BASE58_INPUT_ID,
-						   ECONVERTER_SECRET_PHRASE_INPUT_ID, ECONVERTER_BINARY_INPUT_ID  ];	 
-	  
-const BASE256U_ALPHABET    = "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ !\"#$%&'()*+,-./0123456789:;<=>?@" +
-                             "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~à"   +							  
-                             "âçèéêëîïôûùüÿœŒÀİıĲĳĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőĨĴŔŕŖŗŘřŚśŜŝŞşŠš"  +
-                             "ŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠ";
+						   ECONVERTER_SECRET_PHRASE_INPUT_ID, ECONVERTER_BINARY_INPUT_ID  ];
+
+//const BASE256U_ALPHABET    = "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ !\"#$%&'()*+,-./0123456789:;<=>?@" +
+//                             "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~à"   +							  
+//                             "âçèéêëîïôûùüÿœŒÀİıĲĳĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőĨĴŔŕŖŗŘřŚśŜŝŞşŠš"  +
+//                             "αβγδεζηθικλμνξοπρςστυφχψωŶŷŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƠ";						   
+							 
+const BASE256U_ALPHABET    =   "▲△▼▽▶▷◀◁♠♣♥♦€£¥¢§√∆∇←↑→↓≪≫©®∀∃∈∞!\"#$%&'()*+,-./0123456789:;<=>?@" +
+                               "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^Þabcdefghijklmnopqrstuvwxyz{|}~àâçè"  + 
+                               "éêëîïôûùüÿœŒĀāĂăĆćĈĉĊċČčĎĐđĒēĔĕĖėĚěĞƔƕ∫∂αβγδεζηθλμνξπςστυφχψω∮∛≼≽"  +
+                               "Ŀ≠≡≤≥⊥⊤⊢⊣⊨⊩⊪⊖⊗⊘⊙⊚⊜⊝⊞⊟⊕⊖⊗⊘⊍◆◇◈◉○◎●◐◑ΓΔΘΛΞΠΣΦΨΩ∩⊂⊃⊄⊅∧∨∅⊓⊔⊏⊐⊑⊒┼◤◥◣◢";
+							 
+// Caractères latins accentués (début conservé)
+// "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ"
+    
+// Symboles mathématiques et grecs (remplacement)
+// "∀∁∂∃∄∅∆∇∈∉∊∋∌∍∎∏∐∑−∓∔∕∖∗∘∙√∛∜∝∞∟∠∡∢∣∤∥∦∧∨∩∪∫∬∭∮∯∰∱∲∳"
+    
+// Symboles mathématiques supplémentaires
+// "≈≠≡≤≥≪≫≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊀⊁⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⊕⊖⊗⊘⊙⊚⊛⊜⊝"
 						   
 const BASE64_ALPHABET      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 const BASE58_ALPHABET      = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
