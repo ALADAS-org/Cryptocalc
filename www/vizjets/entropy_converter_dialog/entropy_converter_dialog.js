@@ -42,23 +42,24 @@ const INPUT_FIELDS_IDS = [ ECONVERTER_RAWTEXT_INPUT_ID,       ECONVERTER_HEXADEC
                            ECONVERTER_BASE64_INPUT_ID,        ECONVERTER_BASE58_INPUT_ID,
 						   ECONVERTER_SECRET_PHRASE_INPUT_ID, ECONVERTER_BINARY_INPUT_ID  ];
 
-//const BASE256U_ALPHABET    = "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ !\"#$%&'()*+,-./0123456789:;<=>?@" +
-//                             "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~à"   +							  
-//                             "âçèéêëîïôûùüÿœŒÀİıĲĳĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőĨĴŔŕŖŗŘřŚśŜŝŞşŠš"  +
-//                             "αβγδεζηθικλμνξοπρςστυφχψωŶŷŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƠ";						   
-							 
-const BASE256U_ALPHABET    =   "▲△▼▽▶▷◀◁♠♣♥♦€£¥¢§√∆∇←↑→↓≪≫©®∀∃∈∞!\"#$%&'()*+,-./0123456789:;<=>?@" +
-                               "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^Þabcdefghijklmnopqrstuvwxyz{|}~àâçè"  + 
-                               "éêëîïôûùüÿœŒĀāĂăĆćĈĉĊċČčĎĐđĒēĔĕĖėĚěĞƔƕ∫∂αβγδεζηθλμνξπςστυφχψω∮∛≼≽"  +
-                               "Ŀ≠≡≤≥⊥⊤⊢⊣⊨⊩⊪⊖⊗⊘⊙⊚⊜⊝⊞⊟⊕⊖⊗⊘⊍◆◇◈◉○◎●◐◑ΓΔΘΛΞΠΣΦΨΩ∩⊂⊃⊄⊅∧∨∅⊓⊔⊏⊐⊑⊒┼◤◥◣◢";
-							 
-// Caractères latins accentués (début conservé)
+//const BASE256U_ALPHABET  = "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ !\"#$%&'()*+,-./0123456789:;<=>?@" +
+//                           "ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~à"   +							  
+//                           "âçèéêëîïôûùüÿœŒÀİıĲĳĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőĨĴŔŕŖŗŘřŚśŜŝŞşŠš"  +
+//                           "αβγδεζηθικλμνξοπρςστυφχψωŶŷŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƠ";						   
+							   
+const BASE256U_ALPHABET    =   "▲△▼▽▶▷◀◁♠♣♥♦€£¥¢§←↑→↓≪≫©®∀∃∈∞!\"#" +
+                               "$%&()*+,-./0123456789:;<=>?@ABCD"   +
+                               "EFGHIJKLMNOPQRSTUVWXYZ[\]^Þabcde"   + 
+							   "fghijklmnopqrstuvwxyz{|}~àâçèéêë"   +							   
+                               "îïôûùüÿœŒĀāĂăĆćĈĉĊċČčĎĐđĒēĔĕĖėĚě"   +							   
+							   "ĞĿƔƕ∫∬∂αβγδεζηθλμξπςστφχψω∮∯∤≼≽≠"   +							   
+                               "≶≸≡≤≥⊥⊤⊢⊣⊨⊩⊪⊗⊘⊙⊚⊞⊟⊕⊖⊜⊍◆◇◈◉○◎●◐◑∇"  +							   
+							   "ΓΔΘΛΞΠΣΦΨΩ√∛∢∩⊂⊃⊄⊅∧∨∅⊓⊔⊏⊐⊑⊒┼∎◤◥◣◢";
+							   
+// ≈≡≤≥⊥⊤⊢⊣⊨⊩⊪⊫⊬⊭⊮⊯⊕⊖⊗⊘⊙⊚⊛⊜⊝⊞⊟
+// ∇∑∏∫∂┌┐└┘├┤┬┴┼█▌▐▖▗▘▙▚▛▜▝▞▟◆◇◈◉○◍◎●◐◑
 // "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ"
-    
-// Symboles mathématiques et grecs (remplacement)
 // "∀∁∂∃∄∅∆∇∈∉∊∋∌∍∎∏∐∑−∓∔∕∖∗∘∙√∛∜∝∞∟∠∡∢∣∤∥∦∧∨∩∪∫∬∭∮∯∰∱∲∳"
-    
-// Symboles mathématiques supplémentaires
 // "≈≠≡≤≥≪≫≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊀⊁⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⊕⊖⊗⊘⊙⊚⊛⊜⊝"
 						   
 const BASE64_ALPHABET      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -203,7 +204,15 @@ class EntropyConverterDialog {
 									    if ( this_obj.allow_cb ) {
 											 await EntropyConverterDialog.This.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID ); 
 										 } 
-									  });	
+									  });
+
+								this_obj.addEventHandler
+									( ECONVERTER_SECRET_PHRASE_INPUT_ID, 'wheel', 
+									  async ( evt ) => { 
+									    if ( this_obj.allow_cb ) {
+											 await EntropyConverterDialog.This.onSecretPhraseWheel( evt ); 
+										 } 
+									  });
 
 								this_obj.addEventHandler
 									( ECONVERTER_LANG_SELECT_ID, 'change', 
@@ -1179,8 +1188,8 @@ class EntropyConverterDialog {
 
 			// Distance minimale entre le curseur et les limites du mot
 			const distDebut = Math.abs(curseur - debut);
-			const distFin = Math.abs(curseur - apresMot);
-			const distance = Math.min(distDebut, distFin);
+			const distFin   = Math.abs(curseur - apresMot);
+			const distance  = Math.min(distDebut, distFin);
 
 			if (distance < meilleureDistance) {
 				meilleureDistance = distance;
@@ -1196,6 +1205,113 @@ class EntropyConverterDialog {
 		return meilleurMot !== null ? meilleurMot : 0;
 	} // getNearestWordIndex()
 	
+	isThereDuplicatesInSecrePhrase( secret_phrase ) {
+		const mots = secret_phrase.trim().split(/\s+/);
+		const motsUniques = new Set(mots);
+		
+		// return {
+		//  asDuplicates:   mots.length !== motsUniques.size,
+		// 	totalMots:      mots.length,
+		// 	motsUniques:    motsUniques.size,
+		// 	nombreDoublons: mots.length - motsUniques.size
+		// };
+		
+		return mots.length !== motsUniques.size;
+	} // isThereDuplicatesInSecrePhrase()		
+	
+	async onSecretPhraseWheel( evt ) {
+		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onSecretPhraseWheel" + _END_;
+		window.ipcMain.logToMain(log_msg);
+		
+		// Empêche le défilement par défaut de la page (optionnel)
+		// evt.preventDefault();
+		
+		let secret_phrase = this.getSecretPhrase();
+		if ( secret_phrase == "" ) return;
+		
+		console.log( "onSecretPhraseWheel  secret_phrase: '" + secret_phrase + "'");
+		
+		let memonics = secret_phrase.split(' ');
+		console.log( "onSecretPhraseWheel  memonics.length: " + memonics.length);
+		
+		let secrete_phrase_field_elt = HtmlUtils.GetElement(ECONVERTER_SECRET_PHRASE_INPUT_ID);
+		
+		let selection_start = secrete_phrase_field_elt.selectionStart;		
+		let text_cursor_pos = secrete_phrase_field_elt.selectionStart;
+		let index_in_secret_phrase = this.getWordIndexAtCursor( secret_phrase, text_cursor_pos );
+		
+		console.log( "onSecretPhraseWheel  index_in_secret_phrase: " + index_in_secret_phrase);
+		
+		if ( (memonics.length - 1) >= index_in_secret_phrase ) {
+			let current_mnemonic = memonics[index_in_secret_phrase];
+			console.log( "current_mnemonic: '" + current_mnemonic + "'");
+			
+			// Direction du défilement
+			let delta = 0;
+			if ( evt.deltaY > 0 ) {
+				// console.log('Défilement vers le bas');
+				delta = 1; // Vers le Bas
+			} else if ( evt.deltaY < 0 ) {
+				// console.log('Défilement vers le haut');
+				delta = -1; // Vers le Haut
+			}
+			else return;
+			
+			let current_lang = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
+		
+		    
+			let mnemonics = current_mnemonic;
+			let options   = { ['Lang']: current_lang };
+			let data = { mnemonics, options };
+		
+			let mnemonic_index = 0;
+			if ( current_lang == WORDLIST_WORD_INDEXES ) {
+				mnemonic_index = parseInt(current_mnemonic);
+			}	
+			else {
+				mnemonic_index = await window.ipcMain.MnemonicToWordIndex( data );
+				mnemonic_index = parseInt(mnemonic_index);
+			}
+			
+			console.log( "current mnemonic_index: '" + mnemonic_index );
+			
+			let new_mnemonic_index = mnemonic_index;
+			if      ( delta == 1  && mnemonic_index < 2047 )  new_mnemonic_index = mnemonic_index + 1;
+			else if ( delta == -1 && mnemonic_index > 0 )     new_mnemonic_index = mnemonic_index - 1;
+			
+			console.log( "new_mnemonic_index: '" + new_mnemonic_index + "'");
+			
+			if ( new_mnemonic_index != mnemonic_index ) {
+				let new_mnemonic = "";
+				if ( current_lang == WORDLIST_WORD_INDEXES ) {
+					new_mnemonic = new_mnemonic_index.toString();
+				}	
+				else {
+					let word_index = new_mnemonic_index;
+			        let lang       = current_lang;
+			        let data = { word_index, lang };
+					new_mnemonic = await window.ipcMain.WordIndexToMnemonic( data );
+				}
+				
+				console.log( "new_mnemonic: '" + new_mnemonic + "'");
+				memonics[index_in_secret_phrase] = new_mnemonic;
+				
+				let new_secret_phrase = memonics.join(' ');
+				console.log( "new_secret_phrase: '" + new_secret_phrase + "'");
+				
+				if (! this.isThereDuplicatesInSecrePhrase( new_secret_phrase ) ) {				
+					HtmlUtils.SetElementValue(ECONVERTER_SECRET_PHRASE_INPUT_ID, new_secret_phrase);
+					
+					selection_start = new_secret_phrase.indexOf( new_mnemonic );                				
+					HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionStart = selection_start;
+					HtmlUtils.GetElement( ECONVERTER_SECRET_PHRASE_INPUT_ID ).selectionEnd   = selection_start + new_mnemonic.length;
+					
+					await this.onChangeInputField( ECONVERTER_SECRET_PHRASE_INPUT_ID );
+				}					
+			}
+		}	
+
+	} // onSecretPhraseWheel()
 	
 	async onSecretPhraseKeydown( evt ) {
 		let log_msg = ">> " + _CYAN_ + "EntropyConverterDialog.onSecretPhraseKeydown" + _END_;
