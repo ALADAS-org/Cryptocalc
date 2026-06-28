@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.25
+## CryptoCalc 0.5.26
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -75,6 +75,7 @@
 	2.16. Dedicated Tools    
         - The first dedicated tool is `Secret phrase Translator`, it allows to import a generated wallet with a _Secret phrase_ in a non `Bip39` official 
 		language (eg. `Russian`) and translate it to its equivalent in `English` (because _Wallet Managers_	support only English). 	
+		- Entropy Converter: converts Entropy among `Raw text` (`Base256U` cf. B.1), `Hexadecimal`, `Base64`, `Base58`, `Bip39 mnemonics` and `Binary`
 	   
     2.17. Standalone installer    
     It is published on [SourceForge](https://sourceforge.net/projects/aladas-cryptocalc/)) once downloaded the 
@@ -93,7 +94,7 @@
     - A list of the _Top 50 market cap_ cryptocurrencies is provided (`_doc/top_50_marketcap_coins.txt`), 
     the fist column a indicates (with `*`) if it is supported in _CryptoCalc_.    
    
-    - Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see 6.3.4)    
+    - Note 1: `BNB` support is on _Binance Smart Chain_ (in this blockchain `BNB` is a `BEP-20` token, see A.3.4)    
     - Note 2: it's `LUNA 2.O` (on _Terra_ blockchain) not `LUNA Classic`    
     - Note 3: `SUI` support was validated with 'Suiet' (Sui wallet), a Chrome extension    
    
@@ -182,8 +183,12 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-	- `0.5.25`: This version
-	     - Enhancement of Base256U character set
+	- `0.5.26`: This version
+	     - Fix of `Base256U` character set: duplicates and "too similar" 
+		 - `Base256U` Character set: provideed in Appendix B.1	
+         - Enhancement in `Tools/Entropy Converter`: you can change the selected mnemonic with the mouse wheel
+	- `0.5.25`
+	     - Enhancements of `Base256U` character set
 	- `0.5.22`
 	     - Bug Fix: error in `main_gui.js` line 2843: `setSaveCmdState( true );` => `this.setSaveCmdState( true )`; 
 	- `0.5.21`
@@ -301,22 +306,6 @@
 		- Bug Fix: it was possible to input a 9 digits value in `account` and `address index` fields,
 		which was a range of 1 billion `10^9` possible values for each field. Now the range is 1.000.000 ([0..999999]).
 	    - Documentation Fix: in 5.1.4.b. number of possible values for `account` and `address index` is now 1 million ([0..999999])
-    - `0.4.10`
-	    - Ergonomy:
-		    - A _Progress Bar_ is also displayed when saving a wallet with a `BIP38 Passphrase`. 
-			This is also to give a feedback to the user why it takes more time.     
-	    - Documentation Fixes: 
-		    - Changes in 'BIP38' instructions (see 5.1.5)
-		    - Instructions to install and run on `Linux` 
-		- Icon Fix: 
-		    - Mirror on `Cryptocalc_ico.ico`
-		- Refactoring:
-		    - `html_components` (folder for _Html modules_ like _MenuBar_, _ToolBar_, _StatusBar_ and _Dialog boxes_) renamed to `vizjets`
-            - `js/renderer/const_renderer.js` moved to `js/view/const_gui.js`		
-	- `0.4.7`
-	    - Bug Fix: 
-		    - regression in `Bip38` feature (since implementation of 'Progress Bar' as a feedback for encrypt/decrypt time)
-			- Update of [Cryptocalc installer](https://sourceforge.net/projects/aladas-cryptocalc/) on [SourceForge](https://sourceforge.net) 
 
 5. User's Guide    
     You can launch _CryptoCalc_ either by first installing it with the _CryptoCalc Standalone installer_ (see 3.1)
@@ -396,7 +385,7 @@
 			- 5.1.4.e. You can check generated _HD Wallets_ with _Ian Coleman BIP39_ homepage    
 			It's [URL](https://iancoleman.io/bip39/) is provided as an item in the `Help menu` (`Help/Resources/Ian Coleman BIP39`)
 		- 5.1.5. 'BIP38' Encryption of the _Private Key_
-			- `BIP38` (_passphrase encrypted private key_, see 6.3.5) is supported for an added security layer by Encrypting the _Private Key_. 		 
+			- `BIP38` (_passphrase encrypted private key_, see A.3.5) is supported for an added security layer by Encrypting the _Private Key_. 		 
             - How to: just input a value in `Bip38 passphrase` field the use the [Save] button (or `File/Save` menu item, cf 5.1.12).
 			This generates a `Bip38 Encrypted PK`.  			
 			Note 1: Notice that only the first method ('NON-EC': _encrypt the private Key with the passphrase_ ) is supported.    
@@ -493,10 +482,10 @@
         it should be translated to _English_ to be used with a _Wallet Manager_.   
 		NB: it is important to highlight that indeed the crucial information is the list of _Word Indexes_.
 		Thats's why translation between languages is easy in _CryptoCalc_ because the reference 
-		is the _Word Indexes_ (see 6.1.14) not the words.
+		is the _Word Indexes_ (see A.1.14) not the words.
 		- 5.1.16. Display of _Word Indexes_    
         The _Word Indexes_ are between 0 and 2047, it is the index of each of the 
-		_Secret phrase_ words in the `BIP39` wordlist (see also 6.1.1). 
+		_Secret phrase_ words in the `BIP39` wordlist (see also A.1.1). 
 		You can choose to display these indexes in _Decimal_ or _Binary_ 
 		(in _Binary_ you can check that the computed _Checksum bits_ are added at the end
 		of the converted _Entropy_ to determine the index of the last word).
@@ -515,11 +504,11 @@
             Note 2: Once a first translation has been performed, you can change the _Output language_ and translate at the same time by selecting the new
             _Output language_ in the `Output` dropdown list.
 	    - 5.1.19. Entropy Converter  
-	        - This dedicated tool (`Tools/Entropy Converter`) provides multiple conversions (among `Raw text`, `Hexadecimal`, `Base64`, `Base58`, `Bip39 mnemonics` and `Binary`)
-            Usage: you can either characters for each `Base` (eg: `Base64`) field or select a mnemonics for the `Secret Phrase` field by moving
-            the mouse cursor over the _checkerboard_ image (this returns an index between 0 and 2047 which is converted to a `Bip39 mnemonic` of the selected language).    
-			Use case: if you select the _special language_ called `[..] (Word Indexes` then you will get the `Word Indexes` (instead of `Bip39 mnemonics`). 
-			This is the _Language-independent_ encoding of the Secret Phrase.   	 		
+	        - This dedicated tool (`Tools/Entropy Converter`) provides multiple conversions among `Raw text` (`Base256U` cf. B.1), `Hexadecimal`, `Base64`, `Base58`, `Bip39 mnemonics` and `Binary`    
+            Usage 1: You can either type characters for each `Base` (eg: `Base64`) field    
+			Usage 2: Highlight a mnemonic (double click) then select another by moving the mouse cursor over the _checkerboard_ image (this returns an index between 0 and 2047 which is converted to a `Bip39 mnemonic` of the selected language).    
+			Usage 3: Highlight a mnemonic (double click) then select another by using the mouse wheel.    
+			Note: If you select the _special language_ called `[..] (Word Indexes` then you will get the `Word Indexes` (instead of `Bip39 mnemonics`). This is the _Language-independent_ encoding of the Secret Phrase.    
 		- 5.1.20. Wallets Database
 		A [SQLite](https://sqlite.org/) Database is populated by importing `.wits` files (_Wallet informations_ in a `JSON` format file).
 		Then the SQLite Database can be explored with [DBeaver](https://dbeaver.io/)
@@ -572,16 +561,16 @@
 		can be used as a _Master password_ for a _Password Manager_ or for tools like
 		[_PGP Tool_](https://pgptool.github.io) which provides encryption/decryption of your documents.    
 		
-6. Appendix    
-    - 6.1. `BIP39`: a _Dictionary_ of 2048 words     
+Appendix A.   
+    - A.1. `BIP39`: a _Dictionary_ of 2048 words     
 	`BIP39` (`BIP` is the acronym for _Bitcoin Improvement Proposal_) is a specification regarding:
-		- 6.1.1. A _Dictionary_ of 2048 _mnemonics_    
+		- A.1.1. A _Dictionary_ of 2048 _mnemonics_    
 		The _Dictionary_ (also called a _wordlist_) contains 2048 _English_ _mnemonics_ (words) each with a their unique 
 		4 starting characters (or 3 if the mnemonic is 3 characters long). This dictionary exists also in other languages 
 		(e.g. _French_, _Deutsh_, _Spanish_, Italian_, _Portuguese_, etc...) but _Wallet Managers_ 
 		(e.g. _Guarda_, _Metamask_, _Atomic Wallet_, etc...) and _Hardware Wallets_ 
 		(eg. _Ledger_, _Trezor_, _Tangem_, etc...) will only accept _English_ words.
-	    - 6.1.2. Conversion of _Secret phrase_ from and to _Entropy_		
+	    - A.1.2. Conversion of _Secret phrase_ from and to _Entropy_		
         The _Secret phrase_ is obtained by drawing words (also called _mnemonics_) from the dictionary.
         Drawing a word is indeed choosing an index between 0 and 2047. This index can be represented
         by 11 bits in _Binary_ (because 2^11 = 2048). 
@@ -601,7 +590,7 @@
 		- Reference    
 		[BIP39 — Mnemonic Generation with detailed explanation](https://medium.com/@sundar.sat84/bip39-mnemonic-generation-with-detailed-explanation-84abde9da4c1)
 	
-    - 6.2. `BIP32`: Hierarchic Deterministic wallets    
+    - A.2. `BIP32`: Hierarchic Deterministic wallets    
 	`BIP32` specifies how to generate wallets with are all derived from the same _Entropy_
 	or _Secret phrase_ (also called the _Secret Recovery Passphrase_).
     A _Secret phrase_ of only 12 words is enough is most _Wallet Managers_ but it is much more secure to use a 24 words 
@@ -614,9 +603,31 @@
         - Choose the external chain, used for public addresses         (0)    
         - And finally, generate the first address in this sequence     (0')    
         	
-	- 6.3. References    
-	    - 6.3.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))    
-		- 6.3.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)    
-		- 6.3.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)    
-		- 6.3.4. [The evolution of the Binance Smart Chain](https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain)    
-		- 6.3.5. [BIP38: Passphrase-protected private key](https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki)
+	- A.3. References    
+	    - A.3.1. [Understanding Derivation Paths in Cryptocurrency: Easy-To-Follow Guide](https://getcoinplate.com/blog/derivation-paths-guide/#:~:text=A%20derivation%20path%20is%20simply,a%20particular%20branch%20(address))    
+		- A.3.2. [Hierarchical key generation](https://alexey-shepelev.medium.com/hierarchical-key-generation-fc27560f786)    
+		- A.3.3. [BIP32 Key Derivation with HD Wallets](https://docs.bsvblockchain.org/guides/sdks/ts/examples/example_hd_wallets)    
+		- A.3.4. [The evolution of the Binance Smart Chain](https://cointelegraph.com/learn/articles/a-beginners-guide-to-the-bnb-chain-the-evolution-of-the-binance-smart-chain)    
+		- A.3.5. [BIP38: Passphrase-protected private key](https://github.com/bitcoin/bips/blob/master/bip-0038.mediawiki)
+
+Appendix B. 
+    - B.1. Base256U Character set		
+	
+    | Hex | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | A | B | C | D | E | F |
+    |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+    | **0x** | ▲ | △ | ▼ | ▽ | ▶ | ▷ | ◀ | ◁ | ♠ | ♣ | ♥ | ♦ | € | £ | ¥ | ¢ |
+    | **1x** | § | ← | ↑ | → | ↓ | ≪ | ≫ | © | ® | ∀ | ∃ | ∈ | ∞ | ! | " | # |
+    | **2x** | $ | % | & | ( | ) | * | + | , | - | . | / | 0 | 1 | 2 | 3 | 4 |
+    | **3x** | 5 | 6 | 7 | 8 | 9 | : | ; | < | = | > | ? | @ | A | B | C | D |
+    | **4x** | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T |
+    | **5x** | U | V | W | X | Y | Z | [ | \ | ] | ^ | Þ | a | b | c | d | e |
+    | **6x** | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u |
+    | **7x** | v | w | x | y | z | { | \| | } | ~ | à | â | ç | è | é | ê | ë |
+    | **8x** | î | ï | ô | û | ù | ü | ÿ | œ | Œ | Ā | ā | Ă | ă | Ć | ć | Ĉ |
+    | **9x** | ĉ | Ċ | ċ | Č | č | Ď | Đ | đ | Ē | ē | Ĕ | ĕ | Ė | ė | Ě | ě |
+    | **Ax** | Ğ | Ŀ | Ɣ | ƕ | ∫ | ∬ | ∂ | α | β | γ | δ | ε | ζ | η | θ | λ |
+    | **Bx** | μ | ξ | π | ς | σ | τ | φ | χ | ψ | ω | ∮ | ∯ | ∤ | ≼ | ≽ | ≠ |
+    | **Cx** | ≶ | ≸ | ≡ | ≤ | ≥ | ⊥ | ⊤ | ⊢ | ⊣ | ⊨ | ⊩ | ⊪ | ⊗ | ⊘ | ⊙ | ⊚ |
+    | **Dx** | ⊞ | ⊟ | ⊕ | ⊖ | ⊜ | ⊍ | ◆ | ◇ | ◈ | ◉ | ○ | ◎ | ● | ◐ | ◑ | ∇ |
+    | **Ex** | Γ | Δ | Θ | Λ | Ξ | Π | Σ | Φ | Ψ | Ω | √ | ∛ | ∢ | ⊂ | ⊃ | ⊄ |
+    | **Fx** | ⊅ | ∧ | ∨ | ∅ | ⊓ | ⊔ | ⊏ | ⊐ | ⊑ | ⊒ | ┼ | ∎ | ◤ | ◥ | ◣ | ◢ |
