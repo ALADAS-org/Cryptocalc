@@ -2025,7 +2025,7 @@ class MainGUI {
 			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_HELP_ABOUT + _END_ );
 				let cryptowallet_version = GuiSession.GetValue( CRYPTOWALLET_VERSION );
 				let i18n_msg = await window.ipcMain.GetLocalizedMsg("HelpAboutMsg");
-				description_data =   "<center><b>Cryptowallet " + cryptowallet_version + "</b></center><br>" 
+				description_data =   "<center><b>Cryptocalc " + cryptowallet_version + "</b></center><br>" 
 						           + "&nbsp;" + i18n_msg;
 			    //trace2Main("   " + FromMain_HELP_ABOUT + " " + description_data);
 

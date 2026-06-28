@@ -3,6 +3,21 @@ const BASE256U_ALPHABET    = "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘ
                              "âçèéêëîïôûùüÿœŒÀİıĲĳĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőĨĴŔŕŖŗŘřŚśŜŝŞşŠš"  +
                              "ŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſƀƁƂƃƄƅƆƇƈƉƊƋƌƍƎƏƐƑƒƓƔƕƖƗƘƙƚƛƜƝƞƟƠ";
 							 
+// Caractères latins accentués (début conservé)
+//    "ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğ" +
+    
+ //   // Symboles mathématiques et grecs (remplacement)
+//    "∀∁∂∃∄∅∆∇∈∉∊∋∌∍∎∏∐∑−∓∔∕∖∗∘∙√∛∜∝∞∟∠∡∢∣∤∥∦∧∨∩∪∫∬∭∮∯∰∱∲∳" +
+    
+ //   // Alphabet grec minuscules
+ //   "αβγδεζηθικλμνξοπρςστυφχψω" +
+    
+ //   // Alphabet grec majuscules
+ //   "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ" +
+    
+ //   // Symboles mathématiques supplémentaires
+ //   "≈≠≡≤≥≪≫≲≳≴≵≶≷≸≹≺≻≼≽≾≿⊀⊁⊂⊃⊄⊅⊆⊇⊈⊉⊊⊋⊌⊍⊎⊏⊐⊑⊒⊓⊔⊕⊖⊗⊘⊙⊚⊛⊜⊝" +
+							 
 console.log("BASE256U_ALPHABET length:" + BASE256U_ALPHABET.length);
 
 for (let i=0; i < BASE256U_ALPHABET.length; i++ ) {

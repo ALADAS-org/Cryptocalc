@@ -523,7 +523,7 @@ class ElectronMain {
 	
 	async openWits( wits_path ) {
 		if ( wits_path == undefined ) { 
-		     throw new Error("**ERROR** in Cryptowallet: '.wits' path is undefined");
+		     throw new Error("**ERROR** in Cryptocalc: '.wits' path is undefined");
 		}
 		
 		Skribi.log(">> " + _CYAN_ + "eMain.evtH('" + _YELLOW_ + "'openWits'"
@@ -542,7 +542,7 @@ class ElectronMain {
 	
 	updateWindowTitle( coin, wallet_mode ) {
 		//pretty_func_header_log( "ElectronMain.updateWindowTitle" );	
-		let window_title = 'Cryptowallet ' + this.cryptowallet_version;
+		let window_title = 'Cryptocalc ' + this.cryptowallet_version;
 		if ( wallet_mode != undefined  &&  wallet_mode != "" )   window_title += " - " + wallet_mode;
 		if ( coin != undefined  &&  coin != "" ) 	             window_title += ": " + coin;
 		
