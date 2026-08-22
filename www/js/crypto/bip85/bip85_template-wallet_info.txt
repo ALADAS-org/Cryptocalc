@@ -1,0 +1,22 @@
+--- BIP-85 Derivation (amont) ---
+Bip85 Index              0
+Bip85 Child Entropy Size 256 bits
+Bip85 Derivation Path    m/83696968'/39'/0'/24'/0'
+
+Initial Entropy          2e8ca70959dbf8915c00d0b1f9924248fe85c52101b62049127181f170627ad0
+Initial Secret Phrase    company gown seat recipe sauce emerge hybrid borrow rapid smart mountain music tribe tip lottery cycle cake embrace organ advance blade couple twice bone
+
+--- Wallet (aval) ---
+Wallet Mode              Simple Wallet
+Blockchain               Bitcoin
+Coin                     BTC
+Entropy                  8585140cd32c1f8240ee52364fd7b0f77f2cf7f9905fbf7976b56402c974ae72
+Entropy Size             256 bits
+Wallet Address           1NnVzhAauHqkPzQGvh6pZ1V4WKVQSYgfne
+Blockchain Explorer      https://www.blockchain.com/explorer/addresses/btc/1NnVzhAauHqkPzQGvh6pZ1V4WKVQSYgfne
+Private Key              8585140cd32c1f8240ee52364fd7b0f77f2cf7f9905fbf7976b56402c974ae72
+WIF                      L3b8nH3HcD7QYayofXj5GNeCeizcDqLifJiLJZfDfBvNRSMkzqQR
+Secret Phrase            machine chunk add play sea scorpion admit ski curve leaf umbrella upon version know town armor satoshi slight pull siege clutch ripple right ethics
+Shortened Secret Phrase  MachChunkAddPlaySeaScorAdmiSkiCurvLeafUmbrUponVersKnowTownArmaSatoSlighPullSiegeClutRippRighEthi
+Word indexes             1046, 359, 5, 1424, 1543, 1528, 22, 1594, 296, 1054, 1174, 1725, 1840, 1620, 233, 1682, 1578, 464, 1560, 1413, 1515, 1476, 263, 551
+Lang                     EN

@@ -1,0 +1,21 @@
+{
+  "Bip85 Index": 0,
+  "Bip85 Child Entropy Size": 256,
+  "Bip85 Derivation Path": "m/83696968'/39'/0'/24'/0'",
+  "Initial Entropy": "2e8ca70959dbf8915c00d0b1f9924248fe85c52101b62049127181f170627ad0",
+  "Initial Secret Phrase": "company gown seat recipe sauce emerge hybrid borrow rapid smart mountain music tribe tip lottery cycle cake embrace organ advance blade couple twice bone",
+  "Wallet Mode": "Simple Wallet",
+  "Version": "0.5.23",
+  "timestamp": "2026_06_26_19h-12m-05s-1",
+  "Blockchain": "Bitcoin",
+  "Coin": "BTC",
+  "Entropy Size": 256,
+  "Entropy": "8585140cd32c1f8240ee52364fd7b0f77f2cf7f9905fbf7976b56402c974ae72",
+  "Wallet Address": "1NnVzhAauHqkPzQGvh6pZ1V4WKVQSYgfne",
+  "Blockchain Explorer": "https://www.blockchain.com/explorer/addresses/btc/1NnVzhAauHqkPzQGvh6pZ1V4WKVQSYgfne",
+  "Private Key": "8585140cd32c1f8240ee52364fd7b0f77f2cf7f9905fbf7976b56402c974ae72",
+  "WIF": "L3b8nH3HcD7QYayofXj5GNeCeizcDqLifJiLJZfDfBvNRSMkzqQR",
+  "Secret Phrase": "machine chunk add play sea scorpion admit ski curve leaf umbrella upon version know town armor satoshi slight pull siege clutch ripple right ethics",
+  "Word indexes": "1046, 359, 5, 1424, 1543, 1528, 22, 1594, 296, 1054, 1174, 1725, 1840, 1620, 233, 1682, 1578, 464, 1560, 1413, 1515, 1476, 263, 551",
+  "Lang": "EN"
+}

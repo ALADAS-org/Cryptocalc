@@ -35,6 +35,7 @@ contextBridge.exposeInMainWorld(
 		OpenWalletInfo:                  (data) => ipcRenderer.invoke("ToMain:Request/open_wallet_info", data),
 		SaveWalletInfo:                  (data) => ipcRenderer.invoke("ToMain:Request/save_wallet_info", data),
 		  
+		GetOptions:                      (data) => ipcRenderer.invoke("ToMain:Request/get_options", data),
 		SaveOptions:                     (data) => ipcRenderer.invoke("ToMain:Request/save_options", data),
 		ResetOptions:                    (data) => ipcRenderer.invoke("ToMain:Request/reset_options", data),
 		UpdateOptions:                   (data) => ipcRenderer.invoke("ToMain:Request/update_options", data),
@@ -59,6 +60,8 @@ contextBridge.exposeInMainWorld(
 		
 		Bip38Encrypt:                    (data) => ipcRenderer.invoke("ToMain:Request/bip38_encrypt", data),
 		Bip38Decrypt:                    (data) => ipcRenderer.invoke("ToMain:Request/bip38_decrypt", data),
+		
+		Bip85DeriveBip39:                (data) => ipcRenderer.invoke("ToMain:Request/bip85_derive_bip39", data),
 		
 		GetPasswordStrength:             (data) => ipcRenderer.invoke("ToMain:Request/get_password_strength", data),
 		 

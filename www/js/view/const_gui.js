@@ -41,6 +41,7 @@ const ENTROPY_SRC_MOUSE_MOVE_DIV_ID       = "entropy_src_mouse_move_div_id";
 const ENTROPY_SRC_TYPE_SELECTOR_ID        = "entropy_src_type_selector_id";
 
 const ENTROPY_LABEL_ID                    = "entropy_label_id";
+const SEEDPHRASE_LABEL_ID                 = "seedphrase_label_id";
 const ENTROPY_ID                          = "entropy_id";
 const ENTROPY_COPY_BTN_ID                 = "entropy_copy_btn_id";
 
@@ -93,6 +94,20 @@ const BIP38_PASSPHRASE_EYE_BTN_ID         = "bip38_passphrase_eye_btn_id";
 const BIP38_PASSPHRASE_EYE_BTN_IMG_ID     = "bip38_passphrase_eye_btn_img_id";
 // -------------------- BIP38
 
+// -------------------- BIP85 --------------------
+const BIP85_ROW_2ND_COLUMN_ID             = "bip85_row_2nd_column_id";
+
+const TR_BIP85_ID                         = "bip85_row";
+const BIP85_ENABLE_CONTAINER_ID           = "bip85_enable_container_id";
+const BIP85_ENABLE_DISABLE_BTN_ID         = "bip85_enable_disable_btn_id";
+const BIP85_PARAMS_ID                     = "bip85_params_id";
+const BIP85_INDEX_ID                      = "bip85_index_id";
+const BIP85_ENTROPY_SIZE_ID               = "bip85_entropy_size_id";
+
+const BIP85_SHOW_HIDE_BTN_ID              = "bip85_show_hide_btn_id";
+const BIP85_EDIT_BTN_ID                   = "bip85_edit_btn_id";
+const BIP85_INIT_ENTROPY_ID               = "bip85_initial_entropy_id";
+// -------------------- BIP85
 
 const EYE_BTN_ID                          = "eye_btn_id";
 const EYE_BTN_IMG_ID                      = "eye_btn_img_id";
@@ -196,7 +211,7 @@ const INTERNET_CONNECTION_ICON_ID         = "internet_connection_icon_id";
 
 // --------------------  Buttons Bar  --------------------
 const LEFT_BTNBAR_ITEM_ID                 = "left_BtnBar_item_id";
-const RANDOM_BTN_ID                       = "random_btn_id";
+const GENERATE_BTN_ID                     = "generate_btn_id";
 const REFRESH_BTN_ID                      = "refresh_btn_id";
 const RIGHT_BTNBAR_ITEM_ID                = "right_BtnBar_item_id";
 // --------------------  Buttons Bar
@@ -263,7 +278,7 @@ if (typeof exports === 'object') {
 	 
 	exports.UPDATE_LABEL_ID               = UPDATE_LABEL_ID
 	
-	exports.RANDOM_BTN_ID                 = RANDOM_BTN_ID
+	exports.GENERATE_BTN_ID               = GENERATE_BTN_ID
 	
 	exports.SB_MSG_ID                     = SB_MSG_ID
 	exports.UPDATE_MSG                    = UPDATE_MSG

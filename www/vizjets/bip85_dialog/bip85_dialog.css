@@ -1,0 +1,82 @@
+.Bip85EntropyField {
+  font-size:            14px   !important;
+  
+  width:    		    500px  !important;
+  min-width:            500px  !important;
+  max-width:            500px  !important;
+  
+  height:   		    20px;  !important;
+  background-color:     white;
+  
+  margin-bottom:        0px;   !important;
+  padding-bottom:       0px;   !important;
+}
+
+.Bip85ParamField {
+  font-size:            14px   !important;
+  
+  width:    		    150px  !important;
+  min-width:            150px  !important;
+  max-width:            150px  !important;
+  
+  height:   		    20px;  !important;
+  background-color:     white;
+  
+  margin-bottom:        0px;   !important;
+  padding-bottom:       0px;   !important;
+}
+
+.Bip85LabelColumn {
+	text-align:    	   center;
+	font-size:         14px;
+	padding-left:      0px;
+	width:             150px !important; /* 90px */
+	min-width:         150px !important;
+	max-width:         150px !important;
+	height:            25px;
+}
+
+.break-tiny::after {
+  content:     "\A"; /* saut de ligne */
+  white-space: pre;
+  display:     block;
+  height:      2px; /* ajustez cette valeur */
+}
+
+.Bip85Button {
+	font-size:          15px    !important;
+	width: 				120px;
+	height: 			25px;   !important;	
+	margin-up:          -20px; !important;
+    padding-up:         0px;   !important;
+	margin-bottom:      0px;   !important;
+    padding-bottom:     0px;   !important;
+}
+
+#bip85_dialog_entropy_input_id {
+	background-color: #f0f0f0;
+}
+
+#bip85_dialog_apply_btn_id {
+	color:              white;
+	background-color: 	#2196D3;
+}
+
+#bip85_dialog_cancel_btn_id {
+	color:              black;
+	background-color: 	#e0e0e0; /* Blue */
+}
+
+.Bip85Table {
+	border:             none; */
+	/* border:          1px solid black; */ 
+	margin:             0px;
+	padding:            0px;
+}
+
+.Bip85Dialog_FieldColumn {
+	font-size:         14px; 
+	padding-left:      10px;
+	width:             100%;
+	min-width:         100%;
+}

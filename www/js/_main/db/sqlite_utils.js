@@ -114,7 +114,7 @@ class SqLiteUtils {
 	} // ** Private constructor **
 	
 	async initialize() {
-		console.log('>> SqLiteUtils.initialize()   this.initialized: ' + this.initialized);
+		// console.log('>> SqLiteUtils.initialize()   this.initialized: ' + this.initialized);
 		if ( this.initialized ) return;
 		
 		this.db_file_path = path.join( this.app_folder_path, 'Cryptocalc.db');
@@ -133,10 +133,10 @@ class SqLiteUtils {
 		console.log('<Done> Connecté à la base de données');
 		
 		let db_state = await DatabaseStateChecker.CheckDatabaseState( this.db_obj );		
-		console.log( '>> SqLiteUtils.initialize(): db_state["isOpen"]: ' + db_state["isOpen"] + '   db_state["isClosed"]: ' + db_state["isClosed"]);
+		// console.log( '>> SqLiteUtils.initialize(): db_state["isOpen"]: ' + db_state["isOpen"] + '   db_state["isClosed"]: ' + db_state["isClosed"]);
 		
 		let db_is_opened = await this.isDatabaseOpened(); 
-		console.log('>> SqLiteUtils.initialize(): Check if Database Opened: ' + db_is_opened);
+		// console.log('>> SqLiteUtils.initialize(): Check if Database Opened: ' + db_is_opened);
 		if ( db_is_opened ) {
 			await this.closeDatabase();
 		}
@@ -161,7 +161,7 @@ class SqLiteUtils {
 	} // async isDatabaseOpened()
 
 	async openDatabase() {
-		console.error('>> SqLiteUtils.openDatabase()  this.DEBUG: ' + this.DEBUG );
+		// console.error('>> SqLiteUtils.openDatabase()  this.DEBUG: ' + this.DEBUG );
         
 		// if ( this.DEBUG ) sqlite3 = require('sqlite3').verbose();
 		// else              sqlite3 = require('sqlite3');

@@ -1,0 +1,3186 @@
+// =====================================================================================================================
+// ==================================================   main_gui.js   ==================================================
+// =====================================================================================================================
+// https://www.electronjs.org/docs/latest/tutorial/quick-start
+
+// password in HD wallet:
+// https://help.blockstream.com/hc/en-us/articles/8712301763737-What-is-a-BIP39-passphrase
+"use strict";
+
+// ===============================  MainGUI class  ===============================
+// NB: "Singleton" class
+// * static GetInstance()
+// ------------------------------------------------------
+// * async  newWallet( json_data )
+// * async  openWallet( json_data )
+//
+// * async  generateHDWalletAddress( blockchain, entropy )
+// * async  generateSimpleWalletAddress( blockchain, entropy )
+//
+// * async  getSaltedEntropySource()
+// * async  didFinishLoadInit()
+// * async  localizeHtmlNodes()
+//
+// *        registerCallbacks()
+// *        addCustomAttributes()
+//
+// * async  propagateFields( entropy, wif )
+//
+//          updateFieldsVisibility()
+//
+// * async  updateOptionsFields( json_data )
+// * async  updateFields()
+// * async  updateWalletMode( wallet_mode )
+// * async  updateBip39Passphrase( password )
+// * async  updateEntropySize( entropy_size )
+// * async  updateEntropy( entropy )
+// *        updateBlockchain( blockchain )
+//
+// *        updateWalletURL( blockchain, wallet_address )
+//          updateMarketcapURL( blockchain )
+//
+// *        updateWIF( blockchain, wif )
+// *        updatePrivateKey( blockchain, PRIV_KEY )
+// * async  updateChecksum( entropy )
+// * async  updateMnemonics( entropy )
+// * async  updateLanguage( lang )
+// * async  updateWordIndexes()
+//
+// * async  generateSalt()
+// * async  generateRandomFields()
+//
+// * async  getWalletInfo()
+//
+// * 	    clearFields( field_ids )
+//
+// * async  onGUIEvent( data )
+//
+// *        GuiClearPassword()
+// *        GuiGeneratePassword()
+// *        GuiTogglePasswordVisibility()
+// *        GuiSetPasswordApplyState()
+//
+// *        GuiClearBip38Passphrase()
+// *        GuiGenerateBip38Passphrase()
+// *        GuiToggleBip38PassphraseVisibility()
+//
+// * async  fileSaveWallet()
+// * async  fileOpenWallet()
+//
+//   	    showSaveWalletInfoDialog()
+//
+// * async  onGuiUpdateEntropySize( evt )
+// * async  onGuiUpdateWordCount( evt )
+// * async  onGuiUpdateLang( evt )
+// * async  onGuiSwitchWalletMode( evt )
+// * async  onGuiUpdateBlockchain( evt )
+//          onEntropyKeydown( evt )
+//          onEntropyKeypress( evt )
+//          onEntropyPaste( evt )
+// * async  onKeyDown( evt )
+// * async  onInput( evt )
+// *        onGuiFocus( evt )
+//
+//          setSaveCmdState();
+//          setRefreshCmdState();
+//
+//          isBlockchainSupported();
+//
+// *        setEventHandler( elt_id, event_name, handler_function )//
+// *        openTabPage( pageName, elt, color )
+// *        setFocus( elt_id )
+// * async  importRawData()
+
+const ALLOWED_ALPHABETS       = { [ENTROPY_ID]: HEX_ALPHABET };
+const FIELD_IDS               = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
+const WATERFALL_IDS           = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
+const WATERFALL_FROM_SEED_IDS = [ ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
+const EDITABLE_FIELD_IDS      = [ ENTROPY_SRC_FORTUNES_ID, ENTROPY_ID, MNEMONICS_ID ];
+
+const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "MainGUI.onGUIEvent: ";
+
+const trigger_event = ( elt, event_type ) => elt.dispatchEvent( new CustomEvent( event_type, {} ) );
+
+const getChecksumBitCount = ( word_count ) => {
+		if ( word_count == undefined ) word_count = 12;
+		let checksum_bit_count = 4; // default case is 12 words / 4 bits
+		switch ( word_count ) {
+			case 12: checksum_bit_count = 4; break;						
+			case 15: checksum_bit_count = 5; break;						
+			case 18: checksum_bit_count = 6; break;						
+			case 21: checksum_bit_count = 7; break;						
+			case 24: checksum_bit_count = 8; break;						
+			default: checksum_bit_count = 8; break;
+		}		
+		return checksum_bit_count;
+}; // getChecksumBitCount()
+
+const getWordCount = ( entropy_size ) => {
+	switch ( entropy_size ) { 
+		case 128: 	return 12;	break;						
+		case 160: 	return 15;	break;						
+		case 192: 	return 18;	break;						
+		case 224: 	return 21;	break;						
+		case 256: 	return 24;	break;
+		default:	return 24;	break;
+	} // entropy_size
+}; // getWordCount()
+
+const wordCount2BitsSize = ( word_count ) => {
+	switch ( word_count ) { 
+		case 12: 	return 128;	break;						
+		case 15: 	return 160;	break;						
+		case 18: 	return 192;	break;						
+		case 21: 	return 224;	break;						
+		case 24: 	return 256;	break;
+		default:	return 256;	break;
+	} // word_count
+}; // wordCount2BitsSize()
+
+// ==============================  MainGUI class   ==============================
+class MainGUI {	
+	static #Key           = Symbol();
+	static #Singleton     = new MainGUI( this.#Key );
+	static #InstanceCount = 0;
+	
+	static get This() {
+		if( MainGUI.#Singleton == undefined ) {
+			MainGUI.#Singleton = new MainGUI( this.#Key );
+			if (MainGUI.#Singleton > 0) {
+				throw new TypeError("'MainGUI' constructor called more than once");
+			}
+			MainGUI.#InstanceCount++;
+        }
+        return MainGUI.#Singleton;
+    } // MainGUI 'This' getter
+	
+	//static GetInstance() {
+	//	if ( MainGUI.#Singleton == undefined ) {
+	//		MainGUI.#Singleton = new MainGUI( this.#Key );
+    //    }
+    //    return MainGUI.#Singleton;
+    //} // MainGUI.This 
+	
+    // ** Private constructor **
+	constructor( key ) {
+		if ( key !== MainGUI.#Key ) {
+			throw new TypeError("'MainGUI' constructor is private");
+		}
+		
+		this.wallet_info = new WalletInfo( this );
+		this.wallet_info.setAttribute( WORD_COUNT, 24 );
+				
+		this.first_time                   = true; 
+		
+		this.password_visible             = false;		
+		this.bip38_passphrase_visible     = false;
+		
+		this.wits_path                    = "";
+		
+        this.new_cmd_count                = 0;
+        this.cb_enabled                   = true;		
+		this.Options                      = {};	
+		this.entropy_source_type          = IMAGE_ENTROPY_SRC_TYPE;		
+		this.expected_entropy_bytes       = 32;
+		this.entropy_source_is_user_input = false;		
+		this.img_data_asURL               = "";
+		
+		trace2Main( pretty_func_header_format( "MainGUI.constructor" ) );
+		
+		window.ipcMain.receive( "fromMain", async (data) => { await this.onGUIEvent(data); } ); 
+	} // ** Private constructor **
+	
+	async newWallet( options_json_data ) {
+		trace2Main( "===== rGUI.newW> ===============================================================" );
+		trace2Main( pretty_func_header_format( "MainGUI.newWallet" ) );
+		
+		trace2Main( pretty_format( "MainGUI.newWallet" ) );
+		
+		this.new_cmd_count++;
+		
+		this.cb_enabled = false;
+		
+		this.setSaveCmdState( true );
+		
+		this.wallet_info.setOptions( options_json_data );
+		
+		// trace2Main( pretty_format( "rGUI.newW> first_time ", this.first_time ) );
+		// trace2Main( pretty_format( "rGUI.newW> wits_path",   this.wits_path ) );
+		
+        this.wallet_info.reset(); 
+		
+        this.wallet_info.setAttribute( CMD, CMD_NEW_WALLET );		
+		
+		this.setEntropySourceIsUserInput( false );
+		
+		this.entropy_source_type = IMAGE_ENTROPY_SRC_TYPE;
+
+        this.setRefreshCmdState( false );
+		
+		await this.drawEntropySource(); 
+        //----------------------------------------------------------		
+
+		//---------- Wallet Mode ----------
+		let wallet_mode = options_json_data[WALLET_MODE];			
+		await this.updateWalletMode( wallet_mode );	
+		trace2Main( pretty_format( "rGUI.newW> wallet_mode", wallet_mode ) );	
+        //---------- Wallet Mode		
+				
+		// ---------- Blockchain ----------
+		trace2Main( pretty_format( "rGUI.newW> b4 blockchain" ) );
+		let blockchain = options_json_data[DEFAULT_BLOCKCHAIN][wallet_mode];		
+		await this.updateBlockchain( blockchain );
+		trace2Main( pretty_format( "rGUI.newW> blockchain", blockchain ) );
+		// ---------- Blockchain
+		
+		// ---------- Coin ----------
+		let coin = COIN_ABBREVIATIONS[blockchain];		
+		HtmlUtils.SetElementValue( WALLET_COIN_ID, coin );	
+		// trace2Main( pretty_format( "rGUI.newW> coin", coin ) );
+		// ---------- Coin
+		
+		// ---------- Coin Type ----------
+		let coin_type = COIN_TYPES[blockchain];		
+		this.wallet_info.setAttribute( COIN_TYPE, coin_type ); 
+		// trace2Main( pretty_format( "rGUI.newW> coin_type", coin_type ) );
+		// ---------- Coin Type
+
+		// ---------- Entropy Size ----------
+		let entropy_size = options_json_data[ENTROPY_SIZE][wallet_mode];
+		this.wallet_info.setAttribute( ENTROPY_SIZE, entropy_size ); 
+		await this.updateEntropySize( entropy_size );
+        trace2Main( pretty_format( "rGUI.newW> entropy_size", entropy_size ) );		
+		// ---------- Entropy Size
+		
+		// ---------- Entropy ----------
+		// let	entropy_1 = HtmlUtils.GetElementValue( ENTROPY_ID );
+		// trace2Main( pretty_format( "rGUI.newW> entropy 1", entropy_1 ) );
+		
+		let	entropy = await this.generateEntropyFromEntropySource();
+        this.wallet_info.setAttribute( ENTROPY, entropy ); 		
+        trace2Main( pretty_format( "rGUI.newW> entropy", entropy ) );	
+
+		await this.updateChecksum( entropy );		
+		// ---------- Entropy 
+		
+		if ( wallet_mode == HD_WALLET_TYPE ) {
+			this.wallet_info.setAttribute( ACCOUNT,  0 );		
+			// trace2Main( pretty_format( "rGUI.newW> account", 0 ) );						
+			
+            this.wallet_info.setAttribute( ADDRESS_INDEX,  0 );           		
+			// trace2Main( pretty_format( "rGUI.newW> address_index", 0 ) );	
+
+			//---------- Bip32 passphrase strength ----------
+			HtmlUtils.SetElementValue( BIP32_PASSPHRASE_ID, '' );
+			HtmlUtils.SetElementValue( BIP32_PASSPHRASE_STRENGTH_ID, '0' );
+			HtmlUtils.SetElementValue( BIP32_PASSPHRASE_STRENGTH_LABEL_ID, 'Null' );
+			HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
+			//---------- Bip32 passphrase strength
+		} // HD_WALLET_TYPE	
+		
+		//---------- Bip38 passphrase strength ----------
+		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, '' );
+		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_STRENGTH_ID, '0' );
+		HtmlUtils.SetElementValue( BIP38_PASSPHRASE_STRENGTH_LABEL_ID, 'Null' );
+		HtmlUtils.HideElement( BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID );
+		//---------- Bip38 passphrase strength
+		
+		//---------- lang ----------
+		let lang = options_json_data[LANG];			
+		await this.updateLanguage( lang );	
+		// trace2Main( pretty_format( "rGUI.newW> lang", lang ) );	
+        //---------- lang
+		
+		// ---------- Update Window Title ----------
+		// trace2Main( pretty_format( "rGUI.newW> coin", coin ) );
+		let data = { coin, wallet_mode };
+		window.ipcMain.SetWindowTitle( data );
+		// ---------- Update Window Title	
+	
+		// --------------------------------		
+        await this.updateFields( entropy );	       	
+        // --------------------------------
+		
+		this.wallet_info.setAttribute( CMD, CMD_NONE );		
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.newWallet" ) );
+		
+		this.updateFieldsVisibility();
+		
+		this.cb_enabled = true;  
+		
+		// trace2Main( pretty_format( "<END> MainGUI.newWallet first_time", this.first_time) );
+		// trace2Main( pretty_format( "<END> MainGUI.newWallet wits_path", "'" + this.wits_path + "'") );
+		
+		//---------- Note: Request "Min" to 'Open WITS' with 'wits_path' ----------
+		if ( this.wits_path != "" && this.first_time ) {
+			trace2Main( pretty_format( "<END> MainGUI.newWallet Ask 'Main' to'Open WITS' ", this.wits_path) );
+			let cmd_name = CMD_OPEN_WALLET;
+			let cmd_args = this.wits_path;
+			data = { cmd_name, cmd_args };			
+			await window.ipcMain.ExecuteCommand( data ); 
+			
+			this.wits_path  = "";
+			this.first_time = false;
+		}	
+	} // async newWallet()
+	
+	async openWallet( json_data ) {
+		trace2Main( "===== rGUI.openW> ===============================================================" );
+		trace2Main( pretty_func_header_format( "MainGUI.openWallet" ) );
+		trace2Main( JSON.stringify(json_data) );
+
+        this.cb_enabled = false;
+		
+        this.setEntropySourceIsUserInput( true );
+		
+		this.setSaveCmdState( false );
+		
+		this.wallet_info.reset();
+        this.wallet_info.setAttribute( CMD, CMD_OPEN_WALLET );
+		
+		// ---------- Entropy ----------
+		let entropy = json_data[ENTROPY];
+		this.wallet_info.setAttribute( ENTROPY, entropy );
+		trace2Main( pretty_format( "rGUI.openW> entropy", entropy ) );
+		// ---------- Entropy		
+		
+		// ---------- Entropy Size ----------
+		let entropy_size = json_data[ENTROPY_SIZE];		
+		if ( isString( entropy_size ) )  entropy_size = parseInt( entropy_size );
+		this.wallet_info.setAttribute( ENTROPY_SIZE, entropy_size );
+        await this.updateEntropySize( entropy_size );		
+		trace2Main( pretty_format( "rGUI.openW> entropy_size", entropy_size ) );		
+		// ---------- Entropy Size	
+		
+		// ---------- Wallet Mode ----------
+		let wallet_mode = json_data[WALLET_MODE];		
+		this.wallet_info.setAttribute( WALLET_MODE, wallet_mode );
+		trace2Main( pretty_format( "rGUI.openW> wallet_mode", wallet_mode ) );
+		await this.updateWalletMode( wallet_mode );	
+		// ---------- Wallet Mode
+		
+		// ---------- Blockchain ----------
+		// Note: order is important: 'blockchain' must be updated after 'wallet_mode'
+		let blockchain = json_data[BLOCKCHAIN];
+		this.wallet_info.setAttribute( BLOCKCHAIN, blockchain ); 
+        await this.updateBlockchain( blockchain );	
+		trace2Main( pretty_format( "rGUI.openW> blockchain", blockchain ) );
+		// ---------- Blockchain
+		
+		//---------- lang ----------
+		let lang = json_data[LANG];			
+		await this.updateLanguage( lang );	
+		trace2Main( pretty_format( "rGUI.openW> lang", lang ) );	
+        //---------- lang	
+		
+		// ---------- Coin ----------
+		let coin = COIN_ABBREVIATIONS[blockchain];		
+		this.wallet_info.setAttribute( COIN, coin ); 
+		// trace2Main( pretty_format( "rGUI.openW> coin", coin ) );
+		// ---------- Coin
+		
+		// ---------- Coin Type ----------
+		let coin_type = COIN_TYPES[blockchain];		
+		this.wallet_info.setAttribute( COIN_TYPE, coin_type ); 
+		trace2Main( pretty_format( "rGUI.openW> coin(coin_type)" , coin + "(" + coin_type + ")" ) );
+		// ---------- Coin Type		
+
+		// ---------- Word Count ----------
+		let word_count = getWordCount( entropy_size );
+		this.wallet_info.setAttribute( WORD_COUNT, word_count );
+        // ---------- Word Count
+		
+		// ---------- Checksum ----------
+		// Note: requires 'word_count' updated in 'wallet_info'
+		await this.updateChecksum( entropy );
+        // ---------- Checksum		
+
+		if ( wallet_mode == HD_WALLET_TYPE ) {
+			// ---------- Bip32 Protocol ----------
+			if ( json_data[DERIVATION_PATH] != undefined ) {
+				let derivation_path = json_data[DERIVATION_PATH];
+				trace2Main( pretty_format( "rGUI.openW> derivation_path", derivation_path ) );
+				let derivation_path_items = derivation_path.split("/");
+				let bip32_protocol = derivation_path_items[1].replace("'", "");
+				this.wallet_info.setAttribute( BIP32_PROTOCOL, bip32_protocol );
+				trace2Main( pretty_format( "rGUI.openW> Bip32 Protocol", bip32_protocol ) );	
+			}	
+			// ---------- Bip32 Protocol
+
+		
+			// ---------- Bip39 Passphrase ----------
+			if ( json_data[BIP32_PASSPHRASE] != undefined ) {
+				let bip32_passphrase = json_data[BIP32_PASSPHRASE];
+				this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+				trace2Main( pretty_format( "rGUI.openW> Bip39 Passphrase", bip32_passphrase ) );	
+			}	
+			// ---------- Bip39 Passphrase
+
+		    let account = json_data[ACCOUNT]; 
+			this.wallet_info.setAttribute( ACCOUNT, account );
+			// trace2Main( pretty_format( "rGUI.openW> account", account ) );						
+			
+			let address_index = json_data[ADDRESS_INDEX];
+            this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
+			// trace2Main( pretty_format( "rGUI.openW> address_index", address_index ) );
+		} // HD_WALLET_TYPE	
+		
+		// ---------- Bip38 Passphrase ----------
+		if ( json_data[BIP38_PASSPHRASE] != undefined ) {
+			let bip38_passphrase = json_data[BIP38_PASSPHRASE];
+			this.wallet_info.setAttribute( BIP38_PASSPHRASE, bip38_passphrase );
+			trace2Main( pretty_format( "rGUI.openW> Bip38 Passphrase", bip38_passphrase ) );	
+		}	
+		// ---------- Bip38 Passphrase
+		
+		// ---------- Mnemonics ----------
+		let mnemonics = json_data[MNEMONICS];
+		this.wallet_info.setAttribute( MNEMONICS, mnemonics );
+		trace2Main( pretty_format( "rGUI.openW> mnemonics", mnemonics ) );		
+		// ---------- Mnemonics
+		
+		// ---------- Address ----------
+		let address = json_data[ADDRESS];
+		this.wallet_info.setAttribute( ADDRESS, address );
+		trace2Main( pretty_format( "rGUI.openW> address", address ) );
+        // ---------- Address
+		
+		//---------- Update 'Address Hardened Suffix ("" or "'") in "Wallet" Tab ----------
+		if ( blockchain == SOLANA )  HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
+		else                         HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
+		//---------- Update 'Address' in "Wallet" Tab
+
+		// ---------- Word_Indexes ----------
+		let word_indexes = json_data[WORD_INDEXES];
+		this.wallet_info.setAttribute( WORD_INDEXES, word_indexes );
+		trace2Main( pretty_format( "rGUI.openW> word_indexes", word_indexes ) );
+        // ---------- Word_Indexes		
+		
+		// ---------- WIF ----------
+		let wif = json_data[WIF];
+		this.wallet_info.setAttribute( WIF, wif );
+		trace2Main( pretty_format( "rGUI.openW> wif", wif ) );
+        // ---------- WIF	
+		
+		// ---------- Private Key ----------
+		let private_key = json_data[PRIVATE_KEY];
+		this.wallet_info.setAttribute( PRIVATE_KEY, private_key );
+		trace2Main( pretty_format( "rGUI.openW> private key", private_key ) );
+        // ---------- Private Key	
+
+		// ---------- Update Window Title ----------
+		let data = { coin, wallet_mode };
+		window.ipcMain.SetWindowTitle( data );
+		// ---------- Update Window Title
+		
+		this.wallet_info.setAttribute( CMD, CMD_NONE );
+		this.updateFieldsVisibility();
+
+		this.cb_enabled = true;
+		
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.openWallet" ) );
+	} // async openWallet()
+		
+	async generateSimpleWalletAddress( blockchain, entropy_hex ) {
+        trace2Main( pretty_func_header_format( "MainGUI.generateSimpleWalletAddress", 
+		                                       blockchain + " " + this.entropy_source_type ) );					 
+		
+        this.cb_enabled = false;
+		
+		let entropy_src_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		this.entropy_source_type = entropy_src_type;
+		
+		let entropy_src = "XX";
+			
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = HtmlUtils.GetElementValue( ENTROPY_SRC_FORTUNES_ID );
+		}
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = this.img_data_asURL;
+		}
+		
+		// trace2Main( pretty_format( "rGUI.genSW> entropy_src", getShortenedString( entropy_src ) ) );
+		
+		let new_wallet = {};				
+		let salt_uuid  = HtmlUtils.GetElementValue(SALT_ID);
+		let wif        = "";
+		
+		let private_key = entropy_hex;
+		// trace2Main( pretty_format("rGUI.genSW> MAINNET", MAINNET) );
+        trace2Main( pretty_format("rGUI.genSW> private_key", private_key) );		
+
+		if ( private_key == undefined || private_key == "" ) {
+			 throw new Error("MainGUI.generateSimpleWalletAddress 'private_key' NOT DEFINED");
+		}
+		
+		if (     blockchain == BITCOIN   || blockchain == ETHEREUM 
+		      || blockchain == AVALANCHE || blockchain == POLYGON    || blockchain == TON
+		      || blockchain == DOGECOIN  || blockchain == LITECOIN
+			  || blockchain == SOLANA    || blockchain == TERRA_LUNA || blockchain == HORIZEN ) { 
+			
+			let crypto_net = MAINNET;
+			let data = { private_key, salt_uuid, blockchain, crypto_net }; // NB: take care of field names and order
+			new_wallet = await window.ipcMain.GetSimpleWallet( data );
+			
+			private_key = new_wallet[PRIVATE_KEY];
+			wif         = new_wallet[WIF];
+			trace2Main( pretty_format("rGUI.genSW> new_wallet[WIF]", new_wallet[WIF]) );
+			
+			//---------- Update 'Private Key' in 'Wallet' Tab ----------
+			this.updatePrivateKey( blockchain, private_key );
+			this.wallet_info.setAttribute(PRIVATE_KEY, private_key);
+			// HtmlUtils.SetElementValue( PRIVATE_KEY_ID, private_key );
+			//---------- Update 'Private Key' in 'Wallet' Tab	
+		
+			let wallet_address = new_wallet[ADDRESS];
+			
+			//---------- Update 'Address' in 'Wallet' Tab ----------
+			trace2Main( pretty_format( "rGUI.genSW> wallet_address", wallet_address) );		
+			this.wallet_info.setAttribute( ADDRESS, wallet_address );
+			//---------- Update 'Address' in 'Wallet' Tab
+
+			//---------- Update 'WIF' in 'Wallet' Tab ----------
+            trace2Main( pretty_format( "rGUI.genSW> WIF", wif ) );				
+			this.wallet_info.setAttribute( WIF, wif );
+			//---------- Update 'WIF' in 'Wallet' Tab			
+	
+	        // ** Note **: 'mnemonics' is used for 'Simple Wallet' / Solana			
+			if ( blockchain == SOLANA ) {
+				let mnemonics = HtmlUtils.GetElementValue( MNEMONICS_ID );
+				
+				if (this.wallet_info.getAttribute('lang') == "JP") {
+					let mnemonic_jp = mnemonics.replaceAll(' ', '\u3000');
+					//let mnemonic_jp = mnemonics.replaceAll(' ', '*');
+					HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonic_jp );
+				}
+				else {
+					HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonics );
+				}				
+			}
+			
+			this.updateWalletURL( blockchain, wallet_address );
+			this.updateMarketcapURL( blockchain );
+			this.updateCryptoshapeURL();
+		}
+		
+		this.updateFieldsVisibility();
+		
+		this.cb_enabled = true;
+		
+		return new_wallet;
+	} // async generateSimpleWalletAddress()
+	
+	async generateHDWalletAddress( blockchain, entropy_hex ) {
+        trace2Main( pretty_func_header_format( "MainGUI.generateHDWalletAddress", blockchain + " " + this.entropy_source_type ) );				 
+		trace2Main( pretty_format("rGUI.genHDW> entropy_hex", entropy_hex ) );
+		
+		this.cb_enabled = false;
+		
+		let entropy_src_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		this.entropy_source_type = entropy_src_type;
+		
+		let entropy_src = "XX";
+			
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = HtmlUtils.GetElementValue( ENTROPY_SRC_FORTUNES_ID );
+		}
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {        	
+			entropy_src = this.img_data_asURL;
+		}
+		
+		trace2Main( pretty_format( "rGUI.genHDW> entropy_src", getShortenedString( entropy_src ) ) );
+		
+		let new_wallet     = {};
+		let options        = {};
+        let hd_private_key = undefined;	
+		let data           = undefined;
+		
+		let mnemonics      = HtmlUtils.GetElementValue( MNEMONICS_ID );
+		let words          = mnemonics.split(' ');
+        let word_count     = words.length;			
+		let separator      = '\n';		
+
+        let mnemonics_as_2parts = asTwoParts( mnemonics, 15 );
+        trace2Main( pretty_format( "rGUI.genHDW> mnemonics(" + word_count + ")", mnemonics_as_2parts[0] ) );		
+        if ( mnemonics_as_2parts.length > 1 ) { 
+			trace2Main( pretty_format("", mnemonics_as_2parts[1] ) );				
+		}
+		
+		let wif              = "";
+		let PRIV_KEY         = "";
+		let salt_uuid    	 = HtmlUtils.GetElementValue( SALT_ID );
+        let derivation_path  = "";	
+        let crypto_net	     = MAINNET;
+		let bip32_passphrase = "";
+		let account          = "0";
+		let address_index    = "0";
+		let wallet_mode      = this.wallet_info.getAttribute(WALLET_MODE);
+
+        this.wallet_info.setAttribute( BLOCKCHAIN, blockchain );		
+		
+		if (   blockchain == BITCOIN   || blockchain == ETHEREUM  || blockchain == BINANCE_BSC 
+		    || blockchain == AVALANCHE || blockchain == POLYGON       
+		    || blockchain == DOGECOIN  || blockchain == LITECOIN
+			|| blockchain == CARDANO   || blockchain == SOLANA   
+			|| blockchain == STELLAR   || blockchain == SUI
+			|| blockchain == RIPPLE    || blockchain == TRON || blockchain == ETHEREUM_CLASSIC
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
+			|| blockchain == RAVENCOIN || blockchain == HORIZEN 
+			|| blockchain == DASH      || blockchain == VECHAIN	|| blockchain == FIRO ) {
+				
+			// trace2Main( pretty_format( "rGUI.genHDW> entropy_source_is_user_input", this.entropy_source_is_user_input ) );
+
+			let salt_uuid = HtmlUtils.GetElementValue( SALT_ID );
+			
+			// ---------- get 'Passphrase' ----------
+			bip32_passphrase = this.wallet_info.getAttribute( BIP32_PASSPHRASE );
+			trace2Main( pretty_format( "rGUI.genHDW> Bip32 Passphrase", "'" + bip32_passphrase + "'") );
+			// ---------- get 'Passphrase'
+			
+			// ---------- get 'Account' ----------
+			if ( wallet_mode == HD_WALLET_TYPE )
+				account = this.wallet_info.getAttribute(ACCOUNT);
+			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
+			    // account = Math.floor( Math.random() * (ACCOUNT_MAX + 1) );
+				account = getRandomInt(ACCOUNT_MAX);
+			}
+			// trace2Main( pretty_format( "rGUI.genHDW> account", account ) );
+			// ---------- get 'Account'
+
+			// ---------- get 'Address Index' ----------
+			if ( wallet_mode == HD_WALLET_TYPE )
+				address_index = this.wallet_info.getAttribute(ADDRESS_INDEX);
+			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
+				// address_index = Math.floor( Math.random() * (ADDRESS_INDEX_MAX + 1) );
+				address_index = getRandomInt(ADDRESS_INDEX_MAX);
+			}
+			// trace2Main( pretty_format( "rGUI.genHDW> address_index", address_index ) );
+			// ---------- get 'Address Index'			
+			
+			// ========== Wallet Generation ==========  
+			// const { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index, bip32_protocol } = data;
+			let bip32_protocol = 44;
+			if ( blockchain == BITCOIN || blockchain == LITECOIN ) {
+				bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID );
+			}
+			const data = { entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index, bip32_protocol };
+			// trace2Main( pretty_format( "rGUI.genHDW> data", JSON.stringify(data) ) );
+			new_wallet = await window.ipcMain.GetHDWallet( data );
+			// ========== Wallet Generation
+			
+			wif      = "";
+			PRIV_KEY = "";
+			
+			if ( blockchain == CARDANO ) {
+				HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
+				HtmlUtils.SetElementValue( PK_LABEL_ID, 'XPRIV' );
+				HtmlUtils.RemoveClass( ADDRESS_ID, 'NormalAddressField' );
+                HtmlUtils.AddClass( ADDRESS_ID,    'LongAddressField' );					
+			}
+			else if ( blockchain == STELLAR ) {
+				HtmlUtils.SetElementValue( WIF_LABEL_ID, 'Private Key' );
+				HtmlUtils.AddClass( ADDRESS_ID,      'NormalAddressField' );
+                HtmlUtils.RemoveClass( ADDRESS_ID,   'LongAddressField' );
+				wif = new_wallet[WIF];				
+			}
+			else {
+				HtmlUtils.SetElementValue( PK_LABEL_ID, 'Private Key' );
+				HtmlUtils.AddClass( ADDRESS_ID,    'NormalAddressField' );
+                HtmlUtils.RemoveClass( ADDRESS_ID, 'LongAddressField' );					
+			}			
+
+			if (    blockchain == BITCOIN || blockchain == LITECOIN || blockchain == DOGECOIN
+			     || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
+                 || blockchain == DASH || blockchain == FIRO ) {
+                wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
+                trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
+			}
+			else if ( blockchain == TRON ) {				
+				PRIV_KEY = new_wallet[PRIVATE_KEY];
+			} 
+			else if ( blockchain == RIPPLE ) {	
+				wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";			
+				PRIV_KEY = new_wallet[PRIVATE_KEY];
+			}   			
+		}
+		
+		this.updateWIF( blockchain, wif );
+		
+		// ==================== Update 'Derivation Path' in "Wallet" Tab ====================
+		derivation_path = new_wallet[DERIVATION_PATH];
+		trace2Main( pretty_format( "rGUI.genHDW> derivation_path", derivation_path ) );
+
+		let coin_type = COIN_TYPES[blockchain];
+		if ( wallet_mode == HD_WALLET_TYPE ) {
+			if ( derivation_path == undefined ) {
+				GuiUtils.ShowQuestionDialog( "'derivation_path' is UNDEFINED", 
+											{"CloseButtonLabel": "OK", "BackgroundColor": "#FFCCCB" } );
+			}
+			else {
+				let derivation_path_nodes = derivation_path.split('/');
+				trace2Main( pretty_format( "rGUI.genHDW> Get account/address_index from *Derivation Path*", "" ) );
+				coin_type = derivation_path_nodes[2];
+				//trace2Main( pretty_format( "rGUI.genHDW> coin_type", coin_type ) );
+				
+				account = derivation_path_nodes[3].replace("'",'');
+				//trace2Main( pretty_format( "rGUI.genHDW> account", account ) );
+				
+				address_index = derivation_path_nodes[5];
+				//trace2Main( pretty_format( "rGUI.genHDW> address_index", address_index ) );
+			}
+		} // if 'wallet_mode' is HD_WALLET_TYPE
+
+		HtmlUtils.SetElementValue( COIN_TYPE_ID,     coin_type + '/' );
+		
+		this.wallet_info.setAttribute( ACCOUNT,        account );
+		this.wallet_info.setAttribute( ADDRESS_INDEX,  address_index );	
+		
+		//---------- Update 'Purpose' in "Wallet" Tab ----------
+		// if ( blockchain == CARDANO ) HtmlUtils.SetElementValue( PURPOSE_ID, ADA_PURPOSE + "'/");				
+		// else                         HtmlUtils.SetElementValue( PURPOSE_ID, "44'/" );		
+		if ( blockchain == CARDANO ) HtmlUtils.SetElementValue( BIP32_PROTOCOL_ID, ADA_PURPOSE);				
+		// else                         HtmlUtils.SetElementValue( BIP32_PROTOCOL_ID, "44" );			
+		//---------- Update 'Purpose' in "Wallet" Tab
+		
+		//---------- Update 'Change' in "Wallet" Tab ----------
+		// NB: switch to systematic Hardened adresses
+		// if ( blockchain == SOLANA )  HtmlUtils.SetElementValue( CHANGE_ID, "0'/" );				
+		// else                         HtmlUtils.SetElementValue( CHANGE_ID, "0/" );				
+		//---------- Update 'Change' in "Wallet" Tab
+		
+		//---------- Update 'Address' in "Wallet" Tab ----------
+        let wallet_address = new_wallet[ADDRESS];
+		this.wallet_info.setAttribute( ADDRESS, wallet_address );
+		trace2Main( pretty_format( "rGUI.genHDW> new_wallet_address", wallet_address ) );        				
+		//---------- Update 'Address' in "Wallet" Tab
+		
+		//---------- Update 'Address Hardened Suffix ("" or "'") in "Wallet" Tab ----------
+		// NB: switch to systematic Hardened adresses
+		// if ( blockchain == SOLANA )  HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "'" );				
+		// else                         HtmlUtils.SetElementValue( ADDRESS_HARDENED_SUFFIX_ID, "" );				
+		//---------- Update 'Address' in "Wallet" Tab
+		
+		//==================== Update 'Derivation Path' in "Wallet" Tab
+		
+		
+		//---------- Update 'Private Key' in "Wallet" Tab ----------
+		hd_private_key = new_wallet[PRIVATE_KEY];
+		trace2Main( pretty_format( "rGUI.genHDW> hd_private_key", hd_private_key ) );
+		this.wallet_info.setAttribute(PRIVATE_KEY, hd_private_key);
+		
+		if (blockchain == STELLAR) {
+			wif = this.wallet_info.getAttribute("WIF");
+			this.wallet_info.setAttribute(PRIVATE_KEY, wif);
+		}
+		// HtmlUtils.SetElementValue( PRIVATE_KEY_ID, hd_private_key );
+		//---------- Update 'Private Key' in "Wallet" Tab
+		
+		this.updateWalletURL( blockchain, wallet_address );
+		this.updateMarketcapURL( blockchain );
+		this.updateCryptoshapeURL();
+		
+		this.updateFieldsVisibility();
+		
+		this.cb_enabled = true;
+		
+		// trace2Main( "rGUI.genHDW> ------ END OF MainGUI.generateHDWalletAddress ------" );
+		return new_wallet;
+	} // async generateHDWalletAddress()
+	
+	async didFinishLoadInit() {
+		trace2Main( pretty_func_header_format( "MainGUI.didFinishLoadInit" ) );
+		
+		this.registerCallbacks();
+		this.setSaveCmdState( true );
+		
+		this.addCustomAttributes();
+		
+		// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
+		// Get the element with id="seed_tab_link_id" and click on it
+		let seed_tab_link_elt = document.getElementById(SEED_TAB_LINK_ID);
+		seed_tab_link_elt.click();
+		
+		if ( HtmlUtils.HasClass( SEED_TAB_LINK_ID,     "ThreeBordersTabLink" ) ) {
+			HtmlUtils.AddClass( SEED_TAB_LINK_ID,      "ThreeBordersTabLink" );
+		}
+		if ( ! HtmlUtils.HasClass( WALLET_TAB_LINK_ID, "FourBordersTabLink" ) ) {
+			HtmlUtils.RemoveClass( WALLET_TAB_LINK_ID, "FourBordersTabLink");
+		}
+		
+		// Bip38EncryptDecryptDialog.This.initialize();
+	} // async didFinishLoadInit()
+	
+	async localizeHtmlNodes() {
+		 trace2Main( pretty_func_header_format( "MainGUI.localizeHtmlNodes" ) );
+		 
+		 this.cb_enabled = false;
+		 
+		 let L10n_key      = "";
+		 let L10n_msg      = "";
+		 let L10N_KEYPAIRS = await window.ipcMain.GetL10nKeyPairs();
+		 let L10N_KEYS     = Object.keys( L10N_KEYPAIRS );
+		 for ( let i=0; i < L10N_KEYS.length; i++ ) {
+			 //trace2Main("---------->>");			 
+			 L10n_key = L10N_KEYS[i];
+			 L10n_msg = await window.ipcMain.GetLocalizedMsg( L10n_key );
+			 //trace2Main("   L10n_key: " + L10n_key + "   L10n_msg: " + L10n_msg);
+			 HtmlUtils.SetElementValue( L10n_key, L10n_msg );
+		 }
+		 
+		 this.cb_enabled = true;
+	} // async localizeHtmlNodes()
+	
+	registerCallbacks() {
+		trace2Main( pretty_func_header_format( "MainGUI.registerCallbacks" ) );
+		
+		// CUSTOM_EVT_UPDATE_ENTROPY
+		document.body.addEventListener( CUSTOM_EVT_UPDATE_ENTROPY, async (evt) => { 
+			    trace2Main( pretty_format( "rGUI.evtHandler> " + CUSTOM_EVT_UPDATE_ENTROPY ) );
+				if ( this.cb_enabled )  { 
+					await this.onCustomEntropyUpdate( evt );  
+				}
+		} );
+		
+		// -------------------- Toolbar icon buttons -------------------- 
+		this.setEventHandler( FILE_NEW_ICON_ID, 'click', 
+			async (evt) => { 
+			    trace2Main( pretty_format( "rGUI.evtHandler> " + FILE_NEW_ICON_ID ) );
+				if ( this.cb_enabled )  { 
+					await this.onFileNewWallet();  
+				}
+			} );
+			
+		this.setEventHandler( FILE_OPEN_ICON_ID, 'click', 
+		    async (evt) => { 
+			    trace2Main( pretty_format( "rGUI.evtHandler> " + FILE_OPEN_ICON_ID ) );
+				if ( this.cb_enabled ) { 
+					await this.fileOpenWallet(); 
+				}
+			} );
+			
+		this.setEventHandler( SAVE_ICON_ID,            'click',
+ 		    async (evt) => { if (this.cb_enabled) await this.fileSaveWallet(); } );
+			
+		this.setEventHandler( REGENERATE_ICON_ID,      'click', 
+		    async (evt) => { if (this.cb_enabled) await this.generateRandomFields(); } );
+			
+		this.setEventHandler( TOGGLE_DEVTOOLS_ICON_ID, 'click', 
+		    (evt) => { if (this.cb_enabled) this.onToggleDebug(evt); } );		
+		// -------------------- Toolbar icon buttons
+		
+		
+		this.setEventHandler( ENTROPY_SRC_FORTUNES_ID, 'focus', 
+		    (evt) => { if (this.cb_enabled) this.onGuiFocus(evt); } );
+        //this.setEventHandler( entropy_src_fortunes_id,      'keydown', async (evt) => { await this.onKeyDown(evt); }   );	
+		
+		this.setEventHandler( ENTROPY_ID,            'keypress', 
+			(evt) => { if (this.cb_enabled) this.onEntropyKeypress(evt); } );
+		this.setEventHandler( ENTROPY_ID,            'keydown',  
+		    (evt) => { if (this.cb_enabled) this.onEntropyKeydown(evt); } );
+        this.setEventHandler( ENTROPY_ID,            'paste',    
+		    async (evt) => { if (this.cb_enabled) await this.onEntropyPaste(evt); } );		
+		this.setEventHandler( ENTROPY_ID,            'focus',    
+		    (evt) => { if (this.cb_enabled) this.onGuiFocus(evt); } );
+			
+		// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop	
+		this.setEventHandler( ENTROPY_SOURCE_IMG_ID, 'drop', 
+		    (evt) => { if (this.cb_enabled) this.onDropImage(evt); } );
+							  
+		this.setEventHandler( ENTROPY_SOURCE_IMG_ID, 'dragover', 
+		    (evt) => { if (this.cb_enabled) evt.preventDefault(); evt.stopPropagation();  } );
+
+		this.setEventHandler( ENTROPY_SRC_TYPE_SELECTOR_ID, 'change', 
+			async (evt) => { if (this.cb_enabled) await this.onGuiSwitchEntropySourceType(); } );
+		
+		this.setEventHandler( ENTROPY_COPY_BTN_ID,      'click',    
+		    (evt) => { if (this.cb_enabled) this.onCopyButton(ENTROPY_COPY_BTN_ID); } );
+			
+		this.setEventHandler( ENTROPY_SIZE_SELECT_ID,   'change',   
+		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateEntropySize(evt); } );
+        this.setEventHandler( WORD_COUNT_SELECT_ID,     'change',   
+		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateWordCount(evt); } );
+		this.setEventHandler( LANG_SELECT_ID,           'change',   
+		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateLang(evt); } );	
+			
+
+		// -------------------- BIP39 Passphrase --------------------		
+		this.setEventHandler( EDIT_BIP39_BTN_ID, 'click',   
+		     (evt) => { PassphraseDialog.This.showDialog( BIP39_PASSPHRASE_TYPE ); } );
+			 
+		this.setEventHandler( GENERATE_BIP39_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiGenerateBip39Passphrase(); } );
+			
+		this.setEventHandler( EYE_BTN_ID, 'click',   
+		    (evt) => { if (this.cb_enabled) this.GuiToggleBip32PassphraseVisibility(); } )
+			
+		this.setEventHandler( CLEAR_BIP39_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip39Passphrase(); } );	
+		// -------------------- BIP39 Passphrase	
+		
+		
+		// -------------------- BIP38 Passphrase --------------------			
+		this.setEventHandler( CLEAR_PASSWORD_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip32Passphrase(); } );;				
+
+		this.setEventHandler( CLEAR_BIP38_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip38Passphrase(); } );			
+			
+		this.setEventHandler( GENERATE_BIP38_PASSPHRASE_BTN_ID, 'click',   
+		    async (evt) => { if (this.cb_enabled) await this.GuiGenerateBip38Passphrase(); } );
+
+		this.setEventHandler( BIP38_PASSPHRASE_EYE_BTN_ID, 'click',   
+		    (evt) => { if (this.cb_enabled) this.GuiToggleBip38PassphraseVisibility(); } );
+			
+		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
+		    async (evt) => { await this.onGuiChangeBip38Passphrase( evt ); } );
+		// -------------------- BIP38 Passphrase	
+		
+		
+		this.setEventHandler( WALLET_MODE_SELECT_ID,    'change',   
+		    async (evt) => { if (this.cb_enabled) await this.onGuiSwitchWalletMode(evt); } );
+			
+		this.setEventHandler( WALLET_BLOCKCHAIN_ID,     'change',   
+		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateBlockchain(evt); } );
+			
+		this.setEventHandler( PK_COPY_BTN_ID, 'click',    
+		    (evt) => { if (this.cb_enabled) this.onCopyButton(PK_COPY_BTN_ID); } );
+		
+		this.setEventHandler( MNEMONICS_ID,             'paste',    
+		    async (evt) => { if (this.cb_enabled) await this.onMnemonicsPaste(evt); } );
+		this.setEventHandler( MNEMONICS_4LETTER_ID,     'focus',    
+		    (evt) => { if (this.cb_enabled) this.onGuiFocus(evt); } );
+		this.setEventHandler( MNEMONICS_COPY_BTN_ID,    'click',    
+		    (evt) => { if (this.cb_enabled) this.onCopyButton(MNEMONICS_COPY_BTN_ID); } );
+		this.setEventHandler( SW_MNEMONICS_COPY_BTN_ID, 'click',    
+		    (evt) => { if (this.cb_enabled) this.onCopyButton(SW_MNEMONICS_COPY_BTN_ID); } );
+		
+		this.setEventHandler( SW_WIF_COPY_BTN_ID,       'click',    
+		    (evt) => { if (this.cb_enabled) this.onCopyButton(SW_WIF_COPY_BTN_ID); } );
+		
+		// Regression Fix: '_00_todo.txt' 2025/07/17 Bug 2
+		this.setEventHandler( WORD_INDEXES_BASE_ID,     'change', async (evt) => { await this.updateWordIndexes(); } );			
+				
+		this.setEventHandler( GENERATE_BTN_ID,            'click',    
+		    async (evt) => { if (this.cb_enabled) await this.generateRandomFields(); } );				
+		this.setEventHandler( REFRESH_BTN_ID,           'click',    
+		    async (evt) => { if (this.cb_enabled) await this.onRefreshButton(); } );
+			
+		// -------------------- Bip32 Protocol --------------------
+		this.setEventHandler( BIP32_PROTOCOL_ID, 'change', 
+		    async (evt) => { if (this.cb_enabled) await this.onBIP32ProtocolChange(evt); } );
+		// -------------------- Bip32 Protocol
+		
+		this.setEventHandler( ACCOUNT_ID,               'keypress', 
+		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeypress(evt); } );
+		this.setEventHandler( ADDRESS_INDEX_ID,         'keypress', 
+		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeypress(evt); } );
+									 
+        //trigger_event( HtmlUtils.GetElement( GENERATE_BTN_ID ), 'click' );
+	} // registerCallbacks()
+	
+	addCustomAttributes( entropy ) {
+		trace2Main( pretty_func_header_format( "MainGUI.addCustomAttributes") );
+		
+		let passphrase_elt = HtmlUtils.GetElement( BIP32_PASSPHRASE_ID );
+		passphrase_elt.setAttribute( PASSWORD_PRIVATE_VALUE, "" );
+		
+		let bip38_passphrase_elt = HtmlUtils.GetElement( BIP38_PASSPHRASE_ID );
+		bip38_passphrase_elt.setAttribute( PASSWORD_PRIVATE_VALUE, "" );
+	} // addCustomAttributes()
+	
+	async propagateFields( entropy ) {
+		trace2Main( pretty_func_header_format( "MainGUI.propagateFields", entropy ) );
+
+        this.cb_enabled	= false; 	
+		
+		if ( entropy == undefined ) {			
+			entropy = getRandomHexValue( this.entropy_expected_bytes );
+			trace2Main( pretty_format( "entropy UNDEFINED >> Generate Random Entropy", entropy ) );
+		}	
+		
+		trace2Main( pretty_format( "rGUI.propF> CMD", this.wallet_info.getAttribute(CMD) ) );
+		if ( this.wallet_info.getAttribute(CMD) == CMD_OPEN_WALLET || this.entropy_source_is_user_input ) { 
+		    this.setEntropySourceIsUserInput( true );			
+		}
+		else {
+			this.setEntropySourceIsUserInput( false );	
+			await this.generateSalt();	
+		}
+		
+		if ( this.wallet_info.getAttribute(CMD) != CMD_OPEN_WALLET ) { 
+			await this.updateEntropy( entropy ); 	
+			await this.updateMnemonics( entropy );
+        }
+		
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.propagateFields", entropy ) );
+		
+        this.cb_enabled	= true;		
+	} // async propagateFields()
+	
+	
+	// ============================================================================================
+	// ====================================      Updates      =====================================
+	// ============================================================================================
+	// Note: Wallet manahgers: Guarda, Yoroi, Phantom Wallet
+	updateFieldsVisibility() {
+		// ============== SIMPLE WALLET ==============
+		//                            PK    WIF   MNK
+		// SPEC OK                   ----------------- 
+		//  *   *   BTC, DOGE, LTC :  X      X     X
+		//  *   *   ETH            :  X      -     X 
+		//  *   *   AVA            :  X      -     X
+		//  *   *   SOL            :  X      X     X
+		//
+		// ================ HD WALLET ================
+		//                            PK    WIF   MNK
+		// SPEC OK                   ----------------- 
+		//  *   *   BTC, DOGE, LTC :  -      X     -
+		//  *   *   ETH            :  X      -     -
+		//  *   *   AVA            :  X      -     -
+		//  *   *   SOL            :  X      -     -  NB: validated with "Phantom Wallet"
+		//  *   *   ADA            :  -      -     X  NB: validated with "Guarda" and "Yoroi"
+		//                                                24 words 'account' and 'address_index' hard-coded to 0                                           
+		//  *   *   XRP            :  -      X     -
+		//  *   *   TRON           :  -      X     -
+		//  *   *   BITCOIN CASH   :  -      X     - 
+		//  *   *   DASH           :  -      X     - 
+		//  *   *   FIRO           :  -      X     -  
+		
+		// trace2Main( pretty_func_header_format( "MainGUI.updateFieldsVisibility" ) );
+		HtmlUtils.HideElement( TR_SW_MNEMONICS_ID );
+		
+		let wallet_mode = this.wallet_info.getAttribute(WALLET_MODE);
+		let blockchain  = this.wallet_info.getAttribute(BLOCKCHAIN);
+		
+		HtmlUtils.HideElement( TR_PRIV_KEY_ID );
+		HtmlUtils.HideElement( TR_1ST_PK_ID );		
+		
+		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {			
+			HtmlUtils.ShowElement( SW_ENTROPY_SIZE_ID );
+			
+			HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
+
+			HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
+			if ( blockchain == TON || blockchain == TERRA_LUNA || blockchain == HORIZEN ) {				
+				HtmlUtils.HideElement(TR_SW_MNEMONICS_ID);
+			}
+			
+			HtmlUtils.HideElement( BIP32_PASSPHRASE_ROW_ID );
+			
+			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.HideElement( DERIVATION_PATH_ROW );
+			
+			//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
+		    HtmlUtils.ShowElement( TR_1ST_PK_ID );
+		}
+		else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
+           HtmlUtils.ShowElement( BIP32_PASSPHRASE_ROW_ID );
+			
+			HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
+
+			if ( wallet_mode == HD_WALLET_TYPE )
+				HtmlUtils.ShowElement( DERIVATION_PATH_ROW );
+			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
+				HtmlUtils.HideElement( BIP32_PASSPHRASE_ROW_ID );
+				HtmlUtils.HideElement( DERIVATION_PATH_ROW );
+			}
+			HtmlUtils.ShowElement( TR_WIF_ID );
+			
+			HtmlUtils.HideElement( TR_SW_MNEMONICS_ID );
+			
+			HtmlUtils.HideElement( SW_ENTROPY_SIZE_ID);
+			
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.HideElement( SW_WORD_COUNT_ID );  
+
+			if ( blockchain == TRON ) {
+				HtmlUtils.HideElement( TR_PRIV_KEY_ID );			
+			}			
+			else if ( blockchain == CARDANO ) {				
+				HtmlUtils.HideElement(ACCOUNT_ID);
+				HtmlUtils.HideElement(ACCOUNT_SUFFIX_ID);
+				HtmlUtils.HideElement(ADDRESS_INDEX_ID);				
+				
+				HtmlUtils.ShowElement(ACCOUNT_READONLY_ID);
+				HtmlUtils.ShowElement(ADDRESS_INDEX_READONLY_ID);
+				
+				HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
+			}
+			else {
+				HtmlUtils.ShowElement(ACCOUNT_ID);
+				HtmlUtils.ShowElement(ACCOUNT_SUFFIX_ID);
+				HtmlUtils.ShowElement(ADDRESS_INDEX_ID);
+				
+				HtmlUtils.HideElement(ACCOUNT_READONLY_ID);
+				HtmlUtils.HideElement(ADDRESS_INDEX_READONLY_ID);			
+			}
+			// HtmlUtils.HideElement( TR_1ST_PK_ID );	
+            HtmlUtils.HideElement( TR_PRIV_KEY_ID );
+
+			if ( blockchain == RIPPLE ) {
+				HtmlUtils.HideElement( TR_WIF_ID );
+				HtmlUtils.HideElement( TR_1ST_PK_ID );			
+		    }
+			else if ( blockchain == STELLAR || blockchain == SUI) {				
+				HtmlUtils.ShowElement(TR_1ST_PK_ID);
+			}
+
+            if (   blockchain == ETHEREUM  || blockchain == BINANCE_BSC
+				|| blockchain == AVALANCHE || blockchain == POLYGON				
+                || blockchain == SOLANA	) {   
+				HtmlUtils.HideElement( TR_WIF_ID );
+				HtmlUtils.ShowElement( TR_1ST_PK_ID );
+				//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
+			}	
+
+            if (   blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {   
+				HtmlUtils.ShowElement( TR_1ST_PK_ID );
+				//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
+			}				
+		}
+
+        // ------------------- Hide "BIP38" if coin is SUI --------------------
+		if ( blockchain == SUI ) {
+			HtmlUtils.HideElement( BIP38_PASSPHRASE_ROW_ID );			
+		}
+		else {
+			HtmlUtils.ShowElement( BIP38_PASSPHRASE_ROW_ID );			
+		}	
+        // ------------------- Hide "BIP38" if coin is SUI		
+
+		// ------------------- WIF --------------------
+		let wif = this.wallet_info.getAttribute(WIF);
+		if (   ( wallet_mode == HD_WALLET_TYPE ||  wallet_mode == SWORD_WALLET_TYPE )
+			&& (    blockchain == SOLANA || blockchain == STELLAR 
+		         || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) ) {  
+			HtmlUtils.HideElement( TR_WIF_ID );
+		}
+		else { 
+			if (    wif != undefined  &&  wif != "" 
+				&& blockchain != ETHEREUM  &&  blockchain != AVALANCHE &&  blockchain != POLYGON 
+				&&  blockchain != BINANCE_BSC ) {
+				HtmlUtils.ShowElement( TR_WIF_ID );
+			}	
+			else {
+				HtmlUtils.HideElement( TR_WIF_ID );
+			}
+		}
+
+		if ( wallet_mode == SIMPLE_WALLET_TYPE && blockchain == HORIZEN ) {				
+			HtmlUtils.ShowElement( TR_WIF_ID );
+		}		
+		// ------------------- WIF
+		
+		
+		HtmlUtils.HideElement( ENTROPY_SRC_IMG_CONTAINER_ID );
+		HtmlUtils.HideElement( ENTROPY_SRC_FORTUNES_ID );
+		HtmlUtils.HideElement( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
+		HtmlUtils.HideElement( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
+			
+		// ------------------- Entropy Source -------------------
+		if ( this.entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowElement( ENTROPY_SRC_FORTUNES_ID );			
+		}
+		else if ( this.entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowElement( ENTROPY_SRC_IMG_CONTAINER_ID );
+		}
+		else if ( this.entropy_source_type == MOUSE_MOVE_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowElement( ENTROPY_SRC_MOUSE_MOVE_CONTAINER_ID );
+			 
+			 let words_count = this.wallet_info.getAttribute( WORD_COUNT );
+			 let entropy_bytes_count = wordCount2BitsSize(words_count) / 8;
+			 DrawEntropyMouseMove.GetInstance().init(entropy_bytes_count);
+		}
+		else if ( this.entropy_source_type == DICE_D6_ENTROPY_SRC_TYPE ) {
+			HtmlUtils.ShowElement( ENTROPY_SRC_DICE_D6_CONTAINER_ID );
+			DrawEntropyDiceD6.GetInstance().clear();
+		}
+		// ------------------- Entropy Source
+		
+		let is_user_input = this.entropy_source_is_user_input;
+		//this.updateStatusbarInfo( is_user_input );
+		if ( is_user_input ) {
+			HtmlUtils.HideElement( ENTROPY_SRC_ROW );
+			HtmlUtils.HideElement( TR_SALT_ID );	
+			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );	
+		}
+		else {
+			HtmlUtils.ShowElement( ENTROPY_SRC_ROW );
+			HtmlUtils.ShowElement( TR_SALT_ID );	
+			
+			// trace2Main( pretty_format( "rGUI.upFieldVisib> is_user_input", is_user_input ) );
+            if ( this.wallet_info.getAttribute(WALLET_MODE) == HD_WALLET_TYPE ) {				
+				HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
+				HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
+			}			
+		}
+	} // updateFieldsVisibility()
+	
+	async updateFields( entropy ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateFields", entropy ) );
+		
+		this.cb_enabled	= false; 
+		
+		//trace2Main("   this.entropy_source_type: " + this.entropy_source_type);
+		//trace2Main( pretty_format( "rGUI.updFields> entropy", entropy ) );
+		
+		trace2Main( pretty_format( "rGUI.upFields> wallet[ENTROPY]", this.wallet_info.getAttribute(ENTROPY) ) );
+		if ( entropy == undefined ) { 
+			entropy = this.wallet_info.getAttribute(ENTROPY);
+			this.wallet_info.setAttribute(ENTROPY, entropy); // to update GUI 
+		}
+		// trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
+		
+		//let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID ); 
+		
+		this.setRefreshCmdState( false );
+		
+		// trace2Main( pretty_format( "entropy_source_is_user_input", this.entropy_source_is_user_input ) );
+		trace2Main( pretty_format( "rGUI.upFields> CMD", this.wallet_info.getAttribute(CMD))  );	
+		
+        if (  this.wallet_info.getAttribute(CMD) == CMD_OPEN_WALLET || this.entropy_source_is_user_input ) {
+			trace2Main( pretty_format( "rGUI.upFields> entropy_source *IS* user_input", "")  );	
+			await this.propagateFields( entropy );
+		}
+		else {	
+            trace2Main( pretty_format( "rGUI.upFields> entropy_source *IS NOT* user_input", "")  );			
+			//trace2Main("   expected_entropy_bytes:  " + this.expected_entropy_bytes);
+			
+			let salted_entropy_src_str = await this.getSaltedEntropySource();
+			//trace2Main( pretty_format( "Salted Entropy", getShortenedString( salted_entropy_src_str ) ) );			
+			
+			if ( salted_entropy_src_str.length > 0 ) {
+				const options = { [LANG]: "EN", [WORD_COUNT]: this.wallet_info.getAttribute(WORD_COUNT) };
+				const data    = { salted_entropy_src_str, options };
+				
+				entropy = await window.ipcMain.EntropySourceToEntropy( data );
+				
+				trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
+
+                this.wallet_info.setAttribute( ENTROPY, entropy );
+				await this.propagateFields( entropy );
+				//await this.propagateFields(entropy_elt.value, wif);
+			}                                                          
+			//else if ( entropy_elt.value.length == expected_entropy_hex_digits ) {
+			//	await this.propagateFields( entropy_value );
+			//}
+		}
+		
+		HtmlUtils.SetElementValue( SB_MSG_ID, "" );
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.updateFields", entropy ) );
+
+		this.cb_enabled	= true; 		
+	} // updateFields()
+	
+	async updateWalletMode( wallet_mode ) {
+		trace2Main( pretty_func_header_format("MainGUI.updateWalletMode") );
+		
+		this.cb_enabled	= false; 
+		
+		if ( wallet_mode != undefined ) {			
+			this.Options[WALLET_MODE] = wallet_mode;
+		}
+		else {
+			wallet_mode = this.Options[WALLET_MODE];
+		}
+        trace2Main( pretty_format( "rGUI.upWmode> wallet_mode", wallet_mode) );		
+        
+        let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID ); 
+
+		if ( wallet_mode == SIMPLE_WALLET_TYPE ) { 
+			this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;		
+		}
+		
+		HtmlUtils.InitializeElement( WALLET_BLOCKCHAIN_ID, 
+			                         this.Options['Blockchains'][wallet_mode],
+				                     this.Options['Blockchains'][wallet_mode] );
+								  
+		let default_blockchain = this.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
+		trace2Main( pretty_format( "rGUI.upWmode> default_blockchain", default_blockchain ) );
+
+        this.wallet_info.setAttribute( WALLET_MODE, wallet_mode );
+        this.wallet_info.setAttribute( BLOCKCHAIN,  default_blockchain ); 
+
+        this.updateFieldsVisibility(); 		
+		// HtmlUtils.SetElementValue( WALLET_BLOCKCHAIN_ID, default_blockchain);	
+
+		// ---------- Update Window Title ----------
+		let coin = COIN_ABBREVIATIONS[default_blockchain];
+		let data = { coin, wallet_mode };
+		window.ipcMain.SetWindowTitle( data );
+		// ---------- Update Window Title	
+		
+		this.updateFieldsVisibility();
+		
+		this.setSaveCmdState( true );
+
+		this.cb_enabled	= true; 
+        // trace2Main( pretty_func_header_format( "<END> MainGUI.updateWalletMode" ) );		
+	} // async updateWalletMode()
+
+	async updateBlockchain( blockchain ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateBlockchain", blockchain ) );
+		
+		if ( blockchain == undefined ) {
+			blockchain = this.wallet_info.getAttribute( BLOCKCHAIN );
+		}
+		
+		let entropy_hex = this.wallet_info.getAttribute( ENTROPY );
+		let wallet_mode = this.wallet_info.getAttribute( WALLET_MODE );
+		
+		trace2Main( pretty_format( "rGUI.upBlkCHN> wallet_mode", wallet_mode ) );
+		
+		if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) { 
+		    HtmlUtils.SetElementValue( BIP32_PROTOCOL_ID, 44 );
+			let bip32_protocol_elt = HtmlUtils.GetElement( BIP32_PROTOCOL_ID );
+			
+			if ( blockchain == BITCOIN || blockchain == LITECOIN ) { 
+			    // Set BIP32_PROTOCOL_ID to "Editable Mode"
+				HtmlUtils.RemoveClass( BIP32_PROTOCOL_ID, "ReadOnlySelect" );
+				HtmlUtils.AddClass   ( BIP32_PROTOCOL_ID, "EditableSelect" );
+                if ( bip32_protocol_elt != undefined ) bip32_protocol_elt.removeAttribute('disabled');
+			}
+			else { 
+			    // Set BIP32_PROTOCOL_ID to "ReadOnly Mode"
+				HtmlUtils.RemoveClass( BIP32_PROTOCOL_ID, "EditableSelect" );
+				HtmlUtils.AddClass   ( BIP32_PROTOCOL_ID, "ReadOnlySelect" );
+				if ( bip32_protocol_elt != undefined ) bip32_protocol_elt.setAttribute('disabled', 'disabled' );
+			}
+		}
+		
+		trace2Main( pretty_format( "rGUI.upBlkCHN> CMD", this.wallet_info.getAttribute(CMD) ) );
+		
+		let wallet = {};
+		if ( this.wallet_info.getAttribute( CMD ) != CMD_OPEN_WALLET ) {
+			if ( wallet_mode == SIMPLE_WALLET_TYPE )  {
+				wallet = await this.generateSimpleWalletAddress( blockchain, entropy_hex );
+			}
+			else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
+				wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
+			}
+		}
+		
+		this.wallet_info.setAttribute( ACCOUNT,       0 );
+		this.wallet_info.setAttribute( ADDRESS_INDEX, 0 );
+		
+		this.wallet_info.setAttribute( WIF, wallet[WIF] );
+		trace2Main( pretty_format( "rGUI.upBlkCHN> WIF", wallet[WIF] ) );
+		
+		// ---------- Update Window Title ----------
+		let coin = COIN_ABBREVIATIONS[blockchain];
+		let data = { coin, wallet_mode };
+		window.ipcMain.SetWindowTitle( data );
+		// ---------- Update Window Title
+		
+		trace2Main( pretty_format( "rGUI.upBlkCHN> coin", coin ) );
+		HtmlUtils.SetElementValue( WALLET_COIN_ID, coin );
+		
+		let wallet_address =  this.wallet_info.getAttribute( ADDRESS );		
+		trace2Main( pretty_format( "rGUI.upBlkCHN> wallet_address", wallet_address ) );
+
+        this.updateWalletURL( blockchain, wallet_address );
+		
+		this.updateFieldsVisibility();
+	} // updateBlockchain()	
+	
+	async updateOptionsFields( options_data ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateOptionsFields" ) );
+		
+		this.cb_enabled	= false; 
+		
+		if ( options_data == undefined ) {
+			trace2Main("   " + _RED_ + "**ERROR** options_data: " + options_data + _END_);
+			await window.ipcMain.QuitApp();
+		}
+		
+		//trace2Main("   *!!* options_data: " + JSON.stringify(options_data));
+
+        this.wallet_info.setOptions( options_data );		
+		
+		let wallet_mode = options_data[WALLET_MODE];
+		trace2Main( pretty_format( "rGUI.upOpt> wallet_mode", wallet_mode ) );
+		
+		let default_blockchain = options_data[DEFAULT_BLOCKCHAIN][wallet_mode];
+		trace2Main( pretty_format( "rGUI.upOpt> default_blockchain", default_blockchain ) );
+		HtmlUtils.SetElementValue( WALLET_BLOCKCHAIN_ID, default_blockchain );	
+		
+		HtmlUtils.SetElementValue( WALLET_COIN_ID, COIN_ABBREVIATIONS[default_blockchain] );
+
+		await this.updateWalletMode( wallet_mode );
+
+		let entropy_size = options_data[ENTROPY_SIZE][wallet_mode];
+		trace2Main( pretty_format( "rGUI.upOpt> entropy_size", entropy_size ) );
+        await this.updateEntropySize( entropy_size );	
+		
+        this.cb_enabled	= true; 		
+	} // async updateOptionsFields()
+	
+	async updateWalletAddress() {
+        trace2Main( pretty_func_header_format( "================ MainGUI.updateWalletAddress" ) );		
+							
+		let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
+		
+		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID ); 
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		
+		let bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID ); 
+		trace2Main( pretty_format( "rGUI.uWadr> bip32_protocol", bip32_protocol ) );
+		this.wallet_info.setAttribute( BIP32_PROTOCOL, bip32_protocol );
+		
+		let account = parseInt( HtmlUtils.GetElementValue( ACCOUNT_ID ) );
+		this.wallet_info.setAttribute( ACCOUNT, account );
+		// trace2Main( pretty_format( "rGUI.uWadr> account", account ) );
+		
+		let address_index = parseInt( HtmlUtils.GetElementValue( ADDRESS_INDEX_ID ) );
+		this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
+		trace2Main( pretty_format( "rGUI.uWadr> address_index", address_index) );
+		
+		// this.setEntropySourceIsUserInput( true );
+		
+		// this.updateStatusbarInfo( true );
+		
+		await this.updateFields( entropy );	
+    } // updateWalletAddress()
+	
+	updateStatusbarInfo( is_displayed ) {
+		trace2Main( pretty_format( "MainGUI.updateStatusbarInfo" ) );
+		let entropy = this.wallet_info.getAttribute(ENTROPY);
+		if ( is_displayed ) {		
+			let msg =   "*Warning* Entropy source is User Input"
+					  + "  |  Entropy value length: " + entropy.length
+				 	  + "  expected digits: " + this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS);		
+			HtmlUtils.SetElementValue( "SB_item_message_id", msg );
+		}
+		else {
+			HtmlUtils.SetElementValue( "SB_item_message_id", "" );   
+		}
+	} // updateStatusbarInfo	
+	
+	async updateBip39Passphrase( bip39_passphrase ) {
+		trace2Main( "===== rGUI.upPW ===============================================================" );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip39Passphrase", bip39_passphrase ) );
+		await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
+	}  // async updateBip39Passphrase()
+	
+	async updateEntropy( entropy_hex ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateEntropy", entropy_hex ) );		
+		
+		// this.cb_enabled = false;
+		
+		this.wallet_info.setAttribute( ENTROPY, entropy_hex );
+		
+		this.setEntropyValueValidity( true ); 
+		
+		let blockchain = this.wallet_info.getAttribute(BLOCKCHAIN);
+        trace2Main( pretty_format( "rGUI.upE> blockchain: ", blockchain ) );		
+
+        await this.updateMnemonics( entropy_hex ); 
+		await this.updateChecksum( entropy_hex );
+		
+		let wallet_mode = this.wallet_info.getAttribute( WALLET_MODE );
+
+		let wallet = {};
+		trace2Main( pretty_format( "rGUI.upE> entropy_hex", entropy_hex ) );
+		trace2Main( pretty_format( "rGUI.upE> wallet_mode", wallet_mode ) );
+		trace2Main( pretty_format( "rGUI.upE> wallet_info[CMD]", this.wallet_info.getAttribute(CMD) ) );
+		
+		if ( this.wallet_info.getAttribute( CMD ) != CMD_OPEN_WALLET ) {
+			if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
+				wallet = await this.generateSimpleWalletAddress( blockchain, entropy_hex );
+			}
+			else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
+				wallet = await this.generateHDWalletAddress( blockchain, entropy_hex );
+			}
+		}		
+
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.updateEntropy", entropy_hex ) );
+	} // updateEntropy()
+	
+	async updateEntropySize( entropy_size ) {		
+		trace2Main( pretty_func_header_format( "MainGUI.updateEntropySize", entropy_size + " bits") );
+		
+		this.cb_enabled = false;
+		
+		if ( isString( entropy_size ) ) {
+			entropy_size = parseInt( entropy_size );
+		}
+		
+		let word_count = getWordCount( entropy_size );
+		this.wallet_info.setAttribute( WORD_COUNT, word_count );
+			
+		this.expected_entropy_bytes = entropy_size / 8;
+		// trace2Main( pretty_format("rGUI.upEsz> expected_entropy_bytes", this.expected_entropy_bytes ) );
+		
+		let expected_entropy_digits = this.expected_entropy_bytes * 2; 
+		// trace2Main( pretty_format("rGUI.upEsz> expected_entropy_digits", expected_entropy_digits ) );
+		this.wallet_info.setAttribute( EXPECTED_ENTROPY_DIGITS, expected_entropy_digits );
+		
+		this.wallet_info.setAttribute( ENTROPY_SIZE, entropy_size );
+		
+		trace2Main( pretty_format("rGUI.upEsz> entropy_size", entropy_size ) );
+		// trace2Main( pretty_format("rGUI.uEsz> isNumber(entropy_size)", valueIsNumber( entropy_size) ) );
+		
+		if ( ! valueIsNumber( entropy_size) ) {
+			trace2Main( pretty_format("rGUI.uEsz> 'entropy_size' is UNDEFINED" ) );
+			GuiUtils.ShowQuestionDialog( "'entropy_size' is UNDEFINED", 
+					                     {"CloseButtonLabel": "OK", "BackgroundColor": "#FFCCCB" } );
+		    return;								 
+		}			
+		
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		trace2Main( pretty_format( "rGUI.upEsz> entropy_elt", entropy_elt.id ) );
+		entropy_elt.setAttribute( "minlength", this.wallet_info.getAttribute( EXPECTED_ENTROPY_DIGITS ) );
+		entropy_elt.setAttribute( "maxlength", this.wallet_info.getAttribute( EXPECTED_ENTROPY_DIGITS ) );
+		
+		await this.updateFields();
+		
+		let wallet_mode = this.Options[WALLET_MODE];
+		
+		this.Options[ENTROPY_SIZE][wallet_mode] = entropy_size;
+		
+		this.cb_enabled = true; 
+	} // async updateEntropySize()
+	
+	updateWalletURL( blockchain, wallet_address ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateWalletURL" ) );
+		
+		let explorer_URL = MAINNET_EXPLORER_URLs[blockchain] + wallet_address;
+		// trace2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
+		
+		let wallet_URL_elt = HtmlUtils.GetElement( WALLET_URL_LINK_ID );
+		//trace2Main("   wallet_URL_elt: " + wallet_URL_elt);
+		if ( wallet_URL_elt != undefined ) {
+			wallet_URL_elt.href = explorer_URL;
+		}
+	} // updateWalletURL()
+	
+	updateMarketcapURL( blockchain ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateMarketcapURL" ) );
+		
+		let marketcap_URL = COINMARKETCAP_URLs[blockchain];
+		// trace2Main("   " + _YELLOW_ + "explorer_URL:           " + _END_ + explorer_URL);
+		
+		let marketcap_URL_elt = HtmlUtils.GetElement( MARKETCAP_URL_LINK_ID );
+		//trace2Main("   wallet_URL_elt: " + wallet_URL_elt);
+		if ( marketcap_URL_elt != undefined ) {
+			marketcap_URL_elt.href = marketcap_URL;
+		}
+	} // updateMarketcapURL()
+	
+	updateCryptoshapeURL() {
+		trace2Main( pretty_func_header_format( "MainGUI.updateCryptoshapeURL" ) );
+		
+		let mnemonics = HtmlUtils.GetElementValue( MNEMONICS_ID );
+		
+		let cryptoshape_URL = 'https://aladas-org.github.io/aladas.github.io/';
+		if ( mnemonics != undefined && mnemonics != '') {
+			let mnemonics_items = mnemonics.split(' ');
+			// console.log('> mnemonics(' + mnemonics_items.length +'):\n' + mnemonics); 
+			
+			if (mnemonics_items.length >= 12 && mnemonics_items.length <= 24) {
+				let mnemonics_parameter_value_cgi = mnemonics.replaceAll(' ', '%20');
+				// console.log('> mnemonics_parameter_value_cgi:\n' + mnemonics_parameter_value_cgi);
+				cryptoshape_URL += 'index.html?mnemonics=' + mnemonics_parameter_value_cgi;
+			}
+		}
+		let cryptoshape_URL_elt = HtmlUtils.GetElement( CRYPTOSHAPE_URL_LINK_ID );
+		if ( cryptoshape_URL_elt != undefined ) {
+			cryptoshape_URL_elt.href = cryptoshape_URL;
+		}
+	} // updateCryptoshapeURL()
+	
+	updateWIF( blockchain, wif ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateWIF", "WIF:" + wif ) );
+		
+		if (wif != "") this.wallet_info.setAttribute(WIF, wif);   
+		this.updateFieldsVisibility();
+	} // updateWIF()
+		
+	updatePrivateKey( blockchain, PRIV_KEY ) {
+		if (      (   blockchain == BITCOIN   || blockchain == ETHEREUM || blockchain == BINANCE_BSC
+		           || blockchain == DOGECOIN  || blockchain == LITECOIN || blockchain == STELLAR
+		           || blockchain == AVALANCHE || blockchain == POLYGON
+				   || blockchain == RIPPLE    || blockchain == VECHAIN
+				   || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
+				   || blockchain == DASH      || blockchain == FIRO )
+  		      &&  PRIV_KEY != undefined && PRIV_KEY != "") {
+			
+			if (   blockchain == BITCOIN 
+			    || blockchain == DOGECOIN || blockchain == LITECOIN ) {
+				HtmlUtils.SetElementValue( PRIV_KEY_LABEL_ID, "*WIF*");
+			}
+			else if ( blockchain == RIPPLE || blockchain == TRON ) {
+				HtmlUtils.SetElementValue( PRIV_KEY_LABEL_ID, "*Private Key*");	
+			}
+			else if ( blockchain == FIRO ) {
+				HtmlUtils.SetElementValue( PRIV_KEY_LABEL_ID, "*Private Key (B58)*");
+			}
+		}
+		else {
+			HtmlUtils.SetElementValue( PRIV_KEY_ID, "XX" );
+		}
+		
+		this.updateFieldsVisibility();
+	} // updatePrivateKey()
+	
+	async updateChecksum( entropy ) {
+		// this.cb_enabled = false;
+		
+		const options = { [WORD_COUNT]: this.wallet_info.getAttribute(WORD_COUNT) }; 
+		const data = { entropy, options }; 
+		let checksum = await window.ipcMain.EntropyToChecksum( data );
+		trace2Main(  pretty_func_header_format( "MainGUI.updateChecksum", checksum ) );
+		this.wallet_info.setAttribute( CHECKSUM, checksum );
+	} // updateChecksum()
+	
+	async updateMnemonics( entropy ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateMnemonics" ) );
+		
+		// this.cb_enabled = false;
+		
+		let lang = this.wallet_info.getAttribute( LANG ); 
+		
+		let data = { entropy, lang };
+		let mnemonics = await window.ipcMain.EntropyToMnemonics( data );
+		
+        this.wallet_info.setAttribute( MNEMONICS, mnemonics );	
+
+		if (this.wallet_info.getAttribute('lang') == "JP") {
+			let mnemonics_jp = mnemonics.replaceAll(' ', '\u3000');
+			// let mnemonics_jp = mnemonics.replaceAll(' ', '*');
+			HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonics_jp );
+		}
+		else {		
+			HtmlUtils.SetElementValue( SW_MNEMONICS_ID, mnemonics );		
+		}
+		let mnemonics_as_4letter = await window.ipcMain.MnemonicsAs4letter( mnemonics );
+		HtmlUtils.SetElementValue( MNEMONICS_4LETTER_ID, mnemonics_as_4letter );
+
+		await this.updateWordIndexes();		
+    } // async updateMnemonics()
+	
+	async updateLanguage( lang ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateLanguage", "lang: '" + lang + "'" ) );
+		
+		// this.cb_enabled = false;
+		
+		this.wallet_info.setAttribute( LANG, lang );
+		
+		// let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+		// trace2Main( pretty_format( "rGUI.upLang> entropy(gui)", entropy ) );
+		
+		let entropy = this.wallet_info.getAttribute(ENTROPY);
+		// trace2Main( pretty_format( "rGUI.upLang> entropy(wallet)", entropy ) );
+		
+        await this.updateMnemonics( entropy );
+	} // async updateLanguage()
+	
+	async updateWordIndexes() {
+		trace2Main( pretty_func_header_format( "MainGUI.updateWordIndexes" ) );
+		
+		// this.cb_enabled = false;
+		
+		let mnemonics = this.wallet_info.getAttribute( MNEMONICS );
+        let mnemonics_items = await window.ipcMain.MnemonicsAsTwoParts( mnemonics );		
+		trace2Main( pretty_format( "rGUI.upWidx> mnemonics", mnemonics_items[0] ) );
+		if ( mnemonics_items[1].length > 0 ) {	
+            trace2Main( pretty_format( "", mnemonics_items[1] ) );			
+		}
+		
+		let lang = this.wallet_info.getAttribute(LANG);
+		// trace2Main( pretty_format( "rGUI.upWidx> lang", lang ) );	
+
+        let word_indexes_str = await this.mnemonicsToWordIndexes( mnemonics, lang );		
+		HtmlUtils.SetElementValue( WORD_INDEXES_ID, word_indexes_str ) ;
+    } // updateWordIndexes()
+	// =======================================================
+	// ====================================      Updates      
+	// =======================================================
+	
+	async getSaltedEntropySource() {
+		let entropy_source = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.getSaltedEntropySource",  entropy_source ) );	 
+		
+		let new_uuid = await window.ipcMain.GetUUID();
+		let salt_elt = HtmlUtils.GetElement( SALT_ID );
+		salt_elt.textContent = new_uuid;
+
+		let words_count = this.wallet_info.getAttribute( WORD_COUNT );	
+		let entropy_bits_size = wordCount2BitsSize(words_count);		
+		
+		let entropy_src_value = "";
+		if ( entropy_source == FORTUNES_ENTROPY_SRC_TYPE ) {
+			entropy_src_value = HtmlUtils.GetElementValue( ENTROPY_SRC_FORTUNES_ID );
+		}	
+		else if ( entropy_source == IMAGE_ENTROPY_SRC_TYPE ) {
+		    entropy_src_value = this.img_data_asURL;
+		}
+		else if ( entropy_source == DICE_D6_ENTROPY_SRC_TYPE ) {			
+		    entropy_src_value = DrawEntropyDiceD6.GetInstance().generateEntropy(entropy_bits_size);
+			// console.log("rGUI.saltE> entropy_src_value: " + entropy_src_value);
+		}
+		else if ( entropy_source == MOUSE_MOVE_ENTROPY_SRC_TYPE ) {
+			let entropy_bytes_count = entropy_bits_size / 8;
+			let entropy_required_digits = entropy_bytes_count * 2;
+			
+			let DrawE_Mouse_obj = DrawEntropyMouseMove.GetInstance();
+			let drawE_mouse_entropy = DrawE_Mouse_obj.getEntropy();
+			
+			if ( drawE_mouse_entropy != '' ) {
+				console.log("rGUI.saltE> drawE_mouse_entropy:\n   " + drawE_mouse_entropy);
+			}
+			// console.log("rGUI.saltE> entropy_required_digits: " + entropy_required_digits);
+			
+			if ( drawE_mouse_entropy != "" && drawE_mouse_entropy.length == entropy_required_digits ) {
+				// console.log("rGUI.saltE> " + MOUSE_MOVE_ENTROPY_SRC_TYPE + " input OK !!");
+				entropy_src_value = drawE_mouse_entropy;
+			}
+			else {				
+				entropy_src_value = DrawE_Mouse_obj.generateEntropy( entropy_bytes_count );
+				console.log("rGUI.saltE> [Generate] entropy_src_value: " + entropy_src_value);
+			}
+		}				
+		
+		let salted_entropy_src = '';
+		if ( entropy_src_value != '' ) {
+			trace2Main( pretty_format( "rGUI.saltE> entropy_src_value", getShortenedString( entropy_src_value ) ) );
+			let salt           = salt_elt.textContent;				
+			salted_entropy_src = salt + entropy_src_value;
+        }                                                
+		return salted_entropy_src;	
+	} // getSaltedEntropySource()
+	
+	async generateSalt( force_generation ) {
+		trace2Main( pretty_func_header_format( "MainGUI.generateSalt" ) );
+		let entropy_src_elt = HtmlUtils.GetElement( ENTROPY_SRC_FORTUNES_ID );
+		let new_uuid = "";
+		if ( entropy_src_elt.value != "" || force_generation == true ) {
+			new_uuid = await window.ipcMain.GetUUID();
+			// HtmlUtils.SetElementValue(SALT_ID, new_uuid);
+			// let salt_elt = HtmlUtils.GetElement( SALT_ID );
+			// salt_elt.textContent = new_uuid; 
+			HtmlUtils.SetElementValue(SALT_ID, new_uuid);
+        }
+		return new_uuid;
+    } // async generateSalt()
+	
+	async generateRandomFields() {
+		trace2Main( pretty_func_header_format( "MainGUI.generateRandomFields" ) );	
+		await this.drawEntropySource();
+	} // generateRandomFields()
+	
+	async drawEntropySource() {
+		trace2Main( pretty_func_header_format( "MainGUI.drawEntropySource" ) );
+
+		this.setEntropySourceIsUserInput( false );
+		
+		let entropy_source_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		trace2Main( pretty_format( "entropy_source_type", entropy_source_type ) );
+		
+		if ( entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
+			let fortune_cookie = await window.ipcMain.GetFortuneCookie();
+			HtmlUtils.SetElementValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );
+			trace2Main(">> drawEntropySource fortune_cookie: " + fortune_cookie);
+		}
+		else if ( entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
+			// Draw image in "www/img/CryptoCurrency" folder
+			this.img_data_asURL = await window.ipcMain.DrawRandomCryptoLogo();
+		}
+		else if ( entropy_source_type == MOUSE_MOVE_ENTROPY_SRC_TYPE ) {
+			trace2Main(">> drawEntropySource UserMove: ");
+		}
+		else if ( entropy_source_type == DICE_D6_ENTROPY_SRC_TYPE ) {
+			trace2Main(">> drawEntropySource DiceD6: ");
+		}
+		
+		await this.updateFields();
+		
+		//this.setFocus( ENTROPY_ID );
+	} // drawEntropySource()
+	
+	clearFields( field_ids ) {
+		trace2Main( pretty_func_header_format( "MainGUI.clearFields" ) );
+		for ( let i=0; i < field_ids.length; i++ ) { 
+			let field_id = field_ids[i];
+			
+			HtmlUtils.SetNode( field_id, NULL_VALUE );
+			
+			elt.classList.remove( WITH_FOCUS_CSS_CLASS ); 
+			elt.classList.add( WITHOUT_FOCUS_CSS_CLASS ); 
+		}
+	} // clearFields()
+	
+	// =====================================================================================================
+	// ====================================       Event Handlers       =====================================
+	// =====================================================================================================
+	async onGUIEvent( data ) {
+		let event_name = data[0];	
+		//trace2Main( pretty_func_header_format( "MainGUI.onGUIEvent", event_name ) );
+	
+		let description_data = "";
+		let json_data        = {};
+		let wits_json_data   = {};
+		let cmd_name         = "";
+		
+		let options_data = {};
+				
+		switch ( event_name ) {
+			case FromMain_DID_FINISH_LOAD:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_DID_FINISH_LOAD + _END_ );
+				await this.didFinishLoadInit();	
+				break;					
+
+			case FromMain_UPDATE_OPTIONS:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_UPDATE_OPTIONS + _END_ );	
+				this.Options = data[1];	
+                //trace2Main("   >> this.Options: " + JSON.stringify(this.Options));
+				
+                await this.updateOptionsFields( this.Options );	
+				if ( this.new_cmd_count == 0 ) {
+					await this.newWallet( this.Options );
+				}				
+				break;
+
+            case FromMain_SET_VARIABLE: 
+                trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_SET_VARIABLE + _END_ );	
+                trace2Main( pretty_format("rGUI.onGUI>  data.length", data.length) );
+                trace2Main( pretty_format("rGUI.onGUI>  data", JSON.stringify(data)) );				
+                let variable_name  = ( data.length > 1 ) ? data[1] : "";				
+				let variable_value = ( data.length > 2 ) ? data[2] : "";
+				
+				trace2Main(pretty_format("rGUI.onGUI>  SET VARIABLE(" + variable_name + ")", variable_value));
+				trace2Main( pretty_format("variable_name", variable_name));				
+				
+				switch ( variable_name ) {
+					case APP_VERSION: 
+					    trace2Main( pretty_format( "rGUI.onGUI>  cryptowallet_version", variable_value) );
+						GuiSession.SetValue( CRYPTOWALLET_VERSION, variable_value );
+						break;
+						
+					case WITS_PATH: 
+					    trace2Main( pretty_format( "rGUI.onGUI>  wits_path", variable_value) );
+						this.wits_path = variable_value;
+						break;
+				}            				
+				break;
+				
+			// Note: File/New: ElectronMain.GetInstance().doFileNew() => ElectronMain.GetInstance().loadOptions()
+			case FromMain_FILE_NEW:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_FILE_NEW + _END_ );
+                json_data = data[1];
+				//trace2Main( pretty_format( "rGUI.FILE_NEW> json_data", JSON.stringify(json_data) ) );
+                await this.newWallet( json_data );				
+				break;
+				
+			case FromMain_EXEC_CMD:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_EXEC_CMD + _END_ );
+				if ( data.length > 0 )  cmd_name       = data[1];
+				if ( data.length > 1 )  wits_json_data = data[2];
+				trace2Main( "   >> cmd: " +  cmd_name );
+				trace2Main( "   >> wits_json_data: " +  JSON.stringify(wits_json_data) );
+				if ( cmd_name == CMD_OPEN_WALLET ) {
+					await this.openWallet( wits_json_data );		
+				}				 
+				break;				
+				
+			case FromMain_FILE_OPEN:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _GREEN_ + FromMain_FILE_OPEN + _END_ );
+                json_data = data[1];
+				//trace2Main( pretty_format( "rGUI.FILE_OPEN> json_data", JSON.stringify(json_data) ) );
+                await this.openWallet( json_data );				
+				break;
+	
+			case FromMain_FILE_SAVE:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_FILE_SAVE + _END_ );	
+				let crypto_info = await this.getWalletInfo();
+                await window.ipcMain.SaveWalletInfo( crypto_info );
+				this.showSaveWalletInfoDialog();				
+				break;				
+				
+			case FromMain_SEND_IMG_URL:
+			    // console.log("> MainGUI.onGUIEvent  FromMain_SEND_IMG_URL");
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SEND_IMG_URL + _END_ );			
+				let img_elt_id = data[1];
+				// trace2Main("   img_elt_id:             " + img_elt_id);
+				
+				let img_file_extension = data[3];
+				// trace2Main("   img_file_extension:     " + img_file_extension);
+				
+				let URL_prefix = "data:image/" + img_file_extension + ";base64, ";
+				let img_data_URL = URL_prefix+ data[2]
+				                   .replaceAll('\r', '').replaceAll('\n', '');
+				trace2Main( pretty_format( "img_data_URL", img_data_URL.substring(0,80) ) ); 
+				
+				let img_elt = HtmlUtils.GetElement( img_elt_id );
+				trace2Main("   img_elt: " + img_elt);
+				// console.log("   img_elt: " + img_elt);
+				// trace2Main("   img_elt.id: " + img_elt.id);
+				// console.log("   img_data_URL: " + img_data_URL);
+				img_elt.src = img_data_URL;
+				
+				const hashValue = val =>
+					crypto.subtle
+						.digest('SHA-256', new TextEncoder('utf-8').encode(val))
+						.then(h => {
+						    let hexes = [], view = new DataView(h);
+						    for ( let i = 0; i < view.byteLength; i += 4 )
+							   hexes.push( ('00000000' + view.getUint32(i).toString(16)).slice(-8) );
+						    return hexes.join('');
+				}); // hashValue()                
+
+                let salt = await this.generateSalt( true );	
+                trace2Main( pretty_format( "salt", salt ) ); 				
+				
+				// https://www.30secondsofcode.org/js/s/hash-sha-256/
+				let entropy_data = await hashValue( img_data_URL + salt );
+				//trace2Main("   1 entropy_data: " + entropy_data);				
+				//trace2Main("   1 entropy_data length: " + entropy_data.length);
+				
+				this.wallet_info.setAttribute( EXPECTED_ENTROPY_DIGITS, this.expected_entropy_bytes * 2 );
+				if ( this.wallet_info.getAttribute( EXPECTED_ENTROPY_DIGITS ) < 64 ) {
+					entropy_data = entropy_data.substring( 0, this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS) );
+				}	
+				trace2Main( pretty_format( "rGUI.onGUI(" + FromMain_SEND_IMG_URL + ")> entropy_data", entropy_data ) );
+				//trace2Main("   2 entropy_data length: " + entropy_data.length);
+				this.entropy_source_is_user_input = false; // forces Salt/uuid update
+				this.updateEntropy( entropy_data );	
+				break;
+			
+            // File/Import/Random Fortune Cookie			
+            case FromMain_SET_FORTUNE_COOKIE:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_ );
+				let fortune_cookie = data[1];
+				trace2Main( pretty_format( "fortune_cookie", getShortenedString( fortune_cookie ) ) );
+				// HtmlUtils.SetElementValue( ENTROPY_ID, fortune_cookie );	
+				HtmlUtils.SetElementValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
+				await this.updateFields();
+				break;
+				
+			case FromMain_SHOW_MSG_DIALOG:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SHOW_MSG_DIALOG + _END_ );
+				let msg = data[1];
+				GuiUtils.ShowInfoDialog( msg );
+				break;
+				
+			case FromMain_SHOW_ERROR_DIALOG:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SHOW_ERROR_DIALOG + _END_ );
+				break;
+				
+			case FromMain_TOOLS_OPTIONS_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_OPTIONS_DIALOG + _END_ );
+				options_data = data[1];
+				// trace2Main( pretty_format( "$$ options_data", JSON.stringify(options_data) ) ); 
+				ToolsOptionsDialog.ShowDialog( options_data );
+				break;		
+	
+			case FromMain_TOOLS_DB_MANAGEMENT_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_DB_MANAGEMENT_DIALOG + _END_ );
+				let local_app_folder_path = data[1];
+				trace2Main( pretty_format( ">> local_app_folder_path", local_app_folder_path ) ); 
+				await ToolsDbManagementDialog.This.showDialog( local_app_folder_path );
+				break;				
+				
+			case FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_BIP38_ENCRYPT_DECRYPT_DIALOG + _END_ );
+				Bip38EncryptDecryptDialog.This.showDialog();
+				break;
+				
+			case FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_SECRET_PHRASE_TRANSLATOR_DIALOG + _END_ );
+				SecretPhraseTranslatorDialog.This.showDialog();
+				break;
+				
+			case FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_TOOLS_ENTROPY_CONVERTER_DIALOG + _END_ );
+				EntropyConverterDialog.This.showDialog();
+				break;
+				
+			case FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG:
+				trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_BIP38_SHOW_PROGRESS_BAR_DIALOG + _END_ );
+				Bip38ProgressbarDialog.This.showDialog();
+				break;
+				
+			case FromMain_BIP38_PROGRESS_TICK:
+			    let progress_status = data[1];
+				// trace2Main( ON_GUI_EVENT_LOG_PREFIX + _RED_ + FromMain_BIP38_PROGRESS_TICK + " " + progress_status + _END_ );				
+				
+				// console.log( "   Bip38EncryptDecryptDialog.This.isDisplayed(): " + Bip38EncryptDecryptDialog.This.isDisplayed());
+				// console.log( "   Bip38ProgressbarDialog.This.isDisplayed():    " + Bip38ProgressbarDialog.This.isDisplayed());
+				
+				// console.log( "Bip38EncryptDecryptDialog.This.isDisplayed(): " +Bip38EncryptDecryptDialog.This.isDisplayed());
+				if ( Bip38EncryptDecryptDialog.This.isDisplayed() ) {
+					await Bip38EncryptDecryptDialog.This.updateProgressbar( progress_status );
+				}
+				else if ( Bip38ProgressbarDialog.This.isDisplayed() ) {
+					await Bip38ProgressbarDialog.This.updateProgressbar( progress_status );
+				}					
+				
+				break;
+				
+			case FromMain_HELP_ABOUT:
+			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_HELP_ABOUT + _END_ );
+				let cryptowallet_version = GuiSession.GetValue( CRYPTOWALLET_VERSION );
+				let i18n_msg = await window.ipcMain.GetLocalizedMsg("HelpAboutMsg");
+				description_data =   "<center><b>Cryptocalc " + cryptowallet_version + "</b></center><br>" 
+						           + "&nbsp;" + i18n_msg;
+			    //trace2Main("   " + FromMain_HELP_ABOUT + " " + description_data);
+
+				// https://izitoast.marcelodolza.com/
+				DialogManager.Clean();
+				GuiUtils.ShowInfoDialog( description_data );
+				break;	
+				
+			case FromMain_INTERNET_CONNECTED:
+			    // console.log("> MainGUI.onGUIEvent  FromMain_INTERNET_CONNECTED");
+			    // trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_INTERNET_CONNECTED + _END_ );
+				let internet_connected = data[1];
+				// trace2Main( pretty_format( "Internet connected", internet_connected ) );
+				
+				let internet_connection_icon_elt = HtmlUtils.GetElement(INTERNET_CONNECTION_ICON_ID);
+				// console.log("   internet_connection_elt: " + internet_connection_elt);
+				
+				let internet_connection_label_elt = HtmlUtils.GetElement(INTERNET_CONNECTION_LABEL_ID);
+				
+				if (internet_connection_icon_elt != undefined && internet_connection_label_elt != undefined) {
+					if ( internet_connected ) {
+						internet_connection_label_elt.innerHTML = "Online";
+						HtmlUtils.AddClass(INTERNET_CONNECTION_LABEL_ID, "RedLabel");
+						HtmlUtils.RemoveClass(INTERNET_CONNECTION_LABEL_ID, "GreenLabel");
+						internet_connection_icon_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_ON_Red.png";
+					}
+					else {
+						internet_connection_label_elt.innerHTML = "Offline";
+						HtmlUtils.AddClass(INTERNET_CONNECTION_LABEL_ID, "GreenLabel");
+						HtmlUtils.RemoveClass(INTERNET_CONNECTION_LABEL_ID, "RedLabel");						
+						internet_connection_icon_elt.src = "icons/Aniket_Suvarna_Bx_Wifi_24_OFF_Green.png";
+					}
+				}
+			    break;
+				
+			default:
+				trace2Main(  ON_GUI_EVENT_LOG_PREFIX
+						   + _YELLOW_ + "ACK[" + event_name + "]" + _END_ + " from main");
+				//DialogManager.Clean();
+				break;
+		} // switch ( event_name )
+	} // onGUIEvent()
+	
+	
+	
+	// ------------------------ Bip32/Bip38 Passphrase ------------------------
+	async getPassphraseInfo( passphrase ) {
+		let password_strength_info = { [PWD_STR_AS_BITS]: 0, [PWD_STR_AS_ADJECTIVE]: "Null" }; 
+		
+		let password_strength_as_bits      = 0;
+		let password_strength_as_adjective = "Null";		
+		
+		if ( passphrase != "" ) {
+			password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
+		}
+		
+		return password_strength_info;
+	} // async getPassphraseInfo()	
+	
+    /*	
+	async onGuiPassphraseMouseOver( evt ) {
+		let target_id = evt.target.id;
+		// console.log(" target_id:  '" + target_id + "'");
+		
+		let passphrase_field_id = BIP32_PASSPHRASE_ID;		
+		
+		if ( target_id == BIP32_PASSPHRASE_STRENGTH_LABEL_ID ) {
+			passphrase_field_id = BIP32_PASSPHRASE_ID;
+		}
+		else if ( target_id == BIP38_PASSPHRASE_STRENGTH_LABEL_ID ) {
+			passphrase_field_id = BIP38_PASSPHRASE_ID;
+		}
+		
+		let passphrase = HtmlUtils.GetElementValue( passphrase_field_id );
+		// console.log(" target_id:  '" + target_id + "'   passphrase_field_id:  '" + passphrase_field_id + "'   passphrase: '" + passphrase + "'" );
+		
+		let password_strength_as_bits      = 0;
+		let password_strength_as_adjective = "Null";
+		
+		let password_strength_info = await this.getPassphraseInfo( passphrase );
+		if ( passphrase != "" ) {
+			let password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
+			password_strength_score = password_strength_info[PWD_STR_AS_SCORE];
+			let suffix = 's';
+			if ( password_strength_info <= 1 )  suffix = ''; 
+			document.getElementById(target_id).setAttribute('title', password_strength_as_bits.toString() + " bit" + suffix);
+		}
+	} // async onGuiPassphraseMouseOver()	
+	*/
+	
+	async onGuiChangeBip38Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiChangeBip38Passphrase" ) );
+		await this.updatePassphraseStrength( evt.target.id );			
+	} // async onGuiChangeBip38Passphrase()
+	
+	async updatePassphraseStrength( target_id ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updatePassphraseStrength" ) );
+		// console.log(JSON.stringify( evt.target.id ));
+		
+		let passphrase = HtmlUtils.GetElementValue( target_id );
+		// trace2Main( pretty_func_header_format( "MainGUI.onGuiChangePassword", "'" + password + "'" ) );
+		
+		let password_strength_score        = 0;
+		let password_strength_as_adjective = "Null";
+		
+		let password_strength_info = await this.getPassphraseInfo( passphrase );
+		if ( passphrase != "" ) {
+			let password_strength_info = await window.ipcMain.GetPasswordStrength( passphrase );
+			password_strength_score        = password_strength_info[PWD_STR_AS_SCORE];
+			password_strength_as_adjective = password_strength_info[PWD_STR_AS_ADJECTIVE];
+		}
+		
+		let strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
+		let wallet_field_id       = BIP32_PASSPHRASE;
+		let strength_score_id     = BIP32_PASSPHRASE_STRENGTH_ID;
+		let strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
+		
+		if ( target_id == BIP32_PASSPHRASE_ID ) {
+			strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
+			wallet_field_id       = BIP32_PASSPHRASE;
+			strength_score_id     = BIP32_PASSPHRASE_STRENGTH_ID;
+			strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
+		}
+		else if ( target_id == BIP38_PASSPHRASE_ID ) {
+			strength_container_id = BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID;
+			wallet_field_id       = BIP38_PASSPHRASE;
+			strength_score_id     = BIP38_PASSPHRASE_STRENGTH_ID;
+			strength_label_id     = BIP38_PASSPHRASE_STRENGTH_LABEL_ID;
+		}
+		
+		// console.log(" target_id:  '" + target_id + "'   passphrase: '" + passphrase + "'");
+		
+		this.wallet_info.setAttribute( wallet_field_id, passphrase );
+		if ( passphrase != "" ) {
+			HtmlUtils.ShowElement( strength_container_id );
+
+            const MIN_STRENGTH = 5;			
+			
+			// [0, 1, 2, 3, 4] rescaled to [MIN_STRENGTH, 25, 50, 75, 100]
+			let strength_value = password_strength_score * 25;
+			if ( strength_value == 0 )  strength_value = MIN_STRENGTH;
+			HtmlUtils.SetElementValue( strength_score_id, strength_value.toString() );
+			HtmlUtils.SetElementValue( strength_label_id, password_strength_as_adjective );	
+
+			// --------- Progress Color ---------
+			// - 0	 Very Weak	            Red
+		    // - 1	 Weak	                Orange
+		    // - 2	 Good  	                Yellow
+		    // - 3	 Strong	                Green
+		    // - 4   Very 	                Violet
+			const strength_to_bar_color = ( strength_value ) => {
+				let bar_color = "black";
+				
+				if ( strength_value <= MIN_STRENGTH ) { 
+					bar_color = '#F88379';                   // Very Weak: Red
+				}			
+				else if ( strength_value == 25 ) {
+					bar_color = '#FFBF00';                   // Weak: Orange
+				}			
+				else if ( strength_value == 50 ) {
+					bar_color = '#faeb36';                   // Good: Yellow
+				}			
+				else if ( strength_value == 75 ) {
+					bar_color = '#AAFF00';                   // Strong: Green
+				}			
+				else if ( strength_value == 100 ) {
+					bar_color = '#EE82EE';                   // Very Strong: Violet
+				}
+
+				return bar_color;				
+			}; // strength_to_bar_color()
+			
+			let strength_bar_color = "black";
+			strength_bar_color = strength_to_bar_color( strength_value );			
+					
+			if ( target_id == BIP32_PASSPHRASE_ID ) {
+				document.documentElement.style.setProperty("--bip32-progress-color", strength_bar_color);
+			}
+			else if ( target_id == BIP38_PASSPHRASE_ID ) {
+				document.documentElement.style.setProperty("--bip38-progress-color", strength_bar_color);
+			}
+			// --------- Progress Color			
+		}
+		else {
+			HtmlUtils.HideElement( strength_container_id );				
+		}
+		
+		
+		if ( target_id == BIP32_PASSPHRASE_ID ) {
+			if ( passphrase == "" ) {
+				this.GuiSetPasswordApplyState( false );	
+			}
+			else {
+				this.GuiSetPasswordApplyState( true );	
+			}	
+	    }			
+	} // async updatePassphraseStrength()
+	
+	async GuiApplyPassword( evt ) {
+		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", bip32_passphrase ) );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		await this.updateBip39Passphrase( bip32_passphrase );
+
+		this.GuiSetPasswordApplyState( false );
+	} // async GuiApplyPassword()
+
+	GuiSetPasswordApplyState( visible ) {
+		if ( visible ) {
+			HtmlUtils.ShowElement( APPLY_PASSWORD_BTN_ID );
+			HtmlUtils.ShowElement( APPLY_BTN_SEPARATOR_ID );
+			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass(BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
+			// this.setSaveCmdState( false );
+		}
+		else {
+			HtmlUtils.HideElement( APPLY_PASSWORD_BTN_ID );
+			HtmlUtils.HideElement( APPLY_BTN_SEPARATOR_ID );
+			HtmlUtils.AddClass( BIP32_PASSPHRASE_ID, PASSWORD_WITHOUT_APPLY_CSS_CLASS );
+			HtmlUtils.RemoveClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
+			// this.setSaveCmdState( true );
+		}
+	} // GuiSetPasswordApplyState()
+	
+	
+	
+	// --------------------  BIP39 (ex: 'BIP32') --------------------
+	// https://www.npmjs.com/package/generate-password
+	async GuiGenerateBip39Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip39Passphrase" ) );
+		
+		let data = {};
+		let bip39_passphrase = await window.ipcMain.GeneratePassword( data );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip39_passphrase);
+		
+		await this.updateBip39Passphrase( bip39_passphrase );
+		
+		this.updatePassphraseStrength( BIP32_PASSPHRASE_ID );
+		
+		await this.GuiApplyPassword();
+		
+		await this.updatePassphraseStrength( BIP39_MAIN_WINDOW_PASSPHRASE_ID );
+
+		this.GuiSetPasswordApplyState( true );
+	} // async GuiGenerateBip39Passphrase()	
+	
+	async GuiClearBip39Passphrase( update_wallet ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip39Passphrase" ) );
+
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '');
+		HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
+		
+		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", '' ) );
+		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '' );
+		await this.updateBip39Passphrase( '' );
+
+		this.GuiSetPasswordApplyState( false );	
+	} // GuiClearBip39Passphrase()
+	
+	
+	GuiToggleBip32PassphraseVisibility() {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiToggleBip32PassphraseVisibility" ) );	
+		let eye_btn_img_elt = document.getElementById( EYE_BTN_IMG_ID )
+		// console.log("> eye_btn_img_elt: " + eye_btn_img_elt);
+		
+		if ( this.password_visible ) { 
+			document.getElementById(BIP32_PASSPHRASE_ID).type = 'password';	
+			
+			if (eye_btn_img_elt != undefined) {
+				eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;	
+			}
+		}
+		else { 	
+		    document.getElementById(BIP32_PASSPHRASE_ID).type = 'text';	
+
+			if ( eye_btn_img_elt != undefined ) {
+				eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;	
+			}			
+		}
+		this.password_visible = ! this.password_visible;
+	} // GuiToggleBip32PassphraseVisibility()
+	// --------------------  BIP39 (ex: 'BIP32')
+	
+	
+    // --------------------  BIP38  --------------------
+	async GuiGenerateBip38Passphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip38Passphrase" ) );
+		let data = {};
+		let new_bip38_passphrase = await window.ipcMain.GeneratePassword( data );
+		this.wallet_info.setAttribute( BIP38_PASSPHRASE, new_bip38_passphrase.trim());
+		
+		this.updatePassphraseStrength( BIP38_PASSPHRASE_ID );
+
+		this.GuiSetPasswordApplyState( true );
+	} // async GuiGenerateBip38Passphrase()
+	
+	GuiClearBip38Passphrase( update_wallet ) {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip38Passphrase" ) );
+		this.wallet_info.setAttribute( BIP38_PASSPHRASE, '');
+		HtmlUtils.HideElement( BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID);
+
+		this.GuiSetPasswordApplyState( false );	
+	} // GuiClearBip38Passphrase()
+	
+	GuiToggleBip38PassphraseVisibility() {
+		trace2Main( pretty_func_header_format( "MainGUI.GuiToggleBip38PasswordVisibility" ) );	
+		let bip38_passphrase_eye_btn_img_elt = document.getElementById(BIP38_PASSPHRASE_EYE_BTN_IMG_ID )
+		// console.log("> bip38_passphrase_eye_btn_img_elt: " + bip38_passphrase_eye_btn_img_elt);
+		
+		if ( this.bip38_passphrase_visible ) { 
+			document.getElementById(BIP38_PASSPHRASE_ID).type = 'password';	
+			
+			if (bip38_passphrase_eye_btn_img_elt != undefined) {
+				bip38_passphrase_eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;	
+			}
+		}
+		else { 	
+		    document.getElementById(BIP38_PASSPHRASE_ID).type = 'text';	
+
+			if (bip38_passphrase_eye_btn_img_elt != undefined) {
+				bip38_passphrase_eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;	
+			}			
+		}
+		this.bip38_passphrase_visible = ! this.bip38_passphrase_visible;
+	} // GuiToggleBip38PassphraseVisibility()
+	// --------------------  BIP38
+		
+
+	async onFileNewWallet( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onFileNewWallet" ) );
+        await window.ipcMain.NewWalletInfo();
+	} // async onFileNewWallet()
+	
+	async fileOpenWallet() {
+		trace2Main( pretty_func_header_format( "MainGUI.fileOpenWallet" ) );
+        let json_data = await window.ipcMain.OpenWalletInfo();
+	} // async fileOpenWallet()
+	
+	async fileSaveWallet() {
+		trace2Main( pretty_func_header_format( "MainGUI.fileSaveWallet" ) );
+		let crypto_info = await this.getWalletInfo();
+        await window.ipcMain.SaveWalletInfo( crypto_info );
+		this.showSaveWalletInfoDialog();		
+	} // async fileSaveWallet()
+	
+	showSaveWalletInfoDialog() {
+		trace2Main( pretty_func_header_format( "MainGUI.showSaveWalletInfoDialog" ) );
+        DialogManager.Clean();
+		let description_data = "<center>Wallet Informations saved</center>";
+		
+		const feature_button_handler = () => {
+			window.ipcMain.ShowOutputFolderInExplorer();
+		};
+		GuiUtils.ShowQuestionDialog( description_data, 
+		                             { "CloseButtonLabel":   "Close",
+									   "FeatureButtonlabel": "Show", 
+									   "feature handler": feature_button_handler } );
+	} // showSaveWalletInfoDialog()
+	
+	async onGuiSwitchWalletMode( evt ) {		
+		let elt = evt.target || evt.srcElement;		
+		if ( elt.id == WALLET_MODE_SELECT_ID ) {			
+			this.cb_enabled = false;
+			
+			let wallet_mode = elt.value;
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiSwitchWalletMode", wallet_mode ) );
+			await this.updateWalletMode( wallet_mode );	
+
+            await window.ipcMain.UpdateOptions( this.Options );	
+
+			HtmlUtils.InitializeElement
+				( WALLET_BLOCKCHAIN_ID, 
+			      this.Options['Blockchains'][wallet_mode],
+				  this.Options['Blockchains'][wallet_mode] );
+				  
+			let default_blockchain = this.Options[DEFAULT_BLOCKCHAIN][wallet_mode];
+			trace2Main( pretty_format( "rGUI.onGuiSwWmod> default_blockchain: '" + default_blockchain + "'" ) );
+
+            this.wallet_info.setAttribute( BLOCKCHAIN, default_blockchain );
+
+            // -------- Bip32/Bip38 passphrase -------- 
+			this.wallet_info.setAttribute( BIP32_PASSPHRASE, '' );	
+			HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );			
+
+			this.wallet_info.setAttribute( BIP38_PASSPHRASE, '' );	
+			HtmlUtils.HideElement( BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID );
+			// -------- Bip32/Bip38 passphrase		
+			
+			this.cb_enabled = true;
+	    }		
+	} // async onGuiSwitchWalletMode()
+	
+	async onGuiUpdateBlockchain( evt ) {
+		let elt = evt.target || evt.srcElement;		
+		if ( elt.id == WALLET_BLOCKCHAIN_ID ) {
+			let blockchain = elt.value;
+			trace2Main( pretty_func_header_format( "+++++++++++++  MainGUI.onGuiUpdateBlockchain", blockchain ) );
+			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> ", blockchain ) );
+			
+			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> BEFORE wallet(wallet_mode)", this.wallet_info.getAttribute( WALLET_MODE ) ) );
+			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> BEFORE 1 wallet(blockchain)", this.wallet_info.getAttribute( BLOCKCHAIN ) ) );
+			this.wallet_info.setAttribute( BLOCKCHAIN,    blockchain );
+			this.wallet_info.setAttribute( ACCOUNT,       "0" );
+			this.wallet_info.setAttribute( ADDRESS_INDEX, "0" );
+			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> BEFORE 2 wallet(blockchain)", this.wallet_info.getAttribute( BLOCKCHAIN ) ) );
+			
+			await this.updateBlockchain( blockchain );
+			
+			this.setSaveCmdState( true );
+			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> AFTER wallet(wallet_mode)", this.wallet_info.getAttribute( WALLET_MODE ) ) );
+			//trace2Main( pretty_format( "rGUI.onGUIUpBlkCH> AFTER wallet(blockchain)",  this.wallet_info.getAttribute( BLOCKCHAIN ) ) );
+	    }
+	} // async onGuiUpdateBlockchain()
+	
+	async onGuiUpdateEntropySize( evt ) {		
+		let elt = evt.target || evt.srcElement;		
+		if ( elt.id == ENTROPY_SIZE_SELECT_ID ) {
+			let entropy_size = parseInt( elt.value );
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateEntropySize", entropy_size ) );
+			trace2Main( pretty_format( "entropy_size", entropy_size ) );
+			await this.updateEntropySize( entropy_size );
+	    }	
+	} // onGuiUpdateEntropySize()	
+	
+	async onGuiUpdateWordCount( evt ) {		
+		let elt = evt.target || evt.srcElement;
+		
+		if ( elt.id == WORD_COUNT_SELECT_ID ) {
+			let word_count = parseInt( elt.value );
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateWordCount", "word_count: " + word_count ) );
+			let entropy_size = ( word_count * 11 ) - getChecksumBitCount( word_count );
+			await this.updateEntropySize( entropy_size );
+	    }	
+	} // async onGuiUpdateWordCount()
+	
+	async onGuiSwitchEntropySourceType() {
+		trace2Main( "\n\n==========================================================" );
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiSwitchEntropySourceType" ) );
+		this.entropy_source_type = HtmlUtils.GetElementValue( ENTROPY_SRC_TYPE_SELECTOR_ID );
+		trace2Main( pretty_format( "entropy_source_type", this.entropy_source_type ) );
+		
+        await this.drawEntropySource();		
+		
+		this.updateFieldsVisibility();
+    } // async onGuiSwitchEntropySourceType()
+	
+	async onGuiUpdateLang( evt ) {
+		let elt = evt.target || evt.srcElement;		
+		if ( elt.id == LANG_SELECT_ID ) {
+			let lang_value = elt.value;
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateLang", lang_value ) );
+			let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+            await this.updateLanguage( lang_value );
+	    }
+		else {
+			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateLang" ) );	
+		}
+	} // async onGuiUpdateLang()
+	
+	onToggleDebug( evt ) {
+		//trace2Main( pretty_func_header_format( "MainGUI.onToggleDebug" ) );
+        window.ipcMain.ToggleDebugPanel();		
+	} // onToggleDebug()
+	
+	async onKeyDown( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onKeyDown", "'" + evt.key + "' keycode: " + evt.keyCode ) );
+		
+		let elt = evt.target || evt.srcElement;		
+		if ( elt.id == ENTROPY_ID ) {
+			let clipboard_text = await navigator.clipboard.readText();
+			trace2Main( pretty_format( "clipboard_text", clipboard_text ) );
+
+			if ( evt.key == 'Delete' ) return true;
+			
+			evt.preventDefault();
+			
+			let allowed_alphabet     = ALLOWED_ALPHABETS[elt.id];
+			let entropy_value        = HtmlUtils.GetElementValue( ENTROPY_ID );
+			let expected_digit_count = this.expected_entropy_bytes * 2;
+			
+			trace2Main( pretty_format( "entropy_value",        entropy_value ) );
+			trace2Main( pretty_format( "expected_digit_count", expected_digit_count ) );
+			
+			//trace2Main("   evt.key: '" + evt.key + "'");
+			if (    allowed_alphabet != undefined 
+				 || allowed_alphabet.indexOf(evt.key) == -1 
+				 || entropy_value.length > expected_digit_count ) {
+					 
+				trace2Main( pretty_format( "INVALID ", evt.key ) );				
+				return false;
+			}
+		}
+		
+		return true;
+	} // onKeyDown()
+	
+	// Entropy 'keypress' event handler
+	async onEntropyKeypress( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onEntropyKeypress" ) );
+		trace2Main( pretty_format( "evt.charCode", evt.charCode ) );
+		
+		let entropy  = HtmlUtils.GetElementValue( ENTROPY_ID );
+		
+		//========== Filter non hexadecimal characters ==========
+		let is_hex_digit =    ( evt.charCode >= 48 && evt.charCode <= 57 )  // 0..9
+		                   || ( evt.charCode >= 97 && evt.charCode <= 102 ) // a..f
+						   || ( evt.charCode >= 65 && evt.charCode <= 70 ); // A..F
+		trace2Main( pretty_format( "is_hex_digit", is_hex_digit ) );
+        if (! is_hex_digit || entropy.length + 1 > this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS) ) {
+			evt.preventDefault();	
+			return false;
+        }	
+		//========== Filter non hexadecimal characters
+		
+		const insertCharAtIndex = (in_str, in_char, index) => {
+			if (index > 0) {
+				return   in_str.substring(0, index) 
+				       + in_char 
+					   + in_str.substring(index, in_str.length);
+			}
+
+			return in_char + in_str;
+		}; // insertCharAtIndex()
+		
+		evt.preventDefault();
+		
+		let text_cursor_pos = HtmlUtils.GetElement( ENTROPY_ID ).selectionStart;
+		
+		let new_char = String.fromCharCode(evt.charCode);
+		trace2Main( pretty_format( "new_char", new_char ) );
+		
+		let new_entropy = insertCharAtIndex( entropy, new_char, text_cursor_pos );		
+		
+		trace2Main( pretty_format( "entropy(" + entropy.length + ")",         entropy ) );
+		trace2Main( pretty_format( "new_entropy(" + new_entropy.length + ")", new_entropy ) );
+		trace2Main( pretty_format( "expected_digits" + this.wllet.getAttribute(EXPECTED_ENTROPY_DIGITS) ) );
+        trace2Main( pretty_format( "text_cursor_pos", text_cursor_pos ) );	
+		
+		HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
+		
+		text_cursor_pos += 1;
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		entropy_elt.selectionStart = text_cursor_pos;
+		entropy_elt.selectionEnd   = text_cursor_pos;
+		
+		this.setEntropySourceIsUserInput( true );
+		//this.updateStatusbarInfo( true );		
+
+		if ( new_entropy.length == this.wallet_info.getATtribute(EXPECTED_ENTROPY_DIGITS) ) {
+			trace2Main( "   new_entropy(" + new_entropy.length + "):  " + new_entropy); 
+
+            HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );			
+			
+			await this.updateFields( new_entropy );
+		}	
+		
+        return true;		
+	} // async onEntropyKeypress()
+	
+	// Entropy 'keydown' event handler
+	onEntropyKeydown( evt ) {				
+		//trace2Main( pretty_func_header_format( "MainGUI.onEntropyKeydown" ) );
+		//trace2Main( pretty_format( "evt.keyCode", evt.keyCode ) );		
+
+		if ( evt.keyCode == BACKSPACE_KEY_CODE || evt.keyCode == DEL_KEY_CODE ) {
+			this.setEntropySourceIsUserInput( true );
+			//this.updateStatusbarInfo( true );
+			this.setEntropyValueValidity( false );
+		}
+    } // onEntropyKeydown()    
+	
+	// Entropy 'paste' event handler
+	async onEntropyPaste( evt ) {				
+	    let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		trace2Main( pretty_func_header_format( "MainGUI.onEntropyPaste" ) );
+        
+		evt.preventDefault();
+		
+        let paste_data = (evt.clipboardData || evt.clipboardData).getData("text");
+		let paste_length = paste_data.length;
+		
+		trace2Main("   paste_data(" + paste_length + "): " + paste_data);		
+		
+		let current_entropy = HtmlUtils.GetElementValue(ENTROPY_ID);
+		trace2Main("   current_entropy(" + current_entropy.length + "): " + current_entropy);	
+		
+		let new_entropy     = "";		
+        let expected_digits = this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS);
+		
+		if ( isHexString( paste_data ) ) {
+			if ( paste_length == expected_digits ) {
+				trace2Main(  "   *OK 1* to paste_data (full " 
+				         + expected_digits + " digits): " + paste_data);
+                new_entropy	= paste_data;				
+			}
+			else 
+				if (   current_entropy.length < expected_digits
+			        && (current_entropy.length + paste_length) <= expected_digits ) {				
+				
+				trace2Main(  "   *OK 2* to paste_data (" 
+				         + paste_length + " digits): " + paste_data);
+						 
+				let text_cursor_pos = entropy_elt.selectionStart;
+				
+				const insertSubstringAtIndex = (in_str, in_substr, index) => {
+					if ( index > 0 ) {
+						return   in_str.substring(0, index) 
+							   + in_substr 
+							   + in_str.substring(index, in_str.length);
+					}
+
+					return in_substr + in_str;
+				}; // insertSubstringAtIndex()
+				
+				new_entropy = insertSubstringAtIndex
+				              ( current_entropy, paste_data, text_cursor_pos );
+				trace2Main("   new_entropy (pasted): " + new_entropy);
+				HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
+			}	
+
+            if ( new_entropy.length == this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS) ) {			
+				this.setEntropySourceIsUserInput( true );
+				//this.updateStatusbarInfo( true );
+				HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
+					
+				await this.updateFields( new_entropy );	
+			}	
+		} 
+	} // onEntropyPaste()
+	
+	async onCustomEntropyUpdate( evt ) {
+		let entropy = evt.detail["entropy"];
+		console.log( "MainGUI.onCustomEntropyUpdate  entropy:\n   " + entropy);	
+
+		HtmlUtils.SetElementValue( ENTROPY_ID, entropy );	
+					
+		await this.updateFields( entropy );			
+	} // onCustomEntropyUpdate()
+	
+	async onMnemonicsPaste( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onMnemonicsPaste" ) );
+		evt.preventDefault();
+		
+        let paste_data = (evt.clipboardData || evt.clipboardData).getData("text");
+		let paste_words = paste_data.split(' ');
+		
+		trace2Main("  paste_data(w: " + paste_words.length + "): " + paste_data);
+		
+		let current_mnemonics = HtmlUtils.GetElementValue( MNEMONICS_ID );
+		let current_words = current_mnemonics.split(' ');
+		trace2Main("   current_mnemonics(w: " + current_words.length + "): " + current_mnemonics);
+
+        let paste_lang ="";
+		
+		if ( paste_words.length != this.wallet_info.getAttribute(WORD_COUNT) ) {	
+			trace2Main(  "   *KO*: paste_words:" + paste_words.length
+			         + "  !=  expected_words:" + this.wallet_info.getAttribute(WORD_COUNT) );
+			await this.displayMessageInStatusbar( INVALID_WORD_COUNT_MSGID );
+			return;
+		}		
+		
+		if ( paste_words.length == this.wallet_info.getAttribute(WORD_COUNT) ) {
+			trace2Main(  "   OK: paste_words:" + paste_words.length
+			         + "  ==  expected_words:" + this.wallet_info.getAttribute(WORD_COUNT) );
+			
+			// HtmlUtils.SetElementValue( MNEMONICS_ID, paste_data );
+			
+			// 1. Must check if 'Mnemonics' is in current 'lang' chosen by user
+			let current_lang = HtmlUtils.GetElementValue( LANG_SELECT_ID ); 
+			trace2Main("  current_lang: " + current_lang);
+			
+			let mnemonics = paste_data;
+			let data = { mnemonics };	
+			let paste_lang = await window.ipcMain.GuessMnemonicsLang( data );
+			trace2Main("  paste_lang: " + paste_lang);
+
+			if ( paste_lang	!= current_lang ) { 
+				trace2Main(  "  *KO* paste_lang:" + paste_lang 
+				         + " !=  current_lang:" + current_lang);
+				await this.displayMessageInStatusbar( NOT_SAME_LANG_MSGID );
+				return;
+			}
+			
+			trace2Main(  "   OK: paste_lang:" + paste_lang 
+				         + " ==  current_lang:" + current_lang);
+			
+			// 2. Compute 'Entropy' from 'Mnemonics'
+			let lang = current_lang;
+			mnemonics = paste_data;
+            data = { mnemonics, lang };			
+			let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			let new_entropy = entropy_info[ENTROPY_HEX];
+			trace2Main("  new_entropy: " + new_entropy);
+			
+			// 3. Update 'Mnemonics' from 'Entropy'
+			this.setEntropySourceIsUserInput( true );
+			//this.updateStatusbarInfo( true );
+			HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
+					
+			await this.updateFields( new_entropy );	
+		}
+	} // onMnemonicsPaste()
+	
+	onCopyButton( evt_src_elt_id ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onCopyButton" ) );
+		//trace2Main("   evt_src_elt_id: " + evt_src_elt_id );
+		let copy_text = "";
+		switch ( evt_src_elt_id ) {
+			case ENTROPY_COPY_BTN_ID: 
+				copy_text = HtmlUtils.GetElementValue( ENTROPY_ID );
+				GuiUtils.ShowQuestionDialog
+					( "Entropy copied in Clipboard", 
+					  {"CloseButtonLabel": "OK" } );
+				break;
+
+			case PK_COPY_BTN_ID: 
+				copy_text = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );
+				GuiUtils.ShowQuestionDialog
+					( "Private Key copied in Clipboard", { "CloseButtonLabel": "OK" } );
+				break;			
+				
+			case MNEMONICS_COPY_BTN_ID: 
+			case SW_MNEMONICS_COPY_BTN_ID:
+				copy_text = HtmlUtils.GetElementValue( MNEMONICS_ID );
+				GuiUtils.ShowQuestionDialog
+					( "Secret phrase copied in Clipboard", { "CloseButtonLabel": "OK" } );
+				break;
+				
+			case SW_WIF_COPY_BTN_ID:
+				copy_text = HtmlUtils.GetElementValue( WIF_ID );
+				GuiUtils.ShowQuestionDialog
+					( "WIF copied in Clipboard",  	   { "CloseButtonLabel": "OK" } );
+				break;
+		}
+		
+		if ( copy_text != "" ) {
+			trace2Main("   copy_text: " + copy_text);
+			navigator.clipboard.writeText( copy_text );
+		}
+	} // onCopyButton()
+	
+	async onBIP32ProtocolChange( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onBIP32ProtocolChange" ) );
+		let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID );
+        if ( blockchain == BITCOIN || blockchain == LITECOIN ) {
+			await this.updateWalletAddress();
+        }			
+	} // onBIP32ProtocolChange()
+	
+	// BIP32Field 'keypress' event handler
+	async onBIP32FieldKeypress( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onBIP32FieldKeypress" ) );
+		//trace2Main("  evt.keyCode:  " + evt.keyCode);
+		//trace2Main("  evt.target:  " + evt.target.id);
+		
+		const ENTER_KEYCODE = 13;
+		let field_value = "";
+		
+		//========== If 'ENTER' or 'Return' key pressed ==========
+        if ( evt.charCode == ENTER_KEYCODE ) {
+			trace2Main("   'ENTER' or 'Return' key pressed");
+			let is_valid_field_value = false;
+			
+			let account_index = HtmlUtils.GetElementValue( ACCOUNT_ID );
+			if ( account_index == "" ) {
+				HtmlUtils.SetElementValue( ACCOUNT_ID, "0" );
+			}
+			
+			let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
+			if ( address_index == "" ) {
+				HtmlUtils.SetElementValue( ADDRESS_INDEX_ID, "0" );
+			}
+			
+			field_value = HtmlUtils.GetElementValue( evt.target.id ); // evt.target; 			
+			if ( field_value == "" ) {
+				field_value = "0";
+			}
+			trace2Main("  field_value(" + evt.target.id + "):  " + field_value);
+			
+			if ( field_value.length >= 1 && field_value.length <= 4 ) { 
+				is_valid_field_value = true;
+			}
+
+			if ( is_valid_field_value ) {
+				await this.updateWalletAddress();
+			}
+			
+			return;
+        } 			
+		//========== If 'ENTER' or 'Return' key pressed
+		
+		
+		//========== Filter non decimal characters ==========
+		let is_decimal_digit = ( evt.charCode >= 48 && evt.charCode <= 57 );  // 0..9
+		trace2Main("  is_decimal_digit (" + evt.charCode + "): " + is_decimal_digit);
+		//trace2Main("  field_value: '" + field_value + "'");
+		//trace2Main("  check 1: " + field_value.length + 1 > 4);
+		//trace2Main("  check 2: " + (field_value.length + 1) > 4);
+        if (   ! is_decimal_digit 
+		    || field_value.length + 1 > 4) {
+			evt.preventDefault();
+			//trace2Main("   EXIT here");
+			return false;
+        }
+		//========== Filter non decimal characters
+		
+		//trace2Main("   continue");
+		this.setRefreshCmdState( true );
+		//trace2Main("   AFTER continue");
+	} // onBIP32FieldKeypress()	
+
+	async onRefreshButton() {
+		trace2Main( pretty_func_header_format( "MainGUI.onRefreshButton" ) );
+		await this.updateWalletAddress();
+		this.setSaveCmdState( true );
+    } // onRefreshButton()
+	
+	onGuiFocus( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.onGuiFocus" ) );
+		let source_elt = evt.target || evt.srcElement;
+		
+		if (! EDITABLE_FIELD_IDS.includes( source_elt.id )) {
+			return;
+	    } 
+		
+		this.setFocus( source_elt.id );
+	} // onGuiFocus()
+	// ================================================================
+	// ====================================       Event Handlers       
+	// ================================================================
+
+	setSaveCmdState( enabled ) {
+		// trace2Main( pretty_func_header_format( "MainGUI.setSaveCmdState", enabled  ) );
+		
+		if ( enabled ) {
+			HtmlUtils.ShowElement( FILE_SAVE_ICON_ID );
+			HtmlUtils.HideElement( FILE_SAVE_ICON_DISABLED_ID );
+			enabled = true;			
+		}
+		else {
+			HtmlUtils.HideElement( FILE_SAVE_ICON_ID );
+			HtmlUtils.ShowElement( FILE_SAVE_ICON_DISABLED_ID );
+			enabled = false;			
+		}
+		
+		// Update 'File/Save' and 'File/Save...' menu items
+		let menu_item_id = FILE_SAVE_MENU_ITEM_ID;
+		let data = { menu_item_id, enabled };
+		window.ipcMain.SetMenuItemState( data );
+        // trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_MENU_ITEM_ID + ":" + enabled  ) );		
+		
+		menu_item_id = FILE_SAVE_AS_MENU_ITEM_ID;
+		// enabled = ! enabled ;
+		data = { menu_item_id, enabled };
+		window.ipcMain.SetMenuItemState( data );
+		// trace2Main( pretty_format( "rGUI.setSaveCmdState> ", FILE_SAVE_AS_MENU_ITEM_ID + ":" + enabled  ) );
+		
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.setSaveCmdState" ) );
+	} // setSaveCmdState()	
+	
+    setRefreshCmdState( enable ) {
+		//trace2Main(">> " + _CYAN_ + "MainGUI.showRefreshButton() " + _END_);
+		if ( enable ) { // show "Regenerate" AND "Refresh" buttons 
+		    //trace2Main("   Show REFRESH");
+			HtmlUtils.ShowElement( RIGHT_BTNBAR_ITEM_ID );
+		}
+		else { // show only "Regenerate" button centered 
+		    //trace2Main("   HIDE REFRESH");
+			HtmlUtils.HideElement( RIGHT_BTNBAR_ITEM_ID );
+		}
+	} // setRefreshCmdState()
+	
+	setEntropySourceIsUserInput( is_user_input ) {
+		// trace2Main( pretty_func_header_format( "MainGUI.setEntropySourceIsUserInput", is_user_input ) );
+		
+		this.entropy_source_is_user_input = is_user_input;
+		//this.updateStatusbarInfo( is_user_input );
+		if ( is_user_input ) {			
+			HtmlUtils.SetElementValue( CHECKSUM_ID,          "" );
+            HtmlUtils.SetElementValue( MNEMONICS_ID,         "" );	
+			HtmlUtils.SetElementValue( SW_MNEMONICS_ID,      "" );	
+            HtmlUtils.SetElementValue( MNEMONICS_4LETTER_ID, "" );
+			HtmlUtils.SetElementValue( WORD_INDEXES_ID,      "" );			
+		}
+		// trace2Main( pretty_func_header_format( "<END> MainGUI.setEntropySourceIsUserInput" ) );
+		
+		this.updateFieldsVisibility();
+	} // setEntropySourceIsUserInput()
+	
+	async displayMessageInStatusbar( msg_id ) {
+		if ( msg_id != undefined ) {
+			let	msg = await window.ipcMain.GetLocalizedMsg(msg_id);
+			HtmlUtils.SetElementValue( "SB_item_message_id", msg );
+		}	
+	} // displayMessageInStatusbar()
+	
+	setEntropyValueValidity( is_valid ) {
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		
+		if ( is_valid ) {
+			entropy_elt.classList.remove( INVALID_VALUE_CSS_CLASS ); 
+			entropy_elt.classList.add( VALID_VALUE_CSS_CLASS ); 
+		} 
+		else {
+			entropy_elt.classList.remove( VALID_VALUE_CSS_CLASS ); 
+			entropy_elt.classList.add( INVALID_VALUE_CSS_CLASS ); 
+		}
+	} // setEntropyValueValidity()
+	
+	setFocus( elt_id ) {
+		trace2Main( pretty_func_header_format( "MainGUI.setFocus" ) );
+		
+		let target_elt = HtmlUtils.GetElement( elt_id );
+		for (let i=0; i < FIELD_IDS.length; i++) { 
+			let field_id = FIELD_IDS[i];
+			let elt = HtmlUtils.GetElement(field_id);
+			
+		    if ( target_elt.id == field_id ) {
+				elt.classList.remove( WITHOUT_FOCUS_CSS_CLASS ); 
+				elt.classList.add( WITH_FOCUS_CSS_CLASS ); 			    
+			}
+			else {  
+				elt.classList.remove( WITH_FOCUS_CSS_CLASS ); 
+			    elt.classList.add( WITHOUT_FOCUS_CSS_CLASS ); 
+			}
+		} 
+	} // setFocus()
+	
+	// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop
+	// https://www.geeksforgeeks.org/how-to-drag-and-drop-images-using-html5/	
+	async onDropImage( evt ) {
+		trace2Main(">> " + _CYAN_ + "MainGUI.onDropImage()" + _END_);		
+		evt.preventDefault();
+		evt.stopPropagation();
+
+		let img_file_path = event.dataTransfer.files[0].path;
+		console.log(">   img_file_path: " + img_file_path);
+		
+		let img_data_asURL = await window.ipcMain.LoadImageFromFile( img_file_path );
+		this.img_data_asURL = img_data_asURL; 
+	} // onDropImage()
+	// ============================== Event Handlers	
+	
+	async getWalletInfo() {
+		trace2Main( pretty_func_header_format( "MainGUI.getWalletInfo" ) );
+		
+		let crypto_info = {};
+		
+		let wallet_mode = HtmlUtils.GetElementValue( WALLET_MODE_SELECT_ID ); 
+		crypto_info[WALLET_MODE] = wallet_mode;
+		
+		let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID ); 
+		crypto_info[BLOCKCHAIN] = blockchain;
+		
+		let coin_id = HtmlUtils.GetElementValue( WALLET_COIN_ID );
+		trace2Main( pretty_format( "coin_id", coin_id ) );
+		let coin = HtmlUtils.GetElementValue( WALLET_COIN_ID ).replaceAll('\n','').replaceAll('\t',''); 
+		trace2Main( pretty_format( "Coin", coin ) );
+		crypto_info[COIN] = coin;
+		
+		let wallet_address = HtmlUtils.GetElementValue( ADDRESS_ID );
+        // trace2Main("wallet_address " + wallet_address );		
+		crypto_info[ADDRESS] = wallet_address;
+		
+		let wallet_URL_elt = HtmlUtils.GetElement( WALLET_URL_LINK_ID );
+		if (wallet_URL_elt != undefined) {
+			crypto_info[BLOCKCHAIN_EXPLORER] = wallet_URL_elt.href;
+		}
+		
+		trace2Main( pretty_format( "rGUI.getWinf> Blockchain", blockchain ) );
+		
+		if ( this.isBlockchainSupported( blockchain ) ) {
+			let WIF_value = HtmlUtils.GetElementValue( WIF_ID ); 
+			// trace2Main("WIF_value " + WIF_value );
+			if ( WIF_value != "" ) {
+				crypto_info[WIF] = WIF_value;
+			}
+
+			if ( blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN ) {
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );		
+				crypto_info[WIF] = WIF_value; 
+			}
+			else if (    blockchain == ETHEREUM  || blockchain == BINANCE_BSC
+					  || blockchain == AVALANCHE || blockchain == POLYGON			          
+					  || blockchain == SOLANA ) {
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID ); 
+				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", crypto_info[PRIVATE_KEY] ) );
+			}	
+            else if ( blockchain == RIPPLE || blockchain == TON || blockchain == TERRA_LUNA ) {
+				let PRIV_KEY_value = crypto_info[PRIV_KEY];
+				delete crypto_info[PRIV_KEY];
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );  
+			}
+			else if (   blockchain == STELLAR || blockchain == SUI
+			         || blockchain == ETHEREUM_CLASSIC || blockchain == VECHAIN) {
+				let PRIV_KEY_value = crypto_info[PRIV_KEY];
+				delete crypto_info[WIF];
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID );  
+			}
+			else if (    blockchain == TRON 
+			          || blockchain == BITCOIN_CASH 
+					  || blockchain == DASH || blockchain == FIRO ) {
+				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID ); 
+			}            		
+		}
+		
+		let mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_ID ); 
+		let mnemonics = mnemonics_elt.value;
+		
+		crypto_info[MNEMONICS] = mnemonics;	
+		
+		let shortened_mnemonics_elt = HtmlUtils.GetElement( MNEMONICS_4LETTER_ID ); 
+		let shortened_mnemonics = shortened_mnemonics_elt.value;
+		crypto_info[SHORTENED_MNEMONICS] = shortened_mnemonics;
+		
+		let lang = this.wallet_info.getAttribute(LANG);
+		crypto_info[LANG] = lang;
+		
+		
+		let options = { [LANG]: lang };
+		let data = { mnemonics, options };
+		let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
+		let word_indexes_str = JSON.stringify( word_indexes )
+		                       .replaceAll( '"', '' ).replaceAll( ',', ', ' )
+							   .replaceAll( '[', '' ).replaceAll( ']', '' )
+		crypto_info[WORD_INDEXES] = word_indexes_str;
+		
+		//trace2Main(">> " + _CYAN_ + "MainGUI.getWalletInfo() " + _END_);
+		
+		if ( wallet_mode == HD_WALLET_TYPE ) {	
+		    let bip32_passphrase = this.wallet_info.getAttribute( BIP32_PASSPHRASE );
+			if ( bip32_passphrase != undefined && bip32_passphrase != null && bip32_passphrase != "" ) {
+				crypto_info[BIP32_PASSPHRASE] = bip32_passphrase;
+			}
+			let account       = HtmlUtils.GetElementValue( ACCOUNT_ID );			
+			let change_chain  = ( blockchain == SOLANA ) ? "0'" : "0";			
+			let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
+			
+			let bip32_protocol = 44;
+			bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID );
+			
+			crypto_info[DERIVATION_PATH] =  "m/" + bip32_protocol + "'/" + COIN_TYPES[blockchain] + "'"
+										  + "/" + account + "'/" + change_chain
+										  + "/" + address_index + "'";		
+		}
+		
+		// -------- Bip38 passphrase --------
+		let bip38_passphrase = this.wallet_info.getAttribute( BIP38_PASSPHRASE );
+		if ( bip38_passphrase != undefined && bip38_passphrase != null && bip38_passphrase != "" ) {
+			crypto_info[BIP38_PASSPHRASE] = bip38_passphrase;
+		}
+		// -------- Bip38 passphrase
+		
+		let entropy_value = HtmlUtils.GetElementValue( ENTROPY_ID ); 
+		crypto_info[ENTROPY] = entropy_value;
+		
+		let entropy_size = entropy_value.length * 4; // 4 bits per hex digit
+		crypto_info[ENTROPY_SIZE] = entropy_size;
+		
+		return crypto_info;
+	} // async getWalletInfo()
+	
+	// https://www.w3schools.com/howto/howto_js_full_page_tabs.asp
+	openTabPage( pageName, elt, color ) {
+		trace2Main( pretty_func_header_format( "MainGUI.openTabPage", pageName + " elt:" + elt.id ) );
+				
+		// Hide all elements with class="tabcontent" by default */
+		let i, tabcontent, tablinks;
+		tabcontent = document.getElementsByClassName("tabcontent");
+		for ( i = 0; i < tabcontent.length; i++ ) {
+			tabcontent[i].style.display = "none";
+		}
+
+		// Remove the background color of all tablinks/buttons
+		tablinks = document.getElementsByClassName("tablink");
+		for ( i = 0; i < tablinks.length; i++ ) {
+			tablinks[i].style.backgroundColor = "";
+		}
+
+		// Show the specific tab content
+		document.getElementById( pageName ).style.display = "block";
+
+		// Add the specific color to the button used to open the tab content
+		elt.style.backgroundColor = color;
+		
+		if ( HtmlUtils.HasClass( elt.id,   "FourBordersTabLink" ) ) {
+			HtmlUtils.RemoveClass( elt.id, "FourBordersTabLink" );
+		}
+		if ( ! HtmlUtils.HasClass( elt.id, "ThreeBordersTabLink" ) ) {
+			HtmlUtils.AddClass( elt.id,    "ThreeBordersTabLink" );
+		}
+			
+		let other_tab_link_id = (elt.id == SEED_TAB_LINK_ID) ? 
+								 WALLET_TAB_LINK_ID : SEED_TAB_LINK_ID;
+		//trace2Main("   current_tab_link_id: " + elt.id);
+		//trace2Main("   other_tab_link_id:   " + other_tab_link_id);
+		
+		if ( HtmlUtils.HasClass( other_tab_link_id,   "ThreeBordersTabLink" ) ) {
+			HtmlUtils.RemoveClass( other_tab_link_id, "ThreeBordersTabLink" );
+		}
+		if ( ! HtmlUtils.HasClass( other_tab_link_id, "FourBordersTabLink" ) ) {
+			HtmlUtils.AddClass( other_tab_link_id,    "FourBordersTabLink" );
+		}		
+	} // openTabPage()
+	
+	async generateEntropyFromEntropySource() {
+		trace2Main( pretty_func_header_format( "MainGUI.generateEntropyFromEntropySource" ) );
+		let salted_entropy_src_str = await this.getSaltedEntropySource();
+		//  ( pretty_format( "rGUI.genEsrc2E> Salted Entropy", getShortenedString( salted_entropy_src_str ) ) );
+		
+		let lang = this.wallet_info.getAttribute( LANG );
+		// trace2Main( pretty_format( "rGUI.genEsrc2E> lang", lang ) );
+		
+		// trace2Main( pretty_format( "rGUI.genEsrc2E> word_count", this.wallet_info.getAttribute(WORD_COUNT) ) );
+		const options = { [LANG]: lang, [WORD_COUNT]: this.wallet_info.getAttribute(WORD_COUNT) };
+		let data = { salted_entropy_src_str, options };				
+		let	entropy = await window.ipcMain.EntropySourceToEntropy( data );	
+        trace2Main( pretty_format( "rGUI.genEsrc2E> entropy", entropy ) );
+		
+        return entropy;		
+	} // generateEntropyFromEntropySource()
+	
+	async mnemonicsToWordIndexes( mnemonics, lang ) {
+		//trace2Main( pretty_func_header_format( "MainGUI.mnemonicsToWordIndexes" ) );		
+		let word_index_base = HtmlUtils.GetElementValue( WORD_INDEXES_BASE_ID);
+		let options = { [LANG]: lang, "word_index_base": word_index_base }; 		
+		let data = { mnemonics, options };
+		let word_indexes = await window.ipcMain.MnemonicsToWordIndexes( data );
+		let word_indexes_str = word_indexes.join(' ');
+		//trace2Main("   word_indexes_str: " + word_indexes_str);
+		return word_indexes_str;
+    } // async mnemonicsToWordIndexes()
+	
+	isBlockchainSupported( blockchain ) {
+		if (   blockchain == ETHEREUM  || blockchain == ETHEREUM_CLASSIC || blockchain == BINANCE_BSC
+		    || blockchain == AVALANCHE || blockchain == POLYGON 		     
+		    || blockchain == BITCOIN   || blockchain == DOGECOIN  || blockchain == LITECOIN 
+		    || blockchain == CARDANO   || blockchain == STELLAR   || blockchain == SUI
+			|| blockchain == SOLANA    || blockchain == TON
+		    || blockchain == RIPPLE    || blockchain == TRON      
+			|| blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV 
+			|| blockchain == TERRA_LUNA   || blockchain == RAVENCOIN || blockchain == HORIZEN
+		    || blockchain == DASH      || blockchain == VECHAIN   || blockchain == FIRO ) {
+			return true;	
+		} 
+		return false;
+	} // isBlockchainSupported()
+	
+	setEventHandler( elt_id, event_name, handler_function ) {
+		let elt = document.getElementById( elt_id );
+		if ( elt != undefined ) { 
+			elt.addEventListener(event_name, handler_function );
+		}
+	} // setEventHandler()	
+} // MainGUI class
+// ==============================  MainGUI class 
+
+MainGUI.This;
