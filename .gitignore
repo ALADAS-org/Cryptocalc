@@ -1,6 +1,9 @@
+# ==========  .gitignore for Cryptocalc  ==========
 node_modules
 _output/*/
 releases/**
+
+**/_00_private/
 
 .claude/settings.local.json
 CLAUDE.local.md

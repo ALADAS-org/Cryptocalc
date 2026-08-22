@@ -70,6 +70,8 @@ const ToMain_RQ_MNEMONICS_TO_WORD_INDEXES         = "ToMain:Request/mnemonics_to
 
 const ToMain_RQ_GUESS_MNEMONICS_LANG              = "ToMain:Request/guess_mnemonics_lang";
 
+const ToMain_RQ_BIP85_DERIVE_BIP39                = "ToMain:Request/bip85_derive_bip39";
+
 const ToMain_RQ_BIP38_ENCRYPT                     = "ToMain:Request/bip38_encrypt";
 const ToMain_RQ_BIP38_DECRYPT                     = "ToMain:Request/bip38_decrypt";
 
@@ -90,6 +92,7 @@ const ToMain_RQ_GET_L10N_MSG                      = "ToMain:Request/get_L10n_Msg
 
 const ToMain_RQ_SET_MENU_ITEM_STATE               = "ToMain:Request/set_menu_item_state";
 
+const ToMain_RQ_GET_OPTIONS                       = "ToMain:Request/get_options";
 const ToMain_RQ_SAVE_OPTIONS                      = "ToMain:Request/save_options";
 const ToMain_RQ_RESET_OPTIONS                     = "ToMain:Request/reset_options";
 const ToMain_RQ_UPDATE_OPTIONS                    = "ToMain:Request/update_options";
@@ -206,6 +209,7 @@ if ( typeof exports === 'object' ) {
 	
 	exports.ToMain_RQ_GET_FORTUNE_COOKIE                = ToMain_RQ_GET_FORTUNE_COOKIE
 	
+	exports.ToMain_RQ_GET_OPTIONS                       = ToMain_RQ_GET_OPTIONS
 	exports.ToMain_RQ_SAVE_OPTIONS                      = ToMain_RQ_SAVE_OPTIONS
 	exports.ToMain_RQ_RESET_OPTIONS                     = ToMain_RQ_RESET_OPTIONS
 	exports.ToMain_RQ_UPDATE_OPTIONS                    = ToMain_RQ_UPDATE_OPTIONS
@@ -215,8 +219,10 @@ if ( typeof exports === 'object' ) {
 	
 	exports.ToMain_RQ_GET_HD_WALLET                     = ToMain_RQ_GET_HD_WALLET
 	exports.ToMain_RQ_GET_SIMPLE_WALLET                 = ToMain_RQ_GET_SIMPLE_WALLET
-    exports.ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS  = ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS,
+    exports.ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS  = ToMain_RQ_GET_SIMPLE_WALLET_FROM_MNEMONICS
 	exports.ToMain_RQ_GET_HD_SOLANA_WALLET              = ToMain_RQ_GET_HD_SOLANA_WALLET
+	
+	exports.ToMain_RQ_BIP85_DERIVE_BIP39                = ToMain_RQ_BIP85_DERIVE_BIP39
 	
 	exports.ToMain_RQ_BIP38_ENCRYPT                     = ToMain_RQ_BIP38_ENCRYPT
 	exports.ToMain_RQ_BIP38_DECRYPT                     = ToMain_RQ_BIP38_DECRYPT

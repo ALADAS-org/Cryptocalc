@@ -10,10 +10,10 @@
 >> MainGUI.openTabPage Seed elt:seed_tab_link_id
 >> MainGUI.onGUIEvent: FromMain:SetVariable
    rGUI.onGUI>  data.length:                 3
-   rGUI.onGUI>  data:                        ["FromMain:SetVariable","0.3.2","0.5.26"]
-   rGUI.onGUI>  SET VARIABLE(0.3.2):         0.5.26
+   rGUI.onGUI>  data:                        ["FromMain:SetVariable","0.3.2","0.5.28"]
+   rGUI.onGUI>  SET VARIABLE(0.3.2):         0.5.28
    variable_name:                            0.3.2
-   rGUI.onGUI>  cryptowallet_version:        0.5.26
+   rGUI.onGUI>  cryptowallet_version:        0.5.28
 >> MainGUI.onGUIEvent: FromMain:UpdateOptions
 >> MainGUI.updateOptionsFields
    rGUI.upOpt> wallet_mode:                  Simple Wallet
@@ -59,74 +59,74 @@
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            7a7914bafe619d3856186891ba4fe4e0c7cb47fd2452bda5d5573fd03403de5f
-   rGUI.saltE> entropy_src_value:            5267f27869d1796dc9766d3967425567d6852dc93745d71b08b309f24e4a1c02
-   rGUI.saltE> entropy_src_value:            99f3b2d532ae46e402d2c37a8f48c690ba329d073ff7993857fb697d1c4f06a6
-   rGUI.upFields> entropy:                   5d64b9ade8126867559d79034c71f420f9a1e825868ee0dcf0bdb19895499d39
->> MainGUI.propagateFields 5d64b9ade8126867559d79034c71f420f9a1e825868ee0dcf0bdb19895499d39
+   rGUI.saltE> entropy_src_value:            1af632138f3a72e133e202711538a5e0327818964279a3c3fa7ff9454ed97b33
+   rGUI.saltE> entropy_src_value:            438060b51fabf65605132378127b78efb6cdf0faded075b9a1bff7b27ece9813
+   rGUI.saltE> entropy_src_value:            451c26c387af9b66aef203f496b2d978c06768ac29277f023bb6247cd3e7280f
+   rGUI.upFields> entropy:                   57b91f7f93c1917b8c793a5e9ca586426fe132871ade1141cf5b1b8ecfb4b6f1
+>> MainGUI.propagateFields 57b91f7f93c1917b8c793a5e9ca586426fe132871ade1141cf5b1b8ecfb4b6f1
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
-   rGUI.upFields> entropy:                   012c69ff05dfa41721c93fecb150e4978d80573c8b544db33a3f162c9bc02995
->> MainGUI.propagateFields 012c69ff05dfa41721c93fecb150e4978d80573c8b544db33a3f162c9bc02995
+   rGUI.upFields> entropy:                   5c17c3d8e5e885b1a96b84b94bd2042791c776dcad82d2688cdc65907583e053
+>> MainGUI.propagateFields 5c17c3d8e5e885b1a96b84b94bd2042791c776dcad82d2688cdc65907583e053
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
-   rGUI.upFields> entropy:                   553747ef75e6b062198d647b54e14bd68e33d3aed9369da359bc9dd46926fe8f
->> MainGUI.propagateFields 553747ef75e6b062198d647b54e14bd68e33d3aed9369da359bc9dd46926fe8f
+   rGUI.upFields> entropy:                   083c6f6979052b9180ba78dd1cfc0c37a3aa292d0c08d34ab585b10aa349d56c
+>> MainGUI.propagateFields 083c6f6979052b9180ba78dd1cfc0c37a3aa292d0c08d34ab585b10aa349d56c
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
->> MainGUI.updateEntropy 5d64b9ade8126867559d79034c71f420f9a1e825868ee0dcf0bdb19895499d39
+>> MainGUI.updateEntropy 57b91f7f93c1917b8c793a5e9ca586426fe132871ade1141cf5b1b8ecfb4b6f1
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
->> MainGUI.updateEntropy 012c69ff05dfa41721c93fecb150e4978d80573c8b544db33a3f162c9bc02995
+>> MainGUI.updateEntropy 5c17c3d8e5e885b1a96b84b94bd2042791c776dcad82d2688cdc65907583e053
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
->> MainGUI.updateEntropy 553747ef75e6b062198d647b54e14bd68e33d3aed9369da359bc9dd46926fe8f
+>> MainGUI.updateEntropy 083c6f6979052b9180ba78dd1cfc0c37a3aa292d0c08d34ab585b10aa349d56c
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   festival riot wink type help country great prosper kitten poem fancy public
-                                             tobacco truth rocket chat oval bracket hundred desert educate nature when topic
-   rGUI.upWidx> mnemonics:                   festival riot wink type help country great prosper kitten poem fancy public
-                                             tobacco truth rocket chat oval bracket hundred desert educate nature when topic
-   rGUI.upWidx> mnemonics:                   festival riot wink type help country great prosper kitten poem fancy public
-                                             tobacco truth rocket chat oval bracket hundred desert educate nature when topic
->> MainGUI.updateChecksum 11100100
-   rGUI.upE> entropy_hex:                    5d64b9ade8126867559d79034c71f420f9a1e825868ee0dcf0bdb19895499d39
+   rGUI.upWidx> mnemonics:                   amused toddler surge velvet famous silver actual excuse tackle tree adapt hungry
+                                             deny behind reflect library spy fiber gesture ginger pretty pilot fiber nut
+   rGUI.upWidx> mnemonics:                   amused toddler surge velvet famous silver actual excuse tackle tree adapt hungry
+                                             deny behind reflect library spy fiber gesture ginger pretty pilot fiber nut
+   rGUI.upWidx> mnemonics:                   amused toddler surge velvet famous silver actual excuse tackle tree adapt hungry
+                                             deny behind reflect library spy fiber gesture ginger pretty pilot fiber nut
+>> MainGUI.updateChecksum 11001110
+   rGUI.upE> entropy_hex:                    57b91f7f93c1917b8c793a5e9ca586426fe132871ade1141cf5b1b8ecfb4b6f1
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin Image
-   rGUI.genSW> private_key:                  5d64b9ade8126867559d79034c71f420f9a1e825868ee0dcf0bdb19895499d39
->> MainGUI.updateChecksum 11111101
-   rGUI.upE> entropy_hex:                    012c69ff05dfa41721c93fecb150e4978d80573c8b544db33a3f162c9bc02995
+   rGUI.genSW> private_key:                  57b91f7f93c1917b8c793a5e9ca586426fe132871ade1141cf5b1b8ecfb4b6f1
+>> MainGUI.updateChecksum 00010110
+   rGUI.upE> entropy_hex:                    5c17c3d8e5e885b1a96b84b94bd2042791c776dcad82d2688cdc65907583e053
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  012c69ff05dfa41721c93fecb150e4978d80573c8b544db33a3f162c9bc02995
->> MainGUI.updateChecksum 00101000
-   rGUI.upE> entropy_hex:                    553747ef75e6b062198d647b54e14bd68e33d3aed9369da359bc9dd46926fe8f
+   rGUI.genSW> private_key:                  5c17c3d8e5e885b1a96b84b94bd2042791c776dcad82d2688cdc65907583e053
+>> MainGUI.updateChecksum 10111101
+   rGUI.upE> entropy_hex:                    083c6f6979052b9180ba78dd1cfc0c37a3aa292d0c08d34ab585b10aa349d56c
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  553747ef75e6b062198d647b54e14bd68e33d3aed9369da359bc9dd46926fe8f
-   rGUI.genSW> new_wallet[WIF]:              KzMFmxUSd3cRdLjiPtamisWnbVrwoR3S31RpNFvk8Dtjxjn1NJML
-   rGUI.genSW> wallet_address:               1CNGHxQg6bccEkJdztirs4Y9WbKSLtaRmc
-   rGUI.genSW> WIF:                          KzMFmxUSd3cRdLjiPtamisWnbVrwoR3S31RpNFvk8Dtjxjn1NJML
+   rGUI.genSW> private_key:                  083c6f6979052b9180ba78dd1cfc0c37a3aa292d0c08d34ab585b10aa349d56c
+   rGUI.genSW> new_wallet[WIF]:              KzAEUj2wzdF71fVXxhvttfADW3bs3JHkk3FxjV5z32PE3mfTyZAp
+   rGUI.genSW> wallet_address:               1Nd5C9LLLQ5HywLLx1nLx9eLx5zkVmr5sA
+   rGUI.genSW> WIF:                          KzAEUj2wzdF71fVXxhvttfADW3bs3JHkk3FxjV5z32PE3mfTyZAp
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
-   rGUI.genSW> new_wallet[WIF]:              KwFzVLCJ74JRRPwaLQLHYvU3HSVt7bfgPMxv5L83HeHvf3RH4tup
-   rGUI.genSW> wallet_address:               1HmCydms1xXjkwnLTPxoHhdZMbmkzBRWD6
-   rGUI.genSW> WIF:                          KwFzVLCJ74JRRPwaLQLHYvU3HSVt7bfgPMxv5L83HeHvf3RH4tup
+   rGUI.genSW> new_wallet[WIF]:              KzJj8w7MM7LEdtTDMCWanBiDiV4YCFRpg62qLriAcjjhKDtnWfSG
+   rGUI.genSW> wallet_address:               1QBtgFEBTyLVzGeDSrPdrvbyEobp1bKtnr
+   rGUI.genSW> WIF:                          KzJj8w7MM7LEdtTDMCWanBiDiV4YCFRpg62qLriAcjjhKDtnWfSG
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
-   rGUI.genSW> new_wallet[WIF]:              Kz5MojQgQPx2Eq9NZXUBqrpv3whyWHGwiXnhwRzrb5LNsVQn2Cpa
-   rGUI.genSW> wallet_address:               1JrsRYJaKfFRdecN35oSG6DEHMpWs8vYg7
-   rGUI.genSW> WIF:                          Kz5MojQgQPx2Eq9NZXUBqrpv3whyWHGwiXnhwRzrb5LNsVQn2Cpa
+   rGUI.genSW> new_wallet[WIF]:              KwVikog9evYSjtnafwm8cnoy1H71FsghHSpFFJjgUMESDhiGRGT1
+   rGUI.genSW> wallet_address:               1DKbVycPnoeGpSXUusYZFF8SZRq4T7EfBW
+   rGUI.genSW> WIF:                          KwVikog9evYSjtnafwm8cnoy1H71FsghHSpFFJjgUMESDhiGRGT1
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
@@ -134,12 +134,12 @@
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   festival riot wink type help country great prosper kitten poem fancy public
-                                             tobacco truth rocket chat oval bracket hundred desert educate nature when topic
-   rGUI.upWidx> mnemonics:                   festival riot wink type help country great prosper kitten poem fancy public
-                                             tobacco truth rocket chat oval bracket hundred desert educate nature when topic
-   rGUI.upWidx> mnemonics:                   festival riot wink type help country great prosper kitten poem fancy public
-                                             tobacco truth rocket chat oval bracket hundred desert educate nature when topic
+   rGUI.upWidx> mnemonics:                   amused toddler surge velvet famous silver actual excuse tackle tree adapt hungry
+                                             deny behind reflect library spy fiber gesture ginger pretty pilot fiber nut
+   rGUI.upWidx> mnemonics:                   amused toddler surge velvet famous silver actual excuse tackle tree adapt hungry
+                                             deny behind reflect library spy fiber gesture ginger pretty pilot fiber nut
+   rGUI.upWidx> mnemonics:                   amused toddler surge velvet famous silver actual excuse tackle tree adapt hungry
+                                             deny behind reflect library spy fiber gesture ginger pretty pilot fiber nut
 >> MainGUI.updateWalletMode
    rGUI.upWmode> wallet_mode:                Simple Wallet
    rGUI.upWmode> default_blockchain:         Bitcoin
@@ -149,1042 +149,118 @@
    rGUI.upBlkCHN> wallet_mode:               Simple Wallet
    rGUI.upBlkCHN> CMD:                       cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  553747ef75e6b062198d647b54e14bd68e33d3aed9369da359bc9dd46926fe8f
-   rGUI.genSW> new_wallet[WIF]:              Kz5MojQgQPx2Eq9NZXUBqrpv3whyWHGwiXnhwRzrb5LNsVQn2Cpa
-   rGUI.genSW> wallet_address:               1JrsRYJaKfFRdecN35oSG6DEHMpWs8vYg7
-   rGUI.genSW> WIF:                          Kz5MojQgQPx2Eq9NZXUBqrpv3whyWHGwiXnhwRzrb5LNsVQn2Cpa
+   rGUI.genSW> private_key:                  083c6f6979052b9180ba78dd1cfc0c37a3aa292d0c08d34ab585b10aa349d56c
+   rGUI.genSW> new_wallet[WIF]:              KwVikog9evYSjtnafwm8cnoy1H71FsghHSpFFJjgUMESDhiGRGT1
+   rGUI.genSW> wallet_address:               1DKbVycPnoeGpSXUusYZFF8SZRq4T7EfBW
+   rGUI.genSW> WIF:                          KwVikog9evYSjtnafwm8cnoy1H71FsghHSpFFJjgUMESDhiGRGT1
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
-   rGUI.upBlkCHN> WIF:                       Kz5MojQgQPx2Eq9NZXUBqrpv3whyWHGwiXnhwRzrb5LNsVQn2Cpa
+   rGUI.upBlkCHN> WIF:                       KwVikog9evYSjtnafwm8cnoy1H71FsghHSpFFJjgUMESDhiGRGT1
    rGUI.upBlkCHN> coin:                      BTC
-   rGUI.upBlkCHN> wallet_address:            1JrsRYJaKfFRdecN35oSG6DEHMpWs8vYg7
+   rGUI.upBlkCHN> wallet_address:            1DKbVycPnoeGpSXUusYZFF8SZRq4T7EfBW
 >> MainGUI.updateWalletURL
    rGUI.newW> blockchain:                    Bitcoin
 >> MainGUI.updateEntropySize 256 bits
    rGUI.upEsz> entropy_size:                 256
    rGUI.upEsz> entropy_elt:                  entropy_id
 >> MainGUI.updateFields
-   rGUI.upFields> wallet[ENTROPY]:           553747ef75e6b062198d647b54e14bd68e33d3aed9369da359bc9dd46926fe8f
+   rGUI.upFields> wallet[ENTROPY]:           083c6f6979052b9180ba78dd1cfc0c37a3aa292d0c08d34ab585b10aa349d56c
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            345877649898b87a151c066de51ea13ea8b13dbf360705f141d9109877b01f2c
-   rGUI.upFields> entropy:                   66268b4b8a9ec4ce2e3c71bb8d5e5b426c7b2ca02c58612bf7364fc7063720aa
->> MainGUI.propagateFields 66268b4b8a9ec4ce2e3c71bb8d5e5b426c7b2ca02c58612bf7364fc7063720aa
+   rGUI.saltE> entropy_src_value:            3bd8b84b7c3da90b9870a4fca80dc00091fedbf83fa748b8683fe43fb993c6b3
+   rGUI.upFields> entropy:                   423b9885ad35ee371c56ed319b1fc09b07e206edb6199b84dfa33a7b8468a68a
+>> MainGUI.propagateFields 423b9885ad35ee371c56ed319b1fc09b07e206edb6199b84dfa33a7b8468a68a
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
->> MainGUI.updateEntropy 66268b4b8a9ec4ce2e3c71bb8d5e5b426c7b2ca02c58612bf7364fc7063720aa
+>> MainGUI.updateEntropy 423b9885ad35ee371c56ed319b1fc09b07e206edb6199b84dfa33a7b8468a68a
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   great crowd spray benefit unable grow rib mixed romance helmet nothing luggage
-                                             sibling north level mention gentle garden snow panel idea breeze live essay
->> MainGUI.updateChecksum 01101001
-   rGUI.upE> entropy_hex:                    66268b4b8a9ec4ce2e3c71bb8d5e5b426c7b2ca02c58612bf7364fc7063720aa
+   rGUI.upWidx> mnemonics:                   drama system cannon foil galaxy breeze image tank cover suggest usual current
+                                             lawsuit address replace segment oppose cheap trip insane reunion crowd olive elbow
+>> MainGUI.updateChecksum 00111001
+   rGUI.upE> entropy_hex:                    423b9885ad35ee371c56ed319b1fc09b07e206edb6199b84dfa33a7b8468a68a
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  66268b4b8a9ec4ce2e3c71bb8d5e5b426c7b2ca02c58612bf7364fc7063720aa
-   rGUI.genSW> new_wallet[WIF]:              KzeH6D8XuFnPwYkxdZWhaw51YMij236StGWNV6yYdLAD7pbWXhwz
-   rGUI.genSW> wallet_address:               1Df9fYj8nA6WYjyYMi5YvsRSMSrLKLdXgX
-   rGUI.genSW> WIF:                          KzeH6D8XuFnPwYkxdZWhaw51YMij236StGWNV6yYdLAD7pbWXhwz
+   rGUI.genSW> private_key:                  423b9885ad35ee371c56ed319b1fc09b07e206edb6199b84dfa33a7b8468a68a
+   rGUI.genSW> new_wallet[WIF]:              KySTZbWLn2ydVmVuJ1zu9S5mWDz7yqAkns3rNwYd5Jy9gLJErh6r
+   rGUI.genSW> wallet_address:               17vUk6AePSwe3nYszpdwtGxpQ998ZDiZLt
+   rGUI.genSW> WIF:                          KySTZbWLn2ydVmVuJ1zu9S5mWDz7yqAkns3rNwYd5Jy9gLJErh6r
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   great crowd spray benefit unable grow rib mixed romance helmet nothing luggage
-                                             sibling north level mention gentle garden snow panel idea breeze live essay
+   rGUI.upWidx> mnemonics:                   drama system cannon foil galaxy breeze image tank cover suggest usual current
+                                             lawsuit address replace segment oppose cheap trip insane reunion crowd olive elbow
    rGUI.newW> entropy_size:                  256
 >> MainGUI.generateEntropyFromEntropySource
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            45abbe8f6d34c878e677f7c046f0ce98af9ab9613cdc2cd5cb7fbbac1f772e4a
-   rGUI.genEsrc2E> entropy:                  786bd8d37a413f5bff5cd2c76cae16cc4b7862987c6487010d22ecaeac4f88a9
-   rGUI.newW> entropy:                       786bd8d37a413f5bff5cd2c76cae16cc4b7862987c6487010d22ecaeac4f88a9
->> MainGUI.updateChecksum 10100101
+   rGUI.saltE> entropy_src_value:            833225a88b7bea543aab53761267cbe6b7879f374546f9634476ef6555edfaaa
+   rGUI.genEsrc2E> entropy:                  c09887965f7a68c686bd1772f10ed8f46da579cfe9c79eb993faae18063cbdc5
+   rGUI.newW> entropy:                       c09887965f7a68c686bd1772f10ed8f46da579cfe9c79eb993faae18063cbdc5
+>> MainGUI.updateChecksum 01110001
 >> MainGUI.updateLanguage lang: 'EN'
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   journey gain crumble virus become pupil word olympic shuffle grace mad obtain
-                                             resource course giggle milk mandate anchor emerge sun turn chief cargo cruise
->> MainGUI.updateFields 786bd8d37a413f5bff5cd2c76cae16cc4b7862987c6487010d22ecaeac4f88a9
-   rGUI.upFields> wallet[ENTROPY]:           786bd8d37a413f5bff5cd2c76cae16cc4b7862987c6487010d22ecaeac4f88a9
+   rGUI.upWidx> mnemonics:                   scene service tortoise same pledge globe brain pepper indicate mask renew trip
+                                             surge rude distance decline pact smart wrong found lesson bundle warfare purchase
+>> MainGUI.updateFields c09887965f7a68c686bd1772f10ed8f46da579cfe9c79eb993faae18063cbdc5
+   rGUI.upFields> wallet[ENTROPY]:           c09887965f7a68c686bd1772f10ed8f46da579cfe9c79eb993faae18063cbdc5
    rGUI.upFields> CMD:                       cmd:NewWallet
    rGUI.upFields> entropy_source *IS NOT* user_input:
 >> MainGUI.getSaltedEntropySource DiceD6
-   rGUI.saltE> entropy_src_value:            49d9c249e1c229e05c9f30eae6faca267dfef469262b157e63b8eb8b3c1dca62
-   rGUI.upFields> entropy:                   22fe4be99a5c7ced8587dfb482ad9d18f339df093eb6a4cf301940ed203ecd58
->> MainGUI.propagateFields 22fe4be99a5c7ced8587dfb482ad9d18f339df093eb6a4cf301940ed203ecd58
+   rGUI.saltE> entropy_src_value:            20178781e72b042a23d18d6aed02395c0870d49702ad394f6574177b85d6100a
+   rGUI.upFields> entropy:                   cfea0bb96fef8f72ee38ff5115c0763e1b66f7e86941d02ddbde750f54863da6
+>> MainGUI.propagateFields cfea0bb96fef8f72ee38ff5115c0763e1b66f7e86941d02ddbde750f54863da6
    rGUI.propF> CMD:                          cmd:NewWallet
 >> MainGUI.generateSalt
->> MainGUI.updateEntropy 22fe4be99a5c7ced8587dfb482ad9d18f339df093eb6a4cf301940ed203ecd58
+>> MainGUI.updateEntropy cfea0bb96fef8f72ee38ff5115c0763e1b66f7e86941d02ddbde750f54863da6
    rGUI.upE> blockchain: :                   Bitcoin
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   carry venture whip cruise sick item bid winner region betray guard cradle
-                                             crime usage ceiling strategy pill kangaroo alien limb spirit buyer cube advice
->> MainGUI.updateChecksum 00100000
-   rGUI.upE> entropy_hex:                    22fe4be99a5c7ced8587dfb482ad9d18f339df093eb6a4cf301940ed203ecd58
+   rGUI.upWidx> mnemonics:                   soup expect unusual thank wedding ride rib cable extra puppy budget label
+                                             reopen know payment choice south human wasp tube vocal drink walk skate
+>> MainGUI.updateChecksum 01010000
+   rGUI.upE> entropy_hex:                    cfea0bb96fef8f72ee38ff5115c0763e1b66f7e86941d02ddbde750f54863da6
    rGUI.upE> wallet_mode:                    Simple Wallet
    rGUI.upE> wallet_info[CMD]:               cmd:NewWallet
 >> MainGUI.generateSimpleWalletAddress Bitcoin DiceD6
-   rGUI.genSW> private_key:                  22fe4be99a5c7ced8587dfb482ad9d18f339df093eb6a4cf301940ed203ecd58
-   rGUI.genSW> new_wallet[WIF]:              KxPjVKVtaeyJg9FFzKczSsP3aws2qr99GukKpdU1XKyFJdxKHU2j
-   rGUI.genSW> wallet_address:               187fLMamwEcMTA3BmGVjpx58exHa3vfnhW
-   rGUI.genSW> WIF:                          KxPjVKVtaeyJg9FFzKczSsP3aws2qr99GukKpdU1XKyFJdxKHU2j
+   rGUI.genSW> private_key:                  cfea0bb96fef8f72ee38ff5115c0763e1b66f7e86941d02ddbde750f54863da6
+   rGUI.genSW> new_wallet[WIF]:              L4BsMZVsDnELyz7wYnE84ugZb55PSXHKbcr5rKcmVYcXrcDMc6FT
+   rGUI.genSW> wallet_address:               1Bxpv94bYeERm9jGyXoV7V6e7Yhvar9SuR
+   rGUI.genSW> WIF:                          L4BsMZVsDnELyz7wYnE84ugZb55PSXHKbcr5rKcmVYcXrcDMc6FT
 >> MainGUI.updateWalletURL
 >> MainGUI.updateMarketcapURL
 >> MainGUI.updateCryptoshapeURL
 >> MainGUI.updateMnemonics
 >> MainGUI.updateWordIndexes
-   rGUI.upWidx> mnemonics:                   carry venture whip cruise sick item bid winner region betray guard cradle
-                                             crime usage ceiling strategy pill kangaroo alien limb spirit buyer cube advice
->> MainGUI.onGUIEvent: FromMain:ToolsEntropyConverterDialog
->> EntropyConverterDialog.showDialog
->> EntropyConverterDialog.onGenerateEntropy
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> EntropyConverterDialog.onChangeInputField
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onGenerateEntropy
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
->> EntropyConverterDialog.onSecretPhraseWheel
->> [Electron] ToMain:Request/mnemonic_to_word_index
->> [Electron] ToMain:Request/word_index_to_mnemonic
->> EntropyConverterDialog.onChangeInputField
+   rGUI.upWidx> mnemonics:                   soup expect unusual thank wedding ride rib cable extra puppy budget label
+                                             reopen know payment choice south human wasp tube vocal drink walk skate
+>> MainGUI.openTabPage Wallet elt:wallet_tab_link_id
+>> +++++++++++++  MainGUI.onGuiUpdateBlockchain DogeCoin
+>> MainGUI.updateBlockchain DogeCoin
+   rGUI.upBlkCHN> wallet_mode:               Simple Wallet
+   rGUI.upBlkCHN> CMD:                       cmd:None
+>> MainGUI.generateSimpleWalletAddress DogeCoin DiceD6
+   rGUI.genSW> private_key:                  cfea0bb96fef8f72ee38ff5115c0763e1b66f7e86941d02ddbde750f54863da6
+   rGUI.genSW> new_wallet[WIF]:              QVanWQJrUPiUDWWz944ux8XB476xV5R8UsXzdx1cDuDtJY8CPQNb
+   rGUI.genSW> wallet_address:               DG6vTQ1Er48iJ9usi7o3fFGEzgSDqP2dLh
+   rGUI.genSW> WIF:                          QVanWQJrUPiUDWWz944ux8XB476xV5R8UsXzdx1cDuDtJY8CPQNb
+>> MainGUI.updateWalletURL
+>> MainGUI.updateMarketcapURL
+>> MainGUI.updateCryptoshapeURL
+   rGUI.upBlkCHN> WIF:                       QVanWQJrUPiUDWWz944ux8XB476xV5R8UsXzdx1cDuDtJY8CPQNb
+   rGUI.upBlkCHN> coin:                      DOGE
+   rGUI.upBlkCHN> wallet_address:            DG6vTQ1Er48iJ9usi7o3fFGEzgSDqP2dLh
+>> MainGUI.updateWalletURL
+>> MainGUI.fileSaveWallet
+>> MainGUI.getWalletInfo
+   coin_id:                                  DOGE
+   Coin:                                     DOGE
+   rGUI.getWinf> Blockchain:                 DogeCoin
+eMain.evtH('SaveWinf')>
+>> MainGUI.showSaveWalletInfoDialog

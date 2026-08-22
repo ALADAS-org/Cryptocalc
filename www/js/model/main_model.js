@@ -98,7 +98,7 @@ class MainModel {
 		} else {
 			// En développement, utiliser process.cwd() qui est la racine du projet
 			this.basePath = process.cwd();
-			console.log('[MainModel] Using process.cwd():', this.basePath);
+			// console.log('[MainModel] Using process.cwd():', this.basePath);
 		}
 		// >>>>> PLAYWRIGHT
 		
@@ -212,11 +212,12 @@ class MainModel {
 		
 		let wallet_keys = Object.keys( crypto_info );	
 		
-		let private_key        = "";
-		let bip38_encrypted_pk = "";
-		let pk_key             = "";
-		let wif                = ""; 
-		let entropy            = crypto_info[ENTROPY];
+		let private_key             = "";
+		let bip38_encrypted_pk      = "";
+		let pk_key                  = "";
+		let wif                     = ""; 
+		let entropy                 = crypto_info[ENTROPY];
+		let blockchain_explorer_url = ""; // BLOCKCHAIN_EXPLORER
 		
 		const preprocess_crypto_info_for_Bip38 = async ( crypto_info ) => {
 			if ( 	 crypto_info[BIP38_PASSPHRASE] != undefined  &&  crypto_info[BIP38_PASSPHRASE] != '' 
@@ -328,7 +329,14 @@ class MainModel {
 			// console.log(">> ========== END of MainModel 'fill_wallet_info_str'");
 			
 			return wallet_info_str;
-		}; // fill_wallet_info_str()	 
+		}; // fill_wallet_info_str()	
+
+		const is_not_null = ( in_str ) => {
+			if (  in_str != undefined  && in_str !=  'undefined'  &&  in_str != ""  &&  in_str != ''   ) {
+				return true;			
+			}
+			return false;
+		}; // is_not_null()		
 		
 		let wallet_info_str = fill_wallet_info_str( crypto_info );
 		// pretty_log( "MMdlSaveWinf> wallet_info_str", wallet_info_str );	
@@ -339,16 +347,14 @@ class MainModel {
 		// pretty_log( "MMdlSqvWinf> QRcode", "PrivateKey.png" );
 		// pretty_log( "MMdlSqvWinf> private_key", "'" + private_key + "'" );
 		
-		private_key        = crypto_info[PRIVATE_KEY];
-		wif                = crypto_info[WIF];
-		bip38_encrypted_pk = crypto_info[BIP38_ENCRYPTED_PK];
+		private_key             = crypto_info[PRIVATE_KEY];
+		wif                     = crypto_info[WIF];
+		bip38_encrypted_pk      = crypto_info[BIP38_ENCRYPTED_PK];
+		blockchain_explorer_url = crypto_info[BLOCKCHAIN_EXPLORER]; // BLOCKCHAIN_EXPLORER
 		
-		const is_not_null = ( in_str ) => {
-			if (  in_str != undefined  && in_str !=  'undefined'  &&  in_str != ""  &&  in_str != ''   ) {
-				return true;			
-			}
-			return false;
-		}; // is_not_null()
+		if (  is_not_null( blockchain_explorer_url ) ) {
+			this.createQRCode( output_path, "WalletURL.png", blockchain_explorer_url, QR_CODE );			
+        }
 		
 		if (  is_not_null( private_key ) ) {
 			this.createQRCode( output_path, "PrivateKey.png", private_key, QR_CODE );			
@@ -375,6 +381,10 @@ class MainModel {
 			
 			//-------- SVG output --------		
 			this.createQRCode( subfolder_path, "Address.svg",           crypto_info[ADDRESS], 'qrcode', 'svg' );
+			
+			if (  is_not_null(blockchain_explorer_url) ) {
+				this.createQRCode( subfolder_path, "WalletURL.svg",     blockchain_explorer_url, 'qrcode', 'svg' );			
+			}
 			
 			if (  is_not_null(private_key) ) {	
 				this.createQRCode( subfolder_path, "PrivateKey.svg",    private_key, 'qrcode', 'svg' );
@@ -515,7 +525,7 @@ class MainModel {
 	} // loadWalletInfoFromJson()
 	
 	setMainWindow( main_window ) {
-		console.log("MainModel.setMainWindow() " + typeof main_window);
+		// console.log("MainModel.setMainWindow() " + typeof main_window);
 		this.main_window = main_window;
 	} // setMainWindow()		
 	

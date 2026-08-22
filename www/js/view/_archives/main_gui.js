@@ -26,7 +26,7 @@
 //
 // * async  propagateFields( entropy, wif )
 //
-//   async  updateFieldsVisibility()
+//          updateFieldsVisibility()
 //
 // * async  updateOptionsFields( json_data )
 // * async  updateFields()
@@ -34,13 +34,13 @@
 // * async  updateBip39Passphrase( password )
 // * async  updateEntropySize( entropy_size )
 // * async  updateEntropy( entropy )
-// * async  updateBlockchain( blockchain )
+// *        updateBlockchain( blockchain )
 //
 // *        updateWalletURL( blockchain, wallet_address )
 //          updateMarketcapURL( blockchain )
 //
-// * async  updateWIF( blockchain, wif )
-// * async  updatePrivateKey( blockchain, PRIV_KEY )
+// *        updateWIF( blockchain, wif )
+// *        updatePrivateKey( blockchain, PRIV_KEY )
 // * async  updateChecksum( entropy )
 // * async  updateMnemonics( entropy )
 // * async  updateLanguage( lang )
@@ -96,9 +96,6 @@ const FIELD_IDS               = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, 
 const WATERFALL_IDS           = [ ENTROPY_SRC_FORTUNES_ID, SALT_ID, ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
 const WATERFALL_FROM_SEED_IDS = [ ENTROPY_ID, MNEMONICS_ID, MNEMONICS_4LETTER_ID ];
 const EDITABLE_FIELD_IDS      = [ ENTROPY_SRC_FORTUNES_ID, ENTROPY_ID, MNEMONICS_ID ];
-
-const PREMIUM_ENABLE  = '612ea7120a57decafc0ffee7a57e5bad'; // Great Roast Decaf Coffee Tastes Bad
-const PREMIUM_DISABLE = '0ffDeadBeefFeedCa1fC01dFadedFace'; // Off Dead Beef Feed Calf Cold Faded Face
 
 const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "MainGUI.onGUIEvent: ";
 
@@ -187,15 +184,6 @@ class MainGUI {
 		this.expected_entropy_bytes       = 32;
 		this.entropy_source_is_user_input = false;		
 		this.img_data_asURL               = "";
-		
-		this.bip32_field_allowed_max_value_digits = BIP32_FIELD_MIN_VALUE_DIGITS;
-		this.bip32_field_allowed_max_value        = BIP32_FIELD_MIN_VALUE;
-		
-		this.previous_account_value       = "0";
-		this.previous_address_index_value = "0";
-		
-		this.bip85_visible = false;
-		this.bip85_enable  = false;
 		
 		trace2Main( pretty_func_header_format( "MainGUI.constructor" ) );
 		
@@ -316,7 +304,7 @@ class MainGUI {
 		this.wallet_info.setAttribute( CMD, CMD_NONE );		
 		// trace2Main( pretty_func_header_format( "<END> MainGUI.newWallet" ) );
 		
-		await this.updateFieldsVisibility();
+		this.updateFieldsVisibility();
 		
 		this.cb_enabled = true;  
 		
@@ -486,7 +474,7 @@ class MainGUI {
 		// ---------- Update Window Title
 		
 		this.wallet_info.setAttribute( CMD, CMD_NONE );
-		await this.updateFieldsVisibility();
+		this.updateFieldsVisibility();
 
 		this.cb_enabled = true;
 		
@@ -539,7 +527,7 @@ class MainGUI {
 			trace2Main( pretty_format("rGUI.genSW> new_wallet[WIF]", new_wallet[WIF]) );
 			
 			//---------- Update 'Private Key' in 'Wallet' Tab ----------
-			await this.updatePrivateKey( blockchain, private_key );
+			this.updatePrivateKey( blockchain, private_key );
 			this.wallet_info.setAttribute(PRIVATE_KEY, private_key);
 			// HtmlUtils.SetElementValue( PRIVATE_KEY_ID, private_key );
 			//---------- Update 'Private Key' in 'Wallet' Tab	
@@ -575,7 +563,7 @@ class MainGUI {
 			this.updateCryptoshapeURL();
 		}
 		
-		await this.updateFieldsVisibility();
+		this.updateFieldsVisibility();
 		
 		this.cb_enabled = true;
 		
@@ -660,9 +648,8 @@ class MainGUI {
 			// ---------- get 'Account'
 
 			// ---------- get 'Address Index' ----------
-			if ( wallet_mode == HD_WALLET_TYPE ) {
+			if ( wallet_mode == HD_WALLET_TYPE )
 				address_index = this.wallet_info.getAttribute(ADDRESS_INDEX);
-			}
 			else if ( wallet_mode == SWORD_WALLET_TYPE ) {
 				// address_index = Math.floor( Math.random() * (ADDRESS_INDEX_MAX + 1) );
 				address_index = getRandomInt(ADDRESS_INDEX_MAX);
@@ -717,7 +704,7 @@ class MainGUI {
 			}   			
 		}
 		
-		await this.updateWIF( blockchain, wif );
+		this.updateWIF( blockchain, wif );
 		
 		// ==================== Update 'Derivation Path' in "Wallet" Tab ====================
 		derivation_path = new_wallet[DERIVATION_PATH];
@@ -792,7 +779,7 @@ class MainGUI {
 		this.updateMarketcapURL( blockchain );
 		this.updateCryptoshapeURL();
 		
-		await this.updateFieldsVisibility();
+		this.updateFieldsVisibility();
 		
 		this.cb_enabled = true;
 		
@@ -881,22 +868,6 @@ class MainGUI {
 		    (evt) => { if (this.cb_enabled) this.onToggleDebug(evt); } );		
 		// -------------------- Toolbar icon buttons
 		
-		// -------------------- BIP85 --------------------		
-		this.setEventHandler( BIP85_SHOW_HIDE_BTN_ID, 'click', 
-		    (evt) => { if (this.cb_enabled) this.onShowHideBip85(evt); } );	
-			
-		this.setEventHandler( BIP85_ENABLE_DISABLE_BTN_ID, 'click', 
-		    (evt) => { if (this.cb_enabled) this.onEnableDisableBip85(evt); } );	
-			
-		// ---- BIP85 Edit Parameters ----		
-		this.setEventHandler( BIP85_EDIT_BTN_ID, 'click',   
-		     (evt) => {   let args = {}; 
-						  args[ ADDRESS_INDEX ] = HtmlUtils.GetElementValue( BIP85_INDEX_ID );
-						  args[ ENTROPY_SIZE ]  = HtmlUtils.GetElementValue( BIP85_ENTROPY_SIZE_ID );						  
-						  Bip85Dialog.This.showDialog( args ); 
-				      } );
-		// ---- BIP85 Edit Parameters
-		// -------------------- BIP85 
 		
 		this.setEventHandler( ENTROPY_SRC_FORTUNES_ID, 'focus', 
 		    (evt) => { if (this.cb_enabled) this.onGuiFocus(evt); } );
@@ -962,9 +933,6 @@ class MainGUI {
 			
 		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
 		    async (evt) => { await this.onGuiChangeBip38Passphrase( evt ); } );
-			
-		this.setEventHandler( BIP38_PASSPHRASE_ID, 'paste',   
-		    async (evt) => { await this.onBip38PassphrasePaste( evt ); } );
 		// -------------------- BIP38 Passphrase	
 		
 		
@@ -974,7 +942,7 @@ class MainGUI {
 		this.setEventHandler( WALLET_BLOCKCHAIN_ID,     'change',   
 		    async (evt) => { if (this.cb_enabled) await this.onGuiUpdateBlockchain(evt); } );
 			
-		this.setEventHandler( PK_COPY_BTN_ID,           'click',    
+		this.setEventHandler( PK_COPY_BTN_ID, 'click',    
 		    (evt) => { if (this.cb_enabled) this.onCopyButton(PK_COPY_BTN_ID); } );
 		
 		this.setEventHandler( MNEMONICS_ID,             'paste',    
@@ -1002,26 +970,10 @@ class MainGUI {
 		    async (evt) => { if (this.cb_enabled) await this.onBIP32ProtocolChange(evt); } );
 		// -------------------- Bip32 Protocol
 		
-		
-		// -------------- ACCOUNT_ID et ADDRESS_INDEX_ID --------------
 		this.setEventHandler( ACCOUNT_ID,               'keypress', 
 		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeypress(evt); } );
-		this.setEventHandler( ACCOUNT_ID,               'keydown', 
-		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeydown(evt); } );
-		this.setEventHandler( ACCOUNT_ID,               'keyup', 
-		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeyup(evt); } );
-		this.setEventHandler( ACCOUNT_ID,               'paste',    
-		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldPaste(evt, ACCOUNT_ID); } );	
-			
 		this.setEventHandler( ADDRESS_INDEX_ID,         'keypress', 
 		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeypress(evt); } );
-		this.setEventHandler( ADDRESS_INDEX_ID,         'keydown', 
-		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeydown(evt); } );
-		this.setEventHandler( ADDRESS_INDEX_ID,         'keyup', 
-		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldKeyup(evt); } );			
-		this.setEventHandler( ADDRESS_INDEX_ID,         'paste',    
-		    async (evt) => { if (this.cb_enabled) await this.onBIP32FieldPaste(evt, ADDRESS_INDEX_ID); } );	
-		// -------------- ACCOUNT_ID et ADDRESS_INDEX_ID
 									 
         //trigger_event( HtmlUtils.GetElement( GENERATE_BTN_ID ), 'click' );
 	} // registerCallbacks()
@@ -1070,7 +1022,7 @@ class MainGUI {
 	// ====================================      Updates      =====================================
 	// ============================================================================================
 	// Note: Wallet manahgers: Guarda, Yoroi, Phantom Wallet
-	async updateFieldsVisibility() {
+	updateFieldsVisibility() {
 		// ============== SIMPLE WALLET ==============
 		//                            PK    WIF   MNK
 		// SPEC OK                   ----------------- 
@@ -1101,7 +1053,7 @@ class MainGUI {
 		let blockchain  = this.wallet_info.getAttribute(BLOCKCHAIN);
 		
 		HtmlUtils.HideElement( TR_PRIV_KEY_ID );
-		HtmlUtils.HideElement( TR_1ST_PK_ID );	
+		HtmlUtils.HideElement( TR_1ST_PK_ID );		
 		
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {			
 			HtmlUtils.ShowElement( SW_ENTROPY_SIZE_ID );
@@ -1124,7 +1076,7 @@ class MainGUI {
 		    HtmlUtils.ShowElement( TR_1ST_PK_ID );
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE || wallet_mode == SWORD_WALLET_TYPE ) {
-            HtmlUtils.ShowElement( BIP32_PASSPHRASE_ROW_ID );
+           HtmlUtils.ShowElement( BIP32_PASSPHRASE_ROW_ID );
 			
 			HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
 
@@ -1188,17 +1140,6 @@ class MainGUI {
 				//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
 			}				
 		}
-		
-		// ------------------- Show/Hide "BIP385" ROW --------------------
-		await this.checkPremium();
-		if ( this.Options[PREMIUM_ALLOWED] ) {
-			HtmlUtils.ShowElement( TR_BIP85_ID );			
-		}
-		else {
-			HtmlUtils.HideElement( TR_BIP85_ID );			
-		}	
-        // ------------------- Show/Hide "BIP38" 
-		
 
         // ------------------- Hide "BIP38" if coin is SUI --------------------
 		if ( blockchain == SUI ) {
@@ -1207,8 +1148,7 @@ class MainGUI {
 		else {
 			HtmlUtils.ShowElement( BIP38_PASSPHRASE_ROW_ID );			
 		}	
-        // ------------------- Hide "BIP38" if coin is SUI	
-		
+        // ------------------- Hide "BIP38" if coin is SUI		
 
 		// ------------------- WIF --------------------
 		let wif = this.wallet_info.getAttribute(WIF);
@@ -1263,13 +1203,13 @@ class MainGUI {
 		//this.updateStatusbarInfo( is_user_input );
 		if ( is_user_input ) {
 			HtmlUtils.HideElement( ENTROPY_SRC_ROW );
-			// HtmlUtils.HideElement( TR_SALT_ID );	
+			HtmlUtils.HideElement( TR_SALT_ID );	
 			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
 			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );	
 		}
 		else {
 			HtmlUtils.ShowElement( ENTROPY_SRC_ROW );
-			// HtmlUtils.ShowElement( TR_SALT_ID );	
+			HtmlUtils.ShowElement( TR_SALT_ID );	
 			
 			// trace2Main( pretty_format( "rGUI.upFieldVisib> is_user_input", is_user_input ) );
             if ( this.wallet_info.getAttribute(WALLET_MODE) == HD_WALLET_TYPE ) {				
@@ -1277,7 +1217,7 @@ class MainGUI {
 				HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
 			}			
 		}
-	} // async updateFieldsVisibility()
+	} // updateFieldsVisibility()
 	
 	async updateFields( entropy ) {
 		trace2Main( pretty_func_header_format( "MainGUI.updateFields", entropy ) );
@@ -1364,7 +1304,7 @@ class MainGUI {
         this.wallet_info.setAttribute( WALLET_MODE, wallet_mode );
         this.wallet_info.setAttribute( BLOCKCHAIN,  default_blockchain ); 
 
-        await this.updateFieldsVisibility(); 		
+        this.updateFieldsVisibility(); 		
 		// HtmlUtils.SetElementValue( WALLET_BLOCKCHAIN_ID, default_blockchain);	
 
 		// ---------- Update Window Title ----------
@@ -1373,7 +1313,7 @@ class MainGUI {
 		window.ipcMain.SetWindowTitle( data );
 		// ---------- Update Window Title	
 		
-		await this.updateFieldsVisibility();
+		this.updateFieldsVisibility();
 		
 		this.setSaveCmdState( true );
 
@@ -1443,8 +1383,8 @@ class MainGUI {
 
         this.updateWalletURL( blockchain, wallet_address );
 		
-		await this.updateFieldsVisibility();
-	} // async updateBlockchain()	
+		this.updateFieldsVisibility();
+	} // updateBlockchain()	
 	
 	async updateOptionsFields( options_data ) {
 		trace2Main( pretty_func_header_format( "MainGUI.updateOptionsFields" ) );
@@ -1491,14 +1431,11 @@ class MainGUI {
 		trace2Main( pretty_format( "rGUI.uWadr> bip32_protocol", bip32_protocol ) );
 		this.wallet_info.setAttribute( BIP32_PROTOCOL, bip32_protocol );
 		
-		// let account = parseInt( HtmlUtils.GetElementValue( ACCOUNT_ID ) );
-		let account = parseInt( this.getBip32FieldValue( ACCOUNT_ID ) );
+		let account = parseInt( HtmlUtils.GetElementValue( ACCOUNT_ID ) );
 		this.wallet_info.setAttribute( ACCOUNT, account );
 		// trace2Main( pretty_format( "rGUI.uWadr> account", account ) );
 		
-		// let address_index = parseInt( HtmlUtils.GetElementValue( ADDRESS_INDEX_ID ) );
-		let address_index = parseInt( this.getBip32FieldValue( ADDRESS_INDEX_ID ) );
-		
+		let address_index = parseInt( HtmlUtils.GetElementValue( ADDRESS_INDEX_ID ) );
 		this.wallet_info.setAttribute( ADDRESS_INDEX, address_index );
 		trace2Main( pretty_format( "rGUI.uWadr> address_index", address_index) );
 		
@@ -1656,14 +1593,14 @@ class MainGUI {
 		}
 	} // updateCryptoshapeURL()
 	
-	async updateWIF( blockchain, wif ) {
+	updateWIF( blockchain, wif ) {
 		trace2Main( pretty_func_header_format( "MainGUI.updateWIF", "WIF:" + wif ) );
 		
 		if (wif != "") this.wallet_info.setAttribute(WIF, wif);   
-		await this.updateFieldsVisibility();
-	} // async updateWIF()
+		this.updateFieldsVisibility();
+	} // updateWIF()
 		
-	async updatePrivateKey( blockchain, PRIV_KEY ) {
+	updatePrivateKey( blockchain, PRIV_KEY ) {
 		if (      (   blockchain == BITCOIN   || blockchain == ETHEREUM || blockchain == BINANCE_BSC
 		           || blockchain == DOGECOIN  || blockchain == LITECOIN || blockchain == STELLAR
 		           || blockchain == AVALANCHE || blockchain == POLYGON
@@ -1687,8 +1624,8 @@ class MainGUI {
 			HtmlUtils.SetElementValue( PRIV_KEY_ID, "XX" );
 		}
 		
-		await this.updateFieldsVisibility();
-	} // async updatePrivateKey()
+		this.updateFieldsVisibility();
+	} // updatePrivateKey()
 	
 	async updateChecksum( entropy ) {
 		// this.cb_enabled = false;
@@ -2532,7 +2469,7 @@ class MainGUI {
 		
         await this.drawEntropySource();		
 		
-		await this.updateFieldsVisibility();
+		this.updateFieldsVisibility();
     } // async onGuiSwitchEntropySourceType()
 	
 	async onGuiUpdateLang( evt ) {
@@ -2552,82 +2489,6 @@ class MainGUI {
 		//trace2Main( pretty_func_header_format( "MainGUI.onToggleDebug" ) );
         window.ipcMain.ToggleDebugPanel();		
 	} // onToggleDebug()
-	
-	onEnableDisableBip85( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.onEnableDisableBip85" ) );
-		this.bip85_enable = HtmlUtils.GetElementValue( BIP85_ENABLE_DISABLE_BTN_ID );
-		
-		// console.log("bip85_enable : " + this.bip85_enable); 
-		
-		// Change [Generate] button label
-		if ( this.bip85_enable ) {
-			document.getElementById(GENERATE_BTN_ID).value  = "Bip85 Generate";
-		}
-		else {
-			document.getElementById(GENERATE_BTN_ID).value  = "Generate";
-		}
-		
-		// Change "Entropy Field" label		
-		if ( this.bip85_enable ) {
-			document.getElementById(ENTROPY_LABEL_ID).innerText = "Bip85 Entropy";
-		}
-		else {
-			document.getElementById(ENTROPY_LABEL_ID).innerText = "Entropy";
-		}
-		
-		// Show/Hide Edit button	
-        let edit_btn_elt = HtmlUtils.GetElement( BIP85_EDIT_BTN_ID ); 		
-		if ( this.bip85_enable ) {
-			edit_btn_elt.style.display = "flex";
-		}
-		else {
-			edit_btn_elt.style.display = "none";
-		}
-		
-		// Change "Seedphrase Field" label		
-		if ( this.bip85_enable ) {
-			document.getElementById(SEEDPHRASE_LABEL_ID).innerText  = "Bip85 Seedphrase";
-		}
-		else {
-			document.getElementById(SEEDPHRASE_LABEL_ID).innerText  = "Seedphrase";
-		}
-	} // onEnableDisableBip85()
-	
-	onShowHideBip85( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.onShowHideBip85" ) );
-		this.bip85_visible = ! this.bip85_visible;
-		this.bip85_enable  = HtmlUtils.GetElementValue( BIP85_ENABLE_DISABLE_BTN_ID );
-		
-		console.log("bip85_visible : " + this.bip85_visible); 
-		
-		let bip85_row_2nd_column_elt = HtmlUtils.GetElement( BIP85_ROW_2ND_COLUMN_ID );
-
-		let eye_btn_img_elt = HtmlUtils.GetElement( "bip85_show_hide_btn_img_id" );		
-	
-        if ( this.bip85_visible ) {
-			let init_entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
-			HtmlUtils.SetElementValue( BIP85_INIT_ENTROPY_ID, init_entropy );
-			bip85_row_2nd_column_elt.style.display = "flex";
-			eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;
-            HtmlUtils.ShowElement(BIP85_ENABLE_CONTAINER_ID);			
-		}
-		else {
-			bip85_row_2nd_column_elt.style.display = "none";
-			eye_btn_img_elt.src = 'icons/' + EYE_OPEN_ICON;
-			HtmlUtils.HideElement(BIP85_ENABLE_CONTAINER_ID);	
-		}
-	} // onShowHideBip85()
-	
-	async onApplyBip85Params( bip85_infos ) {
-		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params" ) );
-		trace2Main( pretty_func_header_format( "MainGUI.onToggleBip85  bip85_infos: " + JSON.stringify(bip85_infos) ) );
-		
-		let bip85_index        = bip85_infos["bip85_index"];
-		let bip85_entropy_size = bip85_infos["bip85_entropy_size"];
-		let bip85_entropy      = bip85_infos["bip85_entropy"];
-		let bip85_mnemonics    = bip85_infos["bip85_mnemonics"];		
-		
-	} // onApplyBip85Params()
 	
 	async onKeyDown( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onKeyDown", "'" + evt.key + "' keycode: " + evt.keyCode ) );
@@ -2914,330 +2775,68 @@ class MainGUI {
         }			
 	} // onBIP32ProtocolChange()
 	
-	async onBip38PassphrasePaste( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.onBip38PassphrasePaste" ) );
-		let elt = document.getElementById( BIP38_PASSPHRASE_ID );
-		if ( elt != undefined ) {
-			let initial_bip38_field_value_str = HtmlUtils.GetElementValue( BIP38_PASSPHRASE_ID );
-			
-			let paste_data = (evt.clipboardData || evt.clipboardData).getData("text");
-			
-			HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, paste_data );
-			
-			await this.checkPremium();
-			
-			let enable_or_disable = false;
-			if ( paste_data == PREMIUM_ENABLE ) {
-				evt.preventDefault();
-				trace2Main( pretty_func_header_format( "MainGUI.onBip38PassphrasePaste  PREMIUM_ENABLE" ) );
-				if ( this.Options[ PREMIUM_ALLOWED ] != true ) {
-					this.Options[ PREMIUM_ALLOWED ] = true;
-					enable_or_disable = true;					
-				}
-				HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, '' );
-			}
-			else if ( paste_data == PREMIUM_DISABLE ) {
-				evt.preventDefault();
-				trace2Main( pretty_func_header_format( "MainGUI.onBip38PassphrasePaste  PREMIUM_DISABLE" ) );
-				if ( this.Options[ PREMIUM_ALLOWED ] != false ) {
-					this.Options[ PREMIUM_ALLOWED ] = false;
-					this.bip85_enable = false;
-					enable_or_disable = true;					
-				}
-				HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, '' );
-			}
-			
-			trace2Main( pretty_func_header_format( "MainGUI.onBip38PassphrasePaste  enable_or_disable: " + enable_or_disable ) );
-			if ( enable_or_disable ) {
-				trace2Main( pretty_func_header_format( "MainGUI.onBip38PassphrasePaste  this.Options[ PREMIUM_ALLOWED ]: " + this.Options[ PREMIUM_ALLOWED ] ) );
-				await this.checkPremium(this.Options[ PREMIUM_ALLOWED ]);
-				this.bip85_enable = true;
-				await this.updateFieldsVisibility();
-			}
-		}
-	} // onBip38PassphrasePaste()
-	
-	async onBIP32FieldPaste( evt, elt_id) {
-		// 2147483647		
-		// 2147483648
-		let elt = document.getElementById( elt_id );
-		
-		await this.checkPremium();
-		
-		if ( elt != undefined ) { 
-		    evt.preventDefault();
-		
-			let initial_bip32_field_value_str = HtmlUtils.GetElementValue( elt_id );
-			
-			let paste_data = (evt.clipboardData || evt.clipboardData).getData("text");
-			// trace2Main( "  onBIP32FieldPaste (paste_data): '" + paste_data + "'  typeof: " + typeof paste_data);
-			
-			let bip32_field_value_str = this.checkBip32FieldValue( paste_data );
-			// trace2Main( "  onBIP32FieldPaste (bip32_field_value_str): '" + bip32_field_value_str + "'" );
-			
-			let bip32_field_value = parseInt( bip32_field_value_str );
-			
-			if (    bip32_field_value_str.length < 1
-				 || bip32_field_value_str.length > this.bip32_field_allowed_max_value_digits
-				 || bip32_field_value < 0
-				 || bip32_field_value > this.bip32_field_allowed_max_value ) { 
-				 bip32_field_value_str = "0";
-			}
-			
-			if ( initial_bip32_field_value_str != bip32_field_value_str ) {
-				HtmlUtils.SetElementValue( elt_id, bip32_field_value_str );
-				
-				if ( elt_id == ACCOUNT_ID ) { 
-					this.previous_account_value       = bip32_field_value_str;
-				}
-				else if ( elt_id == ACCOUNT_ID ) {	
-					this.previous_address_index_value = bip32_field_value_str; 
-				}
-		
-				this.setRefreshCmdState( true );
-			}	
-		}
-	} // onBIP32FieldPaste()
-	
-	// BIP32Field 'keydown' event handler
-	async onBIP32FieldKeydown( evt ) {
-		const BACKSPACE_KEYCODE = 8;
-		const DELETE_KEYCODE    = 46;
-		
-		await this.checkPremium();
-		
-		let field_value_str = "";
-		
-		// trace2Main("   =============== onBIP32FieldKeydown  evt.keyCode: " + evt.keyCode);
-		
-		// trace2Main("  onBIP32FieldKeydown Before  previous_account_value:        " + this.previous_account_value);
-		// trace2Main("  onBIP32FieldKeydown Before  previous_address_index_value:  " + this.previous_address_index_value);
-		
-		if ( evt.keyCode == BACKSPACE_KEYCODE || evt.keyCode == DELETE_KEYCODE ) {
-			// trace2Main("  onBIP32FieldKeydown  DELETE/BACKSPACE KeyCode:  " + evt.keyCode);
-			field_value_str = HtmlUtils.GetElementValue( evt.target.id );
-			// trace2Main("  field_value_str('" + evt.target.id + "'):  " + field_value_str);
-			
-			if ( field_value_str == "" ) {
-				HtmlUtils.SetElementValue( evt.target.id, "0" );
-				field_value_str = "0";
-			}
-			
-			if ( evt.target.id == ACCOUNT_ID ) {
-				this.previous_account_value = field_value_str;
-			}
-            else if ( evt.target.id == ADDRESS_INDEX_ID ) {	
-				this.previous_address_index_value = field_value_str;			
-			}
-			
-			// trace2Main("  onBIP32FieldKeydown After  previous_account_value:        " + this.previous_account_value);
-			// trace2Main("  onBIP32FieldKeydown After  previous_address_index_value:  " + this.previous_address_index_value);
-			
-			return true;
-		}	
-	} // onBIP32FieldKeydown()
-	
-	// BIP32Field 'keyup' event handler
-	async onBIP32FieldKeyup( evt ) {
-		const BACKSPACE_KEYCODE = 8;
-		const DELETE_KEYCODE    = 46;
-		
-		await this.checkPremium();
-		
-		let field_value_str = "";
-		
-		// trace2Main("   =============== onBIP32FieldKeyup  evt.keyCode: " + evt.keyCode);
-		
-		// trace2Main("  previous_account_value:        " + this.previous_account_value);
-		// trace2Main("  previous_address_index_value:  " + this.previous_address_index_value);
-		
-		if ( evt.keyCode == BACKSPACE_KEYCODE || evt.keyCode == DELETE_KEYCODE ) {
-			// trace2Main("  DELETE/BACKSPACE KeyCode:  " + evt.keyCode);
-			field_value_str = HtmlUtils.GetElementValue( evt.target.id );
-			// trace2Main("  field_value_str('" + evt.target.id + "'):  " + field_value_str);
-			
-			if ( field_value_str == "" ) {
-				HtmlUtils.SetElementValue( evt.target.id, "0" );
-				field_value_str = "0";
-			}
-			
-			let must_refresh = false;
-			if ( evt.target.id == ACCOUNT_ID ) {
-				must_refresh = ( field_value_str != this.previous_account_value );
-				// this.previous_account_value = field_value_str;
-			}
-            else if ( evt.target.id == ADDRESS_INDEX_ID ) {	
-				must_refresh = ( field_value_str != this.previous_address_index_value );
-				// this.previous_address_index_value = field_value_str;			
-			}
-			
-			// trace2Main("  onBIP32FieldKeyup  previous_account_value:        " + this.previous_account_value);
-			// trace2Main("  onBIP32FieldKeyup  previous_address_index_value:  " + this.previous_address_index_value);
-			
-			// trace2Main("  onBIP32FieldKeyup  must_refresh:  " + must_refresh);
-			if ( must_refresh ) {
-				this.setRefreshCmdState( true );
-			}
-			
-			return true;
-		}	
-	} // onBIP32FieldKeyup()
-	
 	// BIP32Field 'keypress' event handler
 	async onBIP32FieldKeypress( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onBIP32FieldKeypress" ) );
 		//trace2Main("  evt.keyCode:  " + evt.keyCode);
 		//trace2Main("  evt.target:  " + evt.target.id);
 		
-		await this.checkPremium();
-		
-		const ENTER_KEYCODE     = 13;
-		const BACKSPACE_KEYCODE = 8;
-		const DELETE_KEYCODE    = 46;
-		
-		let field_value_str = "";
-		
-		let is_valid_field_value        = false;
-		let is_valid_future_field_value = false;
-		
-		// trace2Main("   =============== onBIP32FieldKeypress evt.keyCode: " + evt.keyCode);
+		const ENTER_KEYCODE = 13;
+		let field_value = "";
 		
 		//========== If 'ENTER' or 'Return' key pressed ==========
         if ( evt.charCode == ENTER_KEYCODE ) {
 			trace2Main("   'ENTER' or 'Return' key pressed");
+			let is_valid_field_value = false;
 			
-			// let account_index = HtmlUtils.GetElementValue( ACCOUNT_ID );
-			let account_index = this.getBip32FieldValue( ACCOUNT_ID );
-			
+			let account_index = HtmlUtils.GetElementValue( ACCOUNT_ID );
 			if ( account_index == "" ) {
 				HtmlUtils.SetElementValue( ACCOUNT_ID, "0" );
 			}
 			
-			// let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
-			let address_index = this.getBip32FieldValue( ADDRESS_INDEX_ID );
+			let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
 			if ( address_index == "" ) {
 				HtmlUtils.SetElementValue( ADDRESS_INDEX_ID, "0" );
 			}
 			
-			field_value_str = HtmlUtils.GetElementValue( evt.target.id ); // evt.target; 			
+			field_value = HtmlUtils.GetElementValue( evt.target.id ); // evt.target; 			
 			if ( field_value == "" ) {
-				field_value_str = "0";
+				field_value = "0";
 			}
+			trace2Main("  field_value(" + evt.target.id + "):  " + field_value);
 			
-			// trace2Main("  field_value_str(" + evt.target.id + "):  " + field_value_str);
-			
-			if (    field_value_str.length >= 1  
-			    &&  field_value_str.length <= this.bip32_field_allowed_max_digits  
-				&&  field_value <= this.bip32_field_allowed_max_value ) { 
+			if ( field_value.length >= 1 && field_value.length <= 4 ) { 
 				is_valid_field_value = true;
 			}
-			
-			// trace2Main("  is_valid_field_value:  " + is_valid_field_value);
 
 			if ( is_valid_field_value ) {
-				if ( evt.target.id == ACCOUNT_ID ) {
-					this.previous_account_value = field_value_str;
-				}
-				else if ( evt.target.id == ADDRESS_INDEX_ID ) {	
-					this.previous_address_index_value = field_value_str;			
-				}
-			
 				await this.updateWalletAddress();
 			}
 			
 			return;
-			//========== If 'ENTER' or 'Return' key pressed
-        } 
+        } 			
+		//========== If 'ENTER' or 'Return' key pressed
+		
 		
 		//========== Filter non decimal characters ==========
 		let is_decimal_digit = ( evt.charCode >= 48 && evt.charCode <= 57 );  // 0..9
-		
-		let cursor_position = evt.target.selectionStart;
-		
-		// Note: prevent from "inserting '0's at start"
-		if ( cursor_position == 0 && evt.charCode == 48 ) {
-			is_decimal_digit = false;
-		}
-		
-		// trace2Main("  is_decimal_digit (" + evt.charCode + "): " + is_decimal_digit);
-		if ( is_decimal_digit ) { 
-			// trace2Main("  New Decimal digit: '" + String.fromCharCode(evt.charCode) + "'" ); 
-		}
-		else {
-			evt.preventDefault();
-			return false;
-		}
+		trace2Main("  is_decimal_digit (" + evt.charCode + "): " + is_decimal_digit);
+		//trace2Main("  field_value: '" + field_value + "'");
 		//trace2Main("  check 1: " + field_value.length + 1 > 4);
 		//trace2Main("  check 2: " + (field_value.length + 1) > 4);
-		
-		field_value_str = HtmlUtils.GetElementValue( evt.target.id );
-		
-		if ( field_value_str.startsWith("0") ) {
-			 field_value_str = field_value_str.replace(/^0+/, '');
-		}
-		// trace2Main("  field_value_str('" + evt.target.id + "'," + field_value_str.length + "): '" + field_value_str + "'" );
-		
-		let future_field_value_int = 0; 
-		
-		let future_field_value_str = field_value_str; 
-		if ( is_decimal_digit ) { 
-		    future_field_value_str = future_field_value_str + String.fromCharCode(evt.charCode);
-			if ( future_field_value_str.startsWith("0") ) {
-				future_field_value_str = future_field_value_str.replace(/^0+/, '');
-		    }
-			
-			try {
-				future_field_value_int = parseInt( future_field_value_str );
-			}
-			catch ( error ) {
-				future_field_value_int = 0;
-			}
-		
-			// trace2Main("  future_field_value_str(" + future_field_value_str.length+ "): '" + future_field_value_str + "'" );
-			// trace2Main("  future_field_value_int: '" + future_field_value_int + "'" ); 			
-		}
-		
-		is_valid_future_field_value = false;
-		if (     future_field_value_str.length >= 1  
-			 &&  future_field_value_str.length <= this.bip32_field_allowed_max_digits  
-			 &&  future_field_value_int >= 0
-			 &&  future_field_value_int <= this.bip32_field_allowed_max_value ) { 
-				
-				is_valid_future_field_value = true;
-		}
-		
-		//          1 
-		// 1234567890		
-		
-        // 2147483647		
-		// 2147483648
-		// trace2Main("  future_field_value_str:       '" + future_field_value_str + "'" );
-		// trace2Main("  is_valid_future_field_value:   " + is_valid_future_field_value);
-		// trace2Main("  is_decimal_digit:              " + is_decimal_digit);
-		
-        if ( ! is_decimal_digit || ! is_valid_future_field_value ) {
-			// trace2Main(" ! is_decimal_digit || ! is_valid_future_field_value");
+        if (   ! is_decimal_digit 
+		    || field_value.length + 1 > 4) {
 			evt.preventDefault();
-			
+			//trace2Main("   EXIT here");
 			return false;
         }
 		//========== Filter non decimal characters
-		
-		// trace2Main("  onBIP32FieldKeypress  previous_account_value:        " + this.previous_account_value);
-		// trace2Main("  onBIP32FieldKeypress  previous_address_index_value:  " + this.previous_address_index_value);
-		
-		if ( evt.target.id == ACCOUNT_ID ) {
-			this.previous_account_value = field_value_str;
-		}
-		else if ( evt.target.id == ADDRESS_INDEX_ID ) {	
-			this.previous_address_index_value = field_value_str;			
-		}
 		
 		//trace2Main("   continue");
 		this.setRefreshCmdState( true );
 		//trace2Main("   AFTER continue");
 	} // onBIP32FieldKeypress()	
-	
+
 	async onRefreshButton() {
 		trace2Main( pretty_func_header_format( "MainGUI.onRefreshButton" ) );
 		await this.updateWalletAddress();
@@ -3299,7 +2898,7 @@ class MainGUI {
 		}
 	} // setRefreshCmdState()
 	
-	async setEntropySourceIsUserInput( is_user_input ) {
+	setEntropySourceIsUserInput( is_user_input ) {
 		// trace2Main( pretty_func_header_format( "MainGUI.setEntropySourceIsUserInput", is_user_input ) );
 		
 		this.entropy_source_is_user_input = is_user_input;
@@ -3313,7 +2912,7 @@ class MainGUI {
 		}
 		// trace2Main( pretty_func_header_format( "<END> MainGUI.setEntropySourceIsUserInput" ) );
 		
-		await this.updateFieldsVisibility();
+		this.updateFieldsVisibility();
 	} // setEntropySourceIsUserInput()
 	
 	async displayMessageInStatusbar( msg_id ) {
@@ -3388,7 +2987,6 @@ class MainGUI {
 		crypto_info[COIN] = coin;
 		
 		let wallet_address = HtmlUtils.GetElementValue( ADDRESS_ID );
-		
         // trace2Main("wallet_address " + wallet_address );		
 		crypto_info[ADDRESS] = wallet_address;
 		
@@ -3462,13 +3060,9 @@ class MainGUI {
 			if ( bip32_passphrase != undefined && bip32_passphrase != null && bip32_passphrase != "" ) {
 				crypto_info[BIP32_PASSPHRASE] = bip32_passphrase;
 			}
-			// let account       = HtmlUtils.GetElementValue( ACCOUNT_ID );
-            let account       = this.getBip32FieldValue( ACCOUNT_ID );	
-			
-			let change_chain  = ( blockchain == SOLANA ) ? "0'" : "0";	
-			
-			// let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
-			let address_index = this.getBip32FieldValue( ADDRESS_INDEX_ID );	
+			let account       = HtmlUtils.GetElementValue( ACCOUNT_ID );			
+			let change_chain  = ( blockchain == SOLANA ) ? "0'" : "0";			
+			let address_index = HtmlUtils.GetElementValue( ADDRESS_INDEX_ID );
 			
 			let bip32_protocol = 44;
 			bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID );
@@ -3585,121 +3179,7 @@ class MainGUI {
 		if ( elt != undefined ) { 
 			elt.addEventListener(event_name, handler_function );
 		}
-	} // setEventHandler()
-	
-	async getOptions() {
-		// console.log("MainGUI.getOptions   this.Options: " + this.Options);
-		if (   this.Options == undefined 
-		    || typeof this.Options == undefined
-		    || this.Options == null
-		    || Object.keys(this.Options) == undefined 
-			|| Object.keys(this.Options).length == 0 ) {
-			this.Options = await window.ipcMain.GetOptions();
-		}	
-		
-		const is_options_PREMIUM_ALLOWED_undefined = () => {
-			return (    this.Options[PREMIUM_ALLOWED] == undefined 
-			         || typeof this.Options[PREMIUM_ALLOWED] == undefined );
-		};	
-	
-		// console.log("MainGUI.getOptions  this.Options[ PREMIUM_ALLOWED ] IS undefined: "
-		//             + is_options_PREMIUM_ALLOWED_undefined() );
-		
-		if ( is_options_PREMIUM_ALLOWED_undefined() ) {
-			this.Options[ PREMIUM_ALLOWED ] = false;
-			console.log("MainGUI.getOptions  [after]  Options[PR_ALW]: " 
-		            + this.Options[ PREMIUM_ALLOWED ] );
-		}	
-		return this.Options;
-	} // getOptions()
-	
-	async checkPremium( premium_allowed ) {		
-		// console.log("MainGUI.CP   PR_allowed: " + premium_allowed + "  typeof:" + typeof premium_allowed );	
-		this.Options = await this.getOptions();
-		// console.log("MainGUI.checkPremium this.Options: " + this.Options);
-		
-		if ( premium_allowed != undefined && typeof premium_allowed != undefined ) {
-			// console.log("MainGUI.checkPR   pr_alw IS NOT undefined");
-			this.Options[ PREMIUM_ALLOWED ] = premium_allowed;
-		}		
-		
-		// console.log("MainGUI.checkPremium   this.Options[PR_ALW]: " + this.Options[ PREMIUM_ALLOWED ]);
-		
-		if ( this.Options[ PREMIUM_ALLOWED ] != undefined ) {
-			if ( this.Options[ PREMIUM_ALLOWED ] ) {
-				this.bip32_field_allowed_max_value_digits = BIP32_FIELD_MAX_VALUE_DIGITS;
-				this.bip32_field_allowed_max_value        = BIP32_FIELD_MAX_VALUE;
-			}			
-			else {
-				this.bip32_field_allowed_max_value_digits = BIP32_FIELD_MIN_VALUE_DIGITS;
-				this.bip32_field_allowed_max_value        = BIP32_FIELD_MIN_VALUE;
-				this.bip85_enable = false;
-			}
-			
-			// ACCOUNT_ID
-			let account_elt = document.getElementById(ACCOUNT_ID);
-			if ( account_elt != undefined ) {
-				account_elt.setAttribute('maxlength', this.bip32_field_allowed_max_value_digits);
-			}
-			
-			// ADDRESS_INDEX_ID
-			let address_index_elt = document.getElementById(ADDRESS_INDEX_ID);
-			if ( address_index_elt != undefined ) {
-				address_index_elt.setAttribute('maxlength', this.bip32_field_allowed_max_value_digits);
-			}
-		}
-		
-		// console.log("MainGUI.CP bip32_field_allowed_max_value :        " + this.bip32_field_allowed_max_value );
-		// console.log("MainGUI.CP bip32_field_allowed_max_value_digits : " + this.bip32_field_allowed_max_value_digits );
-	} // checkPremium()
-
-	checkBip32FieldValue( in_value_str ) {
-		let bip32_field_value     = 0;
-		let bip32_field_value_str = "0";
-		try {  
-			// console.log("checkBip32FieldValue Before parseInt  bip32_field_value_str: '" + in_value_str + "'");
-			
-			if ( in_value_str.startsWith("0") ) {
-				in_value_str = in_value_str.replace(/^0+/, '');
-			}
-			
-			bip32_field_value     = parseInt( in_value_str ); 
-			bip32_field_value_str = in_value_str;
-			
-			if (    bip32_field_value_str.length < 1
-				 || bip32_field_value_str.length > this.bip32_field_allowed_max_value_digits
-				 || bip32_field_value < 0
-				 || bip32_field_value > this.bip32_field_allowed_max_value ) { 
-				 bip32_field_value     = 0;
-				 bip32_field_value_str = "0";
-			}
-			// console.log("checkBip32FieldValue After parseInt bip32_field_value: '" + bip32_field_value + "'");
-		}
-		catch ( error ) {	
-			// console.log("checkBip32FieldValue Exception " + error);
-			let bip32_field_value = 0;
-			bip32_field_value_str = "";
-		}		
-		
-		if (    bip32_field_value_str.length > this.bip32_field_allowed_max_value_digits
-			 || bip32_field_value < 0
-			 || bip32_field_value > this.bip32_field_allowed_max_value ) { 
-			 bip32_field_value_str = "";
-		}
-		return bip32_field_value_str;
-	} // checkBip32FieldValue()		
-	
-	getBip32FieldValue( elt_id ) {
-		let bip32_field_value     = 0;
-		let bip32_field_value_str = "";
-		let elt = document.getElementById( elt_id );
-		if ( elt != undefined ) { 
-		    bip32_field_value_str = HtmlUtils.GetElementValue( elt_id );
-			bip32_field_value_str = this.checkBip32FieldValue( bip32_field_value_str );
-		}
-		return bip32_field_value_str;
-	} // getBip32FieldValue()	
-	
+	} // setEventHandler()	
 } // MainGUI class
 // ==============================  MainGUI class 
 

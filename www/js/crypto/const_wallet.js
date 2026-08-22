@@ -26,7 +26,7 @@ const MASTER_PK_HEX      = 'master_pk_hex';
 const CHAINCODE          = 'chaincode';
 
 const BIP32_ROOT_KEY     = 'BIP32_root_key';
-const ROOT_KEY          = 'root_key';
+const ROOT_KEY           = 'root_key';
 const PRIV_KEY           = 'PRIV KEY';
 const XPRIV              = 'xpriv';
 const XPUB               = 'xpub';

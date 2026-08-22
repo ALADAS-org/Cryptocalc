@@ -153,15 +153,106 @@
 				</tr>
 				<!-- ------------------ Entropy Source -->
 				
-
+				
 				<!-- -----------------  Salt (UUID)  ----------------- -->
-				<tr id="salt_row"><td class="LabelColumn">Salt</td>
+				<!-- Note: dont delete ths block because it is updated by 'main_gui.js' -->
+				<tr id="salt_row" hidden>
+				    <td class="LabelColumn">Salt</td>
 					<td colspan="2" class="FieldColumn">
-						<!-- <input type="checkbox" id="use_salt_id" name="use" checked /> -->
-						<span class="SaltValue" id="salt_id">XX</span>
+						<span class="SaltValue"	id="salt_id">XX</span>
 					</td>
 				</tr>
 				<!-- ------------------ Salt (UUID) -->
+				
+
+				<!-- -----------------  Bip85 ----------------- -->
+				<tr id="bip85_row">
+					<td class="LabelColumn">
+						<span>Bip85</span>
+							   
+						<button class="SmallButton" id="bip85_show_hide_btn_id"
+								title="Show/Hide Bip85 parameters" 
+								style="display: inline-flex; align-items: center; justify-content: center; 
+									   height: 24px; width: 24px; padding: 0; border: 1px solid #888; 
+									   background: #f0f0f0; cursor: pointer; border-radius: 3px;" >
+							<img id="bip85_show_hide_btn_img_id" src="icons/eye_open_16px.png" border="0" 
+						         style="display: block; width: 16px; height: 16px;"/>
+						</button>
+						</br>
+						<!-- -------- Enable -------- -->
+						<span id="bip85_enable_container_id" hidden>
+							<span>enable</span>
+							<input type="checkbox" id="bip85_enable_disable_btn_id" name="Enable Bip85" 
+								   style="margin: 0; vertical-align: middle;"/>
+						</span>		   
+						<!-- -------- Enable -->
+					</td>
+					
+					<td colspan="2" class="FieldColumn" style="width:90%;">
+						<!-- Conteneur flex principal -->
+						<div id = "bip85_row_2nd_column_id"
+						     style="display: none; flex-wrap: nowrap; align-items: center; gap: 8px;">
+							<!-- Partie paramètres (masquable) -->
+							<span id="bip85_params_id" 
+							      style="display: none; white-space: nowrap; display: flex; align-items: center; gap: 8px;">
+								<table>
+								    <tr>
+										<td class="Bip85FieldColumn">
+											<span id="bip85_initial_entropy_label_id">Initial Entropy</span>	
+										</td>
+										<td>
+											<input class="Bip85EntropyField" id="bip85_initial_entropy_id"
+												type="text" spellcheck="false" value="" readonly>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="Bip85FieldColumn">
+											<span id="bip85_index_label_id">Index</span>	
+										</td>
+										<td>
+											<div id="bip85_container_id" class="DataFieldWithButton_Container">
+												<input id="bip85_index_id" type="text" class="ReadOnlyField" 
+													   value="" maxlength="6" readonly 
+													   style="width: 200px; height: 24px; box-sizing: border-box;"/>
+												&nbsp;&nbsp;
+												<span id="bip85_entropy_size_label_id">Entropy Size</span>  
+												<select class="ReadOnlyField LabelValueSelector"
+														id="bip85_entropy_size_id" disabled 
+														style="width: 100px; height: 24px; box-sizing: border-box;">
+													<option value="128">128 bits</option>	
+													<option value="160">160 bits</option>
+													<option value="192">192 bits</option>
+													<option value="224">224 bits</option>							
+													<option value="256" selected>256 bits</option>	
+												</select>
+												&nbsp;&nbsp;&nbsp;
+										
+												<button class="SmallButton" id="bip85_edit_btn_id" 
+														title="Edit Bip85 parameters"
+														style="display: none;">
+														<img id="bip85_edit_btn_img_id" src="icons/edit_16px.png" border="0" 
+														     style="display: block; width: 16px; height: 16px;"/>
+												</button>
+											</div>
+										</td>
+									</tr>
+									
+									<tr>
+										<td class="Bip85FieldColumn">
+											<span id="bip85_derived_entropy_label_id">Bip85 Entropy</span>	
+										</td>
+										<td>										
+											<input class="Bip85EntropyField" id="bip85_derived_entropy_id"
+												   type="text" spellcheck="false" value="" readonly>
+										</td>
+									</tr>
+								</table>
+							</span>
+						</div>
+					</td>
+				</tr>
+				<!-- ------------------ Bip85 -->
 				
 				
 				<!-- ---------------- Entropy (128...256 bits) ----------------- -->
@@ -258,9 +349,9 @@
 				<!-- ----------------------- Checksum -->
 				
 				
-				<!-- ----------------------- Secret phrase (Mnemonics) ------------------------ -->
+				<!-- ----------------------- Seed Phrase (Mnemonics) ------------------------ -->
 				<tr><td class="LabelColumn">
-						<span>Secret phrase</span>
+						<span id="seedphrase_label_id">Seed Phrase</span>
 						<!-- https://www.andiamo.co.uk/resources/iso-lang_xuage-codes/ -->
 						<select class="InputField LabelValueSelector"
 								id="lang_select_id">
@@ -563,7 +654,7 @@
 				</td>
 				<td>
 					<center><input class="GenerateButton" 
-								   type="button" id="random_btn_id" value="Generate">
+								   type="button" id="generate_btn_id" value="Generate">
 					</center>
 				</td>
 				<td id="right_BtnBar_item_id" hidden>
@@ -652,6 +743,17 @@
 		<link rel="stylesheet" type="text/css" href="./vizjets/passphrase_dialog/passphrase_dialog.css">
 		<script src="./vizjets/passphrase_dialog/passphrase_dialog.js"></script>
 		<!-- ===========================  Bip39/Bip38 Passphrase dialog -->
+		
+		
+		<!-- ================================================================================================ -->
+		<!-- =========================                Bip85 dialog               ============================ -->
+		<!-- ================================================================================================ -->
+		<div class="DialogBox" id="bip85_dialog_input_id" 
+			 w3-include-html="./vizjets/bip85_dialog/bip85_dialog.html"
+			 title="Bip85 Parameters" hidden></div>
+		<link rel="stylesheet" type="text/css" href="./vizjets/bip85_dialog/bip85_dialog.css">
+		<script src="./vizjets/bip85_dialog/bip85_dialog.js"></script>
+		<!-- ===========================  Bip85 dialog -->
 		
 		
 		<!-- ================================================================================================ -->

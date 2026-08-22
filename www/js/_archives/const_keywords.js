@@ -79,19 +79,11 @@ const MSG_ID                      = 'msg_id';
 const DERIVATION_PATH             = 'Derivation Path';
 const HARDENED                    = 'hardened';
 
-const BIP32_FIELD_MAX_VALUE_DIGITS = 10;
-const BIP32_FIELD_MAX_VALUE        = 2147483647;
-
-const BIP32_FIELD_MIN_VALUE_DIGITS = 6;
-const BIP32_FIELD_MIN_VALUE        = 999999;
-
 const ACCOUNT                     = 'account'; 
-// const ACCOUNT_MAX              = 999999999; // 9999; 
-const ACCOUNT_MAX                 = BIP32_FIELD_MAX_VALUE; // Bip85: 2147483647 10 digits
+const ACCOUNT_MAX                 = 999999999; // 9999;
 
 const ADDRESS_INDEX               = 'address_index';
-//const ADDRESS_INDEX_MAX         = 999999999; // 9999; 
-const ADDRESS_INDEX_MAX           = BIP32_FIELD_MAX_VALUE; // 9999; // Bip85: 2147483647 10 digits
+const ADDRESS_INDEX_MAX           = 999999999; // 9999;
 
 const MNEMONICS                   = 'Secret phrase';
 const SHORTENED_MNEMONICS         = 'Shortened Secret phrase';
@@ -107,9 +99,9 @@ const SWORD_WALLET_TYPE           = 'SWORD Wallet'; // SWORD: Simple Wallet On R
 
 const DEFAULT_BLOCKCHAIN          = 'Default Blockchain';
 
-const PREMIUM_ALLOWED             = 'PremiumAllowed';
-
 const WALLET_SAVE_PATH            = 'Wallet Save Path';
+
+const ALLOW_PREMIUM_FEATURES      = 'AllowPremiumFeatures';
 
 const IMAGE_ENTROPY_SRC_TYPE      = 'Image';
 const FORTUNES_ENTROPY_SRC_TYPE   = 'Fortunes';

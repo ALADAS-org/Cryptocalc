@@ -128,8 +128,9 @@ const { CMD_OPEN_WALLET,
 		
 		ToMain_RQ_MNEMONIC_TO_WORD_INDEX, ToMain_RQ_MNEMONICS_TO_WORD_INDEXES, 
 		
-		ToMain_RQ_GUESS_MNEMONICS_LANG,		
-		ToMain_RQ_SAVE_OPTIONS, ToMain_RQ_RESET_OPTIONS, ToMain_RQ_UPDATE_OPTIONS,
+		ToMain_RQ_GUESS_MNEMONICS_LANG,	
+		
+		ToMain_RQ_GET_OPTIONS, ToMain_RQ_SAVE_OPTIONS, ToMain_RQ_RESET_OPTIONS, ToMain_RQ_UPDATE_OPTIONS,
 		ToMain_RQ_GET_FORTUNE_COOKIE,	
 
         ToMain_RQ_GENERATE_ENTROPY, ToMain_RQ_GENERATE_PASSWORD,
@@ -138,6 +139,7 @@ const { CMD_OPEN_WALLET,
 		
 		ToMain_RQ_GET_HD_WALLET,	
 		
+		ToMain_RQ_BIP85_DERIVE_BIP39,
 		ToMain_RQ_BIP38_ENCRYPT, ToMain_RQ_BIP38_DECRYPT,
 		
 		ToMain_RQ_GET_PASSWORD_STRENGTH,
@@ -173,6 +175,7 @@ const { FileUtils }                     = require('../util/system/file_utils.js'
 
 const { Bip39Utils }                    = require('../crypto/bip39_utils.js');
 const { Bip38Utils }                    = require('../crypto/bip38_utils.js');
+const { Bip85Utils }                    = require('../crypto/bip85_utils.js');
 
 const { PasswordStrengthEvaluator }     = require('../crypto/password_strength_evaluator.js');
 
@@ -445,7 +448,7 @@ class ElectronMain {
 			}
 		);
 		
-		console.log( "ElectronMain.createWindow()  this.MainWindow: " + typeof this.MainWindow );
+		// console.log( "ElectronMain.createWindow()  this.MainWindow: " + typeof this.MainWindow );
 		MainModel.This.setMainWindow( this.MainWindow );
 			
 		const menu_bar = Menu.buildFromTemplate( this.getMenuTemplate() );
@@ -1056,6 +1059,16 @@ class ElectronMain {
 			          .send('fromMain', [ FromMain_UPDATE_OPTIONS, this.Options ]);
 		}); // "ToMain:Request/update_options" event handler
 		
+		// ====================== ToMain_RQ_GET_OPTIONS ======================
+		//Skribi.log(">> register: " + ToMain_RQ_GET_OPTIONS);
+		// called like this by FrontEnd/Renderer: await window.ipcMain.GetOptions()
+		ipcMain.handle( ToMain_RQ_GET_OPTIONS, async (event, data) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_GET_OPTIONS );
+			
+			let options_data = this.Options;
+			return options_data;
+		}); // "ToMain:Request/get_options" event handler
+		
 		// ====================== ToMain_RQ_SAVE_OPTIONS ======================
 		//Skribi.log(">> register: " + ToMain_RQ_SAVE_OPTIONS);
 		// called like this by Renderer: await window.ipcMain.SaveOptions( options_data )
@@ -1269,6 +1282,16 @@ class ElectronMain {
 
 			return hex_value;
 		}); // "ToMain:Request/to_hex_conversions event handler
+		
+		// ========================= ToMain_RQ_BIP85_DERIVE_BIP39 =========================
+		// called like this by Renderer: await window.ipcMain.Bip85DeriveBip39( data )
+		ipcMain.handle( ToMain_RQ_BIP85_DERIVE_BIP39, async ( event, data ) => {
+			pretty_func_header_log( "[Electron]", ToMain_RQ_BIP85_DERIVE_BIP39 );
+			const { entropy, index, entropy_size } = data;
+			// Skribi.log("   options: " + JSON.stringify(options));
+			let bip85_result = Bip85Utils.This.deriveToBip85Infos( entropy, index, entropy_size );
+			return bip85_result;
+		}); // "ToMain:Request/bip85_derive_bip39" event handler
 		
 		
 		// ========================= ToMain_RQ_BIP38_ENCRYPT =========================

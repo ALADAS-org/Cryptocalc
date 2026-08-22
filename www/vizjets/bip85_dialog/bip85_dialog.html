@@ -1,0 +1,55 @@
+<table class="Dialog_Form" height="100%">
+	
+	<!-- ------------ Bip85 parameters ------------ -->
+	<tr>
+	    <td><span class="Bip85Label">Bip85 Index</span>
+		</td>
+		<td>
+			<input id="bip85_dialog_index_id" type="text" class="Bip85ParamField" 
+				   value="" maxlength="10"/>
+		</td>
+    </tr>
+	
+	<tr>
+	    <td><span class="Bip85Label">Bip85 Entropy Size</span>
+		</td>
+		<td>
+			<select class="LabelValueSelector"
+					id="bip85_dialog_entropy_size_id"  
+					style="width: 100px; height: 24px; box-sizing: border-box;">
+				<option value="128">128 bits</option>	
+				<option value="160">160 bits</option>
+				<option value="192">192 bits</option>
+				<option value="224">224 bits</option>							
+				<option value="256" selected>256 bits</option>	
+			</select>
+		</td>
+	</tr>
+	<!-- ------------ Bip85 parameters -->
+	
+	
+	<!-- ---------------- 'Buttons Bar' ( Apply / Cancel) ---------------- -->
+	<tr>
+		<td colspan="2">
+		    <div class="break-tiny"></div>
+			<table width="100%">
+				<tr>
+					<td width="25%"><span>&nbsp;
+					</td>
+					<td width="12.5%">
+						<button class="Bip85Button" id="bip85_dialog_apply_btn_id">Apply
+						</button>
+					</td>
+					<td width="25%"><span>&nbsp;
+					<td width="12.5%">
+						<button class="Bip85Button" id="bip85_dialog_cancel_btn_id">Cancel
+						</button>
+					</td>
+					<td width="25%"><span>&nbsp;
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<!-- ---------------- 'Buttons Bar' ( Apply / Cancel) -->
+</table>

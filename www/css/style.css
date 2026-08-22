@@ -186,6 +186,24 @@ hr {
 	margin-top:  5px;
 }
 
+#bip85_initial_entropy_id {
+    background-color: #f0f0f0;
+}
+
+#bip85_derived_entropy_id {
+    background-color: #f0f0f0;
+}
+
+#bip85_entropy_size_id:disabled {
+    background-color: #f0f0f0;
+    color: #000;
+    opacity: 1;
+}
+
+#bip85_entropy_size_id:disabled option {
+    color: #000;
+}
+
 /* ==================== Bip32/38 Passphrase Strength ==================== */
 html { 
 	--bip38-progress-color: orange;
@@ -724,6 +742,16 @@ progress[value].Bip32PassphraseStrength::-moz-progress-bar {
 	font-family:       Arial, Helvetica, sans-serif;
 	font-size:         14px;
 	width:             100%;
+}
+
+.Bip85FieldColumn {
+	/*margin-left:     20px;*/
+	padding-left:      5px;
+	text-align:        start !important;
+	width:             112px;
+	min-width:         112px;
+	max-width:         112px;
+	height:            25px;
 }
 
 .FieldColumn {
