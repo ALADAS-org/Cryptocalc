@@ -1,4 +1,6 @@
 # ==========  .gitignore for Cryptocalc  ==========
+.npmrc
+
 node_modules
 _output/*/
 releases/**
