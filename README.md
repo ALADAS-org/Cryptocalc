@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.28
+## CryptoCalc 0.5.29
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -184,7 +184,7 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.28`: This version
+    - `0.5.29`: This version
 	     - Wallet QRCodes: added `WalletURL`, an URL to the wallet address in a Blockchain Explorer
 	     - Prototyping of `Bip85`:    
 		   `Bip85`: a Sequential deterministic wallet generation, only available on demand (Premium version), see 5.1.6
