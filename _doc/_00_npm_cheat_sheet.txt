@@ -2,6 +2,7 @@
 // ================================   NPM Cheat Sheet   ================================
 // =====================================================================================
 
+https://www.npmjs.com/login
 1. login npm
 2. get OTP in mail 
 3. generate new access token without 2FA and with r/W access for all packages  

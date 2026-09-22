@@ -12,6 +12,7 @@ const { PrettyLog, UNIT_TESTS_LOG_MODE } = require('@util/log/log_utils.js');
 
 // Import required modules
 const { SimpleWallet } = require('@crypto/SimpleWallet/simple_wallet.js');
+const { HDWallet } = require('@crypto/HDWallet/hd_wallet.js');
 const { CryptoServices } = require('@crypto/crypto_services.js');
 
 // Import blockchain constants
@@ -430,21 +431,146 @@ describe('Simple Wallet Generation', () => {
   });
   
   // ==========================================================================
+  // ENTROPY SIZE / WORD COUNT (128 bits => 12 words, 256 bits => 24 words)
+  // ==========================================================================
+  
+  describe('Simple Wallet entropy sizes', () => {
+    
+    // Helper per test (more robust than a shared async beforeAll)
+    const getBtcWallet = (entropy) =>
+      SimpleWallet.GetWallet(entropy, testUuid, BITCOIN, 'mainnet');
+    const getEthWallet = (entropy) =>
+      SimpleWallet.GetWallet(entropy, testUuid, ETHEREUM, 'mainnet');
+    const getSolWallet = (entropy) =>
+      SimpleWallet.GetWallet(entropy, testUuid, SOLANA, 'mainnet');
+    
+    test('128-bit entropy produces a 12-word mnemonic', async () => {
+      const wallet = await getBtcWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[MNEMONICS].split(' ')).toHaveLength(12);
+      expect(wallet[MNEMONICS]).toBeValidMnemonic();
+    });
+    
+    test('128-bit entropy yields a valid non-null Bitcoin address', async () => {
+      const wallet = await getBtcWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[ADDRESS]).toBeDefined();
+      expect(wallet[ADDRESS]).not.toBe('Null-ADDRESS'); // regression guard: INVALID PK SIZE
+      expect(wallet[ADDRESS]).toBeValidBitcoinAddress();
+    });
+    
+    test('128-bit entropy is derived to a 256-bit (64-hex) private key', async () => {
+      const wallet = await getBtcWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[PRIVATE_KEY]).toBeValidHash(64);
+      expect(wallet[PRIVATE_KEY]).not.toBe(CRYPTO_CONFIG.TEST_ENTROPY_128); // derived, not the raw entropy
+    });
+    
+    // 15 / 18 / 21 words (160 / 192 / 224 bits): same < 256-bit path as 128 bits.
+    // Entropy is derived from TEST_ENTROPY_256 by slicing to the right hex length.
+    test.each([
+      [160, 15],
+      [192, 18],
+      [224, 21],
+    ])('%i-bit entropy => %i-word mnemonic + valid non-null BTC address + 64-hex key', async (bits, words) => {
+      const entropy = CRYPTO_CONFIG.TEST_ENTROPY_256.slice(0, bits / 4);
+      const wallet  = await getBtcWallet(entropy);
+      expect(wallet[MNEMONICS].split(' ')).toHaveLength(words);
+      expect(wallet[MNEMONICS]).toBeValidMnemonic();
+      expect(wallet[ADDRESS]).not.toBe('Null-ADDRESS');
+      expect(wallet[ADDRESS]).toBeValidBitcoinAddress();
+      expect(wallet[PRIVATE_KEY]).toBeValidHash(64);
+    });
+    
+    // --- Ethereum: raw-key coin (like Bitcoin), entropy expanded via getSecp256k1PK ---
+    test('128-bit entropy yields a valid non-null Ethereum address', async () => {
+      const wallet = await getEthWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[ADDRESS]).toBeDefined();
+      expect(wallet[ADDRESS]).not.toBe('Null-ADDRESS');
+      expect(wallet[ADDRESS]).toBeValidEthereumAddress();
+    });
+    
+    test('128-bit Ethereum wallet has a 12-word mnemonic and a 64-hex private key', async () => {
+      const wallet = await getEthWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[MNEMONICS].split(' ')).toHaveLength(12);
+      expect(wallet[PRIVATE_KEY]).toBeValidHash(64);
+    });
+    
+    // --- Solana: seed-derived coin, size-agnostic (no getSecp256k1PK expansion) ---
+    test('128-bit entropy yields a valid non-null Solana address', async () => {
+      const wallet = await getSolWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[ADDRESS]).toBeDefined();
+      expect(wallet[ADDRESS]).not.toBe('Null-ADDRESS');
+      expect(wallet[ADDRESS]).toMatch(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/); // Base58
+    });
+    
+    test('128-bit Solana wallet has a 12-word mnemonic and a seed-derived key', async () => {
+      const wallet = await getSolWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[MNEMONICS].split(' ')).toHaveLength(12);
+      expect(wallet[MNEMONICS]).toBeValidMnemonic();
+      expect(wallet[PRIVATE_KEY]).toBeValidHash(128); // 64-byte secret key, not expanded
+    });
+    
+    test('256-bit entropy still produces a 24-word mnemonic', async () => {
+      const wallet = await getBtcWallet(CRYPTO_CONFIG.TEST_ENTROPY_256);
+      expect(wallet[MNEMONICS].split(' ')).toHaveLength(24);
+    });
+    
+    test('256-bit entropy is used unchanged as the private key (non-breaking)', async () => {
+      const wallet = await getBtcWallet(CRYPTO_CONFIG.TEST_ENTROPY_256);
+      expect(wallet[PRIVATE_KEY]).toBe(CRYPTO_CONFIG.TEST_ENTROPY_256);
+    });
+    
+    // --- Convergence Simple <-> HD for < 256-bit entropy ---
+    // Same mnemonic => same BIP44 key (m/44'/coin'/0'/0/0'), so a Simple Wallet and an
+    // HD Wallet built from the same 128-bit entropy must expose the same key AND address.
+    // Key equality is guaranteed (both go through Bip32Utils); address equality is the real
+    // cross-library check (CoinKey / Ethereum_API rendering vs HdAddGen).
+    const stripHex = (v) => (v || '').toString().toLowerCase().replace(/^0x/, '');
+    
+    test('128-bit Simple Wallet BTC converges with HD Wallet BTC', async () => {
+      const e      = CRYPTO_CONFIG.TEST_ENTROPY_128;
+      const simple = await getBtcWallet(e);
+      const hd     = await HDWallet.GetWallet(e, testUuid, { [BLOCKCHAIN]: BITCOIN });
+      expect(stripHex(simple[PRIVATE_KEY])).toBe(stripHex(hd[PRIVATE_KEY]));
+      expect(simple[ADDRESS]).toBe(hd[ADDRESS]);
+    });
+    
+    test('128-bit Simple Wallet ETH converges with HD Wallet ETH', async () => {
+      const e      = CRYPTO_CONFIG.TEST_ENTROPY_128;
+      const simple = await getEthWallet(e);
+      const hd     = await HDWallet.GetWallet(e, testUuid, { [BLOCKCHAIN]: ETHEREUM });
+      expect(stripHex(simple[PRIVATE_KEY])).toBe(stripHex(hd[PRIVATE_KEY]));
+      expect(stripHex(simple[ADDRESS])).toBe(stripHex(hd[ADDRESS])); // ETH: ignore 0x / casing
+    });
+    
+    // Convergence also holds for 15 / 18 / 21 words (160 / 192 / 224 bits): same BIP44 path.
+    test.each([
+      [160, 15],
+      [192, 18],
+      [224, 21],
+    ])('%i-bit (%i words) Simple Wallet BTC converges with HD Wallet BTC', async (bits) => {
+      const e      = CRYPTO_CONFIG.TEST_ENTROPY_256.slice(0, bits / 4);
+      const simple = await getBtcWallet(e);
+      const hd     = await HDWallet.GetWallet(e, testUuid, { [BLOCKCHAIN]: BITCOIN });
+      expect(stripHex(simple[PRIVATE_KEY])).toBe(stripHex(hd[PRIVATE_KEY]));
+      expect(simple[ADDRESS]).toBe(hd[ADDRESS]);
+    });
+  });
+  
+  // ==========================================================================
   // ERROR HANDLING TESTS
   // ==========================================================================
   
   describe('Error Handling', () => {
     
-    test('throws error when private_key is undefined', async () => {
+    test('throws error when entropy_hex is undefined', async () => {
       await expect(
         SimpleWallet.GetWallet(undefined, testUuid, BITCOIN, 'mainnet')
-      ).rejects.toThrow("SimpleWallet.GetWallet 'private_key' NOT DEFINED");
+      ).rejects.toThrow("SimpleWallet.GetWallet 'entropy_hex' NOT DEFINED");
     });
     
-    test('throws error when private_key is empty string', async () => {
+    test('throws error when entropy_hex is empty string', async () => {
       await expect(
         SimpleWallet.GetWallet('', testUuid, BITCOIN, 'mainnet')
-      ).rejects.toThrow("SimpleWallet.GetWallet 'private_key' NOT DEFINED");
+      ).rejects.toThrow("SimpleWallet.GetWallet 'entropy_hex' NOT DEFINED");
     });
   });
   

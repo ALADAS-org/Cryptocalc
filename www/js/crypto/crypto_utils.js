@@ -18,6 +18,14 @@ const getSecp256k1PK = ( sha256_hex ) => {
 	let hash_count   = 0;
 	let pk_validated = false;
 	
+	// secp256k1.privateKeyVerify() throws (not false) on a non 32-byte input,
+	// so first normalize any entropy (128/160/192/224 bits) to a 32-byte hex via SHA256.
+	// A 256-bit entropy (64 hex digits) is left unchanged => existing addresses preserved.
+	if ( private_key.length != 64 ) {
+		private_key = sha256( private_key );
+		hash_count++;
+	}
+	
 	// ---------- Test of 'out of EDCSA range' ----------
 	//let out_of_range_value = 'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFCE6AF48A03BBFD25E8CD0364140';
 	//let in_range_value =   '11cb6ce3be4fab6b9b428cab3493d381801a73396fd0dda6ee6019fdf28dbea4';

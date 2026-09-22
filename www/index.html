@@ -196,13 +196,26 @@
 							<span id="bip85_params_id" 
 							      style="display: none; white-space: nowrap; display: flex; align-items: center; gap: 8px;">
 								<table>
+									<tr>
+										<td class="Bip85FieldColumn">
+											<span id="bip85_mode_label_id">Mode</span>	
+										</td>
+										<td>
+											<select class="ReadOnlyField LabelValueSelector"
+													id="bip85_mode_id" disabled 
+													style="width: 100px; height: 17px; box-sizing: border-box;">
+												<option value="enabled">Enabled</option>	
+												<option value="disabled" selected>Disabled (Simulation)</option>	
+											</select>
+										</td>
+									</tr>
 								    <tr>
 										<td class="Bip85FieldColumn">
 											<span id="bip85_initial_entropy_label_id">Initial Entropy</span>	
 										</td>
 										<td>
 											<input class="Bip85EntropyField" id="bip85_initial_entropy_id"
-												type="text" spellcheck="false" value="" readonly>
+												   type="text" spellcheck="false" value="" readonly>
 										</td>
 									</tr>
 									
@@ -213,13 +226,13 @@
 										<td>
 											<div id="bip85_container_id" class="DataFieldWithButton_Container">
 												<input id="bip85_index_id" type="text" class="ReadOnlyField" 
-													   value="" maxlength="6" readonly 
-													   style="width: 200px; height: 24px; box-sizing: border-box;"/>
+													   value="0" maxlength="6" readonly 
+													   style="width: 200px; height: 18px; box-sizing: border-box;"/>
 												&nbsp;&nbsp;
-												<span id="bip85_entropy_size_label_id">Entropy Size</span>  
+												<span id="bip85_entropy_size_label_id">&nbsp;&nbsp;Entropy Size&nbsp;</span>  
 												<select class="ReadOnlyField LabelValueSelector"
 														id="bip85_entropy_size_id" disabled 
-														style="width: 100px; height: 24px; box-sizing: border-box;">
+														style="width: 100px; height: 17px; box-sizing: border-box;">
 													<option value="128">128 bits</option>	
 													<option value="160">160 bits</option>
 													<option value="192">192 bits</option>
@@ -230,7 +243,7 @@
 										
 												<button class="SmallButton" id="bip85_edit_btn_id" 
 														title="Edit Bip85 parameters"
-														style="display: none;">
+														style="display: flex;">
 														<img id="bip85_edit_btn_img_id" src="icons/edit_16px.png" border="0" 
 														     style="display: block; width: 16px; height: 16px;"/>
 												</button>
@@ -238,13 +251,24 @@
 										</td>
 									</tr>
 									
-									<tr>
+									<tr id="bip85_derived_entropy_container_id" hidden>
 										<td class="Bip85FieldColumn">
 											<span id="bip85_derived_entropy_label_id">Bip85 Entropy</span>	
 										</td>
 										<td>										
 											<input class="Bip85EntropyField" id="bip85_derived_entropy_id"
 												   type="text" spellcheck="false" value="" readonly>
+										</td>
+									</tr>
+									
+									<tr id="bip85_derived_seedphrase_container_id">
+										<td class="Bip85FieldColumn">
+											<span id="bip85_derived_seedphrase_label_id">Bip85 Seedphrase</span>	
+										</td>
+										<td>										
+											<textarea class="Bip85EntropyField" id="bip85_derived_seedphrase_id"
+												      type="text" spellcheck="false" value="" rows="2" readonly>
+											</textarea>		  
 										</td>
 									</tr>
 								</table>
@@ -383,7 +407,7 @@
 							<option value="24">24 words</option>	
 						</select>
 						<div class="SimpleWalletLabel" 
-							 id="sw_word_count_id">&nbsp;24 words</div> 
+							 id="sw_word_count_id" hidden>&nbsp;24 words</div> 
 					</td>
 					<td class="FieldColumn" colspan="2">
 						<div class="DataFieldWithButton_Container" 

@@ -1056,10 +1056,11 @@ class MainGUI {
 		HtmlUtils.HideElement( TR_1ST_PK_ID );		
 		
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {			
-			HtmlUtils.ShowElement( SW_ENTROPY_SIZE_ID );
+			HtmlUtils.HideElement( SW_ENTROPY_SIZE_ID );
 			
 			HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
-			HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
+			// HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
+			HtmlUtils.HideElement( SW_WORD_COUNT_ID );
 
 			HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
 			if ( blockchain == TON || blockchain == TERRA_LUNA || blockchain == HORIZEN ) {				
@@ -1290,9 +1291,9 @@ class MainGUI {
         
         let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID ); 
 
-		if ( wallet_mode == SIMPLE_WALLET_TYPE ) { 
-			this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;		
-		}
+		// if ( wallet_mode == SIMPLE_WALLET_TYPE ) { 
+		// 	this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;		
+		// }
 		
 		HtmlUtils.InitializeElement( WALLET_BLOCKCHAIN_ID, 
 			                         this.Options['Blockchains'][wallet_mode],
@@ -1581,7 +1582,7 @@ class MainGUI {
 			let mnemonics_items = mnemonics.split(' ');
 			// console.log('> mnemonics(' + mnemonics_items.length +'):\n' + mnemonics); 
 			
-			if (mnemonics_items.length >= 12 && mnemonics_items.length <= 24) {
+			if ( mnemonics_items.length >= 12 && mnemonics_items.length <= 24 ) {
 				let mnemonics_parameter_value_cgi = mnemonics.replaceAll(' ', '%20');
 				// console.log('> mnemonics_parameter_value_cgi:\n' + mnemonics_parameter_value_cgi);
 				cryptoshape_URL += 'index.html?mnemonics=' + mnemonics_parameter_value_cgi;

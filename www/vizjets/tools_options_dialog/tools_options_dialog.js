@@ -107,9 +107,11 @@ class ToolsOptionsDialog {
 		let wallet_mode = HtmlUtils.GetElementValue( TOD_WALLET_MODE_SELECT_ID );
 		trace2Main( pretty_format( "wallet_mode", wallet_mode ) );
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
-			HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
-			HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
-		}	
+			// HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
+			// HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( TOD_SW_ENTROPY_SIZE_ID );
+		}
 		else if ( wallet_mode == HD_WALLET_TYPE ) {
 			HtmlUtils.ShowElement( TOD_ENTROPY_SIZE_SELECT_ID );
 			HtmlUtils.HideElement( TOD_SW_ENTROPY_SIZE_ID );
@@ -174,9 +176,12 @@ class ToolsOptionsDialog {
 
         let entropy_size = 0;
         if ( wallet_mode == SIMPLE_WALLET_TYPE ) {
-			entropy_size = 256;
-			HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
-			HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			// entropy_size = 256;
+			entropy_size = options_data[ENTROPY_SIZE][SIMPLE_WALLET_TYPE];
+			// HtmlUtils.ShowElement( TOD_SW_ENTROPY_SIZE_ID );
+			// HtmlUtils.HideElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowElement( TOD_ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.HideElement( TOD_SW_ENTROPY_SIZE_ID );
 		}
 		else if ( wallet_mode == HD_WALLET_TYPE ){			
 			entropy_size = options_data[ENTROPY_SIZE][HD_WALLET_TYPE];
@@ -231,10 +236,10 @@ class ToolsOptionsDialog {
 		ToolsOptionsDialog.Options[WALLET_MODE]                     = wallet_mode;
 		ToolsOptionsDialog.Options[DEFAULT_BLOCKCHAIN][wallet_mode] = default_blockchain;
 		
-		if ( wallet_mode == SIMPLE_WALLET_TYPE ) entropy_size = 256;
+		// if ( wallet_mode == SIMPLE_WALLET_TYPE ) entropy_size = 256;
 
         ToolsOptionsDialog.Options[ENTROPY_SIZE] = 
-			{ [HD_WALLET_TYPE]:"128", [SIMPLE_WALLET_TYPE]:"256" };
+			{ [HD_WALLET_TYPE]:"128", [SIMPLE_WALLET_TYPE]:"128" };
 		//trace2Main( pretty_format( "options_data", JSON.stringify(ToolsOptionsDialog.Options) ) );
 		ToolsOptionsDialog.Options[ENTROPY_SIZE][wallet_mode] = entropy_size;
 		

@@ -104,9 +104,15 @@ const BIP85_PARAMS_ID                     = "bip85_params_id";
 const BIP85_INDEX_ID                      = "bip85_index_id";
 const BIP85_ENTROPY_SIZE_ID               = "bip85_entropy_size_id";
 
+const BIP85_MODE_ID                       = "bip85_mode_id";
+
+const BIP85_INIT_ENTROPY_ID               = "bip85_initial_entropy_id";
+
+const BIP85_DERIVED_ENTROPY_ID            = "bip85_derived_entropy_id";
+const BIP85_DERIVED_SEEDPHRASE_ID         = "bip85_derived_seedphrase_id";
+
 const BIP85_SHOW_HIDE_BTN_ID              = "bip85_show_hide_btn_id";
 const BIP85_EDIT_BTN_ID                   = "bip85_edit_btn_id";
-const BIP85_INIT_ENTROPY_ID               = "bip85_initial_entropy_id";
 // -------------------- BIP85
 
 const EYE_BTN_ID                          = "eye_btn_id";

@@ -59,8 +59,8 @@ console.log('\nEntropie maître (hex) :', masterEntropyTest2.toString('hex'));
 console.log('Taille :', masterEntropyTest2.length, 'octets\n');
 
 // 2. Dériver l'entropie enfant avec BIP85
-const indexTest2 = 0; // On utilise l'index 0 pour ce test
-const bitsTest2 = 256; // On demande 256 bits pour générer une phrase BIP39 de 24 mots
+const indexTest2 = 0;   // On utilise l'index 0 pour ce test
+const bitsTest2  = 256; // On demande 256 bits pour générer une phrase BIP39 de 24 mots
 
 const derivedEntropyTest2 = deriveBIP85Entropy(masterEntropyTest2, indexTest2, bitsTest2);
 

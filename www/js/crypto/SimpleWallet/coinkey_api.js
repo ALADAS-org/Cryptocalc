@@ -65,9 +65,9 @@ and l(Lowercase L) to avoid visual ambiguity.
 */
 /*
 { versions: 
-	{ 	public: 48,
-		private: 176,
-		//scripthash: 5,
+	{ 	public:        48,
+		private:      176,
+		//scripthash:   5,
 		//bip32: { public: 27108450, private: 27106558 } } 
 	}
 */
@@ -89,7 +89,7 @@ class CoinKey_API {
 			null_wallet[BLOCKCHAIN]      = NULL_BLOCKCHAIN;
 			null_wallet[CRYPTO_NET]      = "Null-NET";
 			null_wallet[UUID]            = "Null-UUID";
-			null_wallet[PRIVATE_KEY] = NULL_HEX;
+			null_wallet[PRIVATE_KEY]     = NULL_HEX;
 			null_wallet[PUBLIC_KEY_HEX]  = NULL_HEX;
 			null_wallet[ADDRESS]         = "Null-ADDRESS";
 			null_wallet[MNEMONICS]       = "Null-MNEMONICS";

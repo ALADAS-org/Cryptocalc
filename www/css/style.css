@@ -186,23 +186,86 @@ hr {
 	margin-top:  5px;
 }
 
+
+/* ==================== Bip85 Zone in 'Entropy Tab Page' ==================== */
 #bip85_initial_entropy_id {
     background-color: #f0f0f0;
+	font-size:        10px;
+	height:           18px !important;
+	min-height:       18px !important;
+	max-height:       18px !important;
 }
 
 #bip85_derived_entropy_id {
     background-color: #f0f0f0;
+	font-size:        10px;
+	height:           18px !important;
+	min-height:       18px !important;
+	max-height:       18px !important;
 }
 
-#bip85_entropy_size_id:disabled {
+#bip85_derived_seedphrase_id {
     background-color: #f0f0f0;
-    color: #000;
-    opacity: 1;
+	font-size:        8px;
+	
+	width:            624px !important;	
+	min-width:        624px !important;
+	max-width:        624px !important;
+	
+	height:           36px !important;
+	min-height:       36px !important;
+	max-height:       36px !important;
 }
 
-#bip85_entropy_size_id:disabled option {
-    color: #000;
+/* ===== Bip85 : compactage vertical ===== */
+#bip85_params_id table {
+    border-collapse:   collapse;   /* supprime le border-spacing entre cellules */
+    line-height:       1;          /* réduit l'interligne du texte */
 }
+
+#bip85_params_id td {
+    padding-top:       2px;
+    padding-bottom:    2px;
+    vertical-align:    middle;
+}
+
+.Bip85FieldColumn {
+	padding-left:      5px;
+	text-align:        start !important;
+	
+	width:             138px !important;
+	min-width:         138px !important;
+	max-width:         138px !important;
+	
+	height:            18px  !important;
+}
+
+/* les 2 menus déroulants imposent un plancher de hauteur */
+#bip85_entropy_size_id {
+    height:            18px !important;     /* au lieu de 24px */
+}
+#bip85_entropy_size_id:disabled {
+    background-color:  #f0f0f0;
+    color:             #000;
+    opacity:           1;
+}
+#bip85_entropy_size_id:disabled option {
+    color:             #000;
+}
+
+#bip85_mode_id {
+    background-color:  #f0f0f0;
+	color:             black;
+	
+	width:             152px !important;	
+	min-width:         152px !important;
+	max-width:         152px !important;
+	
+	height:            18px  !important;     /* au lieu de 24px */
+}
+/* ==================== Bip85 Zone in 'Entropy Tab Page' */
+
+
 
 /* ==================== Bip32/38 Passphrase Strength ==================== */
 html { 
@@ -744,16 +807,6 @@ progress[value].Bip32PassphraseStrength::-moz-progress-bar {
 	width:             100%;
 }
 
-.Bip85FieldColumn {
-	/*margin-left:     20px;*/
-	padding-left:      5px;
-	text-align:        start !important;
-	width:             112px;
-	min-width:         112px;
-	max-width:         112px;
-	height:            25px;
-}
-
 .FieldColumn {
 	/*margin-left:     20px;*/
 	padding-left:      5px;
@@ -827,4 +880,51 @@ progress[value].Bip32PassphraseStrength::-moz-progress-bar {
 
 .InvalidValue {
 	color:             red;
+}
+
+/* Largeur */
+.izi-confirm.iziToast {
+  width: 475px;
+  min-width: 475px;
+  max-width: 475px;
+}
+
+.izi-confirm .iziToast-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+}
+
+/* Titre plus grand */
+.izi-confirm .iziToast-body .iziToast-title {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  text-align: center !important;
+  margin: 0 0 1em 0 !important;   /* espace réduit sous le titre */
+  font-size: 18px !important;
+}
+
+/* Message */
+.izi-confirm .iziToast-body .iziToast-message {
+  display: block !important;
+  width: 100% !important;
+  float: none !important;
+  text-align: center !important;
+  white-space: normal;
+  margin: 0 0 1em 0 !important;   /* espace réduit sous le message */
+  font-size: 14px !important;
+}
+
+/* Boutons à droite */
+.izi-confirm .iziToast-buttons {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 0 !important;
+}
+
+.izi-confirm .iziToast-buttons > * {
+  margin-left: 6px;
 }
