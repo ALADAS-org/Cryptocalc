@@ -16,7 +16,7 @@ const DEFAULT_OPTIONS = {
 							[SWORD_WALLET_TYPE]:  "Bitcoin" },
 	[WALLET_MODE]:        SIMPLE_WALLET_TYPE,
     [ENTROPY_SIZE]:       { [HD_WALLET_TYPE]:"128", [SWORD_WALLET_TYPE]: "128",
-		                    [SIMPLE_WALLET_TYPE]: "256" },
+		                    [SIMPLE_WALLET_TYPE]: "128" },
 	"Blockchains": { 
 		[HD_WALLET_TYPE]:     [ "Bitcoin", "Ethereum", "Binance Smart Chain", "Solana", "Stellar",
                                 "Sui", "Ripple", "DogeCoin", "Cardano", "TRON",

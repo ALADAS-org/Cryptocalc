@@ -61,7 +61,8 @@ const { NULL_HEX, CRYPTO_NET,
 const { BLOCKCHAIN, NULL_BLOCKCHAIN, 
         WALLET_MODE, 
         SIMPLE_WALLET_TYPE,
-        UUID, MNEMONICS
+        UUID, MNEMONICS,
+        BIP32_PROTOCOL, ACCOUNT, ADDRESS_INDEX
 	  }                    = require('../../const_keywords.js');
 	  
 	  
@@ -69,6 +70,12 @@ const { uint8ArrayToHex
 	  }                    = require('../hex_utils.js');
 	
 const { Bip39Utils }       = require('../bip39_utils.js');
+
+// Support 128..256 bits for Simple Wallets 
+const { getSecp256k1PK }   = require('../crypto_utils.js');
+
+// < 256-bit entropy: derive the private key via the HD BIP44 path (m/44'/coin'/0'/0/0')
+const { Bip32Utils }       = require('../HDWallet/bip32_utils.js');
 	
 const { CoinKey_API }      = require('./coinkey_api.js'); 
 const { Ethereum_API }     = require('./ethereum_api.js');
@@ -78,36 +85,71 @@ const { LUNA_API }         = require('./luna_sw_api.js');
 const { Zen_SW_API }       = require('./zen_sw_api.js');
 
 class SimpleWallet {	
-    static async GetWallet( private_key, salt_uuid, blockchain, crypto_net ) {
+    static async GetWallet( entropy_hex, salt_uuid, blockchain, crypto_net ) {
 		let coin = COIN_ABBREVIATIONS[blockchain];
 		if ( crypto_net == undefined )  crypto_net = "mainnet";
 
 		pretty_func_header_log( "SimpleWallet.GetWallet", blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "sw.gw> private_key", private_key );
+		pretty_log( "sw.gw> entropy_hex", entropy_hex );
 		
-		if ( private_key == undefined || private_key == "" ) {
-			throw new Error("SimpleWallet.GetWallet 'private_key' NOT DEFINED");
+		if ( entropy_hex == undefined || entropy_hex == "" ) {
+			throw new Error("SimpleWallet.GetWallet 'entropy_hex' NOT DEFINED");
 		} 
 		
-	    let mnemonics = Bip39Utils.EntropyToMnemonics( private_key );		
+	    let mnemonics       = Bip39Utils.EntropyToMnemonics( entropy_hex );		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "sw.gw> mnemonics(24)", mnemonics_items[0] );
+		let mnemonics_count = mnemonics.split(' ').length;
+		pretty_log( "sw.gw> mnemonics(" + mnemonics_count + ")", mnemonics_items[0] );
 		if ( mnemonics_items[1].length > 0 ) {	
 			pretty_log( "", mnemonics_items[1] );		
 		}
 		
 		let new_wallet = SimpleWallet.InitializeWallet();
 		
+		// ---------------------------------------------------------------------------------------
+		// Private key source for the "raw-key" coins (BTC/LTC/DOGE via CoinKey,
+		//                                             ETH/AVAX/POLYGON via Ethereum):
+		//  - entropy >= 256 bits : the entropy IS the private key (historical behavior, unchanged)
+		//  - entropy  < 256 bits : derive a BIP44 key  m/44'/coin'/0'/0/0'  from the mnemonic,
+		//                          i.e. the SAME derivation as the HD Wallet's first address.
+		// Seed-derived coins (Solana/TON/LUNA/Zen) ignore 'secp_pk': they derive from the seed.
+		// ---------------------------------------------------------------------------------------
+		let is_secp_coin =    blockchain == BITCOIN  || blockchain == DOGECOIN  || blockchain == LITECOIN
+		                   || blockchain == ETHEREUM || blockchain == AVALANCHE || blockchain == POLYGON;
+		
+		let secp_pk = entropy_hex;
+		if ( is_secp_coin ) {
+			if ( entropy_hex.length >= 64 ) {
+				// 256 bits: identity (+ ECDSA-range safety net)
+				secp_pk = getSecp256k1PK( entropy_hex )['private_key'];
+			}
+			else {
+				// < 256 bits: standard HD BIP44 derivation (same key as HD Wallet m/44'/coin'/0'/0/0')
+				// AVAX / POLYGON derive on the Ethereum path (coin type 60), like HDWallet does.
+				let deriv_blockchain = ( blockchain == AVALANCHE || blockchain == POLYGON ) 
+				                       ? ETHEREUM : blockchain;
+				let hd_options = { [BLOCKCHAIN]:     deriv_blockchain,
+				                   [BIP32_PROTOCOL]: 44,
+				                   [ACCOUNT]:        0,
+				                   [ADDRESS_INDEX]:  0,
+				                   [UUID]:           salt_uuid };
+				let hd_info = await Bip32Utils.MnemonicsToHDWalletInfo( mnemonics, hd_options );
+				secp_pk = hd_info[PRIVATE_KEY];
+			}
+		}
+		
 		if (   blockchain == BITCOIN || blockchain == DOGECOIN || blockchain == LITECOIN) {		
-		    // await CoinKey_API.GetWallet
 			new_wallet = CoinKey_API.GetWallet 
-			             ( private_key, salt_uuid, blockchain, crypto_net );
+			             ( secp_pk, salt_uuid, blockchain, crypto_net );
+						 
 			new_wallet[BLOCKCHAIN]  = blockchain;				 
 		}
 		else if (   blockchain == ETHEREUM 
-		         || blockchain == AVALANCHE || blockchain == POLYGON ) {		
-			new_wallet = await Ethereum_API.GetWallet
-			             ( private_key, salt_uuid, blockchain, crypto_net );
+		         || blockchain == AVALANCHE || blockchain == POLYGON ) {
+					 
+			new_wallet = await Ethereum_API.GetWallet 
+			             ( secp_pk, salt_uuid, blockchain, crypto_net );
+						 
 			if ( blockchain	== AVALANCHE ) { 
 				new_wallet[BLOCKCHAIN] = AVALANCHE;
 				new_wallet[COIN]       = coin;
@@ -118,16 +160,16 @@ class SimpleWallet {
 			}			
 		}
 		else if ( blockchain == SOLANA ) {		
-			new_wallet = SolanaSW_API.GetWallet( private_key, salt_uuid );
+			new_wallet = SolanaSW_API.GetWallet( entropy_hex, salt_uuid );
 		}
 		else if ( blockchain == TON ) {		
-			new_wallet = TON_API.GetWallet( private_key, salt_uuid );
+			new_wallet = TON_API.GetWallet( entropy_hex, salt_uuid );
 		}
 		else if ( blockchain == HORIZEN ) {		
-			new_wallet = Zen_SW_API.GetWallet( private_key, salt_uuid );
+			new_wallet = Zen_SW_API.GetWallet( entropy_hex, salt_uuid );
 		}
 		else if ( blockchain == TERRA_LUNA ) {		
-			new_wallet = LUNA_API.GetWallet( private_key, salt_uuid );
+			new_wallet = LUNA_API.GetWallet( entropy_hex, salt_uuid );
 		}
 		
 		new_wallet[WALLET_MODE] = SIMPLE_WALLET_TYPE;

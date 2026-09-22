@@ -54,15 +54,25 @@
 // * 	    clearFields( field_ids )
 //
 // * async  onGUIEvent( data )
+
+//          [ Generate ] Button
+// *        onGenerateNewEntropy 
+
+//          ----- Bip85 -----
+// *        onApplyBip85Params
+// *        onShowHideBip85
+// *        onEnableDisableBip85
 //
-// *        GuiClearPassword()
-// *        GuiGeneratePassword()
-// *        GuiTogglePasswordVisibility()
-// *        GuiSetPasswordApplyState()
+//          ----- Bip39 -----
+// *        Bip39ApplyPassword
+// *        Bip39UpdatePassphrase
+// *        Bip39SetPassphraseApplyState
+// *        Bip39ClearPassphrase
 //
-// *        GuiClearBip38Passphrase()
-// *        GuiGenerateBip38Passphrase()
-// *        GuiToggleBip38PassphraseVisibility()
+//          ----- Bip38 -----
+// *        Bip38ClearPassphrase()
+// *        Bip38GeneratePassphrase()
+// *        Bip38TogglePassphraseVisibility()
 //
 // * async  fileSaveWallet()
 // * async  fileOpenWallet()
@@ -170,6 +180,9 @@ class MainGUI {
 			throw new TypeError("'MainGUI' constructor is private");
 		}
 		
+		this.entropy         = '';
+		this.initial_entropy = '';
+		
 		this.wallet_info = new WalletInfo( this );
 		this.wallet_info.setAttribute( WORD_COUNT, 24 );
 				
@@ -269,7 +282,9 @@ class MainGUI {
 		// trace2Main( pretty_format( "rGUI.newW> entropy 1", entropy_1 ) );
 		
 		let	entropy = await this.generateEntropyFromEntropySource();
-        this.wallet_info.setAttribute( ENTROPY, entropy ); 		
+		
+		this.Entropy = entropy;
+       	
         trace2Main( pretty_format( "rGUI.newW> entropy", entropy ) );	
 
 		await this.updateChecksum( entropy );		
@@ -352,7 +367,8 @@ class MainGUI {
 		
 		// ---------- Entropy ----------
 		let entropy = json_data[ENTROPY];
-		this.wallet_info.setAttribute( ENTROPY, entropy );
+		this.Entropy = entropy;
+		// this.wallet_info.setAttribute( ENTROPY, entropy );
 		trace2Main( pretty_format( "rGUI.openW> entropy", entropy ) );
 		// ---------- Entropy		
 		
@@ -886,7 +902,7 @@ class MainGUI {
 		    (evt) => { if (this.cb_enabled) this.onShowHideBip85(evt); } );	
 			
 		this.setEventHandler( BIP85_ENABLE_DISABLE_BTN_ID, 'click', 
-		    (evt) => { if (this.cb_enabled) this.onEnableDisableBip85(evt); } );	
+		    async (evt) => { if (this.cb_enabled) await this.onEnableDisableBip85(evt); } );	
 			
 		// ---- BIP85 Edit Parameters ----		
 		this.setEventHandler( BIP85_EDIT_BTN_ID, 'click',   
@@ -949,16 +965,16 @@ class MainGUI {
 		
 		// -------------------- BIP38 Passphrase --------------------			
 		this.setEventHandler( CLEAR_PASSWORD_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip32Passphrase(); } );;				
+		    async (evt) => { if (this.cb_enabled) await this.Bip39ClearPassphrase(); } );;				
 
 		this.setEventHandler( CLEAR_BIP38_PASSPHRASE_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip38Passphrase(); } );			
+		    async (evt) => { if (this.cb_enabled) await this.Bip38ClearPassphrase(); } );			
 			
 		this.setEventHandler( GENERATE_BIP38_PASSPHRASE_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.GuiGenerateBip38Passphrase(); } );
+		    async (evt) => { if (this.cb_enabled) await this.Bip38GeneratePassphrase(); } );
 
 		this.setEventHandler( BIP38_PASSPHRASE_EYE_BTN_ID, 'click',   
-		    (evt) => { if (this.cb_enabled) this.GuiToggleBip38PassphraseVisibility(); } );
+		    (evt) => { if (this.cb_enabled) this.Bip38TogglePassphraseVisibility(); } );
 			
 		this.setEventHandler( BIP38_PASSPHRASE_ID, 'keyup',   
 		    async (evt) => { await this.onGuiChangeBip38Passphrase( evt ); } );
@@ -992,8 +1008,8 @@ class MainGUI {
 		// Regression Fix: '_00_todo.txt' 2025/07/17 Bug 2
 		this.setEventHandler( WORD_INDEXES_BASE_ID,     'change', async (evt) => { await this.updateWordIndexes(); } );			
 				
-		this.setEventHandler( GENERATE_BTN_ID,            'click',    
-		    async (evt) => { if (this.cb_enabled) await this.generateRandomFields(); } );				
+		this.setEventHandler( GENERATE_BTN_ID,          'click',    
+		    async (evt) => { if (this.cb_enabled) await this.onGenerateNewEntropy(); } );				
 		this.setEventHandler( REFRESH_BTN_ID,           'click',    
 		    async (evt) => { if (this.cb_enabled) await this.onRefreshButton(); } );
 			
@@ -1104,10 +1120,11 @@ class MainGUI {
 		HtmlUtils.HideElement( TR_1ST_PK_ID );	
 		
 		if ( wallet_mode == SIMPLE_WALLET_TYPE ) {			
-			HtmlUtils.ShowElement( SW_ENTROPY_SIZE_ID );
+			HtmlUtils.HideElement( SW_ENTROPY_SIZE_ID );
 			
 			HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
-			HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
+			// HtmlUtils.ShowElement( SW_WORD_COUNT_ID );
+			HtmlUtils.HideElement( SW_WORD_COUNT_ID );
 
 			HtmlUtils.ShowElement( TR_SW_MNEMONICS_ID );
 			if ( blockchain == TON || blockchain == TERRA_LUNA || blockchain == HORIZEN ) {				
@@ -1116,8 +1133,8 @@ class MainGUI {
 			
 			HtmlUtils.HideElement( BIP32_PASSPHRASE_ROW_ID );
 			
-			HtmlUtils.HideElement( ENTROPY_SIZE_SELECT_ID );
-			HtmlUtils.HideElement( WORD_COUNT_SELECT_ID );
+			HtmlUtils.ShowElement( ENTROPY_SIZE_SELECT_ID );
+			HtmlUtils.ShowElement( WORD_COUNT_SELECT_ID );
 			HtmlUtils.HideElement( DERIVATION_PATH_ROW );
 			
 			//HtmlUtils.ShowElement( TR_PRIV_KEY_ID );
@@ -1289,8 +1306,9 @@ class MainGUI {
 		
 		trace2Main( pretty_format( "rGUI.upFields> wallet[ENTROPY]", this.wallet_info.getAttribute(ENTROPY) ) );
 		if ( entropy == undefined ) { 
-			entropy = this.wallet_info.getAttribute(ENTROPY);
-			this.wallet_info.setAttribute(ENTROPY, entropy); // to update GUI 
+			// entropy = this.wallet_info.getAttribute(ENTROPY);
+			entropy = this.Entropy;
+			// this.wallet_info.setAttribute(ENTROPY, entropy); // to update GUI 
 		}
 		// trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
 		
@@ -1319,8 +1337,8 @@ class MainGUI {
 				entropy = await window.ipcMain.EntropySourceToEntropy( data );
 				
 				trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
-
-                this.wallet_info.setAttribute( ENTROPY, entropy );
+                this.Entropy = entropy;
+                // this.wallet_info.setAttribute( ENTROPY, entropy );
 				await this.propagateFields( entropy );
 				//await this.propagateFields(entropy_elt.value, wif);
 			}                                                          
@@ -1350,9 +1368,9 @@ class MainGUI {
         
         let blockchain = HtmlUtils.GetElementValue( WALLET_BLOCKCHAIN_ID ); 
 
-		if ( wallet_mode == SIMPLE_WALLET_TYPE ) { 
-			this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;		
-		}
+		// if ( wallet_mode == SIMPLE_WALLET_TYPE ) { 
+		// 	this.Options[ENTROPY_SIZE][SIMPLE_WALLET_TYPE] = 256;		
+		// }
 		
 		HtmlUtils.InitializeElement( WALLET_BLOCKCHAIN_ID, 
 			                         this.Options['Blockchains'][wallet_mode],
@@ -1388,7 +1406,8 @@ class MainGUI {
 			blockchain = this.wallet_info.getAttribute( BLOCKCHAIN );
 		}
 		
-		let entropy_hex = this.wallet_info.getAttribute( ENTROPY );
+		// let entropy_hex = this.wallet_info.getAttribute( ENTROPY );
+		let entropy_hex = this.Entropy;
 		let wallet_mode = this.wallet_info.getAttribute( WALLET_MODE );
 		
 		trace2Main( pretty_format( "rGUI.upBlkCHN> wallet_mode", wallet_mode ) );
@@ -1481,7 +1500,8 @@ class MainGUI {
 	async updateWalletAddress() {
         trace2Main( pretty_func_header_format( "================ MainGUI.updateWalletAddress" ) );		
 							
-		let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+		// let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+		let entropy = this.Entropy;
 		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
 		
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID ); 
@@ -1511,7 +1531,8 @@ class MainGUI {
 	
 	updateStatusbarInfo( is_displayed ) {
 		trace2Main( pretty_format( "MainGUI.updateStatusbarInfo" ) );
-		let entropy = this.wallet_info.getAttribute(ENTROPY);
+		// let entropy = this.wallet_info.getAttribute(ENTROPY);
+		let entropy = this.Entropy;
 		if ( is_displayed ) {		
 			let msg =   "*Warning* Entropy source is User Input"
 					  + "  |  Entropy value length: " + entropy.length
@@ -1526,7 +1547,9 @@ class MainGUI {
 	async updateBip39Passphrase( bip39_passphrase ) {
 		trace2Main( "===== rGUI.upPW ===============================================================" );
 		trace2Main( pretty_func_header_format( "MainGUI.updateBip39Passphrase", bip39_passphrase ) );
-		await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
+		let entropy = this.Entropy;
+		// await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
+		await this.updateEntropy( entropy );
 	}  // async updateBip39Passphrase()
 	
 	async updateEntropy( entropy_hex ) {
@@ -1534,7 +1557,11 @@ class MainGUI {
 		
 		// this.cb_enabled = false;
 		
-		this.wallet_info.setAttribute( ENTROPY, entropy_hex );
+		this.Entropy = entropy_hex;
+		// this.wallet_info.setAttribute( ENTROPY, entropy_hex );
+		
+		// Bip8 InitialEntropy
+		await this.updateBip85Parameters( entropy_hex );
 		
 		this.setEntropyValueValidity( true ); 
 		
@@ -1736,7 +1763,8 @@ class MainGUI {
 		// let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
 		// trace2Main( pretty_format( "rGUI.upLang> entropy(gui)", entropy ) );
 		
-		let entropy = this.wallet_info.getAttribute(ENTROPY);
+		// let entropy = this.wallet_info.getAttribute(ENTROPY);
+		let entropy = this.Entropy;
 		// trace2Main( pretty_format( "rGUI.upLang> entropy(wallet)", entropy ) );
 		
         await this.updateMnemonics( entropy );
@@ -1831,10 +1859,10 @@ class MainGUI {
 		return new_uuid;
     } // async generateSalt()
 	
-	async generateRandomFields() {
-		trace2Main( pretty_func_header_format( "MainGUI.generateRandomFields" ) );	
+	async onGenerateNewEntropy() {
+		trace2Main( pretty_func_header_format( "MainGUI.onGenerateNewEntropy" ) );	
 		await this.drawEntropySource();
-	} // generateRandomFields()
+	} // onGenerateNewEntropy()
 	
 	async drawEntropySource() {
 		trace2Main( pretty_func_header_format( "MainGUI.drawEntropySource" ) );
@@ -2279,24 +2307,24 @@ class MainGUI {
 		
 		if ( target_id == BIP32_PASSPHRASE_ID ) {
 			if ( passphrase == "" ) {
-				this.GuiSetPasswordApplyState( false );	
+				this.Bip39SetPassphraseApplyState( false );	
 			}
 			else {
-				this.GuiSetPasswordApplyState( true );	
+				this.Bip39SetPassphraseApplyState( true );	
 			}	
 	    }			
 	} // async updatePassphraseStrength()
 	
-	async GuiApplyPassword( evt ) {
+	async Bip39ApplyPassword( evt ) {
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
-		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", bip32_passphrase ) );
+		trace2Main( pretty_func_header_format( "MainGUI.Bip39ApplyPassword", bip32_passphrase ) );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
-		await this.updateBip39Passphrase( bip32_passphrase );
+		await this.Bip39UpdatePassphrase( bip32_passphrase );
 
-		this.GuiSetPasswordApplyState( false );
-	} // async GuiApplyPassword()
+		this.Bip39SetPassphraseApplyState( false );
+	} // async Bip39ApplyPassword()
 
-	GuiSetPasswordApplyState( visible ) {
+	Bip39SetPassphraseApplyState( visible ) {
 		if ( visible ) {
 			HtmlUtils.ShowElement( APPLY_PASSWORD_BTN_ID );
 			HtmlUtils.ShowElement( APPLY_BTN_SEPARATOR_ID );
@@ -2311,7 +2339,7 @@ class MainGUI {
 			HtmlUtils.RemoveClass( BIP32_PASSPHRASE_ID, PASSWORD_WITH_APPLY_CSS_CLASS );
 			// this.setSaveCmdState( true );
 		}
-	} // GuiSetPasswordApplyState()
+	} // Bip39SetPassphraseApplyState()
 	
 	
 	
@@ -2324,15 +2352,15 @@ class MainGUI {
 		let bip39_passphrase = await window.ipcMain.GeneratePassword( data );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip39_passphrase);
 		
-		await this.updateBip39Passphrase( bip39_passphrase );
+		await this.Bip39UpdatePassphrase( bip39_passphrase );
 		
 		this.updatePassphraseStrength( BIP32_PASSPHRASE_ID );
 		
-		await this.GuiApplyPassword();
+		await this.Bip39ApplyPassword();
 		
 		await this.updatePassphraseStrength( BIP39_MAIN_WINDOW_PASSPHRASE_ID );
 
-		this.GuiSetPasswordApplyState( true );
+		this.Bip39SetPassphraseApplyState( true );
 	} // async GuiGenerateBip39Passphrase()	
 	
 	async GuiClearBip39Passphrase( update_wallet ) {
@@ -2341,11 +2369,11 @@ class MainGUI {
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '');
 		HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
 		
-		trace2Main( pretty_func_header_format( "MainGUI.GuiApplyPassword", '' ) );
+		trace2Main( pretty_func_header_format( "MainGUI.Bip39ApplyPassword", '' ) );
 		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '' );
-		await this.updateBip39Passphrase( '' );
+		await this.Bip39UpdatePassphrase( '' );
 
-		this.GuiSetPasswordApplyState( false );	
+		this.Bip39SetPassphraseApplyState( false );	
 	} // GuiClearBip39Passphrase()
 	
 	
@@ -2374,26 +2402,26 @@ class MainGUI {
 	
 	
     // --------------------  BIP38  --------------------
-	async GuiGenerateBip38Passphrase( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.GuiGenerateBip38Passphrase" ) );
+	async Bip38GeneratePassphrase( evt ) {
+		trace2Main( pretty_func_header_format( "MainGUI.Bip38GeneratePassphrase" ) );
 		let data = {};
 		let new_bip38_passphrase = await window.ipcMain.GeneratePassword( data );
 		this.wallet_info.setAttribute( BIP38_PASSPHRASE, new_bip38_passphrase.trim());
 		
 		this.updatePassphraseStrength( BIP38_PASSPHRASE_ID );
 
-		this.GuiSetPasswordApplyState( true );
-	} // async GuiGenerateBip38Passphrase()
+		this.Bip39SetPassphraseApplyState( true );
+	} // async Bip38GeneratePassphrase()
 	
-	GuiClearBip38Passphrase( update_wallet ) {
-		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip38Passphrase" ) );
+	Bip38ClearPassphrase( update_wallet ) {
+		trace2Main( pretty_func_header_format( "MainGUI.Bip38ClearPassphrase" ) );
 		this.wallet_info.setAttribute( BIP38_PASSPHRASE, '');
 		HtmlUtils.HideElement( BIP38_PASSPHRASE_STRENGTH_CONTAINER_ID);
 
-		this.GuiSetPasswordApplyState( false );	
-	} // GuiClearBip38Passphrase()
+		this.Bip39SetPassphraseApplyState( false );	
+	} // Bip38ClearPassphrase()
 	
-	GuiToggleBip38PassphraseVisibility() {
+	Bip38TogglePassphraseVisibility() {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiToggleBip38PasswordVisibility" ) );	
 		let bip38_passphrase_eye_btn_img_elt = document.getElementById(BIP38_PASSPHRASE_EYE_BTN_IMG_ID )
 		// console.log("> bip38_passphrase_eye_btn_img_elt: " + bip38_passphrase_eye_btn_img_elt);
@@ -2413,7 +2441,7 @@ class MainGUI {
 			}			
 		}
 		this.bip38_passphrase_visible = ! this.bip38_passphrase_visible;
-	} // GuiToggleBip38PassphraseVisibility()
+	} // Bip38TogglePassphraseVisibility()
 	// --------------------  BIP38
 		
 
@@ -2540,7 +2568,8 @@ class MainGUI {
 		if ( elt.id == LANG_SELECT_ID ) {
 			let lang_value = elt.value;
 			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateLang", lang_value ) );
-			let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+			// let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+			// let entropy = this.Entropy;
             await this.updateLanguage( lang_value );
 	    }
 		else {
@@ -2553,18 +2582,103 @@ class MainGUI {
         window.ipcMain.ToggleDebugPanel();		
 	} // onToggleDebug()
 	
-	onEnableDisableBip85( evt ) {
+	async updateBip85Parameters( entropy_arg ) {
+		HtmlUtils.SetElementValue(BIP85_INIT_ENTROPY_ID, entropy_arg);
+		
+		let bip85_index = HtmlUtils.GetElementValue( BIP85_INDEX_ID );
+		if ( bip85_index == '' ) {
+			bip85_index = 0;
+		}
+		else if ( typeof bip85_index == 'string' ) {
+			bip85_index = parseInt(bip85_index);
+		}
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters bip85_index: " + bip85_index ) );
+		
+		let bip85_entropy_size = HtmlUtils.GetElementValue( BIP85_ENTROPY_SIZE_ID );
+		if ( typeof bip85_entropy_size == 'string' ) {
+			bip85_entropy_size = parseInt(bip85_entropy_size);
+		}
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters bip85_entropy_size: " + bip85_entropy_size + " typeof:" + typeof bip85_entropy_size) );
+		
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters init_entropy : " + entropy_arg) );
+		
+		let entropy = entropy_arg;
+		const data = { entropy, bip85_index, bip85_entropy_size };
+		
+        let bip85_infos = await window.ipcMain.Bip85DeriveBip39( data );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters " + JSON.stringify(bip85_infos)) );
+		
+		let bip85_entropy = bip85_infos['bip85_entropy'];
+		HtmlUtils.SetElementValue(BIP85_DERIVED_ENTROPY_ID, bip85_entropy);
+		
+		let bip85_seedphrase = bip85_infos['bip85_mnemonics'];
+		HtmlUtils.SetElementValue(BIP85_DERIVED_SEEDPHRASE_ID, bip85_seedphrase);
+	} // updateBip85Parameters()
+	
+	showBip85EnableWarningDialog( titre, message  ) {
+	  return new Promise((resolve) => {
+		iziToast.question({
+		  timeout: false,
+		  close: false,
+		  overlay: true,
+		  displayMode: 'once',
+		  layout: 2,
+		  color: 'orange',
+		  icon: 'ico-warning',
+		  position: 'center',
+		  class: 'izi-confirm',
+		  title: titre,
+		  message: message,
+		  buttons: [
+			['<button><b>OK</b></button>', (instance, toast) => {
+			  instance.hide({ transitionOut: 'fadeOut' }, toast, 'ok');
+			  resolve(true);
+			}, true],
+			['<button>Cancel</button>', (instance, toast) => {
+			  instance.hide({ transitionOut: 'fadeOut' }, toast, 'cancel');
+			  resolve(false);
+			}],
+		  ],
+		});
+	  });
+	} // showBip85EnableWarningDialog()
+	
+	async onEnableDisableBip85( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onEnableDisableBip85" ) );
-		this.bip85_enable = HtmlUtils.GetElementValue( BIP85_ENABLE_DISABLE_BTN_ID );
+		
+		let bip85_enable_value = HtmlUtils.GetElementValue( BIP85_ENABLE_DISABLE_BTN_ID );
+	
+		if ( bip85_enable_value ) {
+			const ok = await this.showBip85EnableWarningDialog(
+				'Bip85 Enable Warning',
+				'This is an advanced feature and should only be used if you understand what it does (see 5.1.6 in README.md)'
+			);
+
+			if (ok) {
+				// OK cliqué
+				// console.log("OK cliqué");
+			} else {
+				// Cancel cliqué (ou toast fermé)
+				// console.log("Cancel cliqué");
+				document.getElementById(BIP85_ENABLE_DISABLE_BTN_ID).checked = false;
+				HtmlUtils.SetElementValue( BIP85_MODE_ID, "disabled" );
+				this.bip85_enable = false;
+				return;
+			}
+		}
+		
+		this.bip85_enable = bip85_enable_value;
 		
 		// console.log("bip85_enable : " + this.bip85_enable); 
 		
 		// Change [Generate] button label
 		if ( this.bip85_enable ) {
 			document.getElementById(GENERATE_BTN_ID).value  = "Bip85 Generate";
+			HtmlUtils.SetElementValue( BIP85_MODE_ID, "enabled" );
 		}
 		else {
 			document.getElementById(GENERATE_BTN_ID).value  = "Generate";
+			HtmlUtils.SetElementValue( BIP85_MODE_ID, "disabled" );
 		}
 		
 		// Change "Entropy Field" label		
@@ -2576,13 +2690,13 @@ class MainGUI {
 		}
 		
 		// Show/Hide Edit button	
-        let edit_btn_elt = HtmlUtils.GetElement( BIP85_EDIT_BTN_ID ); 		
-		if ( this.bip85_enable ) {
-			edit_btn_elt.style.display = "flex";
-		}
-		else {
-			edit_btn_elt.style.display = "none";
-		}
+        // let edit_btn_elt = HtmlUtils.GetElement( BIP85_EDIT_BTN_ID ); 		
+		// if ( this.bip85_enable ) {
+		// 	edit_btn_elt.style.display = "flex";
+		// }
+		// else {
+		// 	edit_btn_elt.style.display = "none";
+		// }
 		
 		// Change "Seedphrase Field" label		
 		if ( this.bip85_enable ) {
@@ -2598,14 +2712,15 @@ class MainGUI {
 		this.bip85_visible = ! this.bip85_visible;
 		this.bip85_enable  = HtmlUtils.GetElementValue( BIP85_ENABLE_DISABLE_BTN_ID );
 		
-		console.log("bip85_visible : " + this.bip85_visible); 
+		// console.log("bip85_visible : " + this.bip85_visible); 
 		
 		let bip85_row_2nd_column_elt = HtmlUtils.GetElement( BIP85_ROW_2ND_COLUMN_ID );
 
 		let eye_btn_img_elt = HtmlUtils.GetElement( "bip85_show_hide_btn_img_id" );		
 	
         if ( this.bip85_visible ) {
-			let init_entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+			// let init_entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+			let init_entropy = this.Entropy;
 			HtmlUtils.SetElementValue( BIP85_INIT_ENTROPY_ID, init_entropy );
 			bip85_row_2nd_column_elt.style.display = "flex";
 			eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;
@@ -2618,15 +2733,36 @@ class MainGUI {
 		}
 	} // onShowHideBip85()
 	
-	async onApplyBip85Params( bip85_infos ) {
+	// async onApplyBip85Params( bip85_infos ) {
+	async onApplyBip85Params( data ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params" ) );
-		trace2Main( pretty_func_header_format( "MainGUI.onToggleBip85  bip85_infos: " + JSON.stringify(bip85_infos) ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params  data: " + JSON.stringify(data) ) );
+			
+		const { entropy, bip85_index, bip85_entropy_size } = data;
 		
-		let bip85_index        = bip85_infos["bip85_index"];
-		let bip85_entropy_size = bip85_infos["bip85_entropy_size"];
-		let bip85_entropy      = bip85_infos["bip85_entropy"];
-		let bip85_mnemonics    = bip85_infos["bip85_mnemonics"];		
+		// let bip85_result = await window.ipcMain.Bip85DeriveBip39( data );		
 		
+		// let bip85_index        = bip85_infos["bip85_index"];
+		// let bip85_entropy_size = bip85_infos["bip85_entropy_size"];
+		// let bip85_entropy      = bip85_infos["bip85_entropy"];
+		// let bip85_mnemonics    = bip85_infos["bip85_mnemonics"];
+		
+		let bip85_entropy = entropy;   
+
+        let bip85_infos = await window.ipcMain.Bip85DeriveBip39( data );
+		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params  bip85_infos: " + JSON.stringify(bip85_infos) ) );
+
+        // bip85_infos = { bip85_index, bip85_entropy, bip85_mnemonics, bip85_entropy_size };
+        let bip85_derived_entropy    = bip85_infos["bip85_entropy"];	
+		let bip85_derived_seedphrase = bip85_infos["bip85_mnemonics"];		
+		
+		HtmlUtils.SetElementValue( BIP85_INDEX_ID,              bip85_index );	
+		HtmlUtils.SetElementValue( BIP85_ENTROPY_SIZE_ID,       bip85_entropy_size );
+		
+		HtmlUtils.SetElementValue( BIP85_INIT_ENTROPY_ID,       entropy );
+		
+		HtmlUtils.SetElementValue( BIP85_DERIVED_ENTROPY_ID,    bip85_derived_entropy );
+		HtmlUtils.SetElementValue( BIP85_DERIVED_SEEDPHRASE_ID, bip85_derived_seedphrase );
 	} // onApplyBip85Params()
 	
 	async onKeyDown( evt ) {
@@ -2642,7 +2778,8 @@ class MainGUI {
 			evt.preventDefault();
 			
 			let allowed_alphabet     = ALLOWED_ALPHABETS[elt.id];
-			let entropy_value        = HtmlUtils.GetElementValue( ENTROPY_ID );
+			// let entropy_value     = HtmlUtils.GetElementValue( ENTROPY_ID );
+			let entropy_value = this.Entropy;
 			let expected_digit_count = this.expected_entropy_bytes * 2;
 			
 			trace2Main( pretty_format( "entropy_value",        entropy_value ) );
@@ -2666,7 +2803,8 @@ class MainGUI {
 		trace2Main( pretty_func_header_format( "MainGUI.onEntropyKeypress" ) );
 		trace2Main( pretty_format( "evt.charCode", evt.charCode ) );
 		
-		let entropy  = HtmlUtils.GetElementValue( ENTROPY_ID );
+		// let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
+		let entropy = this.Entropy;
 		
 		//========== Filter non hexadecimal characters ==========
 		let is_hex_digit =    ( evt.charCode >= 48 && evt.charCode <= 57 )  // 0..9
@@ -2703,7 +2841,8 @@ class MainGUI {
 		trace2Main( pretty_format( "expected_digits" + this.wllet.getAttribute(EXPECTED_ENTROPY_DIGITS) ) );
         trace2Main( pretty_format( "text_cursor_pos", text_cursor_pos ) );	
 		
-		HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
+		// HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
+		this.Entropy = new_entropy;
 		
 		text_cursor_pos += 1;
 		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
@@ -2716,7 +2855,8 @@ class MainGUI {
 		if ( new_entropy.length == this.wallet_info.getATtribute(EXPECTED_ENTROPY_DIGITS) ) {
 			trace2Main( "   new_entropy(" + new_entropy.length + "):  " + new_entropy); 
 
-            HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );			
+            // HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
+            this.Entropy = new_entropy;			
 			
 			await this.updateFields( new_entropy );
 		}	
@@ -2748,7 +2888,8 @@ class MainGUI {
 		
 		trace2Main("   paste_data(" + paste_length + "): " + paste_data);		
 		
-		let current_entropy = HtmlUtils.GetElementValue(ENTROPY_ID);
+		// let current_entropy = HtmlUtils.GetElementValue(ENTROPY_ID);
+		let current_entropy = this.Entropy;
 		trace2Main("   current_entropy(" + current_entropy.length + "): " + current_entropy);	
 		
 		let new_entropy     = "";		
@@ -2782,13 +2923,15 @@ class MainGUI {
 				new_entropy = insertSubstringAtIndex
 				              ( current_entropy, paste_data, text_cursor_pos );
 				trace2Main("   new_entropy (pasted): " + new_entropy);
-				HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
+				// HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
+				this.Entropy = new_entropy;
 			}	
 
             if ( new_entropy.length == this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS) ) {			
 				this.setEntropySourceIsUserInput( true );
 				//this.updateStatusbarInfo( true );
-				HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
+				// HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
+                this.Entropy = new_entropy;				
 					
 				await this.updateFields( new_entropy );	
 			}	
@@ -2799,7 +2942,8 @@ class MainGUI {
 		let entropy = evt.detail["entropy"];
 		console.log( "MainGUI.onCustomEntropyUpdate  entropy:\n   " + entropy);	
 
-		HtmlUtils.SetElementValue( ENTROPY_ID, entropy );	
+		// HtmlUtils.SetElementValue( ENTROPY_ID, entropy );	
+		this.Entropy = entropy;
 					
 		await this.updateFields( entropy );			
 	} // onCustomEntropyUpdate()
@@ -2862,7 +3006,8 @@ class MainGUI {
 			// 3. Update 'Mnemonics' from 'Entropy'
 			this.setEntropySourceIsUserInput( true );
 			//this.updateStatusbarInfo( true );
-			HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
+			// HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
+			this.Entropy = new_entropy;
 					
 			await this.updateFields( new_entropy );	
 		}
@@ -2874,7 +3019,8 @@ class MainGUI {
 		let copy_text = "";
 		switch ( evt_src_elt_id ) {
 			case ENTROPY_COPY_BTN_ID: 
-				copy_text = HtmlUtils.GetElementValue( ENTROPY_ID );
+				// copy_text = HtmlUtils.GetElementValue( ENTROPY_ID );
+				copy_text = this.Entropy;
 				GuiUtils.ShowQuestionDialog
 					( "Entropy copied in Clipboard", 
 					  {"CloseButtonLabel": "OK" } );
@@ -3485,7 +3631,8 @@ class MainGUI {
 		}
 		// -------- Bip38 passphrase
 		
-		let entropy_value = HtmlUtils.GetElementValue( ENTROPY_ID ); 
+		// let entropy_value = HtmlUtils.GetElementValue( ENTROPY_ID ); 
+		let entropy_value = this.Entropy;
 		crypto_info[ENTROPY] = entropy_value;
 		
 		let entropy_size = entropy_value.length * 4; // 4 bits per hex digit
@@ -3699,6 +3846,21 @@ class MainGUI {
 		}
 		return bip32_field_value_str;
 	} // getBip32FieldValue()	
+	
+	get Entropy() {
+		// let entropy = this.wallet_info.getAttribute( ENTROPY );
+		let entropy_value = HtmlUtils.GetElementValue( ENTROPY_ID );
+		this.entropy = entropy_value;
+		this.wallet_info.setAttribute( ENTROPY, entropy_value ); 
+		return entropy_value;
+    } // 'Entropy' getter
+	
+	set Entropy( entropy_value ) {
+		this.entropy = entropy_value;
+		HtmlUtils.SetElementValue( ENTROPY_ID, entropy_value );
+		this.wallet_info.setAttribute( ENTROPY, entropy_value ); 
+		return entropy_value;		
+    } // 'Entropy' setter
 	
 } // MainGUI class
 // ==============================  MainGUI class 

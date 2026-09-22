@@ -760,4 +760,46 @@ describe('HD Wallet Generation (BIP32/BIP44)', () => {
       expect(wallet[ADDRESS]).toBeValidEthereumAddress();
     });
   });
+  
+  // ==========================================================================
+  // ENTROPY SIZE / WORD COUNT (128 bits => 12 words, 256 bits => 24 words)
+  // ==========================================================================
+  
+  describe('HD Wallet entropy sizes', () => {
+    
+    // Helper per test (more robust than a shared async beforeAll)
+    const getBtcHdWallet = (entropy) =>
+      HDWallet.GetWallet(entropy, testUuid, {
+        [BLOCKCHAIN]:     BITCOIN,
+        [CRYPTO_NET]:     MAINNET,
+        [BIP32_PROTOCOL]: 44,
+        [ACCOUNT]:        0,
+        [ADDRESS_INDEX]:  0
+      });
+    
+    // HD derives everything from the mnemonic seed => size-agnostic:
+    // no getSecp256k1PK expansion here (unlike Simple Wallet).
+    test('128-bit entropy produces a 12-word mnemonic', async () => {
+      const wallet = await getBtcHdWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[MNEMONICS].split(' ')).toHaveLength(12);
+      expect(wallet[MNEMONICS]).toBeValidMnemonic();
+    });
+    
+    test('128-bit entropy yields a valid non-null Bitcoin HD address', async () => {
+      const wallet = await getBtcHdWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[ADDRESS]).toBeDefined();
+      expect(wallet[ADDRESS]).not.toBe('Null-ADDRESS');
+      expect(wallet[ADDRESS]).toBeValidBitcoinAddress();
+    });
+    
+    test('128-bit entropy yields a valid 64-hex derived private key', async () => {
+      const wallet = await getBtcHdWallet(CRYPTO_CONFIG.TEST_ENTROPY_128);
+      expect(wallet[PRIVATE_KEY]).toBeValidHash(64);
+    });
+    
+    test('256-bit entropy still produces a 24-word mnemonic', async () => {
+      const wallet = await getBtcHdWallet(CRYPTO_CONFIG.TEST_ENTROPY_256);
+      expect(wallet[MNEMONICS].split(' ')).toHaveLength(24);
+    });
+  });
 });

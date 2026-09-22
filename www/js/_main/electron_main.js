@@ -35,7 +35,7 @@
 // *        setCallbacks()
 // ------------------------------------------------------
 const MAIN_WINDOW_WIDTH  = 1040; // NB: 'width' is wider because of 'Cardano'
-const MAIN_WINDOW_HEIGHT = 651; 
+const MAIN_WINDOW_HEIGHT = 690;  // 651; 
 
 const { app, Menu, BrowserWindow, ipcMain, 
         shell, remote, dialog } = require('electron');	
@@ -1287,9 +1287,10 @@ class ElectronMain {
 		// called like this by Renderer: await window.ipcMain.Bip85DeriveBip39( data )
 		ipcMain.handle( ToMain_RQ_BIP85_DERIVE_BIP39, async ( event, data ) => {
 			pretty_func_header_log( "[Electron]", ToMain_RQ_BIP85_DERIVE_BIP39 );
-			const { entropy, index, entropy_size } = data;
+			// const { entropy, index, entropy_size } = data;
+			const { entropy, bip85_index, bip85_entropy_size } = data;
 			// Skribi.log("   options: " + JSON.stringify(options));
-			let bip85_result = Bip85Utils.This.deriveToBip85Infos( entropy, index, entropy_size );
+			let bip85_result = Bip85Utils.This.deriveToBip85Infos( entropy, bip85_index, bip85_entropy_size );
 			return bip85_result;
 		}); // "ToMain:Request/bip85_derive_bip39" event handler
 		

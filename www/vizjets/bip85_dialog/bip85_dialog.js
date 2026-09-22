@@ -52,7 +52,7 @@ class Bip85Dialog {
 	} // ** Private constructor **
 	
 	initialize() {
-		console.log(">> Bip85Dialog.initialize ====================");
+		// console.log(">> Bip85Dialog.initialize ====================");
 		
 		$("#" + BIP85_DIALOG_INPUT_ID).dialog
 		(   { // -------------------- JQuery Dialog options --------------------
@@ -418,14 +418,16 @@ class Bip85Dialog {
 		
 		let bip85_index        = parseInt(HtmlUtils.GetElementValue( BIP85_DIALOG_INDEX_ID ));
 		let bip85_entropy_size = parseInt(HtmlUtils.GetElementValue( BIP85_DIALOG_ENTROPY_SIZE_ID ));
+		
 		const data = { entropy, bip85_index, bip85_entropy_size };
 		
 		log_msg = ">> " + _CYAN_ + "Bip85Dialog.onApply  data: " + JSON.stringify(data) + _END_;
 		window.ipcMain.logToMain(log_msg); 
 			
-		let bip85_result = await window.ipcMain.Bip85DeriveBip39( data );
+		// let bip85_result = await window.ipcMain.Bip85DeriveBip39( data );
 		
-		await MainGUI.This.onApplyBip85Params( bip85_result );
+		// await MainGUI.This.onApplyBip85Params( bip85_result );
+		await MainGUI.This.onApplyBip85Params( data );
 		
 		this.closeDialog();
 	} // onApply()
