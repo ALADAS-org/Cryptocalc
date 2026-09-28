@@ -57,10 +57,27 @@ const BLOCKCHAIN                  = 'Blockchain';
 const NULL_BLOCKCHAIN             = 'Null-BLOCKCHAIN';
 
 const UUID                        = 'uuid';
+
 const ENTROPY                     = 'Entropy';
 const ENTROPY_SIZE                = 'Entropy Size';
 const EXPECTED_ENTROPY_DIGITS     = 'expected_entropy_digits';
 const WORD_COUNT                  = 'word_count';
+
+// --------------------  Bip85  --------------------
+const BIP85_INIT_ENTROPY          = 'bip85_init_entropy';
+const BIP85_INDEX                 = 'bip85_index';
+const BIP85_ENTROPY_SIZE          = 'bip85_entropy_size';
+
+// Labels in 'wallet_info.txt' / 'wallet_info.wits' when Bip85 is enabled
+// NB: no label for BIP85_ENTROPY_SIZE (same value as 'Entropy Size')
+const BIP85_INIT_ENTROPY_LABEL    = 'Initial Entropy';
+const BIP85_INDEX_LABEL           = 'Bip 85 Index';
+const BIP85_ENTROPY_LABEL         = 'Bip 85 Entropy';  // replaces 'Entropy' label
+
+// Keys in 'wallet_info.wits' when Bip85 is enabled ('Entropy' and 'Entropy Size' unchanged)
+const BIP85_INIT_ENTROPY_WITS_KEY = 'Initial Entropy';
+const BIP85_INDEX_WITS_KEY        = 'Bip85 Index';
+// --------------------  Bip85
 
 const WORDLIST_WORD_INDEXES       = "#WordIndexes";
  
@@ -175,6 +192,17 @@ if ( typeof exports === 'object' ) {
 	
 	exports.ENTROPY               = ENTROPY
 	exports.ENTROPY_SIZE          = ENTROPY_SIZE
+	
+	exports.BIP85_INIT_ENTROPY    = BIP85_INIT_ENTROPY
+	exports.BIP85_INDEX           = BIP85_INDEX
+	exports.BIP85_ENTROPY_SIZE    = BIP85_ENTROPY_SIZE
+	
+	exports.BIP85_INIT_ENTROPY_LABEL = BIP85_INIT_ENTROPY_LABEL
+	exports.BIP85_INDEX_LABEL        = BIP85_INDEX_LABEL
+	exports.BIP85_ENTROPY_LABEL      = BIP85_ENTROPY_LABEL
+	
+	exports.BIP85_INIT_ENTROPY_WITS_KEY = BIP85_INIT_ENTROPY_WITS_KEY
+	exports.BIP85_INDEX_WITS_KEY        = BIP85_INDEX_WITS_KEY
 	
 	exports.MNEMONICS             = MNEMONICS
 	exports.SHORTENED_MNEMONICS   = SHORTENED_MNEMONICS 
