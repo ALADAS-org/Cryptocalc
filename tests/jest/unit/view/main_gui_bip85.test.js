@@ -435,6 +435,115 @@ describe('MainGUI - Bip85 mode', () => {
   });
 
   // --------------------------------------------------------------------------
+  describe('Open Wallet: restoreBip85State()', () => {
+    const WITS_KEY_BIP85_INDEX     = 'Bip85 Index';
+    const WITS_KEY_INITIAL_ENTROPY = 'Initial Entropy';
+    const OPENED_BIP85_INDEX       = 3;
+    const OPENED_ENTROPY_SIZE      = 128;
+    const OPENED_MNEMONICS         = 'opened wallet mnemonics';
+
+    // GUI state after openWallet() has loaded a '.wits' ('Entropy' = Bip85 Entropy)
+    const openBip85Wits = async (sb, extra_json = {}) => {
+      const bip85_entropy = bip85Entropy(ENTROPY_A_128, OPENED_BIP85_INDEX, OPENED_ENTROPY_SIZE);
+      sb.gui.Entropy = bip85_entropy;
+      sb.attributes[sb.K.MNEMONICS] = OPENED_MNEMONICS;
+      const json_data = {
+        [sb.K.ENTROPY]:           bip85_entropy,
+        [sb.K.ENTROPY_SIZE]:      OPENED_ENTROPY_SIZE,
+        [WITS_KEY_BIP85_INDEX]:     OPENED_BIP85_INDEX,
+        [WITS_KEY_INITIAL_ENTROPY]: ENTROPY_A_128,
+        ...extra_json,
+      };
+      await sb.gui.restoreBip85State(json_data);
+      return bip85_entropy;
+    };
+
+    test("'.wits' keys match const_keywords.js", () => {
+      const sb = createMainGuiSandbox();
+      expect(sb.K.BIP85_INDEX_WITS_KEY).toBe(WITS_KEY_BIP85_INDEX);
+      expect(sb.K.BIP85_INIT_ENTROPY_WITS_KEY).toBe(WITS_KEY_INITIAL_ENTROPY);
+    });
+
+    test('Bip85 wallet: [Enable] checked, labels, Bip85 parameters restored', async () => {
+      const sb = createMainGuiSandbox();
+      const { K, el } = sb;
+      const bip85_entropy = await openBip85Wits(sb);
+
+      expect(sb.gui.bip85_enable).toBe(true);
+      expect(el(K.BIP85_ENABLE_DISABLE_BTN_ID).checked).toBe(true);
+      expectLabels(sb, true);
+      expect(sb.initialEntropy()).toBe(ENTROPY_A_128);
+      expect(el(K.BIP85_INDEX_ID).value).toBe(OPENED_BIP85_INDEX);
+      expect(el(K.BIP85_ENTROPY_SIZE_ID).value).toBe(OPENED_ENTROPY_SIZE);
+      expect(sb.derivedEntropy()).toBe(bip85_entropy);
+      expect(el(K.BIP85_DERIVED_SEEDPHRASE_ID).value).toBe(OPENED_MNEMONICS);
+      expectWalletEntropySize(sb, OPENED_ENTROPY_SIZE);
+    });
+
+    test('Bip85 wallet: no derivation, opened Entropy unchanged', async () => {
+      const sb = createMainGuiSandbox();
+      const bip85_entropy = await openBip85Wits(sb);
+      expect(sb.derive_calls.length).toBe(0);
+      expect(sb.address_calls.length).toBe(0);
+      expect(sb.entropy()).toBe(bip85_entropy);
+    });
+
+    test('Bip85 wallet: Bip85 Index given as a string', async () => {
+      const sb = createMainGuiSandbox();
+      await openBip85Wits(sb, { [WITS_KEY_BIP85_INDEX]: '3' });
+      expect(sb.el(sb.K.BIP85_INDEX_ID).value).toBe(OPENED_BIP85_INDEX);
+    });
+
+    test('Bip85 wallet: next refresh (Account, Address Index) does not re-derive', async () => {
+      const sb = createMainGuiSandbox();
+      const bip85_entropy = await openBip85Wits(sb);
+      await sb.gui.updateEntropy(sb.gui.Entropy);
+      expect(sb.derive_calls.length).toBe(0);
+      expect(sb.entropy()).toBe(bip85_entropy);
+    });
+
+    test('Bip85 wallet: disabling Bip85 restores the Initial Entropy', async () => {
+      const sb = createMainGuiSandbox();
+      await openBip85Wits(sb);
+      await sb.clickEnableCheckbox(false);
+      expect(sb.entropy()).toBe(ENTROPY_A_128);
+      expectLabels(sb, false);
+    });
+
+    test('Bip85 wallet: [Edit] re-derives from the restored Initial Entropy', async () => {
+      const sb = createMainGuiSandbox();
+      await openBip85Wits(sb);
+      await sb.gui.onApplyBip85Params({ bip85_index: 9, bip85_entropy_size: 256 });
+      expect(sb.initialEntropy()).toBe(ENTROPY_A_128);
+      expect(sb.entropy()).toBe(bip85Entropy(ENTROPY_A_128, 9, 256));
+    });
+
+    test('Bip85 wallet without Premium: opened as a non Bip85 wallet', async () => {
+      const sb = createMainGuiSandbox();
+      sb.gui.getOptions = async () => ({ [sb.K.PREMIUM_ALLOWED]: false });
+      const bip85_entropy = await openBip85Wits(sb);
+      expect(sb.gui.bip85_enable).toBe(false);
+      expect(sb.el(sb.K.BIP85_ENABLE_DISABLE_BTN_ID).checked).toBe(false);
+      expect(sb.entropy()).toBe(bip85_entropy);
+      expectLabels(sb, false);
+    });
+
+    test('non Bip85 wallet opened while Bip85 enabled: Bip85 disabled, no recomputation', async () => {
+      const sb = await createBip85EnabledSandbox(ENTROPY_A_128);
+      const address_count = sb.address_calls.length;
+      sb.gui.Entropy = ENTROPY_B_128; // Entropy of the opened '.wits'
+
+      await sb.gui.restoreBip85State({ [sb.K.ENTROPY]: ENTROPY_B_128, [sb.K.ENTROPY_SIZE]: 128 });
+
+      expect(sb.gui.bip85_enable).toBe(false);
+      expect(sb.el(sb.K.BIP85_ENABLE_DISABLE_BTN_ID).checked).toBe(false);
+      expect(sb.entropy()).toBe(ENTROPY_B_128);
+      expect(sb.address_calls.length).toBe(address_count);
+      expectLabels(sb, false);
+    });
+  });
+
+  // --------------------------------------------------------------------------
   describe('alignWalletEntropySize()', () => {
     test.each([ 128, 160, 192, 224, 256 ])('%i bits', (entropy_size) => {
       const sb = createMainGuiSandbox();

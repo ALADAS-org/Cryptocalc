@@ -80,6 +80,8 @@ const createMainGuiSandbox = () => {
   };
 
   const scope = {
+    // NB: 'undefined', NaN... must be explicit: the 'with' proxy would otherwise turn them into stubs
+    undefined, NaN, Infinity,
     console, Symbol, JSON, Object, Array, String, Number, Math, Promise, Error, parseInt, isNaN,
     trace2Main: () => {},
     pretty_func_header_format: (...args) => args.join(' '),

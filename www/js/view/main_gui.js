@@ -66,6 +66,7 @@
 // *        alignWalletEntropySize( entropy_size )
 // * async  updateBip85EntropySize( entropy_size )
 // * async  disableBip85IfEnabled
+// * async  restoreBip85State( json_data )
 // * async  onApplyBip85Params
 // *        onShowHideBip85
 // * async  onEnableDisableBip85
@@ -508,6 +509,10 @@ class MainGUI {
 		let data = { coin, wallet_mode };
 		window.ipcMain.SetWindowTitle( data );
 		// ---------- Update Window Title
+		
+		// ---------- Bip85 ----------
+		await this.restoreBip85State( json_data );
+		// ---------- Bip85
 		
 		this.wallet_info.setAttribute( CMD, CMD_NONE );
 		await this.updateFieldsVisibility();
@@ -2818,6 +2823,58 @@ class MainGUI {
 		
 		await this.setBip85Enabled( bip85_enable_value ? true : false );
 	} // onEnableDisableBip85()
+	
+	// Open Wallet: restores Bip85 mode from '.wits' ('Bip85 Index' and 'Initial Entropy' keys)
+	// WITHOUT any derivation: 'Entropy' of the '.wits' is already the 'Bip85 Entropy'
+	// NB: Bip85 mode requires Premium, otherwise the wallet is opened as a non Bip85 wallet
+	async restoreBip85State( json_data ) {
+		trace2Main( pretty_func_header_format( "MainGUI.restoreBip85State" ) );
+		
+		let initial_entropy = json_data[BIP85_INIT_ENTROPY_WITS_KEY];
+		let is_bip85_wallet = ( initial_entropy != undefined && initial_entropy != '' );
+		
+		let bip85_allowed = false;
+		if ( is_bip85_wallet ) {
+			await this.checkPremium();
+			bip85_allowed = ( this.Options != undefined && this.Options[ PREMIUM_ALLOWED ] == true );
+		}
+		
+		let enable = ( is_bip85_wallet && bip85_allowed );
+		
+		let checkbox_elt = document.getElementById( BIP85_ENABLE_DISABLE_BTN_ID );
+		if ( checkbox_elt != undefined ) {
+			checkbox_elt.checked = enable;
+		}
+		this.bip85_enable = enable;
+		
+		if ( ! enable ) {
+			this.bip85_derived_entropy = undefined;
+			this.updateBip85Labels();
+			return;
+		}
+		
+		let bip85_index = json_data[BIP85_INDEX_WITS_KEY];
+		if ( bip85_index == undefined || bip85_index === '' ) bip85_index = 0;
+		if ( isString( bip85_index ) ) bip85_index = parseInt( bip85_index );
+		
+		let entropy = this.Entropy; // Bip85 Entropy (from '.wits')
+		let entropy_size = entropy.length * 4; // 4 bits per hex digit
+		
+		HtmlUtils.SetElementValue( BIP85_INDEX_ID,        bip85_index );
+		HtmlUtils.SetElementValue( BIP85_ENTROPY_SIZE_ID, entropy_size );
+		this.InitialEntropy = initial_entropy;
+		this.wallet_info.setAttribute( BIP85_INDEX,        bip85_index );
+		this.wallet_info.setAttribute( BIP85_ENTROPY_SIZE, entropy_size );
+		
+		HtmlUtils.SetElementValue( BIP85_DERIVED_ENTROPY_ID,    entropy );
+		HtmlUtils.SetElementValue( BIP85_DERIVED_SEEDPHRASE_ID, this.wallet_info.getAttribute( MNEMONICS ) );
+		
+		// NB: next 'updateEntropy( this.Entropy )' (Account, Address Index...) is a refresh, not a new derivation
+		this.bip85_derived_entropy = entropy;
+		
+		this.alignWalletEntropySize( entropy_size );
+		this.updateBip85Labels();
+	} // restoreBip85State()
 	
 	// Called when Bip85 is not allowed anymore (e.g. Premium disabled): restores 'Initial Entropy'
 	async disableBip85IfEnabled() {
