@@ -78,6 +78,8 @@ const expectWalletEntropySize = (sb, entropy_size) => {
   expect(attributes[K.WORD_COUNT]).toBe(WORD_COUNTS[entropy_size]);
   expect(attributes[K.EXPECTED_ENTROPY_DIGITS]).toBe(entropy_size / BITS_PER_HEX_DIGIT);
   expect(sb.el(K.ENTROPY_ID).attributes['maxlength']).toBe(entropy_size / BITS_PER_HEX_DIGIT);
+  // [Entropy Size] selector must display the new size
+  expect(String(sb.el(K.ENTROPY_SIZE_SELECT_ID).value)).toBe(String(entropy_size));
 };
 
 const expectLabels = (sb, enabled) => {
