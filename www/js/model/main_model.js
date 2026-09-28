@@ -10,6 +10,7 @@
 //
 //   		createQRCode( path, filename, qrcode_text, qrcode_type, filetype )
 //      	saveWalletInfo( crypto_info ) 
+//   		buildWalletInfoTxt( crypto_info )
 //   		saveWalletInfoAsJson( output_path, crypto_info, timestamp )
 // * async  getAppVersion()
 // ------------------------------------------------------
@@ -34,6 +35,9 @@ const { VERSION,
 		QR_CODE, QR_SCALE,
 		EXE_LAUNCHER, LANG, WALLET_MODE,
         BLOCKCHAIN, ENTROPY, ENTROPY_SIZE, 
+		BIP85_INIT_ENTROPY, BIP85_INDEX,
+		BIP85_INIT_ENTROPY_LABEL, BIP85_INDEX_LABEL, BIP85_ENTROPY_LABEL,
+		BIP85_INIT_ENTROPY_WITS_KEY, BIP85_INDEX_WITS_KEY,
         MNEMONICS, WIF, WORD_INDEXES,
 		BIP32_PASSPHRASE, BIP38_PASSPHRASE, DERIVATION_PATH, ACCOUNT, ADDRESS_INDEX, 
 		HD_WALLET_TYPE, SWORD_WALLET_TYPE, 
@@ -241,95 +245,6 @@ class MainModel {
 				
 		await preprocess_crypto_info_for_Bip38( crypto_info );
 		
-		const fill_wallet_info_str = ( crypto_info ) => {	
-			console.log("\n\n\n>> ==================== MainModel 'fill_wallet_info_str' ====================");			
-		
-			let wallet_keys = Object.keys( crypto_info );
-			
-			let current_line  = {};
-			
-			let current_key   = "";
-			let current_keys  = [];
-			
-			let current_value = "";
-			let index         = -1;			
-			
-			WalletInfoTemplate.This.clear();
-			
-			// console.log("\n   ========== Step 0 ========== FILL 'wallet_info_str' with 'crypto_info'");
-			// console.log("crypto_info:\n" + JSON.stringify(crypto_info));
-			
-			let template_items = WalletInfoTemplate.This.getItems();
-			// console.log("\n   ========== Step 1 ========== [FILL 2]");
-			// console.log("   [Fill 2] template_items: \n" + JSON.stringify(template_items));
-			// console.log("   template_items.length: " + template_items.length);
-			
-			for ( let i=0; i < wallet_keys.length; i++ ) {	
-				// console.log("\n   ------------------------");
-				current_key = wallet_keys[i];
-				
-				index = WalletInfoTemplate.This.getIndexInTemplate( current_key );
-				// console.log("   [Fill 2] index of '" + current_key + "' key : " + index);
-				
-				current_value = crypto_info[current_key];
-				
-				if ( index != -1 ) {	
-					if ( current_key == ENTROPY_SIZE ) {					
-						current_value += " bits";					
-					}
-					else if ( current_key == DERIVATION_PATH ) {					
-						if (! current_value.endsWith("'")) { 
-							current_value += "'"; // NB: switch to systematic Hardened adresses	
-						}				
-					}		
-					
-					// console.log(">> MainModel fill_wallet_info_str_2  index: " + index + "  current_value: '" + current_value + "'");
-					WalletInfoTemplate.This.setItemValue( index, current_value); 
-					
-					let current_tmpl_item = WalletInfoTemplate.This.getItem( index );
-					// console.log("   current_tmpl_item: " + JSON.stringify(current_tmpl_item));
-				}
-			}
-			
-			let wallet_info_str      = "";
-			let wallet_info_str_line = "";
-			
-			WalletInfoTemplate.This.removeEmptyItems();
-			
-			template_items = WalletInfoTemplate.This.getItems();
-			
-			// console.log("\n   ========== Step 2 ========== [FILL 2]");
-			// console.log("   template_items: \n" + JSON.stringify(template_items));
-			// console.log("   template_items.length: " + template_items.length);
-						
-			for ( let i=0; i < template_items.length; i++ ) {
-				let current_line = template_items[i];		
-				
-                let current_tmpl_item = WalletInfoTemplate.This.getItem(i);
-
-				// console.log("   ------------------------");			
-				// console.log("   current_tmpl_item:\n" + JSON.stringify(current_tmpl_item));				
-				
-				current_key = WalletInfoTemplate.This.getItemKey( i );
-
-				if ( current_key != NULL_KEY ) {
-					current_value = WalletInfoTemplate.This.getItemValue( i );		
-
-					let end_of_line = '\n';
-					if ( (i + 1) ==  template_items.length ) {	
-						end_of_line = '';
-					}					
-					wallet_info_str_line = current_key.padEnd(24,' ') + current_value + end_of_line;
-						
-					// console.log("   wallet_info_str[ index: " + i + "  key: '" + current_key + "' ]: " + current_value);										
-					wallet_info_str += wallet_info_str_line;
-				}
-			}
-			
-			// console.log(">> ========== END of MainModel 'fill_wallet_info_str'");
-			
-			return wallet_info_str;
-		}; // fill_wallet_info_str()	
 
 		const is_not_null = ( in_str ) => {
 			if (  in_str != undefined  && in_str !=  'undefined'  &&  in_str != ""  &&  in_str != ''   ) {
@@ -338,7 +253,7 @@ class MainModel {
 			return false;
 		}; // is_not_null()		
 		
-		let wallet_info_str = fill_wallet_info_str( crypto_info );
+		let wallet_info_str = this.buildWalletInfoTxt( crypto_info );
 		// pretty_log( "MMdlSaveWinf> wallet_info_str", wallet_info_str );	
 		fs.writeFileSync( output_path + "/wallet_info.txt", wallet_info_str, error_handler );		
 	
@@ -410,6 +325,121 @@ class MainModel {
 		return output_file_path;
 	} // async saveWalletInfo()
 
+	// Bip85 enabled ('Initial Entropy' provided): key -> label in 'wallet_info.txt' / 'wallet_info.wits'
+	// NB: 'Entropy' is then the 'Bip85 Entropy' (derived from 'Initial Entropy')
+	isBip85WalletInfo( crypto_info ) {
+		return (    crypto_info[BIP85_INIT_ENTROPY] != undefined 
+		         && crypto_info[BIP85_INIT_ENTROPY] != '' );
+	} // isBip85WalletInfo()
+	
+	getBip85Labels( crypto_info ) {
+		if ( ! this.isBip85WalletInfo( crypto_info ) ) {
+			return {};
+		}
+		return { [BIP85_INIT_ENTROPY]: BIP85_INIT_ENTROPY_LABEL,
+		         [BIP85_INDEX]:        BIP85_INDEX_LABEL,
+		         [ENTROPY]:            BIP85_ENTROPY_LABEL };
+	} // getBip85Labels()
+	
+	// Content of 'wallet_info.txt' (one 'Key    Value' line per non empty WALLET_INFO_TEMPLATE item)
+	buildWalletInfoTxt( crypto_info ) {	
+		console.log("\n\n\n>> ==================== MainModel 'buildWalletInfoTxt' ====================");			
+	
+		let wallet_keys = Object.keys( crypto_info );
+		
+		let current_line  = {};
+		
+		let current_key   = "";
+		let current_keys  = [];
+		
+		let current_value = "";
+		let index         = -1;			
+		
+		WalletInfoTemplate.This.clear();
+		
+		// console.log("\n   ========== Step 0 ========== FILL 'wallet_info_str' with 'crypto_info'");
+		// console.log("crypto_info:\n" + JSON.stringify(crypto_info));
+		
+		let template_items = WalletInfoTemplate.This.getItems();
+		// console.log("\n   ========== Step 1 ========== [FILL 2]");
+		// console.log("   [Fill 2] template_items: \n" + JSON.stringify(template_items));
+		// console.log("   template_items.length: " + template_items.length);
+		
+		for ( let i=0; i < wallet_keys.length; i++ ) {	
+			// console.log("\n   ------------------------");
+			current_key = wallet_keys[i];
+			
+			index = WalletInfoTemplate.This.getIndexInTemplate( current_key );
+			// console.log("   [Fill 2] index of '" + current_key + "' key : " + index);
+			
+			current_value = crypto_info[current_key];
+			
+			// NB: numbers as strings, otherwise 0 (e.g. Bip85 Index) is removed by 'removeEmptyItems()' ( 0 == "" )
+			if ( typeof current_value === 'number' ) {
+				current_value = String( current_value );
+			}
+			
+			if ( index != -1 ) {	
+				if ( current_key == ENTROPY_SIZE ) {					
+					current_value += " bits";					
+				}
+				else if ( current_key == DERIVATION_PATH ) {					
+					if (! current_value.endsWith("'")) { 
+						current_value += "'"; // NB: switch to systematic Hardened adresses	
+					}				
+				}		
+				
+				// console.log(">> MainModel fill_wallet_info_str_2  index: " + index + "  current_value: '" + current_value + "'");
+				WalletInfoTemplate.This.setItemValue( index, current_value); 
+				
+				let current_tmpl_item = WalletInfoTemplate.This.getItem( index );
+				// console.log("   current_tmpl_item: " + JSON.stringify(current_tmpl_item));
+			}
+		}
+		
+		let wallet_info_str      = "";
+		let wallet_info_str_line = "";
+		
+		const bip85_labels = this.getBip85Labels( crypto_info );
+		
+		WalletInfoTemplate.This.removeEmptyItems();
+		
+		template_items = WalletInfoTemplate.This.getItems();
+		
+		// console.log("\n   ========== Step 2 ========== [FILL 2]");
+		// console.log("   template_items: \n" + JSON.stringify(template_items));
+		// console.log("   template_items.length: " + template_items.length);
+					
+		for ( let i=0; i < template_items.length; i++ ) {
+			let current_line = template_items[i];		
+			
+                let current_tmpl_item = WalletInfoTemplate.This.getItem(i);
+
+			// console.log("   ------------------------");			
+			// console.log("   current_tmpl_item:\n" + JSON.stringify(current_tmpl_item));				
+			
+			current_key = WalletInfoTemplate.This.getItemKey( i );
+
+			if ( current_key != NULL_KEY ) {
+				current_value = WalletInfoTemplate.This.getItemValue( i );		
+
+				let end_of_line = '\n';
+				if ( (i + 1) ==  template_items.length ) {	
+					end_of_line = '';
+				}					
+				let label = ( bip85_labels[current_key] != undefined ) ? bip85_labels[current_key] : current_key;
+				wallet_info_str_line = label.padEnd(24,' ') + current_value + end_of_line;
+					
+				// console.log("   wallet_info_str[ index: " + i + "  key: '" + current_key + "' ]: " + current_value);										
+				wallet_info_str += wallet_info_str_line;
+			}
+		}
+		
+		// console.log(">> ========== END of MainModel 'fill_wallet_info_str'");
+		
+		return wallet_info_str;
+	} // buildWalletInfoTxt()
+	
 	saveWalletInfoAsJson( output_path, crypto_info, timestamp ) {
 		pretty_func_header_log( "MainModel.saveWalletInfoAsJson" );		
 		
@@ -426,6 +456,18 @@ class MainModel {
 		json_data["timestamp"] = timestamp;
 		json_data[BLOCKCHAIN]  = crypto_info[BLOCKCHAIN];
 		json_data[COIN]        = COIN_ABBREVIATIONS[json_data[BLOCKCHAIN]];
+		
+		//---------- Bip85 (only if Bip85 mode was enabled when saving) ----------
+		// NB: 'Entropy' is then the 'Bip85 Entropy' derived from 'Initial Entropy'
+		//     'Entropy' and 'Entropy Size' keys are unchanged ('Entropy Size' is the Bip85 entropy size)
+		if ( this.isBip85WalletInfo( crypto_info ) ) {
+			let bip85_index = crypto_info[BIP85_INDEX];
+			if ( isString( bip85_index ) ) bip85_index = parseInt( bip85_index );
+			json_data[BIP85_INDEX_WITS_KEY]        = bip85_index;
+			
+			json_data[BIP85_INIT_ENTROPY_WITS_KEY] = crypto_info[BIP85_INIT_ENTROPY];
+		}
+		//---------- Bip85
 		
 		//---------- ENTROPY_SIZE ----------
 		pretty_log( "ENTROPY_SIZE", ENTROPY_SIZE );

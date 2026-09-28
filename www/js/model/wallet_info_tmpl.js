@@ -7,7 +7,9 @@ const {
 	NULL_KEY, NULL_KEYPAIR_VALUE,
 	WALLET_MODE, BLOCKCHAIN, 
 	MNEMONICS, SHORTENED_MNEMONICS,
-	ENTROPY, ENTROPY_SIZE, WORD_INDEXES,
+	ENTROPY, ENTROPY_SIZE, 
+	BIP85_INIT_ENTROPY, BIP85_INDEX,
+	WORD_INDEXES,
 	BIP32_PASSPHRASE, BIP38_PASSPHRASE,
 	DERIVATION_PATH, WIF,
 	LANG
@@ -43,6 +45,10 @@ const WALLET_INFO_TEMPLATE = [
 	{ [WALLET_MODE]:         "" },	
 	{ [BLOCKCHAIN]:          "" },
 	{ [COIN]:                "" },
+	
+	// Bip85 (only if enabled), NB: no 'Bip85 Entropy Size' (same value as 'Entropy Size')
+	{ [BIP85_INIT_ENTROPY]:  "" },
+	{ [BIP85_INDEX]:         "" },
 	
 	{ [ENTROPY]:             "" },
 	{ [ENTROPY_SIZE]:        "" },
@@ -97,7 +103,9 @@ class WalletInfoTemplate {
 		this.items = [];
 		for ( let i=0; i < WALLET_INFO_TEMPLATE.length; i++ ) {
 			let current_line = WALLET_INFO_TEMPLATE[i];
-			this.items.push( current_line );
+			// NB: push a COPY, otherwise 'setItemValue()' mutates WALLET_INFO_TEMPLATE and values
+			//     of a previous save (e.g. Bip85 'Initial Entropy', Private Key...) leak into the next one
+			this.items.push( { ...current_line } );
 		}
 	} // clear()
 	

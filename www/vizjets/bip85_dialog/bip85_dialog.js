@@ -414,7 +414,8 @@ class Bip85Dialog {
 		let log_msg = ">> " + _CYAN_ + "Bip85Dialog.onApply" + _END_;	
         window.ipcMain.logToMain(log_msg);
 		
-		let entropy            = HtmlUtils.GetElementValue( ENTROPY_ID );
+		// NB: 'Initial Entropy' (not ENTROPY_ID which holds the 'Bip85 Entropy' when Bip85 is enabled)
+		let entropy            = HtmlUtils.GetElementValue( BIP85_INIT_ENTROPY_ID );
 		
 		let bip85_index        = parseInt(HtmlUtils.GetElementValue( BIP85_DIALOG_INDEX_ID ));
 		let bip85_entropy_size = parseInt(HtmlUtils.GetElementValue( BIP85_DIALOG_ENTROPY_SIZE_ID ));
