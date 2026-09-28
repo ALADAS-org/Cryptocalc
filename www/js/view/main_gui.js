@@ -2771,10 +2771,14 @@ class MainGUI {
 		this.expected_entropy_bytes = entropy_size / 8;
 		let expected_entropy_digits = this.expected_entropy_bytes * 2;
 		
-		// NB: 'WalletInfo.setAttribute()' also updates ENTROPY_SIZE_SELECT_ID and WORD_COUNT_SELECT_ID
+		// NB: 'WalletInfo.setAttribute()' also updates WORD_COUNT_SELECT_ID
 		this.wallet_info.setAttribute( ENTROPY_SIZE,            entropy_size );
 		this.wallet_info.setAttribute( WORD_COUNT,              getWordCount( entropy_size ) );
 		this.wallet_info.setAttribute( EXPECTED_ENTROPY_DIGITS, expected_entropy_digits );
+
+		// NB: explicit update, WalletInfo.GUI_NODE_IDs[ENTROPY_SIZE] is "entropy_bits_select_id"
+		//     which doesn't exist in index.html (select id is ENTROPY_SIZE_SELECT_ID)
+		HtmlUtils.SetElementValue( ENTROPY_SIZE_SELECT_ID, entropy_size );
 		
 		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
 		if ( entropy_elt != undefined ) {
