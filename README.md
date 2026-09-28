@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.30
+## CryptoCalc 0.5.31
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -184,7 +184,11 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.30`: This version
+    - `0.5.31`: This version
+		- Implementation of `Bip85`:    
+		   `Bip85`: a Sequential deterministic wallet generation, only available on demand (Premium version), see 5.1.6
+		- Update of Unit Tests (running with [Jest](https://jestjs.io) test framework)
+    - `0.5.30`
 		 - Enhancement/Fix of `Simple Wallet`:
 		   - Allow Entropy sizes in the 128..256 bits range
 		   - Update of Unit Tests (running with [Jest](https://jestjs.io) test framework)

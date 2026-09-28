@@ -94,6 +94,7 @@ const BIP38_PASSPHRASE_EYE_BTN_ID         = "bip38_passphrase_eye_btn_id";
 const BIP38_PASSPHRASE_EYE_BTN_IMG_ID     = "bip38_passphrase_eye_btn_img_id";
 // -------------------- BIP38
 
+
 // -------------------- BIP85 --------------------
 const BIP85_ROW_2ND_COLUMN_ID             = "bip85_row_2nd_column_id";
 
