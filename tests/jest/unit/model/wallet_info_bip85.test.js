@@ -58,7 +58,8 @@ const { MainModel }          = require('@www/js/model/main_model.js');
 const { WalletInfoTemplate } = require('@www/js/model/wallet_info_tmpl.js');
 
 const {
-  WALLET_MODE, BLOCKCHAIN, MNEMONICS, ENTROPY, ENTROPY_SIZE,
+  WALLET_MODE, BLOCKCHAIN, MNEMONICS, SHORTENED_MNEMONICS, ENTROPY, ENTROPY_SIZE,
+  MNEMONICS_LABEL, SHORTENED_MNEMONICS_LABEL, BIP85_MNEMONICS_LABEL,
   BIP85_INIT_ENTROPY, BIP85_INDEX, BIP85_ENTROPY_SIZE,
   BIP85_INIT_ENTROPY_LABEL, BIP85_INDEX_LABEL, BIP85_ENTROPY_LABEL,
   BIP85_INIT_ENTROPY_WITS_KEY, BIP85_INDEX_WITS_KEY,
@@ -75,7 +76,14 @@ const { COIN, BLOCKCHAIN_EXPLORER, BITCOIN } = require('@crypto/const_blockchain
 
 const MOCK_OUTPUT_PATH = '/mock/output';
 const MOCK_TIMESTAMP   = '2026_09_27_16h00m00s-0';
-const TXT_KEY_WIDTH    = 24;
+const TXT_KEY_WIDTH       = 24; // default label column width
+const TXT_MIN_LABEL_GAP   = 2;  // at least 2 spaces between label and value
+
+// Expected mnemonics labels in wallet_info.txt
+const LABEL_SEEDPHRASE             = 'Seedphrase';
+const LABEL_SHORTENED_SEEDPHRASE   = 'Shortened Seedphrase';
+const LABEL_BIP85_SEEDPHRASE       = 'Bip85 Derived Seedphrase';
+const SHORTENED_MNEMONICS_VALUE    = 'MachChunAddPlaySeaScor';
 
 // Expected labels (Bip85 enabled)
 const LABEL_INITIAL_ENTROPY = 'Initial Entropy';
@@ -133,16 +141,23 @@ const BIP85_WITS_KEYS = [ WITS_KEY_INITIAL_ENTROPY, WITS_KEY_BIP85_INDEX ];
 // HELPERS
 // ============================================================================
 
+// Label column width = position of the value (same for all lines)
+const txtLabelWidth = (txt) => {
+  const match = /\s{2,}/.exec(txt.split('\n')[0]);
+  return match.index + match[0].length;
+};
+
 // wallet_info.txt as { label: value }
 const parseTxt = (txt) => {
+  const width  = txtLabelWidth(txt);
   const result = {};
   txt.split('\n').forEach((line) => {
-    result[line.substring(0, TXT_KEY_WIDTH).trim()] = line.substring(TXT_KEY_WIDTH);
+    result[line.substring(0, width).trim()] = line.substring(width);
   });
   return result;
 };
 
-const txtLabels = (txt) => txt.split('\n').map((line) => line.substring(0, TXT_KEY_WIDTH).trim());
+const txtLabels = (txt) => Object.keys(parseTxt(txt));
 
 // Returns the JSON object written in 'wallet_info.wits'
 const saveAsJson = (crypto_info) => {
@@ -158,6 +173,12 @@ const saveAsJson = (crypto_info) => {
 // ============================================================================
 
 describe('Bip85 label constants', () => {
+  test('mnemonics labels', () => {
+    expect(MNEMONICS_LABEL).toBe(LABEL_SEEDPHRASE);
+    expect(SHORTENED_MNEMONICS_LABEL).toBe(LABEL_SHORTENED_SEEDPHRASE);
+    expect(BIP85_MNEMONICS_LABEL).toBe(LABEL_BIP85_SEEDPHRASE);
+  });
+
   test('values', () => {
     expect(BIP85_INIT_ENTROPY_LABEL).toBe(LABEL_INITIAL_ENTROPY);
     expect(BIP85_INDEX_LABEL).toBe(LABEL_BIP85_INDEX);
@@ -235,15 +256,45 @@ describe('MainModel.buildWalletInfoTxt() - Bip85 enabled', () => {
     expect(lines[DERIVATION_PATH]).toBe("m/44'/0'/0'/0/0'");
   });
 
-  test('labels are padded to 24 characters, no trailing newline', () => {
-    const txt  = MainModel.This.buildWalletInfoTxt(CRYPTO_INFO_SIMPLE_BIP85);
+  test("'Bip85 Derived Seedphrase' replaces 'Secret phrase'", () => {
+    const lines = parseTxt(MainModel.This.buildWalletInfoTxt(CRYPTO_INFO_SIMPLE_BIP85));
+    expect(lines[LABEL_BIP85_SEEDPHRASE]).toBe(CRYPTO_INFO_SIMPLE[MNEMONICS]);
+    expect(lines).not.toHaveProperty(LABEL_SEEDPHRASE);
+    expect(lines).not.toHaveProperty(MNEMONICS);
+  });
+
+  test("'Shortened Seedphrase' label", () => {
+    const lines = parseTxt(MainModel.This.buildWalletInfoTxt({ ...CRYPTO_INFO_SIMPLE_BIP85, [SHORTENED_MNEMONICS]: SHORTENED_MNEMONICS_VALUE }));
+    expect(lines[LABEL_SHORTENED_SEEDPHRASE]).toBe(SHORTENED_MNEMONICS_VALUE);
+  });
+
+  test('label column widened: all values aligned, at least 2 spaces after the longest label', () => {
+    const txt   = MainModel.This.buildWalletInfoTxt(CRYPTO_INFO_SIMPLE_BIP85);
+    const width = LABEL_BIP85_SEEDPHRASE.length + TXT_MIN_LABEL_GAP;
+    txt.split('\n').forEach((line) => {
+      expect(line.charAt(width - 1)).toBe(' ');
+      expect(line.charAt(width)).not.toBe(' ');
+    });
     const line = txt.split('\n').find((l) => l.startsWith(LABEL_INITIAL_ENTROPY));
-    expect(line).toBe(LABEL_INITIAL_ENTROPY.padEnd(TXT_KEY_WIDTH, ' ') + INITIAL_ENTROPY);
+    expect(line).toBe(LABEL_INITIAL_ENTROPY.padEnd(width, ' ') + INITIAL_ENTROPY);
     expect(txt.endsWith('\n')).toBe(false);
   });
 });
 
 describe('MainModel.buildWalletInfoTxt() - Bip85 disabled', () => {
+  test("'Seedphrase' replaces 'Secret phrase', 'Shortened Seedphrase' replaces 'Shortened Secret phrase'", () => {
+    const lines = parseTxt(MainModel.This.buildWalletInfoTxt({ ...CRYPTO_INFO_SIMPLE, [SHORTENED_MNEMONICS]: SHORTENED_MNEMONICS_VALUE }));
+    expect(lines[LABEL_SEEDPHRASE]).toBe(CRYPTO_INFO_SIMPLE[MNEMONICS]);
+    expect(lines[LABEL_SHORTENED_SEEDPHRASE]).toBe(SHORTENED_MNEMONICS_VALUE);
+    [ MNEMONICS, SHORTENED_MNEMONICS, LABEL_BIP85_SEEDPHRASE ].forEach((label) => expect(lines).not.toHaveProperty(label));
+  });
+
+  test('label column width stays at 24', () => {
+    const txt = MainModel.This.buildWalletInfoTxt({ ...CRYPTO_INFO_SIMPLE, [SHORTENED_MNEMONICS]: SHORTENED_MNEMONICS_VALUE });
+    const line = txt.split('\n').find((l) => l.startsWith(LABEL_SEEDPHRASE));
+    expect(line).toBe(LABEL_SEEDPHRASE.padEnd(TXT_KEY_WIDTH, ' ') + CRYPTO_INFO_SIMPLE[MNEMONICS]);
+  });
+
   test("'Entropy' label unchanged, no Bip85 line", () => {
     const labels = txtLabels(MainModel.This.buildWalletInfoTxt(CRYPTO_INFO_SIMPLE));
     expect(labels).toContain(ENTROPY);
@@ -290,6 +341,12 @@ describe('MainModel.saveWalletInfoAsJson() - Bip85', () => {
   test('Bip85 enabled: no txt label, no raw Bip85 key, no Bip85 Entropy Size', () => {
     const json = saveAsJson({ ...CRYPTO_INFO_SIMPLE_BIP85, [BIP85_ENTROPY_SIZE]: 256 });
     [ ...BIP85_KEYS, LABEL_BIP85_INDEX, LABEL_BIP85_ENTROPY ].forEach((key) => expect(json).not.toHaveProperty(key));
+  });
+
+  test("'.wits' mnemonics key unchanged ('Secret phrase'), no txt label", () => {
+    const json = saveAsJson(CRYPTO_INFO_SIMPLE_BIP85);
+    expect(json[MNEMONICS]).toBe(CRYPTO_INFO_SIMPLE[MNEMONICS]);
+    [ LABEL_SEEDPHRASE, LABEL_BIP85_SEEDPHRASE ].forEach((label) => expect(json).not.toHaveProperty(label));
   });
 
   test("'Bip85 Index' given as a string is written as an integer", () => {
