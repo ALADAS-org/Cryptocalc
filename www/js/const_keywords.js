@@ -73,6 +73,7 @@ const BIP85_ENTROPY_SIZE          = 'bip85_entropy_size';
 const BIP85_INIT_ENTROPY_LABEL    = 'Initial Entropy';
 const BIP85_INDEX_LABEL           = 'Bip 85 Index';
 const BIP85_ENTROPY_LABEL         = 'Bip 85 Entropy';  // replaces 'Entropy' label
+const BIP85_MNEMONICS_LABEL       = 'Bip85 Derived Seedphrase'; // replaces MNEMONICS_LABEL
 
 // Keys in 'wallet_info.wits' when Bip85 is enabled ('Entropy' and 'Entropy Size' unchanged)
 const BIP85_INIT_ENTROPY_WITS_KEY = 'Initial Entropy';
@@ -112,6 +113,10 @@ const ADDRESS_INDEX_MAX           = BIP32_FIELD_MAX_VALUE; // 9999; // Bip85: 21
 
 const MNEMONICS                   = 'Secret phrase';
 const SHORTENED_MNEMONICS         = 'Shortened Secret phrase';
+
+// Labels in 'wallet_info.txt' (keys unchanged in 'wallet_info.wits')
+const MNEMONICS_LABEL             = 'Seedphrase';
+const SHORTENED_MNEMONICS_LABEL   = 'Shortened Seedphrase';
 
 const WORD_INDEXES                = 'Word indexes'; //'word_indexes';
 
@@ -200,6 +205,10 @@ if ( typeof exports === 'object' ) {
 	exports.BIP85_INIT_ENTROPY_LABEL = BIP85_INIT_ENTROPY_LABEL
 	exports.BIP85_INDEX_LABEL        = BIP85_INDEX_LABEL
 	exports.BIP85_ENTROPY_LABEL      = BIP85_ENTROPY_LABEL
+	exports.BIP85_MNEMONICS_LABEL    = BIP85_MNEMONICS_LABEL
+	
+	exports.MNEMONICS_LABEL           = MNEMONICS_LABEL
+	exports.SHORTENED_MNEMONICS_LABEL = SHORTENED_MNEMONICS_LABEL
 	
 	exports.BIP85_INIT_ENTROPY_WITS_KEY = BIP85_INIT_ENTROPY_WITS_KEY
 	exports.BIP85_INDEX_WITS_KEY        = BIP85_INDEX_WITS_KEY

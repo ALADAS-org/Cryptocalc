@@ -38,7 +38,8 @@ const { VERSION,
 		BIP85_INIT_ENTROPY, BIP85_INDEX,
 		BIP85_INIT_ENTROPY_LABEL, BIP85_INDEX_LABEL, BIP85_ENTROPY_LABEL,
 		BIP85_INIT_ENTROPY_WITS_KEY, BIP85_INDEX_WITS_KEY,
-        MNEMONICS, WIF, WORD_INDEXES,
+        MNEMONICS, SHORTENED_MNEMONICS, WIF, WORD_INDEXES,
+		MNEMONICS_LABEL, SHORTENED_MNEMONICS_LABEL, BIP85_MNEMONICS_LABEL,
 		BIP32_PASSPHRASE, BIP38_PASSPHRASE, DERIVATION_PATH, ACCOUNT, ADDRESS_INDEX, 
 		HD_WALLET_TYPE, SWORD_WALLET_TYPE, 
 	  }                = require('../const_keywords.js');
@@ -61,6 +62,8 @@ const { isString }        = require('../util/values/string_utils.js');
 const { FileUtils }       = require('../util/system/file_utils.js');	
 const { isHexString, 
 	  }                   = require('../crypto/hex_utils.js');
+	  
+const WALLET_INFO_TXT_LABEL_WIDTH = 24;
 	  
 const error_handler = (err) => { 
 	if ( err ) return Konsole.log( "error: " + err );
@@ -332,14 +335,18 @@ class MainModel {
 		         && crypto_info[BIP85_INIT_ENTROPY] != '' );
 	} // isBip85WalletInfo()
 	
-	getBip85Labels( crypto_info ) {
-		if ( ! this.isBip85WalletInfo( crypto_info ) ) {
-			return {};
+	// key -> label in 'wallet_info.txt' (keys without label are displayed as is)
+	getWalletInfoTxtLabels( crypto_info ) {
+		let labels = { [MNEMONICS]:           MNEMONICS_LABEL,
+		               [SHORTENED_MNEMONICS]: SHORTENED_MNEMONICS_LABEL };
+		if ( this.isBip85WalletInfo( crypto_info ) ) {
+			labels[BIP85_INIT_ENTROPY] = BIP85_INIT_ENTROPY_LABEL;
+			labels[BIP85_INDEX]        = BIP85_INDEX_LABEL;
+			labels[ENTROPY]            = BIP85_ENTROPY_LABEL;
+			labels[MNEMONICS]          = BIP85_MNEMONICS_LABEL;
 		}
-		return { [BIP85_INIT_ENTROPY]: BIP85_INIT_ENTROPY_LABEL,
-		         [BIP85_INDEX]:        BIP85_INDEX_LABEL,
-		         [ENTROPY]:            BIP85_ENTROPY_LABEL };
-	} // getBip85Labels()
+		return labels;
+	} // getWalletInfoTxtLabels()
 	
 	// Content of 'wallet_info.txt' (one 'Key    Value' line per non empty WALLET_INFO_TEMPLATE item)
 	buildWalletInfoTxt( crypto_info ) {	
@@ -400,11 +407,21 @@ class MainModel {
 		let wallet_info_str      = "";
 		let wallet_info_str_line = "";
 		
-		const bip85_labels = this.getBip85Labels( crypto_info );
+		const txt_labels = this.getWalletInfoTxtLabels( crypto_info );
+		const getLabel   = ( key ) => ( txt_labels[key] != undefined ) ? txt_labels[key] : key;
 		
 		WalletInfoTemplate.This.removeEmptyItems();
 		
 		template_items = WalletInfoTemplate.This.getItems();
+		
+		// Label column width: 24, or wider if a label is too long (at least 2 spaces before the value)
+		let label_width = WALLET_INFO_TXT_LABEL_WIDTH;
+		for ( let i=0; i < template_items.length; i++ ) {
+			let key = WalletInfoTemplate.This.getItemKey( i );
+			if ( key != NULL_KEY ) {
+				label_width = Math.max( label_width, getLabel( key ).length + 2 );
+			}
+		}
 		
 		// console.log("\n   ========== Step 2 ========== [FILL 2]");
 		// console.log("   template_items: \n" + JSON.stringify(template_items));
@@ -427,8 +444,7 @@ class MainModel {
 				if ( (i + 1) ==  template_items.length ) {	
 					end_of_line = '';
 				}					
-				let label = ( bip85_labels[current_key] != undefined ) ? bip85_labels[current_key] : current_key;
-				wallet_info_str_line = label.padEnd(24,' ') + current_value + end_of_line;
+				wallet_info_str_line = getLabel( current_key ).padEnd( label_width, ' ' ) + current_value + end_of_line;
 					
 				// console.log("   wallet_info_str[ index: " + i + "  key: '" + current_key + "' ]: " + current_value);										
 				wallet_info_str += wallet_info_str_line;
