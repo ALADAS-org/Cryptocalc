@@ -59,9 +59,17 @@
 // *        onGenerateNewEntropy 
 
 //          ----- Bip85 -----
-// *        onApplyBip85Params
+// *        getBip85Params
+// * async  updateBip85Parameters( initial_entropy )
+// *        updateBip85Labels
+// * async  setBip85Enabled( enable )
+// *        alignWalletEntropySize( entropy_size )
+// * async  updateBip85EntropySize( entropy_size )
+// * async  disableBip85IfEnabled
+// * async  restoreBip85State( json_data )
+// * async  onApplyBip85Params
 // *        onShowHideBip85
-// *        onEnableDisableBip85
+// * async  onEnableDisableBip85
 //
 //          ----- Bip39 -----
 // *        Bip39ApplyPassword
@@ -207,9 +215,10 @@ class MainGUI {
 		this.previous_account_value       = "0";
 		this.previous_address_index_value = "0";
 		
-		this.bip85_visible = false;
-		this.bip85_enable  = false;
-		
+		this.bip85_visible         = false;
+		this.bip85_enable          = false;
+		this.bip85_derived_entropy = undefined; // last 'Bip85 Entropy' pushed to ENTROPY_ID (Bip85 mode only)
+
 		trace2Main( pretty_func_header_format( "MainGUI.constructor" ) );
 		
 		window.ipcMain.receive( "fromMain", async (data) => { await this.onGUIEvent(data); } ); 
@@ -500,6 +509,10 @@ class MainGUI {
 		let data = { coin, wallet_mode };
 		window.ipcMain.SetWindowTitle( data );
 		// ---------- Update Window Title
+		
+		// ---------- Bip85 ----------
+		await this.restoreBip85State( json_data );
+		// ---------- Bip85
 		
 		this.wallet_info.setAttribute( CMD, CMD_NONE );
 		await this.updateFieldsVisibility();
@@ -1557,12 +1570,31 @@ class MainGUI {
 		
 		// this.cb_enabled = false;
 		
+		// ---------- Bip85 ----------
+		// Bip85 'enabled':  'entropy_hex' is a NEW 'Initial Entropy' which is derived and replaced
+		//                   by the 'Bip85 Entropy', EXCEPT if 'entropy_hex' is already the current
+		//                   'Bip85 Entropy' (i.e. refresh: Account, Address Index, Bip39 passphrase...)
+		// Bip85 'disabled': 'entropy_hex' is the 'Initial Entropy' and derivation is only a preview
+		if ( this.bip85_enable ) {
+			if ( entropy_hex != this.bip85_derived_entropy ) {
+				let bip85_entropy = await this.updateBip85Parameters( entropy_hex );
+				if ( bip85_entropy != undefined ) {
+					this.bip85_derived_entropy = bip85_entropy;
+					entropy_hex                = bip85_entropy;
+					// Wallet 'Entropy Size' aligned on Bip85 'Entropy Size'
+					this.alignWalletEntropySize( entropy_hex.length * 4 );
+				}
+			}
+			// else: refresh, 'entropy_hex' is already the 'Bip85 Entropy'
+		}
+		else {
+			await this.updateBip85Parameters( entropy_hex );
+		}
+		// ---------- Bip85
+
 		this.Entropy = entropy_hex;
 		// this.wallet_info.setAttribute( ENTROPY, entropy_hex );
-		
-		// Bip8 InitialEntropy
-		await this.updateBip85Parameters( entropy_hex );
-		
+
 		this.setEntropyValueValidity( true ); 
 		
 		let blockchain = this.wallet_info.getAttribute(BLOCKCHAIN);
@@ -2537,6 +2569,10 @@ class MainGUI {
 			let entropy_size = parseInt( elt.value );
 			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateEntropySize", entropy_size ) );
 			trace2Main( pretty_format( "entropy_size", entropy_size ) );
+			if ( this.bip85_enable ) {
+				await this.updateBip85EntropySize( entropy_size );
+				return;
+			}
 			await this.updateEntropySize( entropy_size );
 	    }	
 	} // onGuiUpdateEntropySize()	
@@ -2548,6 +2584,10 @@ class MainGUI {
 			let word_count = parseInt( elt.value );
 			trace2Main( pretty_func_header_format( "MainGUI.onGuiUpdateWordCount", "word_count: " + word_count ) );
 			let entropy_size = ( word_count * 11 ) - getChecksumBitCount( word_count );
+			if ( this.bip85_enable ) {
+				await this.updateBip85EntropySize( entropy_size );
+				return;
+			}
 			await this.updateEntropySize( entropy_size );
 	    }	
 	} // async onGuiUpdateWordCount()
@@ -2582,37 +2622,61 @@ class MainGUI {
         window.ipcMain.ToggleDebugPanel();		
 	} // onToggleDebug()
 	
-	async updateBip85Parameters( entropy_arg ) {
-		HtmlUtils.SetElementValue(BIP85_INIT_ENTROPY_ID, entropy_arg);
-		
+	// Returns { bip85_index, bip85_entropy_size } as numbers (read from Bip85 GUI fields)
+	getBip85Params() {
 		let bip85_index = HtmlUtils.GetElementValue( BIP85_INDEX_ID );
-		if ( bip85_index == '' ) {
+		if ( bip85_index == undefined || bip85_index === '' ) {
 			bip85_index = 0;
 		}
 		else if ( typeof bip85_index == 'string' ) {
-			bip85_index = parseInt(bip85_index);
+			bip85_index = parseInt( bip85_index );
 		}
-		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters bip85_index: " + bip85_index ) );
 		
 		let bip85_entropy_size = HtmlUtils.GetElementValue( BIP85_ENTROPY_SIZE_ID );
 		if ( typeof bip85_entropy_size == 'string' ) {
-			bip85_entropy_size = parseInt(bip85_entropy_size);
+			bip85_entropy_size = parseInt( bip85_entropy_size );
 		}
+		
+		return { bip85_index, bip85_entropy_size };
+	} // getBip85Params()
+	
+	// Sets 'Initial Entropy', derives it with current Bip85 parameters (Index, Entropy Size)
+	// and updates 'Bip85 Entropy' / 'Bip85 Seedphrase' fields
+	// Returns the derived 'Bip85 Entropy' (or 'undefined' if derivation failed)
+	async updateBip85Parameters( initial_entropy ) {
+		this.InitialEntropy = initial_entropy;
+		
+		const { bip85_index, bip85_entropy_size } = this.getBip85Params();
+		this.wallet_info.setAttribute( BIP85_INDEX,        bip85_index );
+		this.wallet_info.setAttribute( BIP85_ENTROPY_SIZE, bip85_entropy_size );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters bip85_index: " + bip85_index ) );
 		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters bip85_entropy_size: " + bip85_entropy_size + " typeof:" + typeof bip85_entropy_size) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters init_entropy : " + initial_entropy) );
 		
-		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters init_entropy : " + entropy_arg) );
-		
-		let entropy = entropy_arg;
+		let entropy = initial_entropy;
 		const data = { entropy, bip85_index, bip85_entropy_size };
 		
-        let bip85_infos = await window.ipcMain.Bip85DeriveBip39( data );
+		let bip85_infos = undefined;
+		try {
+			bip85_infos = await window.ipcMain.Bip85DeriveBip39( data );
+		}
+		catch ( error ) {
+			trace2Main( "   " + _RED_ + "**ERROR** MainGUI.updateBip85Parameters: " + error + _END_ );
+			return undefined;
+		}
 		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters " + JSON.stringify(bip85_infos)) );
 		
+		if ( bip85_infos == undefined ) {
+			return undefined;
+		}
+		
 		let bip85_entropy = bip85_infos['bip85_entropy'];
-		HtmlUtils.SetElementValue(BIP85_DERIVED_ENTROPY_ID, bip85_entropy);
+		HtmlUtils.SetElementValue( BIP85_DERIVED_ENTROPY_ID, bip85_entropy );
 		
 		let bip85_seedphrase = bip85_infos['bip85_mnemonics'];
-		HtmlUtils.SetElementValue(BIP85_DERIVED_SEEDPHRASE_ID, bip85_seedphrase);
+		HtmlUtils.SetElementValue( BIP85_DERIVED_SEEDPHRASE_ID, bip85_seedphrase );
+		
+		return bip85_entropy;
 	} // updateBip85Parameters()
 	
 	showBip85EnableWarningDialog( titre, message  ) {
@@ -2643,6 +2707,100 @@ class MainGUI {
 	  });
 	} // showBip85EnableWarningDialog()
 	
+	// Updates Bip85 related labels ([Generate] button, 'Entropy' and 'Seedphrase' labels, 'Mode' field)
+	updateBip85Labels() {
+		if ( this.bip85_enable ) {
+			document.getElementById(GENERATE_BTN_ID).value          = "Bip85 Generate";
+			document.getElementById(ENTROPY_LABEL_ID).innerText     = "Bip85 Entropy";
+			document.getElementById(SEEDPHRASE_LABEL_ID).innerText  = "Bip85 Seedphrase";
+			HtmlUtils.SetElementValue( BIP85_MODE_ID, "enabled" );
+		}
+		else {
+			document.getElementById(GENERATE_BTN_ID).value          = "Generate";
+			document.getElementById(ENTROPY_LABEL_ID).innerText     = "Entropy";
+			document.getElementById(SEEDPHRASE_LABEL_ID).innerText  = "Seedphrase";
+			HtmlUtils.SetElementValue( BIP85_MODE_ID, "disabled" );
+		}
+	} // updateBip85Labels()
+	
+	// Switches Bip85 mode and recomputes the wallet:
+	// * enable:  current 'Entropy' becomes 'Initial Entropy' and is replaced by the derived 'Bip85 Entropy'
+	// * disable: 'Initial Entropy' is restored as the current 'Entropy'
+	async setBip85Enabled( enable ) {
+		trace2Main( pretty_func_header_format( "MainGUI.setBip85Enabled", "" + enable ) );
+		
+		if ( enable == this.bip85_enable ) {
+			this.updateBip85Labels();
+			return;
+		}
+		
+		let checkbox_elt = document.getElementById( BIP85_ENABLE_DISABLE_BTN_ID );
+		if ( checkbox_elt != undefined ) {
+			checkbox_elt.checked = enable;
+		}
+		
+		// NB: 'bip85_derived_entropy' reset BEFORE 'updateEntropy()' to force a new derivation
+		let entropy = ( enable ) ? this.Entropy : this.InitialEntropy;
+		
+		this.bip85_enable          = enable;
+		this.bip85_derived_entropy = undefined;
+		this.updateBip85Labels();
+		
+		if ( entropy == undefined || entropy == '' ) {
+			return;
+		}
+		
+		if ( ! enable ) {
+			// Wallet 'Entropy Size' aligned on restored 'Initial Entropy'
+			this.alignWalletEntropySize( entropy.length * 4 );
+		}
+		
+		let cb_enabled_saved = this.cb_enabled;
+		this.cb_enabled = false;
+		await this.updateEntropy( entropy );
+		this.cb_enabled = cb_enabled_saved;
+	} // setBip85Enabled()
+	
+	// Aligns wallet 'Entropy Size' (Word Count, expected digits, GUI selectors) WITHOUT generating a new Entropy
+	// NB: unlike 'updateEntropySize()', 'this.Options[ENTROPY_SIZE]' is NOT modified (Bip85 is a temporary mode)
+	alignWalletEntropySize( entropy_size ) {
+		if ( isString( entropy_size ) ) {
+			entropy_size = parseInt( entropy_size );
+		}
+		if ( ! valueIsNumber( entropy_size ) || entropy_size < 128 || entropy_size > 256 || entropy_size % 32 != 0 ) {
+			trace2Main( "   " + _RED_ + "**ERROR** MainGUI.alignWalletEntropySize invalid entropy_size: " + entropy_size + _END_ );
+			return;
+		}
+		trace2Main( pretty_func_header_format( "MainGUI.alignWalletEntropySize", entropy_size + " bits" ) );
+		
+		this.expected_entropy_bytes = entropy_size / 8;
+		let expected_entropy_digits = this.expected_entropy_bytes * 2;
+		
+		// NB: 'WalletInfo.setAttribute()' also updates WORD_COUNT_SELECT_ID
+		this.wallet_info.setAttribute( ENTROPY_SIZE,            entropy_size );
+		this.wallet_info.setAttribute( WORD_COUNT,              getWordCount( entropy_size ) );
+		this.wallet_info.setAttribute( EXPECTED_ENTROPY_DIGITS, expected_entropy_digits );
+
+		// NB: explicit update, WalletInfo.GUI_NODE_IDs[ENTROPY_SIZE] is "entropy_bits_select_id"
+		//     which doesn't exist in index.html (select id is ENTROPY_SIZE_SELECT_ID)
+		HtmlUtils.SetElementValue( ENTROPY_SIZE_SELECT_ID, entropy_size );
+		
+		let entropy_elt = HtmlUtils.GetElement( ENTROPY_ID );
+		if ( entropy_elt != undefined ) {
+			entropy_elt.setAttribute( "minlength", expected_entropy_digits );
+			entropy_elt.setAttribute( "maxlength", expected_entropy_digits );
+		}
+	} // alignWalletEntropySize()
+	
+	// Bip85 mode: a change of wallet 'Entropy Size' (or 'Word Count') is a change of Bip85 'Entropy Size'
+	// => 'Initial Entropy' unchanged, 'Bip85 Entropy' recomputed (see 5.1.6 in README.md)
+	async updateBip85EntropySize( entropy_size ) {
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85EntropySize", entropy_size + " bits" ) );
+		const { bip85_index } = this.getBip85Params();
+		const bip85_entropy_size = entropy_size;
+		await this.onApplyBip85Params( { bip85_index, bip85_entropy_size } );
+	} // updateBip85EntropySize()
+	
 	async onEnableDisableBip85( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onEnableDisableBip85" ) );
 		
@@ -2654,63 +2812,81 @@ class MainGUI {
 				'This is an advanced feature and should only be used if you understand what it does (see 5.1.6 in README.md)'
 			);
 
-			if (ok) {
-				// OK cliqué
-				// console.log("OK cliqué");
-			} else {
-				// Cancel cliqué (ou toast fermé)
-				// console.log("Cancel cliqué");
+			if ( ! ok ) {
+				// Cancel cliqué (ou toast fermé): nothing changes
 				document.getElementById(BIP85_ENABLE_DISABLE_BTN_ID).checked = false;
-				HtmlUtils.SetElementValue( BIP85_MODE_ID, "disabled" );
 				this.bip85_enable = false;
+				this.updateBip85Labels();
 				return;
 			}
 		}
 		
-		this.bip85_enable = bip85_enable_value;
-		
-		// console.log("bip85_enable : " + this.bip85_enable); 
-		
-		// Change [Generate] button label
-		if ( this.bip85_enable ) {
-			document.getElementById(GENERATE_BTN_ID).value  = "Bip85 Generate";
-			HtmlUtils.SetElementValue( BIP85_MODE_ID, "enabled" );
-		}
-		else {
-			document.getElementById(GENERATE_BTN_ID).value  = "Generate";
-			HtmlUtils.SetElementValue( BIP85_MODE_ID, "disabled" );
-		}
-		
-		// Change "Entropy Field" label		
-		if ( this.bip85_enable ) {
-			document.getElementById(ENTROPY_LABEL_ID).innerText = "Bip85 Entropy";
-		}
-		else {
-			document.getElementById(ENTROPY_LABEL_ID).innerText = "Entropy";
-		}
-		
-		// Show/Hide Edit button	
-        // let edit_btn_elt = HtmlUtils.GetElement( BIP85_EDIT_BTN_ID ); 		
-		// if ( this.bip85_enable ) {
-		// 	edit_btn_elt.style.display = "flex";
-		// }
-		// else {
-		// 	edit_btn_elt.style.display = "none";
-		// }
-		
-		// Change "Seedphrase Field" label		
-		if ( this.bip85_enable ) {
-			document.getElementById(SEEDPHRASE_LABEL_ID).innerText  = "Bip85 Seedphrase";
-		}
-		else {
-			document.getElementById(SEEDPHRASE_LABEL_ID).innerText  = "Seedphrase";
-		}
+		await this.setBip85Enabled( bip85_enable_value ? true : false );
 	} // onEnableDisableBip85()
+	
+	// Open Wallet: restores Bip85 mode from '.wits' ('Bip85 Index' and 'Initial Entropy' keys)
+	// WITHOUT any derivation: 'Entropy' of the '.wits' is already the 'Bip85 Entropy'
+	// NB: Bip85 mode requires Premium, otherwise the wallet is opened as a non Bip85 wallet
+	async restoreBip85State( json_data ) {
+		trace2Main( pretty_func_header_format( "MainGUI.restoreBip85State" ) );
+		
+		let initial_entropy = json_data[BIP85_INIT_ENTROPY_WITS_KEY];
+		let is_bip85_wallet = ( initial_entropy != undefined && initial_entropy != '' );
+		
+		let bip85_allowed = false;
+		if ( is_bip85_wallet ) {
+			await this.checkPremium();
+			bip85_allowed = ( this.Options != undefined && this.Options[ PREMIUM_ALLOWED ] == true );
+		}
+		
+		let enable = ( is_bip85_wallet && bip85_allowed );
+		
+		let checkbox_elt = document.getElementById( BIP85_ENABLE_DISABLE_BTN_ID );
+		if ( checkbox_elt != undefined ) {
+			checkbox_elt.checked = enable;
+		}
+		this.bip85_enable = enable;
+		
+		if ( ! enable ) {
+			this.bip85_derived_entropy = undefined;
+			this.updateBip85Labels();
+			return;
+		}
+		
+		let bip85_index = json_data[BIP85_INDEX_WITS_KEY];
+		if ( bip85_index == undefined || bip85_index === '' ) bip85_index = 0;
+		if ( isString( bip85_index ) ) bip85_index = parseInt( bip85_index );
+		
+		let entropy = this.Entropy; // Bip85 Entropy (from '.wits')
+		let entropy_size = entropy.length * 4; // 4 bits per hex digit
+		
+		HtmlUtils.SetElementValue( BIP85_INDEX_ID,        bip85_index );
+		HtmlUtils.SetElementValue( BIP85_ENTROPY_SIZE_ID, entropy_size );
+		this.InitialEntropy = initial_entropy;
+		this.wallet_info.setAttribute( BIP85_INDEX,        bip85_index );
+		this.wallet_info.setAttribute( BIP85_ENTROPY_SIZE, entropy_size );
+		
+		HtmlUtils.SetElementValue( BIP85_DERIVED_ENTROPY_ID,    entropy );
+		HtmlUtils.SetElementValue( BIP85_DERIVED_SEEDPHRASE_ID, this.wallet_info.getAttribute( MNEMONICS ) );
+		
+		// NB: next 'updateEntropy( this.Entropy )' (Account, Address Index...) is a refresh, not a new derivation
+		this.bip85_derived_entropy = entropy;
+		
+		this.alignWalletEntropySize( entropy_size );
+		this.updateBip85Labels();
+	} // restoreBip85State()
+	
+	// Called when Bip85 is not allowed anymore (e.g. Premium disabled): restores 'Initial Entropy'
+	async disableBip85IfEnabled() {
+		if ( this.bip85_enable ) {
+			trace2Main( pretty_func_header_format( "MainGUI.disableBip85IfEnabled" ) );
+			await this.setBip85Enabled( false );
+		}
+	} // disableBip85IfEnabled()
 	
 	onShowHideBip85( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onShowHideBip85" ) );
 		this.bip85_visible = ! this.bip85_visible;
-		this.bip85_enable  = HtmlUtils.GetElementValue( BIP85_ENABLE_DISABLE_BTN_ID );
 		
 		// console.log("bip85_visible : " + this.bip85_visible); 
 		
@@ -2719,9 +2895,10 @@ class MainGUI {
 		let eye_btn_img_elt = HtmlUtils.GetElement( "bip85_show_hide_btn_img_id" );		
 	
         if ( this.bip85_visible ) {
-			// let init_entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
-			let init_entropy = this.Entropy;
-			HtmlUtils.SetElementValue( BIP85_INIT_ENTROPY_ID, init_entropy );
+			// NB: in Bip85 mode, 'Entropy' is the 'Bip85 Entropy': 'Initial Entropy' must NOT be overwritten
+			if ( ! this.bip85_enable ) {
+				this.InitialEntropy = this.Entropy;
+			}
 			bip85_row_2nd_column_elt.style.display = "flex";
 			eye_btn_img_elt.src = 'icons/' + EYE_CLOSED_ICON;
             HtmlUtils.ShowElement(BIP85_ENABLE_CONTAINER_ID);			
@@ -2733,36 +2910,35 @@ class MainGUI {
 		}
 	} // onShowHideBip85()
 	
-	// async onApplyBip85Params( bip85_infos ) {
+	// Called by Bip85Dialog.onApply(): new Bip85 parameters (Index, Entropy Size)
+	// 'Initial Entropy' is NOT changed, only 'Bip85 Entropy' is recomputed (see 5.1.6 in README.md)
 	async onApplyBip85Params( data ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params" ) );
 		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params  data: " + JSON.stringify(data) ) );
 			
-		const { entropy, bip85_index, bip85_entropy_size } = data;
+		const { bip85_index, bip85_entropy_size } = data;
 		
-		// let bip85_result = await window.ipcMain.Bip85DeriveBip39( data );		
+		HtmlUtils.SetElementValue( BIP85_INDEX_ID,        bip85_index );	
+		HtmlUtils.SetElementValue( BIP85_ENTROPY_SIZE_ID, bip85_entropy_size );
 		
-		// let bip85_index        = bip85_infos["bip85_index"];
-		// let bip85_entropy_size = bip85_infos["bip85_entropy_size"];
-		// let bip85_entropy      = bip85_infos["bip85_entropy"];
-		// let bip85_mnemonics    = bip85_infos["bip85_mnemonics"];
+		// NB: 'data.entropy' is ignored: in Bip85 mode ENTROPY_ID holds the 'Bip85 Entropy', not the 'Initial Entropy'
+		let initial_entropy = this.InitialEntropy;
+		if ( initial_entropy == undefined || initial_entropy == '' ) {
+			initial_entropy = this.Entropy;
+		}
 		
-		let bip85_entropy = entropy;   
-
-        let bip85_infos = await window.ipcMain.Bip85DeriveBip39( data );
-		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params  bip85_infos: " + JSON.stringify(bip85_infos) ) );
-
-        // bip85_infos = { bip85_index, bip85_entropy, bip85_mnemonics, bip85_entropy_size };
-        let bip85_derived_entropy    = bip85_infos["bip85_entropy"];	
-		let bip85_derived_seedphrase = bip85_infos["bip85_mnemonics"];		
-		
-		HtmlUtils.SetElementValue( BIP85_INDEX_ID,              bip85_index );	
-		HtmlUtils.SetElementValue( BIP85_ENTROPY_SIZE_ID,       bip85_entropy_size );
-		
-		HtmlUtils.SetElementValue( BIP85_INIT_ENTROPY_ID,       entropy );
-		
-		HtmlUtils.SetElementValue( BIP85_DERIVED_ENTROPY_ID,    bip85_derived_entropy );
-		HtmlUtils.SetElementValue( BIP85_DERIVED_SEEDPHRASE_ID, bip85_derived_seedphrase );
+		if ( this.bip85_enable ) {
+			// Force derivation then recompute wallet with the new 'Bip85 Entropy'
+			this.bip85_derived_entropy = undefined;
+			let cb_enabled_saved = this.cb_enabled;
+			this.cb_enabled = false;
+			await this.updateEntropy( initial_entropy );
+			this.cb_enabled = cb_enabled_saved;
+		}
+		else {
+			// Preview only
+			await this.updateBip85Parameters( initial_entropy );
+		}
 	} // onApplyBip85Params()
 	
 	async onKeyDown( evt ) {
@@ -3087,7 +3263,6 @@ class MainGUI {
 				trace2Main( pretty_func_header_format( "MainGUI.onBip38PassphrasePaste  PREMIUM_DISABLE" ) );
 				if ( this.Options[ PREMIUM_ALLOWED ] != false ) {
 					this.Options[ PREMIUM_ALLOWED ] = false;
-					this.bip85_enable = false;
 					enable_or_disable = true;					
 				}
 				HtmlUtils.SetElementValue( BIP38_PASSPHRASE_ID, '' );
@@ -3097,7 +3272,8 @@ class MainGUI {
 			if ( enable_or_disable ) {
 				trace2Main( pretty_func_header_format( "MainGUI.onBip38PassphrasePaste  this.Options[ PREMIUM_ALLOWED ]: " + this.Options[ PREMIUM_ALLOWED ] ) );
 				await this.checkPremium(this.Options[ PREMIUM_ALLOWED ]);
-				this.bip85_enable = true;
+				// NB: Bip85 mode is NOT enabled here (only allowed): user must check 'Enable Bip85'
+				// NB: if Premium is disabled, Bip85 mode is disabled in 'checkPremium()'
 				await this.updateFieldsVisibility();
 			}
 		}
@@ -3637,7 +3813,17 @@ class MainGUI {
 		
 		let entropy_size = entropy_value.length * 4; // 4 bits per hex digit
 		crypto_info[ENTROPY_SIZE] = entropy_size;
-		
+
+		// -------- Bip85 (only if Bip85 mode is enabled) --------
+		// NB: 'Entropy' is then the 'Bip85 Entropy', derived from 'Initial Entropy'
+		// NB: no BIP85_ENTROPY_SIZE: same value as ENTROPY_SIZE (wallet entropy size aligned on Bip85)
+		if ( this.bip85_enable ) {
+			const { bip85_index } = this.getBip85Params();
+			crypto_info[BIP85_INIT_ENTROPY] = this.InitialEntropy;
+			crypto_info[BIP85_INDEX]        = bip85_index;
+		}
+		// -------- Bip85
+
 		return crypto_info;
 	} // async getWalletInfo()
 	
@@ -3780,7 +3966,8 @@ class MainGUI {
 			else {
 				this.bip32_field_allowed_max_value_digits = BIP32_FIELD_MIN_VALUE_DIGITS;
 				this.bip32_field_allowed_max_value        = BIP32_FIELD_MIN_VALUE;
-				this.bip85_enable = false;
+				// Bip85 not allowed: restore 'Initial Entropy' if Bip85 mode was enabled
+				await this.disableBip85IfEnabled();
 			}
 			
 			// ACCOUNT_ID
@@ -3855,13 +4042,24 @@ class MainGUI {
 		return entropy_value;
     } // 'Entropy' getter
 	
-	set Entropy( entropy_value ) {
-		this.entropy = entropy_value;
-		HtmlUtils.SetElementValue( ENTROPY_ID, entropy_value );
-		this.wallet_info.setAttribute( ENTROPY, entropy_value ); 
-		return entropy_value;		
+	set Entropy( value ) {
+		this.entropy = value;
+		HtmlUtils.SetElementValue( ENTROPY_ID, value );
+		this.wallet_info.setAttribute( ENTROPY, value ); 
     } // 'Entropy' setter
 	
+	get InitialEntropy() {
+		this.initial_entropy = HtmlUtils.GetElementValue( BIP85_INIT_ENTROPY_ID );
+		this.wallet_info.setAttribute( BIP85_INIT_ENTROPY, this.initial_entropy ); 
+		return this.initial_entropy;
+    } // 'InitialEntropy' getter	
+	
+	set InitialEntropy( value ) {
+		this.initial_entropy = value;
+		HtmlUtils.SetElementValue( BIP85_INIT_ENTROPY_ID, this.initial_entropy );
+		this.wallet_info.setAttribute( BIP85_INIT_ENTROPY, this.initial_entropy ); 
+    } // 'InitialEntropy' setter	
+
 } // MainGUI class
 // ==============================  MainGUI class 
 
