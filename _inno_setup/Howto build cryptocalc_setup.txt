@@ -6,7 +6,7 @@ How to build "Cryptocalc standalone installer" ('cryptocalc_setup.exe')
    1.c. npm install -g electron-packager-interactive
    
 2. Package 'Cryptocalc' with 'electron-packager': 
-  2.a. Delete the content of '_output' folder	
+  2.a. Delete the content of 'releases' and '_inno_setup_/Output' folder	
   2.b. Launch'_open_cmd_window' then enter 'epi' then usee the following answers:  
     - Overwrite output directory ?                                        => Y
 	- Use asar source packaging ?                                         => N
@@ -24,6 +24,7 @@ How to build "Cryptocalc standalone installer" ('cryptocalc_setup.exe')
   2.d. Rename 'releases/@aladas..cryptocalc/@aladas-org-cryptocalc.exe' to 'cryptocalc.exe'
   2.e. Delete '_inno_setup/Output' subfolder content
   2.f. Delete '_inno_setup/Output' subfolder in 'releases/cryptocalc/resources/app'
+  2.g. Delete 'releases' subfolder content
 
 3. Build 'cryptocalc_setup.exe' with 'Inno Setup' installer: 
   * Update 'MyAppVersion' in the 'Inno Setup' script
