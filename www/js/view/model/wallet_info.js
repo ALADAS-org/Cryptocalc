@@ -22,7 +22,7 @@ class WalletInfo {
 							
                             [BIP32_PROTOCOL]:			"bip32_protocol_id",
 							
-							[BIP32_PASSPHRASE]:			"bip32_passphrase_id",						
+							[BIP39_PASSPHRASE]:			"bip32_passphrase_id",						
 							[BIP38_PASSPHRASE]: 		"bip38_passphrase_id",							
 							[WORD_INDEXES]: 			"word_indexes_id",
  							[ADDRESS]: 					"address_id", 							
@@ -51,7 +51,7 @@ class WalletInfo {
 		let wallet_mode = ( this.options[WALLET_MODE] != undefined ) ? this.options[WALLET_MODE]:SIMPLE_WALLET_TYPE;
 		this.attributes[WALLET_MODE] = wallet_mode;
 		
-		this.attributes[BIP32_PASSPHRASE] = ""; 
+		this.attributes[BIP39_PASSPHRASE] = ""; 
 		
 		if (    this.options[DEFAULT_BLOCKCHAIN] != undefined 
 		     && this.options[DEFAULT_BLOCKCHAIN][wallet_mode] == undefined ) {

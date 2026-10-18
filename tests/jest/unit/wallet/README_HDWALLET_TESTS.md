@@ -110,7 +110,7 @@ const args = {
   [BLOCKCHAIN]: BITCOIN,        // Blockchain cible
   [CRYPTO_NET]: MAINNET,        // mainnet ou testnet
   [BIP32_PROTOCOL]: 44,         // 32 ou 44
-  [BIP32_PASSPHRASE]: '',       // Passphrase optionnelle
+  [BIP39_PASSPHRASE]: '',       // Passphrase optionnelle
   [ACCOUNT]: 0,                 // Index du compte
   [ADDRESS_INDEX]: 0            // Index de l'adresse
 };

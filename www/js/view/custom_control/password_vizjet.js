@@ -16,7 +16,7 @@ class PasswordVizjet {
 	onKey( evt ) {
 		let bip32_passphrase = HtmlUtils.GetElementValue( this.input_field_id );
 		// trace2Main( pretty_func_header_format( "PasswordVizjet.onGuiChangePassword", "'" + bip32_passphrase + "'" ) );
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
 
 		if ( bip32_passphrase == "" ) {
 			this.GuiSetPasswordApplyState( false );	
@@ -29,7 +29,7 @@ class PasswordVizjet {
 	async applyPassword( evt ) {
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
 		trace2Main( pretty_func_header_format( "PasswordVizjet.GuiApplyPassword", bip32_passphrase ) );
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
 		await this.updatePassword( bip32_passphrase );
 
 		this.GuiSetPasswordApplyState( false );
@@ -41,7 +41,7 @@ class PasswordVizjet {
 		let data = {};
 		let bip32_passphrase = await window.ipcMain.GeneratePassword( data );
 		
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase);
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase);
 
 		this.setPasswordApplyState( true );
 	} // async generatePassword()	

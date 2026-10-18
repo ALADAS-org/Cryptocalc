@@ -181,7 +181,7 @@ class PassphraseDialog {
 		let passphrase_value = HtmlUtils.GetElementValue( PASSPHRASE_DIALOG_INPUT_ID );
 		HtmlUtils.SetElementValue( BIP39_MAIN_WINDOW_PASSPHRASE_ID, passphrase_value );
 		
-		await MainGUI.This.GuiApplyPassword();
+		await MainGUI.This.Bip39ApplyPassword();
 		
 		await MainGUI.This.updatePassphraseStrength( BIP39_MAIN_WINDOW_PASSPHRASE_ID );
 		

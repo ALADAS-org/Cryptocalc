@@ -74,7 +74,7 @@ const { APP_VERSION,
 		OUTPUT_DIR_PATH, INVALID_OUTPUT_DIR_PATH,
 		SELECT_DIRECTORY_PATH_MODE, SELECT_FILE_PATH_MODE,		
 		WITS_PATH, PATH, ARGS,
-		BLOCKCHAIN, BIP32_PASSPHRASE, BIP32_PROTOCOL, ACCOUNT, ADDRESS_INDEX,
+		BLOCKCHAIN, BIP39_PASSPHRASE, BIP32_PROTOCOL, ACCOUNT, ADDRESS_INDEX,
 
 		TO_RAW_TEXT, TO_BASE64, TO_BASE58, TO_MNEMONICS, TO_BINARY,
 		FROM_RAW_TEXT, FROM_BASE64, FROM_BASE58, FROM_MNEMONICS, FROM_BINARY  		
@@ -1334,7 +1334,7 @@ class ElectronMain {
 			// pretty_log( "address_index", address_index );
 			pretty_log( "bip32_protocol", bip32_protocol );
 			// Skribi.log("   options: " + JSON.stringify(options));
-			let options = { [BLOCKCHAIN]: blockchain, [CRYPTO_NET]: crypto_net, [BIP32_PASSPHRASE]: bip32_passphrase, 
+			let options = { [BLOCKCHAIN]: blockchain, [CRYPTO_NET]: crypto_net, [BIP39_PASSPHRASE]: bip32_passphrase, 
 			                [BIP32_PROTOCOL]: bip32_protocol, [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
 			// let wallet = await HDWallet.GetWallet
 			//                   ( entropy_hex, salt_uuid, blockchain, crypto_net, bip32_passphrase, account, address_index );

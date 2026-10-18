@@ -35,7 +35,7 @@ const {
   BLOCKCHAIN, NULL_BLOCKCHAIN,
   WALLET_MODE, HD_WALLET_TYPE,
   MNEMONICS, UUID, WIF,
-  BIP32_PROTOCOL, BIP32_PASSPHRASE,
+  BIP32_PROTOCOL, BIP39_PASSPHRASE,
   ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 } = require('@www/js/const_keywords.js');
 
@@ -565,7 +565,7 @@ describe('HD Wallet Generation (BIP32/BIP44)', () => {
       const args1 = {
         [BLOCKCHAIN]: BITCOIN,
         [CRYPTO_NET]: MAINNET,
-        [BIP32_PASSPHRASE]: '',
+        [BIP39_PASSPHRASE]: '',
         [ACCOUNT]: 0,
         [ADDRESS_INDEX]: 0
       };
@@ -573,7 +573,7 @@ describe('HD Wallet Generation (BIP32/BIP44)', () => {
       const args2 = {
         [BLOCKCHAIN]: BITCOIN,
         [CRYPTO_NET]: MAINNET,
-        [BIP32_PASSPHRASE]: 'MySecretPassphrase123',
+        [BIP39_PASSPHRASE]: 'MySecretPassphrase123',
         [ACCOUNT]: 0,
         [ADDRESS_INDEX]: 0
       };
@@ -590,28 +590,28 @@ describe('HD Wallet Generation (BIP32/BIP44)', () => {
       const args = {
         [BLOCKCHAIN]: BITCOIN,
         [CRYPTO_NET]: MAINNET,
-        [BIP32_PASSPHRASE]: passphrase,
+        [BIP39_PASSPHRASE]: passphrase,
         [ACCOUNT]: 0,
         [ADDRESS_INDEX]: 0
       };
       
       const wallet = await HDWallet.GetWallet(testEntropy, testUuid, args);
       
-      expect(wallet[BIP32_PASSPHRASE]).toBe(passphrase);
+      expect(wallet[BIP39_PASSPHRASE]).toBe(passphrase);
     });
     
     test('wallet without passphrase does not store passphrase field', async () => {
       const args = {
         [BLOCKCHAIN]: BITCOIN,
         [CRYPTO_NET]: MAINNET,
-        [BIP32_PASSPHRASE]: '',
+        [BIP39_PASSPHRASE]: '',
         [ACCOUNT]: 0,
         [ADDRESS_INDEX]: 0
       };
       
       const wallet = await HDWallet.GetWallet(testEntropy, testUuid, args);
       
-      expect(wallet[BIP32_PASSPHRASE]).toBeUndefined();
+      expect(wallet[BIP39_PASSPHRASE]).toBeUndefined();
     });
   });
   

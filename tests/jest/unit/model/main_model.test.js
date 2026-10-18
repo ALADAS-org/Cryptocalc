@@ -108,7 +108,7 @@ const { MainModel } = require('@www/js/model/main_model.js');
 
 const {
   WALLET_MODE, BLOCKCHAIN, MNEMONICS, ENTROPY, ENTROPY_SIZE,
-  WORD_INDEXES, BIP32_PASSPHRASE, BIP38_PASSPHRASE,
+  WORD_INDEXES, BIP39_PASSPHRASE, BIP38_PASSPHRASE,
   DERIVATION_PATH, WIF, LANG,
   SIMPLE_WALLET_TYPE, HD_WALLET_TYPE,
   ACCOUNT, ADDRESS_INDEX
@@ -138,7 +138,7 @@ const MOCK_CRYPTO_INFO_SIMPLE = {
 const MOCK_CRYPTO_INFO_HD = {
   ...MOCK_CRYPTO_INFO_SIMPLE,
   [WALLET_MODE]: HD_WALLET_TYPE,
-  [BIP32_PASSPHRASE]: 'my passphrase',
+  [BIP39_PASSPHRASE]: 'my passphrase',
   [DERIVATION_PATH]: "m/44'/0'/2'/0/5'",
   [ADDRESS]: '1HDWalletAddress123456789',
 };
@@ -263,9 +263,9 @@ describe('MainModel — saveWalletInfoAsJson() : Simple Wallet', () => {
     expect(written[ENTROPY_SIZE]).toBe(128);
   });
 
-  test('Simple Wallet : BIP32_PASSPHRASE absent du JSON', () => {
+  test('Simple Wallet : BIP39_PASSPHRASE absent du JSON', () => {
     const written = JSON.parse(mockFs.writeFileSync.mock.calls[0][1]);
-    expect(written[BIP32_PASSPHRASE]).toBeUndefined();
+    expect(written[BIP39_PASSPHRASE]).toBeUndefined();
   });
 
 });
@@ -287,9 +287,9 @@ describe('MainModel — saveWalletInfoAsJson() : HD Wallet', () => {
     expect(written[WALLET_MODE]).toBe(HD_WALLET_TYPE);
   });
 
-  test('BIP32_PASSPHRASE est présent pour un HD Wallet', () => {
+  test('BIP39_PASSPHRASE est présent pour un HD Wallet', () => {
     const written = JSON.parse(mockFs.writeFileSync.mock.calls[0][1]);
-    expect(written[BIP32_PASSPHRASE]).toBe('my passphrase');
+    expect(written[BIP39_PASSPHRASE]).toBe('my passphrase');
   });
 
   test('DERIVATION_PATH est conservé', () => {
@@ -365,5 +365,40 @@ describe('MainModel — saveWalletInfoAsJson() : champs optionnels', () => {
     const written = JSON.parse(mockFs.writeFileSync.mock.calls[0][1]);
     expect(written[WORD_INDEXES]).toBe(MOCK_CRYPTO_INFO_SIMPLE[WORD_INDEXES]);
   });
+
+});
+// ===========================================================================
+// Bip39 passphrase : clé 'Bip39 Passphrase', placée juste après 'Entropy Size'
+// (tests wallet_info.txt dans wallet_info_bip85.test.js : template réel)
+// (régression 0.5.32 : passphrase absente de wallet_info.txt / .wits)
+// ===========================================================================
+describe('MainModel — Bip39 passphrase dans wallet_info.wits', () => {
+
+  const BIP39_PASSPHRASE_KEY = 'Bip39 Passphrase';
+
+  const writeHdWits = ( crypto_info ) => {
+    mockFs.writeFileSync.mockClear();
+    MainModel.This.saveWalletInfoAsJson( '/mock/output/hd', crypto_info, MOCK_TIMESTAMP );
+    return JSON.parse( mockFs.writeFileSync.mock.calls[0][1] );
+  };
+
+  test("la constante BIP39_PASSPHRASE vaut 'Bip39 Passphrase'", () => {
+    expect( BIP39_PASSPHRASE ).toBe( BIP39_PASSPHRASE_KEY );
+  });
+
+  test(".wits : 'Bip39 Passphrase' est la clé qui suit 'Entropy Size'", () => {
+    const keys = Object.keys( writeHdWits( { ...MOCK_CRYPTO_INFO_HD } ) );
+    expect( keys[ keys.indexOf( ENTROPY_SIZE ) + 1 ] ).toBe( BIP39_PASSPHRASE_KEY );
+  });
+
+  test(".wits : pas de clé legacy 'Bip32 Passphrase'", () => {
+    expect( writeHdWits( { ...MOCK_CRYPTO_INFO_HD } )['Bip32 Passphrase'] ).toBeUndefined();
+  });
+
+  test('.wits : passphrase vide => clé absente', () => {
+    const written = writeHdWits( { ...MOCK_CRYPTO_INFO_HD, [BIP39_PASSPHRASE]: '' } );
+    expect( written[BIP39_PASSPHRASE_KEY] ).toBeUndefined();
+  });
+
 
 });

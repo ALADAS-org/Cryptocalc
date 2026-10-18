@@ -64,7 +64,7 @@ const {
   BIP85_INIT_ENTROPY_LABEL, BIP85_INDEX_LABEL, BIP85_ENTROPY_LABEL,
   BIP85_INIT_ENTROPY_WITS_KEY, BIP85_INDEX_WITS_KEY,
   WORD_INDEXES, LANG, SIMPLE_WALLET_TYPE, HD_WALLET_TYPE,
-  BIP32_PASSPHRASE, DERIVATION_PATH, WIF,
+  BIP39_PASSPHRASE, DERIVATION_PATH, WIF,
 } = require('@www/js/const_keywords.js');
 
 const { ADDRESS, PRIVATE_KEY }               = require('@crypto/const_wallet.js');
@@ -126,7 +126,7 @@ const CRYPTO_INFO_SIMPLE_BIP85 = { ...CRYPTO_INFO_SIMPLE, ...BIP85_INFO };
 const CRYPTO_INFO_HD_BIP85 = {
   ...CRYPTO_INFO_SIMPLE_BIP85,
   [WALLET_MODE]:      HD_WALLET_TYPE,
-  [BIP32_PASSPHRASE]: 'my passphrase',
+  [BIP39_PASSPHRASE]: 'my passphrase',
   [DERIVATION_PATH]:  "m/44'/0'/0'/0/0'",
   [BIP85_INDEX]:      7,
   [ENTROPY]:          BIP85_ENTROPY.substring(0, 32),
@@ -358,7 +358,7 @@ describe('MainModel.saveWalletInfoAsJson() - Bip85', () => {
     const json = saveAsJson(CRYPTO_INFO_HD_BIP85);
     expect(json[WITS_KEY_BIP85_INDEX]).toBe(7);
     expect(json[ENTROPY_SIZE]).toBe(128);
-    expect(json[BIP32_PASSPHRASE]).toBe('my passphrase');
+    expect(json[BIP39_PASSPHRASE]).toBe('my passphrase');
     expect(json[DERIVATION_PATH]).toBe("m/44'/0'/0'/0/0'");
   });
 
@@ -371,4 +371,43 @@ describe('MainModel.saveWalletInfoAsJson() - Bip85', () => {
     const json = saveAsJson({ ...CRYPTO_INFO_SIMPLE_BIP85, [BIP85_INIT_ENTROPY]: '' });
     [ ...BIP85_KEYS, ...BIP85_WITS_KEYS ].forEach((key) => expect(json).not.toHaveProperty(key));
   });
+});
+
+// ============================================================================
+// Bip39 passphrase : ligne 'Bip39 Passphrase' juste après 'Entropy Size'
+// (régression 0.5.32 : passphrase absente de wallet_info.txt)
+// ============================================================================
+describe('MainModel.buildWalletInfoTxt() - Bip39 passphrase', () => {
+
+  const BIP39_PASSPHRASE_LABEL = 'Bip39 Passphrase';
+  const HD_PASSPHRASE          = 'my passphrase';
+
+  const CRYPTO_INFO_HD = {
+    ...CRYPTO_INFO_SIMPLE,
+    [WALLET_MODE]:      HD_WALLET_TYPE,
+    [BIP39_PASSPHRASE]: HD_PASSPHRASE,
+    [DERIVATION_PATH]:  "m/44'/0'/0'/0/0'",
+  };
+
+  test("HD Wallet: 'Bip39 Passphrase' line follows 'Entropy Size'", () => {
+    const labels = txtLabels(MainModel.This.buildWalletInfoTxt(CRYPTO_INFO_HD));
+    expect(labels[labels.indexOf(ENTROPY_SIZE) + 1]).toBe(BIP39_PASSPHRASE_LABEL);
+    expect(parseTxt(MainModel.This.buildWalletInfoTxt(CRYPTO_INFO_HD))[BIP39_PASSPHRASE_LABEL]).toBe(HD_PASSPHRASE);
+  });
+
+  test("HD Wallet + Bip85: 'Bip39 Passphrase' line follows 'Entropy Size'", () => {
+    const labels = txtLabels(MainModel.This.buildWalletInfoTxt(CRYPTO_INFO_HD_BIP85));
+    expect(labels[labels.indexOf(ENTROPY_SIZE) + 1]).toBe(BIP39_PASSPHRASE_LABEL);
+  });
+
+  test("empty passphrase: no 'Bip39 Passphrase' line", () => {
+    const txt = MainModel.This.buildWalletInfoTxt({ ...CRYPTO_INFO_HD, [BIP39_PASSPHRASE]: '' });
+    expect(txt).not.toContain(BIP39_PASSPHRASE_LABEL);
+  });
+
+  test(".wits: 'Bip39 Passphrase' key follows 'Entropy Size'", () => {
+    const keys = Object.keys(saveAsJson(CRYPTO_INFO_HD));
+    expect(keys[keys.indexOf(ENTROPY_SIZE) + 1]).toBe(BIP39_PASSPHRASE_LABEL);
+  });
+
 });

@@ -39,7 +39,7 @@ const {
 const { 
   BLOCKCHAIN, NULL_BLOCKCHAIN,
   MNEMONICS, UUID, WIF,
-  BIP32_PROTOCOL, BIP32_PASSPHRASE,
+  BIP32_PROTOCOL, BIP39_PASSPHRASE,
   ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 } = require('@www/js/const_keywords.js');
 
@@ -133,12 +133,12 @@ describe('BIP32 Utilities', () => {
       const passphrase = "test passphrase";
       const args = {
         [BLOCKCHAIN]: BITCOIN,
-        [BIP32_PASSPHRASE]: passphrase
+        [BIP39_PASSPHRASE]: passphrase
       };
       
       const result = await Bip32Utils.MnemonicsToHDWalletInfo(TEST_MNEMONICS, args);
       
-      expect(result[BIP32_PASSPHRASE]).toBe(passphrase);
+      expect(result[BIP39_PASSPHRASE]).toBe(passphrase);
       
       // Verify different result with passphrase
       const argsNoPass = {
@@ -527,7 +527,7 @@ describe('BIP32 Utilities', () => {
         [BLOCKCHAIN]:       BITCOIN,
         [ACCOUNT]:          USE_CASE_ACCOUNT,
         [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
-        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+        [BIP39_PASSPHRASE]: USE_CASE_PASSPHRASE
       });
 
       expect(result[DERIVATION_PATH]).toBe("m/44'/0'/2'/0/5'");
@@ -538,7 +538,7 @@ describe('BIP32 Utilities', () => {
         [BLOCKCHAIN]:       BITCOIN,
         [ACCOUNT]:          USE_CASE_ACCOUNT,
         [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
-        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+        [BIP39_PASSPHRASE]: USE_CASE_PASSPHRASE
       };
 
       const result1 = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, args);
@@ -553,7 +553,7 @@ describe('BIP32 Utilities', () => {
         [BLOCKCHAIN]:       BITCOIN,
         [ACCOUNT]:          USE_CASE_ACCOUNT,
         [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
-        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+        [BIP39_PASSPHRASE]: USE_CASE_PASSPHRASE
       });
 
       const noPass = await Bip32Utils.MnemonicsToHDWalletInfo(USE_CASE_MNEMONICS, {
@@ -571,7 +571,7 @@ describe('BIP32 Utilities', () => {
         [BLOCKCHAIN]:       BITCOIN,
         [ACCOUNT]:          USE_CASE_ACCOUNT,
         [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
-        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+        [BIP39_PASSPHRASE]: USE_CASE_PASSPHRASE
       });
 
       expect(result[ADDRESS]).toBe("1BQQ4VjXtPGd3YEV45vuMkNKjo42pjLLUB");
@@ -584,7 +584,7 @@ describe('BIP32 Utilities', () => {
         [BLOCKCHAIN]:       ETHEREUM,
         [ACCOUNT]:          USE_CASE_ACCOUNT,
         [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
-        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+        [BIP39_PASSPHRASE]: USE_CASE_PASSPHRASE
       });
 
       expect(result[DERIVATION_PATH]).toBe("m/44'/60'/2'/0/5'");
@@ -595,7 +595,7 @@ describe('BIP32 Utilities', () => {
         [BLOCKCHAIN]:       ETHEREUM,
         [ACCOUNT]:          USE_CASE_ACCOUNT,
         [ADDRESS_INDEX]:    USE_CASE_ADDR_INDEX,
-        [BIP32_PASSPHRASE]: USE_CASE_PASSPHRASE
+        [BIP39_PASSPHRASE]: USE_CASE_PASSPHRASE
       });
 
       expect(result[ADDRESS]).toBe("0x67C0ae27e79Ba1B6f58af5DCf3d893f7394ac0e5");
@@ -636,7 +636,7 @@ describe('BIP32 Utilities', () => {
     test('handles empty passphrase (should be same as no passphrase)', async () => {
       const args1 = {
         [BLOCKCHAIN]: BITCOIN,
-        [BIP32_PASSPHRASE]: ""
+        [BIP39_PASSPHRASE]: ""
       };
       
       const args2 = {
@@ -652,7 +652,7 @@ describe('BIP32 Utilities', () => {
     test('handles null passphrase (should be same as no passphrase)', async () => {
       const args1 = {
         [BLOCKCHAIN]: BITCOIN,
-        [BIP32_PASSPHRASE]: null
+        [BIP39_PASSPHRASE]: null
       };
       
       const args2 = {
