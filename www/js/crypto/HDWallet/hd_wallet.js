@@ -31,7 +31,7 @@ const { NULL_HEX, CRYPTO_NET,
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
-        BIP32_PROTOCOL, BIP32_PASSPHRASE, 
+        BIP32_PROTOCOL, BIP39_PASSPHRASE, 
 		ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 	  }                   = require('../../const_keywords.js');	  
 	  
@@ -133,14 +133,14 @@ class HDWallet {
 			throw new Error("HDWallet.GetWallet 'salt_uuid' NOT DEFINED");
 		} 
 		
-		// let options = { [BLOCKCHAIN]: blockchain, [CRYPTO_NET]: crypto_net, [BIP32_PASSPHRASE]: bip32_passphrase, [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
+		// let options = { [BLOCKCHAIN]: blockchain, [CRYPTO_NET]: crypto_net, [BIP39_PASSPHRASE]: bip32_passphrase, [ACCOUNT]: account, [ADDRESS_INDEX]: address_index };
 		let crypto_net       = ( args[CRYPTO_NET] != undefined )       ? args[CRYPTO_NET]       : MAINNET;
 		
 		let blockchain       = ( args[BLOCKCHAIN] != undefined )       ? args[BLOCKCHAIN]       : BITCOIN;
 		
 		let bip32_protocol   = ( args[BIP32_PROTOCOL] != undefined )   ? args[BIP32_PROTOCOL]   : 44;		
 		
-		let bip32_passphrase = ( args[BIP32_PASSPHRASE] != undefined ) ? args[BIP32_PASSPHRASE] : "";
+		let bip32_passphrase = ( args[BIP39_PASSPHRASE] != undefined ) ? args[BIP39_PASSPHRASE] : "";
 		
 		let account          = ( args[ACCOUNT]       != undefined )    ? args[ACCOUNT]          : 0;
 		let address_index    = ( args[ADDRESS_INDEX] != undefined )    ? args[ADDRESS_INDEX]    : 0;
@@ -166,7 +166,7 @@ class HDWallet {
 		
 		let options = { [BLOCKCHAIN]:    	blockchain, 
 		                [BIP32_PROTOCOL]:   bip32_protocol,
-		                [BIP32_PASSPHRASE]: bip32_passphrase,
+		                [BIP39_PASSPHRASE]: bip32_passphrase,
 			            [ACCOUNT]:       	account,
 					    [ADDRESS_INDEX]: 	address_index, 
 			            [UUID]:          	salt_uuid };
@@ -218,8 +218,8 @@ class HDWallet {
 			new_wallet[COIN]      = hdwallet_info[COIN];
 			new_wallet[COIN_TYPE] = hdwallet_info[COIN_TYPE];
 			
-			if ( hdwallet_info[BIP32_PASSPHRASE] != undefined && hdwallet_info[BIP32_PASSPHRASE] != "") { 
-				new_wallet[BIP32_PASSPHRASE] = hdwallet_info[BIP32_PASSPHRASE];
+			if ( hdwallet_info[BIP39_PASSPHRASE] != undefined && hdwallet_info[BIP39_PASSPHRASE] != "") { 
+				new_wallet[BIP39_PASSPHRASE] = hdwallet_info[BIP39_PASSPHRASE];
 			}				
 			
 			new_wallet[PRIVATE_KEY]     = hdwallet_info[PRIVATE_KEY]; 

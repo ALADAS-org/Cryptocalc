@@ -66,7 +66,7 @@ const { NULL_HEX,
 	  
 const { BLOCKCHAIN, NULL_BLOCKCHAIN, 
         WORD_COUNT, MNEMONICS,
-        BIP32_PROTOCOL, BIP32_PASSPHRASE, 
+        BIP32_PROTOCOL, BIP39_PASSPHRASE, 
 		ACCOUNT, ADDRESS_INDEX,
 		DERIVATION_PATH, WIF
 	  }                    = require('../../const_keywords.js');
@@ -130,8 +130,8 @@ class Bip32Utils {
 		}
 		
 		let bip32_passphrase = "";
-		if ( args[BIP32_PASSPHRASE] != undefined && args[BIP32_PASSPHRASE] != null && args[BIP32_PASSPHRASE] != "" ) { 
-			bip32_passphrase = args[BIP32_PASSPHRASE];
+		if ( args[BIP39_PASSPHRASE] != undefined && args[BIP39_PASSPHRASE] != null && args[BIP39_PASSPHRASE] != "" ) { 
+			bip32_passphrase = args[BIP39_PASSPHRASE];
 		}
 		pretty_log( "b32.mnk2wi> Bi32 Passphrase", bip32_passphrase );
 		
@@ -263,7 +263,7 @@ class Bip32Utils {
 		// https://www.npmjs.com/package/hdaddressgenerator
 		// let bip44 = HdAddGen.withMnemonic( mnemonics, false, coin );
 		if ( bip32_passphrase != "" ) {
-			hdwallet_info[BIP32_PASSPHRASE] = bip32_passphrase;
+			hdwallet_info[BIP39_PASSPHRASE] = bip32_passphrase;
 		}
         pretty_log( "b32.mnk2wi> coin", coin );	
 		

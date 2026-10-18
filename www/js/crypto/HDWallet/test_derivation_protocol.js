@@ -20,7 +20,7 @@ const { COIN, COIN_TYPE,
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
         WALLET_MODE, HD_WALLET_TYPE,
         UUID, MNEMONICS, WIF,
-        BIP32_PROTOCOL, BIP32_PASSPHRASE, 
+        BIP32_PROTOCOL, BIP39_PASSPHRASE, 
 		ACCOUNT, ADDRESS_INDEX, DERIVATION_PATH
 }                         = require('../../const_keywords.js');	 
 
@@ -66,7 +66,7 @@ const test_derivation_protocol = async () => {
 	
 	let options = { [BLOCKCHAIN]:    	blockchain, 
 	                [BIP32_PROTOCOL]:   protocol_number,
-		            [BIP32_PASSPHRASE]: bip32_passphrase,
+		            [BIP39_PASSPHRASE]: bip32_passphrase,
 			        [ACCOUNT]:       	account,
 				    [ADDRESS_INDEX]: 	address_index, 
 			        [UUID]:          	salt_uuid };

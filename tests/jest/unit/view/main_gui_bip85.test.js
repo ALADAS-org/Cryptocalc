@@ -200,10 +200,10 @@ describe('MainGUI - Bip85 mode', () => {
       expect(sb.lastAddressEntropy()).toBe(bip85_entropy);
     });
 
-    test('updateBip39Passphrase() keeps Initial and Bip85 Entropy', async () => {
+    test('Bip39UpdatePassphrase() keeps Initial and Bip85 Entropy', async () => {
       const sb = await createBip85EnabledSandbox(ENTROPY_A_128);
       const bip85_entropy = sb.entropy();
-      await sb.gui.updateBip39Passphrase('passphrase');
+      await sb.gui.Bip39UpdatePassphrase('passphrase');
       expect(sb.entropy()).toBe(bip85_entropy);
       expect(sb.initialEntropy()).toBe(ENTROPY_A_128);
     });

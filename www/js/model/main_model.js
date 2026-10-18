@@ -40,7 +40,7 @@ const { VERSION,
 		BIP85_INIT_ENTROPY_WITS_KEY, BIP85_INDEX_WITS_KEY,
         MNEMONICS, SHORTENED_MNEMONICS, WIF, WORD_INDEXES,
 		MNEMONICS_LABEL, SHORTENED_MNEMONICS_LABEL, BIP85_MNEMONICS_LABEL,
-		BIP32_PASSPHRASE, BIP38_PASSPHRASE, DERIVATION_PATH, ACCOUNT, ADDRESS_INDEX, 
+		BIP39_PASSPHRASE, BIP38_PASSPHRASE, DERIVATION_PATH, ACCOUNT, ADDRESS_INDEX, 
 		HD_WALLET_TYPE, SWORD_WALLET_TYPE, 
 	  }                = require('../const_keywords.js');
 	  
@@ -463,9 +463,6 @@ class MainModel {
 		
 		json_data[WALLET_MODE] = crypto_info[WALLET_MODE];
 
-		if ( json_data[WALLET_MODE] == HD_WALLET_TYPE || json_data[WALLET_MODE] == SWORD_WALLET_TYPE ) {
-			json_data[BIP32_PASSPHRASE] = crypto_info[BIP32_PASSPHRASE];
-		}
 			
 		console.log(">> VERSION: '" + VERSION + "'");	
 		json_data[VERSION]     = this.getAppVersion();
@@ -496,6 +493,13 @@ class MainModel {
 		json_data[ENTROPY_SIZE]          = entropy_size;
 		//---------- ENTROPY_SIZE
 		
+		// -------- "Bip39 passphrase" in 'wallet_info.wits' (right after 'Entropy Size') --------
+		if (    ( json_data[WALLET_MODE] == HD_WALLET_TYPE || json_data[WALLET_MODE] == SWORD_WALLET_TYPE )
+		     && crypto_info[BIP39_PASSPHRASE] != undefined && crypto_info[BIP39_PASSPHRASE] != '' ) {
+			json_data[BIP39_PASSPHRASE] = crypto_info[BIP39_PASSPHRASE];
+		}
+		// -------- "Bip39 passphrase" in 'wallet_info.wits'
+		
 		json_data[ENTROPY]               = crypto_info[ENTROPY];
 		
 		json_data[ADDRESS]               = crypto_info[ADDRESS];
@@ -515,12 +519,6 @@ class MainModel {
 		else {    
             json_data[MNEMONICS] = crypto_info[MNEMONICS];           			
 		}
-		
-		// -------- "Bip32 passphrase" in 'wallet_info.wits' --------
-		if ( crypto_info[BIP32_PASSPHRASE] != undefined ) {
-            json_data[BIP32_PASSPHRASE] = crypto_info[BIP32_PASSPHRASE];			
-		}
-		// -------- "Bip32 passphrase" in 'wallet_info.wits'
 		
 		// -------- "Bip38 passphrase" in 'wallet_info.wits' --------
 		if ( crypto_info[BIP38_PASSPHRASE] != undefined ) {

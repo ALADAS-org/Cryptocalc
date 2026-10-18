@@ -31,7 +31,7 @@
 // * async  updateOptionsFields( json_data )
 // * async  updateFields()
 // * async  updateWalletMode( wallet_mode )
-// * async  updateBip39Passphrase( password )
+// * async  Bip39UpdatePassphrase( password )
 // * async  updateEntropySize( entropy_size )
 // * async  updateEntropy( entropy )
 // * async  updateBlockchain( blockchain )
@@ -47,7 +47,7 @@
 // * async  updateWordIndexes()
 //
 // * async  generateSalt()
-// * async  generateRandomFields()
+// * async  onGenerateNewEntropy()
 //
 // * async  getWalletInfo()
 //
@@ -446,9 +446,13 @@ class MainGUI {
 
 		
 			// ---------- Bip39 Passphrase ----------
-			if ( json_data[BIP32_PASSPHRASE] != undefined ) {
-				let bip32_passphrase = json_data[BIP32_PASSPHRASE];
-				this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+			// NB: legacy '.wits' (<= 0.5.32) used the 'Bip32 Passphrase' key
+			if ( json_data[BIP39_PASSPHRASE] == undefined && json_data[BIP39_PASSPHRASE_LEGACY_KEY] != undefined ) {
+				json_data[BIP39_PASSPHRASE] = json_data[BIP39_PASSPHRASE_LEGACY_KEY];
+			}
+			if ( json_data[BIP39_PASSPHRASE] != undefined ) {
+				let bip32_passphrase = json_data[BIP39_PASSPHRASE];
+				this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
 				trace2Main( pretty_format( "rGUI.openW> Bip39 Passphrase", bip32_passphrase ) );	
 			}	
 			// ---------- Bip39 Passphrase
@@ -674,7 +678,7 @@ class MainGUI {
 			let salt_uuid = HtmlUtils.GetElementValue( SALT_ID );
 			
 			// ---------- get 'Passphrase' ----------
-			bip32_passphrase = this.wallet_info.getAttribute( BIP32_PASSPHRASE );
+			bip32_passphrase = this.wallet_info.getAttribute( BIP39_PASSPHRASE );
 			trace2Main( pretty_format( "rGUI.genHDW> Bip32 Passphrase", "'" + bip32_passphrase + "'") );
 			// ---------- get 'Passphrase'
 			
@@ -904,7 +908,7 @@ class MainGUI {
  		    async (evt) => { if (this.cb_enabled) await this.fileSaveWallet(); } );
 			
 		this.setEventHandler( REGENERATE_ICON_ID,      'click', 
-		    async (evt) => { if (this.cb_enabled) await this.generateRandomFields(); } );
+		    async (evt) => { if (this.cb_enabled) await this.onGenerateNewEntropy(); } );
 			
 		this.setEventHandler( TOGGLE_DEVTOOLS_ICON_ID, 'click', 
 		    (evt) => { if (this.cb_enabled) this.onToggleDebug(evt); } );		
@@ -978,7 +982,7 @@ class MainGUI {
 		
 		// -------------------- BIP38 Passphrase --------------------			
 		this.setEventHandler( CLEAR_PASSWORD_BTN_ID, 'click',   
-		    async (evt) => { if (this.cb_enabled) await this.Bip39ClearPassphrase(); } );;				
+		    async (evt) => { if (this.cb_enabled) await this.GuiClearBip39Passphrase(); } );				
 
 		this.setEventHandler( CLEAR_BIP38_PASSPHRASE_BTN_ID, 'click',   
 		    async (evt) => { if (this.cb_enabled) await this.Bip38ClearPassphrase(); } );			
@@ -1518,7 +1522,7 @@ class MainGUI {
 		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
 		
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID ); 
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
 		
 		let bip32_protocol = HtmlUtils.GetElementValue( BIP32_PROTOCOL_ID ); 
 		trace2Main( pretty_format( "rGUI.uWadr> bip32_protocol", bip32_protocol ) );
@@ -1557,13 +1561,13 @@ class MainGUI {
 		}
 	} // updateStatusbarInfo	
 	
-	async updateBip39Passphrase( bip39_passphrase ) {
+	async Bip39UpdatePassphrase( bip39_passphrase ) {
 		trace2Main( "===== rGUI.upPW ===============================================================" );
-		trace2Main( pretty_func_header_format( "MainGUI.updateBip39Passphrase", bip39_passphrase ) );
+		trace2Main( pretty_func_header_format( "MainGUI.Bip39UpdatePassphrase", bip39_passphrase ) );
 		let entropy = this.Entropy;
 		// await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
 		await this.updateEntropy( entropy );
-	}  // async updateBip39Passphrase()
+	}  // async Bip39UpdatePassphrase()
 	
 	async updateEntropy( entropy_hex ) {
 		trace2Main( pretty_func_header_format( "MainGUI.updateEntropy", entropy_hex ) );		
@@ -2262,13 +2266,13 @@ class MainGUI {
 		}
 		
 		let strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
-		let wallet_field_id       = BIP32_PASSPHRASE;
+		let wallet_field_id       = BIP39_PASSPHRASE;
 		let strength_score_id     = BIP32_PASSPHRASE_STRENGTH_ID;
 		let strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
 		
 		if ( target_id == BIP32_PASSPHRASE_ID ) {
 			strength_container_id = BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID;
-			wallet_field_id       = BIP32_PASSPHRASE;
+			wallet_field_id       = BIP39_PASSPHRASE;
 			strength_score_id     = BIP32_PASSPHRASE_STRENGTH_ID;
 			strength_label_id     = BIP32_PASSPHRASE_STRENGTH_LABEL_ID;
 		}
@@ -2350,7 +2354,7 @@ class MainGUI {
 	async Bip39ApplyPassword( evt ) {
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
 		trace2Main( pretty_func_header_format( "MainGUI.Bip39ApplyPassword", bip32_passphrase ) );
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip32_passphrase );
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
 		await this.Bip39UpdatePassphrase( bip32_passphrase );
 
 		this.Bip39SetPassphraseApplyState( false );
@@ -2382,7 +2386,7 @@ class MainGUI {
 		
 		let data = {};
 		let bip39_passphrase = await window.ipcMain.GeneratePassword( data );
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, bip39_passphrase);
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip39_passphrase);
 		
 		await this.Bip39UpdatePassphrase( bip39_passphrase );
 		
@@ -2398,11 +2402,11 @@ class MainGUI {
 	async GuiClearBip39Passphrase( update_wallet ) {
 		trace2Main( pretty_func_header_format( "MainGUI.GuiClearBip39Passphrase" ) );
 
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '');
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, '');
 		HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );
 		
 		trace2Main( pretty_func_header_format( "MainGUI.Bip39ApplyPassword", '' ) );
-		this.wallet_info.setAttribute( BIP32_PASSPHRASE, '' );
+		this.wallet_info.setAttribute( BIP39_PASSPHRASE, '' );
 		await this.Bip39UpdatePassphrase( '' );
 
 		this.Bip39SetPassphraseApplyState( false );	
@@ -2530,7 +2534,7 @@ class MainGUI {
             this.wallet_info.setAttribute( BLOCKCHAIN, default_blockchain );
 
             // -------- Bip32/Bip38 passphrase -------- 
-			this.wallet_info.setAttribute( BIP32_PASSPHRASE, '' );	
+			this.wallet_info.setAttribute( BIP39_PASSPHRASE, '' );	
 			HtmlUtils.HideElement( BIP32_PASSPHRASE_STRENGTH_CONTAINER_ID );			
 
 			this.wallet_info.setAttribute( BIP38_PASSPHRASE, '' );	
@@ -3780,9 +3784,9 @@ class MainGUI {
 		//trace2Main(">> " + _CYAN_ + "MainGUI.getWalletInfo() " + _END_);
 		
 		if ( wallet_mode == HD_WALLET_TYPE ) {	
-		    let bip32_passphrase = this.wallet_info.getAttribute( BIP32_PASSPHRASE );
+		    let bip32_passphrase = this.wallet_info.getAttribute( BIP39_PASSPHRASE );
 			if ( bip32_passphrase != undefined && bip32_passphrase != null && bip32_passphrase != "" ) {
-				crypto_info[BIP32_PASSPHRASE] = bip32_passphrase;
+				crypto_info[BIP39_PASSPHRASE] = bip32_passphrase;
 			}
 			// let account       = HtmlUtils.GetElementValue( ACCOUNT_ID );
             let account       = this.getBip32FieldValue( ACCOUNT_ID );	

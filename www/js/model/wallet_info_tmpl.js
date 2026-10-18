@@ -10,7 +10,7 @@ const {
 	ENTROPY, ENTROPY_SIZE, 
 	BIP85_INIT_ENTROPY, BIP85_INDEX,
 	WORD_INDEXES,
-	BIP32_PASSPHRASE, BIP38_PASSPHRASE,
+	BIP39_PASSPHRASE, BIP38_PASSPHRASE,
 	DERIVATION_PATH, WIF,
 	LANG
 } = require('../const_keywords.js');
@@ -29,6 +29,7 @@ v Blockchain              Bitcoin
 v Coin                    BTC
 v Entropy                 649cab0cde2bfeb2213b0f1f823e2e7fa97574d954ec3392a1511db8b0f00d0f
 v Entropy Size            256 bits
+v Bip39 Passphrase        ratatouille
 v address                 1BPJR2AGW6yAg9VjFSaGZi7cig3NYh6EhN
 v Blockchain Explorer     https://www.blockchain.com/explorer/addresses/btc/1BPJR2AGW6yAg9VjFSaGZi7cig3NYh6EhN
 v WIF                     L1DSc5qZym2hL1wTxTVRYXb6BidoNykm6bjyYtJhzheC3H5MbgyY
@@ -36,7 +37,6 @@ v Private Key             77361ed2e3cdd863547b88845b96e916c21f2be50f43a88d737744
 v Secret phrase           goose torch segment rough say flip lumber giggle buzz ball merit young nuclear risk grab outside crime never february derive mention job crouch vessel
 v Shortened Secret phrase GoosTorcSegmRougSayFlipLumbGiggBuzzBallMeriYounNuclRiskGrabOutsCrimNeveFebrDeriMentJobCrouVess
 v Word indexes            804, 1834, 1561, 1506, 1535, 712, 1063, 783, 252, 143, 1116, 2042, 1210, 1491, 810, 1260, 412, 1192, 674, 475, 1112, 960, 417, 1944
-v Passphrase              ratatouille  
 v Derivation Path         m/44'/0'/0'/0/0'  
 v Lang                    EN
 */
@@ -52,6 +52,7 @@ const WALLET_INFO_TEMPLATE = [
 	
 	{ [ENTROPY]:             "" },
 	{ [ENTROPY_SIZE]:        "" },
+	{ [BIP39_PASSPHRASE]:    "" },
 	
 	{ [ADDRESS]:             "" },
 	{ [BLOCKCHAIN_EXPLORER]: "" },
@@ -66,7 +67,6 @@ const WALLET_INFO_TEMPLATE = [
 	{ [SHORTENED_MNEMONICS]: "" },
 	{ [WORD_INDEXES]:        "" },
 	
-	{ [BIP32_PASSPHRASE]:    "" },
 	{ [DERIVATION_PATH]:     "" },	
 
     { [LANG]:                "" }

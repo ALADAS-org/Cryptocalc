@@ -83,7 +83,9 @@ const BIP85_INDEX_WITS_KEY        = 'Bip85 Index';
 const WORDLIST_WORD_INDEXES       = "#WordIndexes";
  
 const BIP32_PROTOCOL              = 'Bip32 Protocol';
-const BIP32_PASSPHRASE            = 'Bip32 Passphrase';
+const BIP39_PASSPHRASE            = 'Bip39 Passphrase';
+// Legacy key (<= 0.5.32) of the Bip39 passphrase in 'wallet_info.wits': still accepted when opening
+const BIP39_PASSPHRASE_LEGACY_KEY = 'Bip32 Passphrase';
 const BIP38_PASSPHRASE            = 'Bip38 Passphrase';
 
 const PWD_STR_AS_SCORE            = 'Password Strength as score';
@@ -219,7 +221,8 @@ if ( typeof exports === 'object' ) {
 	exports.WORD_COUNT            = WORD_COUNT
 	
 	exports.BIP32_PROTOCOL        = BIP32_PROTOCOL 
-	exports.BIP32_PASSPHRASE      = BIP32_PASSPHRASE	
+	exports.BIP39_PASSPHRASE      = BIP39_PASSPHRASE
+	exports.BIP39_PASSPHRASE_LEGACY_KEY = BIP39_PASSPHRASE_LEGACY_KEY
 	exports.BIP38_PASSPHRASE      = BIP38_PASSPHRASE
 	
 	exports.PWD_STR_AS_SCORE      = PWD_STR_AS_SCORE;

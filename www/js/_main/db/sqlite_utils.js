@@ -618,7 +618,9 @@ class SqLiteUtils {
 			let word_indexes       = wallet_data['Word indexes'];
 			// console.log("word_indexes: " + word_indexes);
 			
-			let bip32_passphrase   = wallet_data['Bip32 Passphrase'] != undefined ? wallet_data['Bip32 Passphrase'] : '';
+			// NB: 'Bip39 Passphrase' key since 0.5.33, 'Bip32 Passphrase' in legacy '.wits' (DB column name unchanged)
+			let bip32_passphrase   = wallet_data['Bip39 Passphrase'] != undefined ? wallet_data['Bip39 Passphrase']
+			                       : ( wallet_data['Bip32 Passphrase'] != undefined ? wallet_data['Bip32 Passphrase'] : '' );
 			// console.log("bip32_passphrase: " + bip32_passphrase);
 			
 			let derivation_path    = wallet_data['Derivation Path'] != undefined ? wallet_data['Derivation Path'] : '';
