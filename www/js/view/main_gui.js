@@ -209,8 +209,8 @@ class MainGUI {
 		this.entropy_source_is_user_input = false;		
 		this.img_data_asURL               = "";
 		
-		this.bip32_field_allowed_max_value_digits = BIP32_FIELD_MIN_VALUE_DIGITS;
-		this.bip32_field_allowed_max_value        = BIP32_FIELD_MIN_VALUE;
+		this.bip32_field_allowed_max_digits = BIP32_FIELD_MIN_VALUE_DIGITS;
+		this.bip32_field_allowed_max_value  = BIP32_FIELD_MIN_VALUE;
 		
 		this.previous_account_value       = "0";
 		this.previous_address_index_value = "0";
@@ -3304,7 +3304,7 @@ class MainGUI {
 			let bip32_field_value = parseInt( bip32_field_value_str );
 			
 			if (    bip32_field_value_str.length < 1
-				 || bip32_field_value_str.length > this.bip32_field_allowed_max_value_digits
+				 || bip32_field_value_str.length > this.bip32_field_allowed_max_digits
 				 || bip32_field_value < 0
 				 || bip32_field_value > this.bip32_field_allowed_max_value ) { 
 				 bip32_field_value_str = "0";
@@ -3412,10 +3412,14 @@ class MainGUI {
 	// BIP32Field 'keypress' event handler
 	async onBIP32FieldKeypress( evt ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onBIP32FieldKeypress" ) );
-		//trace2Main("  evt.keyCode:  " + evt.keyCode);
-		//trace2Main("  evt.target:  " + evt.target.id);
+		// trace2Main("  evt.keyCode:  " + evt.keyCode);
+		// trace2Main("  evt.target:  " + evt.target.id);
 		
+		// trace2Main("  1 this.bip32_field_allowed_max_value: '" + this.bip32_field_allowed_max_value + "'" );
 		await this.checkPremium();
+		// trace2Main("  2 this.bip32_field_allowed_max_value: '" + this.bip32_field_allowed_max_value + "'" );
+		
+		// trace2Main("  2 typeof this.bip32_field_allowed_max_value: '" + typeof this.bip32_field_allowed_max_value + "'" );
 		
 		const ENTER_KEYCODE     = 13;
 		const BACKSPACE_KEYCODE = 8;
@@ -3486,6 +3490,7 @@ class MainGUI {
 		}
 		
 		// trace2Main("  is_decimal_digit (" + evt.charCode + "): " + is_decimal_digit);
+		
 		if ( is_decimal_digit ) { 
 			// trace2Main("  New Decimal digit: '" + String.fromCharCode(evt.charCode) + "'" ); 
 		}
@@ -3493,8 +3498,8 @@ class MainGUI {
 			evt.preventDefault();
 			return false;
 		}
-		//trace2Main("  check 1: " + field_value.length + 1 > 4);
-		//trace2Main("  check 2: " + (field_value.length + 1) > 4);
+		// trace2Main("  check 1: " + field_value.length + 1 > 4);
+		// trace2Main("  check 2: " + (field_value.length + 1) > 4);
 		
 		field_value_str = HtmlUtils.GetElementValue( evt.target.id );
 		
@@ -3516,14 +3521,26 @@ class MainGUI {
 				future_field_value_int = parseInt( future_field_value_str );
 			}
 			catch ( error ) {
+				trace2Main("  parseInt error " + error);
 				future_field_value_int = 0;
 			}
 		
 			// trace2Main("  future_field_value_str(" + future_field_value_str.length+ "): '" + future_field_value_str + "'" );
-			// trace2Main("  future_field_value_int: '" + future_field_value_int + "'" ); 			
+			// trace2Main("  future_field_value_int: '" + future_field_value_int + "'" ); 
+            // trace2Main("  typeof future_field_value_int: '" + typeof future_field_value_int + "'" );			
 		}
 		
 		is_valid_future_field_value = false;
+		
+		// trace2Main("  future_field_value_str: '" + future_field_value_str + "'" );
+		// trace2Main("  future_field_value_str.length: '" + future_field_value_str.length + "'" );
+		// trace2Main("  this.bip32_field_allowed_max_digits: '" + this.bip32_field_allowed_max_digits + "'" );
+		// trace2Main("  future_field_value_str.length <= this.bip32_field_allowed_max_digits: '" + (future_field_value_str.length <= this.bip32_field_allowed_max_digits) + "'" );
+		// trace2Main("  this.bip32_field_allowed_max_value: '" + this.bip32_field_allowed_max_value + "'" );
+		// trace2Main("  future_field_value_int: '" + future_field_value_int + "'" );
+		// trace2Main("  future_field_value_int <= this.bip32_field_allowed_max_value: '" + (future_field_value_int <= this.bip32_field_allowed_max_value) + "'" );
+		// trace2Main("  3 this.bip32_field_allowed_max_value: '" + this.bip32_field_allowed_max_value + "'" );
+		
 		if (     future_field_value_str.length >= 1  
 			 &&  future_field_value_str.length <= this.bip32_field_allowed_max_digits  
 			 &&  future_field_value_int >= 0
@@ -3964,12 +3981,12 @@ class MainGUI {
 		
 		if ( this.Options[ PREMIUM_ALLOWED ] != undefined ) {
 			if ( this.Options[ PREMIUM_ALLOWED ] ) {
-				this.bip32_field_allowed_max_value_digits = BIP32_FIELD_MAX_VALUE_DIGITS;
-				this.bip32_field_allowed_max_value        = BIP32_FIELD_MAX_VALUE;
+				this.bip32_field_allowed_max_digits = BIP32_FIELD_MAX_VALUE_DIGITS;
+				this.bip32_field_allowed_max_value  = BIP32_FIELD_MAX_VALUE;
 			}			
 			else {
-				this.bip32_field_allowed_max_value_digits = BIP32_FIELD_MIN_VALUE_DIGITS;
-				this.bip32_field_allowed_max_value        = BIP32_FIELD_MIN_VALUE;
+				this.bip32_field_allowed_max_digits = BIP32_FIELD_MIN_VALUE_DIGITS;
+				this.bip32_field_allowed_max_value  = BIP32_FIELD_MIN_VALUE;
 				// Bip85 not allowed: restore 'Initial Entropy' if Bip85 mode was enabled
 				await this.disableBip85IfEnabled();
 			}
@@ -3977,18 +3994,18 @@ class MainGUI {
 			// ACCOUNT_ID
 			let account_elt = document.getElementById(ACCOUNT_ID);
 			if ( account_elt != undefined ) {
-				account_elt.setAttribute('maxlength', this.bip32_field_allowed_max_value_digits);
+				account_elt.setAttribute('maxlength', this.bip32_field_allowed_max_digits);
 			}
 			
 			// ADDRESS_INDEX_ID
 			let address_index_elt = document.getElementById(ADDRESS_INDEX_ID);
 			if ( address_index_elt != undefined ) {
-				address_index_elt.setAttribute('maxlength', this.bip32_field_allowed_max_value_digits);
+				address_index_elt.setAttribute('maxlength', this.bip32_field_allowed_max_digits);
 			}
 		}
 		
-		// console.log("MainGUI.CP bip32_field_allowed_max_value :        " + this.bip32_field_allowed_max_value );
-		// console.log("MainGUI.CP bip32_field_allowed_max_value_digits : " + this.bip32_field_allowed_max_value_digits );
+		// console.log("MainGUI.CP bip32_field_allowed_max_value :  " + this.bip32_field_allowed_max_value );
+		// console.log("MainGUI.CP bip32_field_allowed_max_digits : " + this.bip32_field_allowed_max_digits );
 	} // checkPremium()
 
 	checkBip32FieldValue( in_value_str ) {
@@ -4005,7 +4022,7 @@ class MainGUI {
 			bip32_field_value_str = in_value_str;
 			
 			if (    bip32_field_value_str.length < 1
-				 || bip32_field_value_str.length > this.bip32_field_allowed_max_value_digits
+				 || bip32_field_value_str.length > this.bip32_field_allowed_max_digits
 				 || bip32_field_value < 0
 				 || bip32_field_value > this.bip32_field_allowed_max_value ) { 
 				 bip32_field_value     = 0;
@@ -4019,7 +4036,7 @@ class MainGUI {
 			bip32_field_value_str = "";
 		}		
 		
-		if (    bip32_field_value_str.length > this.bip32_field_allowed_max_value_digits
+		if (    bip32_field_value_str.length > this.bip32_field_allowed_max_digits
 			 || bip32_field_value < 0
 			 || bip32_field_value > this.bip32_field_allowed_max_value ) { 
 			 bip32_field_value_str = "";
