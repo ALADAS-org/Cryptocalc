@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.33
+## CryptoCalc 0.5.34
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -184,7 +184,10 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.33`: This version
+    - `0.5.34`: This version
+		- Bug Fix: 
+		  Regression in `HD Wallet` mode, it was not possibles to change `account` or `address_index` fields in the GUI
+    - `0.5.33`
 		- Bug Fix: 
 		  In `HD Wallet` mode, `Bip39 passphrase` was not saved in `wallet_info.txt` nor `wallet_info.wits`
     - `0.5.32`
