@@ -205,18 +205,32 @@ const secureRandom = (min, max) => {
   return Math.floor(randomFloat * range) + min;
 }; // secureRandom()
 
-function getRandomInt(max) {
-	return secureRandom(0, max+1);
+/**
+ * Cryptographically secure random integer in [0, n-1] ('n' is EXCLUDED)
+ * Typical use: a random index in an array of length 'n' ( array[ getRandomInt(array.length) ] )
+ * NB: up to Cryptocalc 0.5.33 the upper bound was INCLUDED ([0, n]), which gave an out of range index
+ *     (1 time out of n+1) in 'getFortuneCookie()' and in the random crypto logo of 'electron_main.js'
+ *
+ * @param {number} n - Number of possible values (integer >= 1)
+ * @returns {number} Random integer between 0 (inclusive) and n (exclusive)
+ * @throws {RangeError} if 'n' is not an integer >= 1
+ */
+function getRandomInt( n ) {
+	if ( ! Number.isInteger( n ) || n < 1 ) {
+		throw new RangeError( "getRandomInt: 'n' must be an integer >= 1 (received: " + n + ")" );
+	}
+	return secureRandom( 0, n );
 }; // getRandomInt()
 
+// Random byte value in [0, 255]
 function getRandomByte() {
-	return getRandomInt(255);
+	return getRandomInt( 256 );
 }; // getRandomByte()
 
 const getRandomHexValue = ( byte_count ) => {
     let hex_str = "";
 	for (let i=0; i < byte_count; i++) {
-		let current_uint = getRandomInt(255); 
+		let current_uint = getRandomByte(); // [0, 255]
 		//console.log("---------------");		
 		//console.log("current_uint[" + i + "] = " + current_uint);
 		let hex_value = current_uint.toString(16).padStart(2, '0');
