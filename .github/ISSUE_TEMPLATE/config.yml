@@ -4,3 +4,6 @@ contact_links:
   - name: GitHub Discussions
     url: https://github.com/ALADAS-org/Cryptocalc/discussions
     about: For general questions, ideas, or support
+  - name: Contact by email
+    url: mailto:aladas.cryptowallet@gmail.com
+    about: To contact the Cryptocalc team (ALADAS) directly by email
