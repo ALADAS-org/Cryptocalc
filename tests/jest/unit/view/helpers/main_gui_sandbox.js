@@ -28,6 +28,7 @@ const { Bip85Utils } = require('@crypto/bip85_utils.js');
 const WWW_JS_DIR = path.join(__dirname, '../../../../../www/js');
 
 const SOURCE_FILES = [
+  path.join(WWW_JS_DIR, 'crypto/const_wallet.js'), // BIP39 sizes (loaded before main_gui.js in index.html)
   path.join(WWW_JS_DIR, 'const_keywords.js'),
   path.join(WWW_JS_DIR, 'view/const_gui.js'),
   path.join(WWW_JS_DIR, 'view/main_gui.js'),

@@ -99,7 +99,8 @@ const { NULL_HEX,
 		CHECKSUM, CHAINCODE, 
 		ENTROPY_HEX,
 		MASTER_PK_HEX, ROOT_PK_HEX, 
-		PRIVATE_KEY, PUBLIC_KEY_HEX 
+		PRIVATE_KEY, PUBLIC_KEY_HEX,
+		getBip39Size
 	  }                      = require('./const_wallet.js');
 	  
 const { BLOCKCHAIN, NULL_BLOCKCHAIN,
@@ -123,6 +124,9 @@ const pad = (n, width, z) => {
 	n = n + '';
 	return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 }; // pad()	
+
+// Bip39Utils.GetChecksumBitCount() value for a word count which is not a BIP39 one
+const DEFAULT_CHECKSUM_BIT_COUNT = 4;
 
 const normalizeBip39 = (str) =>{
 	if (!str) return '';
@@ -306,12 +310,8 @@ class Bip39Utils {
 			entropy_hex = sha256( salted_entropy_src_str );
 		}					
 
-		switch ( word_count ) {
-			case 12:	entropy_hex = entropy_hex.substring(0, 32); break; // [0..31]: first 32 bytes of SHA256
-			case 15:	entropy_hex = entropy_hex.substring(0, 40); break; // [0..39]: first 40 bytes of SHA256							
-			case 18:	entropy_hex = entropy_hex.substring(0, 48); break; // [0..47]: first 48 bytes of SHA256						
-			case 21:	entropy_hex = entropy_hex.substring(0, 56); break; // [0..55]: first 56 bytes of SHA256						
-		} // word_count
+		// 12..21 words: first 'entropy bits' of the SHA256 (24 words: all of it)
+		entropy_hex = EntropySize.TruncateToEntropySize( entropy_hex, word_count );
 		
 		//console.log("   entropy_hex:            " + entropy_hex);
 		
@@ -330,30 +330,10 @@ class Bip39Utils {
 	
 	static EntropyToChecksum( entropy_hex ) {
 		// pretty_func_header_log( "Bip39Utils.EntropyToChecksum" );		
-		let word_count    		= EntropySize.GetWordCount( entropy_hex );
-		let checksum_size 		= 8;
-		
-		switch ( word_count ) {
-			case 12:	entropy_hex = entropy_hex.substring(0, 32); // [0..31]: first 32 chars of SHA256
-			            checksum_size = 4;
-						break;
-						
-			case 15:	entropy_hex = entropy_hex.substring(0, 40); // [0..39]: first 40 chars of SHA256
-						checksum_size = 5;
-						break;
-						
-			case 18:	entropy_hex = entropy_hex.substring(0, 48); // [0..47]: first 48 chars of SHA256
-						checksum_size = 6;
-						break;
-						
-			case 21:	entropy_hex = entropy_hex.substring(0, 56); // [0..55]: first 56 chars of SHA256
-			            checksum_size = 7;
-						break;
-						
-			case 24:	//..........................................// [0..64]: All chars of SHA256
-			            checksum_size = 8;
-						break;
-		} // word_count
+		let word_count    = EntropySize.GetWordCount( entropy_hex );
+		// NB: 'word_count' is a number or NULL_WORD_COUNT (never undefined): non BIP39 word count => 8 bits
+		let checksum_size = EntropySize.GetChecksumBitCount( word_count );
+		entropy_hex       = EntropySize.TruncateToEntropySize( entropy_hex, word_count );
 		
 		entropy_hex        = hexWithoutPrefix( entropy_hex );
 		let entropy_binary = hexToBinary( entropy_hex );
@@ -609,16 +589,12 @@ class Bip39Utils {
 			word_count = 12;
 		}
 		
+		// Standard BIP39 pour 12-24 mots
+		let bip39_size = getBip39Size( word_count );
+		if ( bip39_size != undefined ) return bip39_size.checksum_bits;
+		
 		if ( word_count >= 12 ) {
-			// Standard BIP39 pour 12-24 mots
-			switch ( word_count ) {
-				case 12:	return 4;
-				case 15:	return 5;
-				case 18:	return 6;
-				case 21:	return 7;
-				case 24:	return 8;
-				default:	return Math.floor(word_count / 3);
-			}
+			return Math.floor(word_count / 3);
 		} else {
 			// Pour 1-11 mots: minimum 1 bit de checksum
 			return Math.max(1, Math.floor(word_count / 3));
@@ -633,17 +609,9 @@ class Bip39Utils {
 		if ( word_count == undefined ) {
 			 word_count = 12;
 		}
-		let checksum_bit_count = 4; // default case is 12 words / 4 bits
-		switch ( word_count ) {
-			case 12:	checksum_bit_count = 4; break;						
-			case 15:	checksum_bit_count = 5; break;						
-			case 18:	checksum_bit_count = 6; break;						
-			case 21:	checksum_bit_count = 7; break;						
-			case 24:	checksum_bit_count = 8; break;						
-			default:	checksum_bit_count = 4; break;
-		}
-		
-		return checksum_bit_count;
+		// NB: non BIP39 word count => 4 bits (unlike EntropySize.GetChecksumBitCount() which returns 8)
+		let bip39_size = getBip39Size( word_count );
+		return ( bip39_size != undefined ) ? bip39_size.checksum_bits : DEFAULT_CHECKSUM_BIT_COUNT;
 	} // Bip39Utils.GetChecksumBitCount()
 	
 	static GetWordIndexes( mnemonics, args ) {
@@ -711,7 +679,7 @@ class Bip39Utils {
 		
 		let mnemonics = [];
 				
-		if ( ! ( word_count == 12 || word_count == 15 || word_count == 18 || word_count == 21 || word_count == 24 ) ) {
+		if ( getBip39Size( word_count ) == undefined ) {
 			return mnemonics;
 		}
 		

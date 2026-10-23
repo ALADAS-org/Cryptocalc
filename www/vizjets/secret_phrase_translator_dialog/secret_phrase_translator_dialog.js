@@ -153,7 +153,7 @@ class SecretPhraseTranslatorDialog {
 		
 		// console.log("   input_mnemonics: " + input_mnemonics);
 		let words = input_mnemonics.split(' ');
-		if ( ! ( words.length == 12 || words.length == 15 || words.length == 18 || words.length == 21 || words.length == 24 ) ) {
+		if ( ! BIP39_WORD_COUNTS.includes( words.length ) ) { // BIP39_WORD_COUNTS: const_wallet.js
 			let error_msg = "*Error*: Invalid mnemonics count: " + words.length;
 			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, error_msg );
 			return;
@@ -248,7 +248,7 @@ class SecretPhraseTranslatorDialog {
         let paste_text = (evt.clipboardData || window.clipboardData).getData("text");
 
 		let words = paste_text.split(' ');
-		if ( ! ( words.length == 12 || words.length == 15 || words.length == 18 || words.length == 21 || words.length == 24 ) ) {
+		if ( ! BIP39_WORD_COUNTS.includes( words.length ) ) { // BIP39_WORD_COUNTS: const_wallet.js
 			let error_msg = "*Error*: Invalid mnemonics count: " + words.length;
 			HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, error_msg );
 			return;

@@ -3,11 +3,19 @@
 // ====================================================================================
 "use strict";
 
-const { NULL_HEX, NULL_WORD_COUNT 
+const { NULL_HEX, NULL_WORD_COUNT,
+        BIP39_ENTROPY_BIT_SIZES,
+        getBip39Size, getBip39WordCount
 	  }                    = require('./const_wallet.js');
 		  
 const { isHexString, hexWithoutPrefix 
 	  }                    = require('./hex_utils.js');
+
+// Values returned for a word count / an entropy size which is not a BIP39 one (unchanged former defaults)
+const DEFAULT_WORD_COUNT    = 24;
+const DEFAULT_CHECKSUM_BITS = 8;
+const DEFAULT_BYTE_COUNT    = 32;
+const MAX_ENTROPY_BITS      = Math.max( ...BIP39_ENTROPY_BIT_SIZES ); // 256
 
 class EntropySize {
 	static GetBitCount( entropy_hex ) {
@@ -23,60 +31,46 @@ class EntropySize {
 		return word_count;
 	} // EntropySize.GetWordCount()
 	
+	// true if 'word_count' is a BIP39 word count whose entropy is shorter than 256 bits (12..21 words)
+	static IsTruncatedSize( word_count ) {
+		let bip39_size = getBip39Size( word_count );
+		return ( bip39_size != undefined  &&  bip39_size.entropy_bits < MAX_ENTROPY_BITS );
+	} // EntropySize.IsTruncatedSize()
+	
+	// 12..21 words: the first 'entropy bits' of 'hex_str' (taken AS IS, a '0x' prefix is NOT removed)
+	// 24 words or unknown word count: 'hex_str' unchanged
+	static TruncateToEntropySize( hex_str, word_count ) {
+		if ( ! EntropySize.IsTruncatedSize( word_count ) ) return hex_str;
+		return hex_str.substring( 0, getBip39Size( word_count ).entropy_bits / 4 ); // 4 bits per hex digit
+	} // EntropySize.TruncateToEntropySize()
+	
+	// Returns the first 'entropy bits' of 'sha256_hex' for 'word_count' (BIP39 sizes: see 'BIP39_SIZES' in const_wallet.js)
+	// NB: behavior kept as is on purpose (pure refactoring, no behavior change):
+	//     - 12..21 words: substring of 'sha256_hex' AS IS (a '0x' prefix is NOT removed)
+	//     - 24 words or unknown word count: 'sha256_hex' without its '0x' prefix
 	static GetSHA256Substring( sha256_hex, word_count ) {
-		let entropy_hex = hexWithoutPrefix( sha256_hex );
-		switch ( word_count ) {
-			case 12:	entropy_hex = sha256_hex.substring(0, 32); // [0..31]: first 32 chars of SHA256
-						break;			
-			case 15:	entropy_hex = sha256_hex.substring(0, 40); // [0..39]: first 40 chars of SHA256
-						break;						
-			case 18:	entropy_hex = sha256_hex.substring(0, 48); // [0..47]: first 48 chars of SHA256
-						break;						
-			case 21:	entropy_hex = sha256_hex.substring(0, 56); // [0..55]: first 56 chars of SHA256
-						break;						
-			case 24:	//.........................................// [0..63]: All chars of SHA256
-						break;
-		} // word_count
-		
-		return entropy_hex;
+		if ( EntropySize.IsTruncatedSize( word_count ) ) {
+			return EntropySize.TruncateToEntropySize( sha256_hex, word_count );
+		}
+		return hexWithoutPrefix( sha256_hex );
 	} // EntropySize.GetSHA256Substring()
 	
 	static GetChecksumBitCount( word_count ) {
 		if ( word_count == undefined ) {
 			 word_count = 12;
 		}
-		let checksum_bit_count = 4; // default case is 12 words / 4 bits
-		switch ( word_count ) {
-			case 12:	checksum_bit_count = 4; break;						
-			case 15:	checksum_bit_count = 5; break;						
-			case 18:	checksum_bit_count = 6;	break;						
-			case 21:	checksum_bit_count = 7;	break;						
-			case 24:	checksum_bit_count = 8;	break;						
-			default:	checksum_bit_count = 8;	break;
-		}		
-		return checksum_bit_count;
+		let bip39_size = getBip39Size( word_count );
+		return ( bip39_size != undefined ) ? bip39_size.checksum_bits : DEFAULT_CHECKSUM_BITS;
 	} // EntropySize.GetChecksumBitCount()
 	
 	static GetExpectedWordCount( entropy_size ) {
-		switch ( entropy_size ) { 
-			case 128: 	return 12;	break;						
-			case 160: 	return 15;	break;						
-			case 192: 	return 18;	break;						
-			case 224: 	return 21;	break;						
-			case 256: 	return 24;	break;
-			default:	return 24;	break;
-		} // entropy_size
+		let word_count = getBip39WordCount( entropy_size );
+		return ( word_count != undefined ) ? word_count : DEFAULT_WORD_COUNT;
 	} // EntropySize.GetExpectedWordCount()
 	
 	static GetExpectedByteCount( entropy_size ) {
-		switch ( entropy_size ) { 
-			case 128: 	return 16; break; // 32 hexadecimal digits
-			case 160: 	return 20; break; // 40 hexadecimal digits	
-			case 192: 	return 24; break; // 48 hexadecimal digits						
-			case 224: 	return 28; break; // 56 hexadecimal digits					
-			case 256: 	return 32; break; // 64 hexadecimal digits
-			default:	return 32; break;
-		} // entropy_size
+		let word_count = getBip39WordCount( entropy_size );
+		return ( word_count != undefined ) ? entropy_size / 8 : DEFAULT_BYTE_COUNT;
 	} // EntropySize.GetExpectedByteCount()
 } // EntropySize class
 

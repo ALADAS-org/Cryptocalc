@@ -36,7 +36,7 @@ const ECONVERTER_QUIT_BTN_ID               = "econverter_quit_btn_id";
 
 const BIP39_ALLOWED_BYTES_COUNT = [ 16,   20,  24,  28,  32 ]; 
 const BIP39_ALLOWED_WORD_COUNT  = [ 12,   15,  18,  21,  24 ]; 
-const BIP39_ALLOWED_BIT_SIZES   = [ 128, 160, 192, 224, 256 ]; 
+// NB: BIP39 entropy sizes: BIP39_ENTROPY_BIT_SIZES (const_wallet.js)
  
 const INPUT_FIELDS_IDS = [ ECONVERTER_RAWTEXT_INPUT_ID,       ECONVERTER_HEXADECIMAL_INPUT_ID, 
                            ECONVERTER_BASE64_INPUT_ID,        ECONVERTER_BASE58_INPUT_ID,
@@ -545,7 +545,7 @@ class EntropyConverterDialog {
 					console.log("base64_value_without_padding(" + base64_value_without_padding.length + "): " + base64_value_without_padding);	
 				}		
 				
-				if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {
+				if ( BIP39_ENTROPY_BIT_SIZES.includes( hex_value.length*4 )  ) {
 					if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {
 						let current_base64_value = HtmlUtils.GetElementValue( ECONVERTER_BASE64_INPUT_ID );
 						console.log("current_base64_value(" + current_base64_value.length + "): " + current_base64_value);						
@@ -590,12 +590,12 @@ class EntropyConverterDialog {
 					}
 					else if ( target_field_id == ECONVERTER_HEXADECIMAL_INPUT_ID  &&  hex_value != '' ) {
 						HtmlUtils.SetElementValue( ECONVERTER_HEXADECIMAL_INPUT_ID, hex_value );
-						if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {
+						if ( BIP39_ENTROPY_BIT_SIZES.includes( hex_value.length*4 )  ) {
 							HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base64_value );	
 						}							
 					}
 					else if ( target_field_id == ECONVERTER_BASE64_INPUT_ID  &&  base_conversions[TO_BASE64] != undefined ) {						
-						if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {
+						if ( BIP39_ENTROPY_BIT_SIZES.includes( hex_value.length*4 )  ) {
 							HtmlUtils.SetElementValue( ECONVERTER_BASE64_INPUT_ID, base64_value );	
 						}	
 						else {						
@@ -618,7 +618,7 @@ class EntropyConverterDialog {
 				}
 			}	
 
-			if ( [ 128, 160, 192, 224, 256].indexOf(hex_value.length*4) != -1  ) {	
+			if ( BIP39_ENTROPY_BIT_SIZES.includes( hex_value.length*4 )  ) {	
 				HtmlUtils.SetElementValue( ECONVERTER_ENTROPY_SIZE_SELECT_ID, (hex_value.length*4).toString() );			
 			}			
 		}
@@ -1383,7 +1383,7 @@ class EntropyConverterDialog {
         let paste_text = (evt.clipboardData || window.clipboardData).getData("text");
 
 		let words = paste_text.split(' ');
-		if ( ! ( words.length == 12 || words.length == 15 || words.length == 18 || words.length == 21 || words.length == 24 ) ) {
+		if ( ! BIP39_WORD_COUNTS.includes( words.length ) ) { // BIP39_WORD_COUNTS: const_wallet.js
 			let error_msg = "*Error*: Invalid mnemonics count: " + words.length;
 			HtmlUtils.SetElementValue( ECONVERTER_DIALOG_ERROR_MSG_ID, error_msg );
 			return;

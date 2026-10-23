@@ -41,6 +41,35 @@ const PUBLIC_KEY_HEX     = 'public_key_hex';
 
 const BALANCE_URL        = 'balance_URL';
 
+// ================================  BIP39 sizes  ================================
+// SINGLE SOURCE for the BIP39 sizes (Main process AND Renderer: this file is
+// loaded with 'require' and with a <script> tag in index.html).
+//   word count = (entropy bits + checksum bits) / 11
+//   checksum bits = entropy bits / 32
+const BIP39_SIZES = Object.freeze( {
+	12: Object.freeze( { entropy_bits: 128, checksum_bits: 4 } ),
+	15: Object.freeze( { entropy_bits: 160, checksum_bits: 5 } ),
+	18: Object.freeze( { entropy_bits: 192, checksum_bits: 6 } ),
+	21: Object.freeze( { entropy_bits: 224, checksum_bits: 7 } ),
+	24: Object.freeze( { entropy_bits: 256, checksum_bits: 8 } )
+} ); // BIP39_SIZES
+
+const BIP39_WORD_COUNTS       = Object.freeze( [ 12, 15, 18, 21, 24 ] );
+const BIP39_ENTROPY_BIT_SIZES = Object.freeze( BIP39_WORD_COUNTS.map( (word_count) => BIP39_SIZES[word_count].entropy_bits ) );
+
+// Returns { entropy_bits, checksum_bits } for a BIP39 word count, else 'undefined'
+// NB: the word count must be a NUMBER (strict match, like the former 'switch' statements: "12" is not 12)
+const getBip39Size = ( word_count ) => {
+	if ( typeof word_count !== 'number' || ! BIP39_WORD_COUNTS.includes( word_count ) ) return undefined;
+	return BIP39_SIZES[word_count];
+}; // getBip39Size()
+
+// Returns the BIP39 word count of an entropy size in bits, else 'undefined' (strict match: "128" is not 128)
+const getBip39WordCount = ( entropy_bits ) => {
+	return BIP39_WORD_COUNTS.find( (word_count) => BIP39_SIZES[word_count].entropy_bits === entropy_bits );
+}; // getBip39WordCount()
+// ================================  BIP39 sizes
+
 if (typeof exports === 'object') {
 	exports.NULL_HEX           = NULL_HEX
 	exports.NULL_WORD_COUNT    = NULL_WORD_COUNT
@@ -78,5 +107,11 @@ if (typeof exports === 'object') {
 	
 	exports.PUBLIC_KEY_HEX     = PUBLIC_KEY_HEX
 	
-	exports.BALANCE_URL        = BALANCE_URL 
+	exports.BALANCE_URL        = BALANCE_URL
+
+	exports.BIP39_SIZES             = BIP39_SIZES
+	exports.BIP39_WORD_COUNTS       = BIP39_WORD_COUNTS
+	exports.BIP39_ENTROPY_BIT_SIZES = BIP39_ENTROPY_BIT_SIZES
+	exports.getBip39Size            = getBip39Size
+	exports.getBip39WordCount       = getBip39WordCount
 } // 'const_wallet.js' exports

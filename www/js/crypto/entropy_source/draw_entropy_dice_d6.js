@@ -217,7 +217,7 @@ class DrawEntropyDiceD6 {
 		//# |  256  |  8 |   264  |  24  |
 		let required_rolls = 100;
 		
-		let entropy_sizes = [128, 160, 192, 224, 256];
+		let entropy_sizes = BIP39_ENTROPY_BIT_SIZES; // const_wallet.js
 
 		for (let i=0; i < entropy_sizes.length; i++) {
 			// console.log(">> ------------------------------------------");

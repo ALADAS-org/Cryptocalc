@@ -122,40 +122,26 @@ const ON_GUI_EVENT_LOG_PREFIX = ">> " + _CYAN_ + "MainGUI.onGUIEvent: ";
 
 const trigger_event = ( elt, event_type ) => elt.dispatchEvent( new CustomEvent( event_type, {} ) );
 
+// BIP39 sizes: single source 'BIP39_SIZES' in const_wallet.js (loaded before this file in index.html)
+// NB: values returned for a word count / an entropy size which is not a BIP39 one (unchanged former defaults)
+const GUI_DEFAULT_CHECKSUM_BITS = 8;
+const GUI_DEFAULT_WORD_COUNT    = 24;
+const GUI_DEFAULT_ENTROPY_BITS  = 256;
+
 const getChecksumBitCount = ( word_count ) => {
-		if ( word_count == undefined ) word_count = 12;
-		let checksum_bit_count = 4; // default case is 12 words / 4 bits
-		switch ( word_count ) {
-			case 12: checksum_bit_count = 4; break;						
-			case 15: checksum_bit_count = 5; break;						
-			case 18: checksum_bit_count = 6; break;						
-			case 21: checksum_bit_count = 7; break;						
-			case 24: checksum_bit_count = 8; break;						
-			default: checksum_bit_count = 8; break;
-		}		
-		return checksum_bit_count;
+	if ( word_count == undefined ) word_count = 12;
+	let bip39_size = getBip39Size( word_count );
+	return ( bip39_size != undefined ) ? bip39_size.checksum_bits : GUI_DEFAULT_CHECKSUM_BITS;
 }; // getChecksumBitCount()
 
 const getWordCount = ( entropy_size ) => {
-	switch ( entropy_size ) { 
-		case 128: 	return 12;	break;						
-		case 160: 	return 15;	break;						
-		case 192: 	return 18;	break;						
-		case 224: 	return 21;	break;						
-		case 256: 	return 24;	break;
-		default:	return 24;	break;
-	} // entropy_size
+	let word_count = getBip39WordCount( entropy_size );
+	return ( word_count != undefined ) ? word_count : GUI_DEFAULT_WORD_COUNT;
 }; // getWordCount()
 
 const wordCount2BitsSize = ( word_count ) => {
-	switch ( word_count ) { 
-		case 12: 	return 128;	break;						
-		case 15: 	return 160;	break;						
-		case 18: 	return 192;	break;						
-		case 21: 	return 224;	break;						
-		case 24: 	return 256;	break;
-		default:	return 256;	break;
-	} // word_count
+	let bip39_size = getBip39Size( word_count );
+	return ( bip39_size != undefined ) ? bip39_size.entropy_bits : GUI_DEFAULT_ENTROPY_BITS;
 }; // wordCount2BitsSize()
 
 // ==============================  MainGUI class   ==============================
