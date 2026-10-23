@@ -7,6 +7,18 @@
  * ============================================================================
  */
 
+// Partial mock of 'crypto': getRandomValues() is the real one unless a value is forced
+// (NB: 'crypto.getRandomValues' is not configurable, so jest.spyOn() cannot be used)
+let mockForcedUint32 = null;
+jest.mock('crypto', () => {
+  const actual = jest.requireActual('crypto');
+  return {
+    ...actual,
+    getRandomValues: jest.fn((array) =>
+      (mockForcedUint32 === null) ? actual.getRandomValues(array) : array.fill(mockForcedUint32)),
+  };
+});
+
 const {
   hexWithoutPrefix, hexWithPrefix, isHexString,
   hexToBinary, binaryToHex,
@@ -286,31 +298,86 @@ describe('hex_utils', () => {
   // getRandomInt / getRandomByte / getRandomHexValue
   // ==========================================================================
 
-  describe('getRandomInt', () => {
+  // Modification 5.1: getRandomInt(n) renvoie un entier dans [0, n-1] (n EXCLU)
+  // Les valeurs extrêmes sont forcées en simulant crypto.getRandomValues():
+  //   0x00000000 => plus petite valeur possible, 0xFFFFFFFF => plus grande valeur possible
+  const RANDOM_DRAWS     = 100000;
+  const DICE_FACES       = 6;
+  const BYTE_VALUES      = 256;
+  const MAX_UINT32       = 0xFFFFFFFF;
+  const BIP32_INDEX_SPAN = 2147483648; // 2^31: ACCOUNT_MAX + 1 (mode SWORD)
 
-    test('retourne un entier dans [0, max]', () => {
-      for (let i = 0; i < 50; i++) {
-        const v = getRandomInt(10);
-        expect(v).toBeGreaterThanOrEqual(0);
-        expect(v).toBeLessThanOrEqual(10);
+  const withForcedRandom = (uint32_value, fn) => {
+    mockForcedUint32 = uint32_value;
+    try     { return fn(); }
+    finally { mockForcedUint32 = null; }
+  };
+
+  describe('getRandomInt (5.1 : bornes [0, n-1])', () => {
+
+    test('retourne un entier dans [0, n-1], jamais n', () => {
+      for (let i = 0; i < RANDOM_DRAWS; i++) {
+        const v = getRandomInt(DICE_FACES);
         expect(Number.isInteger(v)).toBe(true);
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThan(DICE_FACES);
       }
     });
 
-    test('retourne 0 pour max=0', () => {
-      expect(getRandomInt(0)).toBe(0);
+    test('atteint toutes les valeurs de 0 à n-1', () => {
+      const seen = new Set();
+      for (let i = 0; i < RANDOM_DRAWS; i++) seen.add(getRandomInt(DICE_FACES));
+      expect([...seen].sort()).toEqual([0, 1, 2, 3, 4, 5]);
+    });
+
+    test('valeur aléatoire maximale => n-1 (et non plus n)', () => {
+      expect(withForcedRandom(MAX_UINT32, () => getRandomInt(DICE_FACES))).toBe(DICE_FACES - 1);
+    });
+
+    test('valeur aléatoire minimale => 0', () => {
+      expect(withForcedRandom(0, () => getRandomInt(DICE_FACES))).toBe(0);
+    });
+
+    test('n = 1 => toujours 0', () => {
+      for (let i = 0; i < 100; i++) expect(getRandomInt(1)).toBe(0);
+    });
+
+    test('index utilisable directement dans un tableau de longueur n', () => {
+      const array = ['a', 'b', 'c'];
+      const last  = withForcedRandom(MAX_UINT32, () => array[getRandomInt(array.length)]);
+      expect(last).toBe('c');
+    });
+
+    test('grande plage (2^31, mode SWORD) : maximum = 2^31 - 1', () => {
+      expect(withForcedRandom(MAX_UINT32, () => getRandomInt(BIP32_INDEX_SPAN))).toBe(BIP32_INDEX_SPAN - 1);
+    });
+
+    test.each([
+      ['0',         0],
+      ['négatif',   -1],
+      ['décimal',   2.5],
+      ['undefined', undefined],
+      ['chaîne',    '6'],
+      ['NaN',       NaN],
+    ])('n %s => RangeError explicite', (label, n) => {
+      expect(() => getRandomInt(n)).toThrow(RangeError);
     });
   });
 
   describe('getRandomByte', () => {
 
     test('retourne une valeur dans [0, 255]', () => {
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < RANDOM_DRAWS; i++) {
         const v = getRandomByte();
-        expect(v).toBeGreaterThanOrEqual(0);
-        expect(v).toBeLessThanOrEqual(255);
         expect(Number.isInteger(v)).toBe(true);
+        expect(v).toBeGreaterThanOrEqual(0);
+        expect(v).toBeLessThanOrEqual(BYTE_VALUES - 1);
       }
+    });
+
+    test('les bornes 0 et 255 sont atteignables (plage inchangée)', () => {
+      expect(withForcedRandom(0,          () => getRandomByte())).toBe(0);
+      expect(withForcedRandom(MAX_UINT32, () => getRandomByte())).toBe(BYTE_VALUES - 1);
     });
   });
 
@@ -334,6 +401,11 @@ describe('hex_utils', () => {
 
     test('fonctionne avec 1 byte', () => {
       expect(getRandomHexValue(1)).toHaveLength(2);
+    });
+
+    test('les octets 00 et ff restent possibles (plage [0, 255] inchangée)', () => {
+      expect(withForcedRandom(0,          () => getRandomHexValue(4))).toBe('00000000');
+      expect(withForcedRandom(MAX_UINT32, () => getRandomHexValue(4))).toBe('ffffffff');
     });
   });
 });

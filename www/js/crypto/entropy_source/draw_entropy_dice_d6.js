@@ -58,7 +58,7 @@ class DrawEntropyDiceD6 {
 		
 		for ( let i=0; i < rolls_needed; i++ ) {
 			// console.log("> DrawEntropyDiceD6.generateEntropy dice(" + i + ")");
-			let dice_value = getRandomInt(5) + 1;
+			let dice_value = getRandomInt(6) + 1; // [1, 6]
 			this.drawDice( i, dice_value );
 			dice_rolls.push(dice_value);
 		}
@@ -226,7 +226,7 @@ class DrawEntropyDiceD6 {
 			console.log(">> entropy_size: " + entropy_size + "  required_rolls: " + required_rolls);
 			let rolls = [];
 			for (let j=0; j < required_rolls; j++) {
-				let roll_value = getRandomInt(5) + 1;
+				let roll_value = getRandomInt(6) + 1; // [1, 6]
 				rolls.push(roll_value);
 			}
 			

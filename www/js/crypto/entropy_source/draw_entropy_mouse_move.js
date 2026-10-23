@@ -77,8 +77,8 @@ const generate_random_point = () => {
 	let margin_X = DrawE_Mouse.MARGINS["left"] + DrawE_Mouse.MARGINS["right"];	
 	let margin_Y = DrawE_Mouse.MARGINS["top"]  + DrawE_Mouse.MARGINS["bottom"];	
 	let rand_point = { x: 0, y: 0 };
-	rand_point.x = getRandomInt( DrawE_Mouse.CANVAS_WIDTH  - margin_X ) + DrawE_Mouse.MARGINS["left"];
-	rand_point.y = getRandomInt( DrawE_Mouse.CANVAS_HEIGHT - margin_Y ) + DrawE_Mouse.MARGINS["top"];
+	rand_point.x = getRandomInt( DrawE_Mouse.CANVAS_WIDTH  - margin_X + 1 ) + DrawE_Mouse.MARGINS["left"]; // [left, WIDTH - right]
+	rand_point.y = getRandomInt( DrawE_Mouse.CANVAS_HEIGHT - margin_Y + 1 ) + DrawE_Mouse.MARGINS["top"];  // [top, HEIGHT - bottom]
 	return rand_point;
 }; // generate_random_point()
 
@@ -116,7 +116,7 @@ class DrawEntropyMouseMove {
 		this.points          = [];
 		this.random_bytes    = [];
 		
-		this.threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE);
+		this.threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE + 1);
 		
 		this.entropy = "";
 		
@@ -204,7 +204,7 @@ class DrawEntropyMouseMove {
 			
 		for ( let i=0; i < this.required_byte_count; i++ ) {		
 			// console.log("> generateEntropy(" + i + ")" );
-			let threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE);
+			let threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE + 1);
 			let hypotenuse = 0;
 			
 			// console.log("> generateEntropy(" + i + ") threshold: " + threshold);
@@ -340,7 +340,7 @@ class DrawEntropyMouseMove {
 			if ( hypotenuse >= this.threshold ) {
 				this.addPoint( mouse_point );
 				
-				this.threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE);
+				this.threshold = DrawE_Mouse.MIN_THRESHOLD + getRandomInt(DrawE_Mouse.THRESHOLD_VARIANCE + 1);
 				
 				this.p5_obj.line( x_arg, y_arg, this.previous_position.x, this.previous_position.y );
 				
