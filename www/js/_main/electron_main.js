@@ -196,9 +196,6 @@ const { MainModel }                     = require('../model/main_model.js');
 
 const { SqLiteUtils }                   = require('./db/sqlite_utils.js');
 
-const DEFAULT_APP_CONFIG = {
-	"ToFile": true
-}; // DEFAULT_APP_CONFIG
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -232,7 +229,6 @@ class ElectronMain {
 				
 		this.cryptowallet_version      = "x.x.x";
 		
-		this.app_config                = DEFAULT_APP_CONFIG;
 
         this.cmd_line	               = {};
 		this.cmd_line[PROGRAM]         = ELECTRON_LAUNCHER;
@@ -460,10 +456,9 @@ class ElectronMain {
 		// ==================== 'did-finish-load' event handler ====================
 		this.MainWindow.webContents.on( 'did-finish-load', 
 			async () => {
-				Skribi.Initialize( this.app_config );
+				Skribi.Initialize();
 				//Skribi.log(">> " + _CYAN_ + "[*Electron*] " + _YELLOW_ + " did-finish-load --" + _END_);
 				
-				this.app_config = this.readAppConfig();
 				// Skribi.log(">> " + _CYAN_ + "eMain.evtH('did-finish-load')> FiredCount: " + this.DidFinishLoad_FiredCount + _END_ );
 
 				this.getCmdLineArgs();	
@@ -827,24 +822,6 @@ class ElectronMain {
 		else
 			this.MainWindow.webContents.closeDevTools();
 	} // toggleDebugPanel()
-	
-	readAppConfig() {
-		pretty_func_header_log( "ElectronMain.readAppConfig" );
-		
-		let app_config = DEFAULT_APP_CONFIG;
-		
-		let config_path = app.getAppPath() + '/www/config';
-		
-		let app_config_path = config_path + '/app_config.json';
-		if ( fs.existsSync( app_config_path ) ) {
-			const app_config_str = fs.readFileSync( app_config_path );
-			if ( app_config_str != "" &&  app_config_str != "[]" && app_config_str != "{}" ) { 
-				app_config = JSON.parse( app_config_str );		
-			}
-		}
-		
-		return app_config;		
-	} // readAppConfig()
 	
 	readOptionsFile() {
 		pretty_func_header_log( "ElectronMain.readOptionsFile" );
