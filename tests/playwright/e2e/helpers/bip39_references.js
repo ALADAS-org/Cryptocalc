@@ -51,27 +51,29 @@ const addressFromPrivateKey = (coin, private_key) => {
   return bitcoin.payments.p2pkh({ pubkey, network: coin.network }).address;
 };
 
-const mnemonicOf = (words, lang = 'EN') => {
-  const wordlist = (lang === 'FR') ? bip39.wordlists.french : bip39.wordlists.english;
-  return bip39.entropyToMnemonic(ENTROPY[words], wordlist);
-};
+// Secret phrase languages used by the tests (value of the 'Seed Phrase' language select)
+const WORDLISTS = { EN: bip39.wordlists.english, FR: bip39.wordlists.french };
 
-const hdPrivateKey = (coin, words, passphrase = '') => {
-  const seed = bip39.mnemonicToSeedSync(mnemonicOf(words), passphrase);
+// NB: the BIP39 seed depends on the LANGUAGE of the secret phrase (the words are hashed)
+const mnemonicOf = (words, lang = 'EN') => bip39.entropyToMnemonic(ENTROPY[words], WORDLISTS[lang]);
+
+const hdPrivateKey = (coin, words, passphrase = '', lang = 'EN') => {
+  const seed = bip39.mnemonicToSeedSync(mnemonicOf(words, lang), passphrase);
   return bip32.fromSeed(seed).derivePath(HD_ADDRESS_PATH(coin.coin_type)).privateKey;
 };
 
-const hdWalletAddress = (coin, words, passphrase = '') =>
-  addressFromPrivateKey(coin, hdPrivateKey(coin, words, passphrase));
+const hdWalletAddress = (coin, words, passphrase = '', lang = 'EN') =>
+  addressFromPrivateKey(coin, hdPrivateKey(coin, words, passphrase, lang));
 
-const simpleWalletPrivateKeyHex = (coin, words) => (words === 24)
+// 256 bits: the entropy is the private key (independent of the language)
+const simpleWalletPrivateKeyHex = (coin, words, lang = 'EN') => (words === 24)
   ? ENTROPY[24]
-  : Buffer.from(hdPrivateKey(coin, words)).toString('hex');
+  : Buffer.from(hdPrivateKey(coin, words, '', lang)).toString('hex');
 
-const simpleWalletAddress = (coin, words) =>
-  addressFromPrivateKey(coin, Buffer.from(simpleWalletPrivateKeyHex(coin, words), 'hex'));
+const simpleWalletAddress = (coin, words, lang = 'EN') =>
+  addressFromPrivateKey(coin, Buffer.from(simpleWalletPrivateKeyHex(coin, words, lang), 'hex'));
 
 module.exports = {
-  HEX64, ENTROPY, BIP39_PASSPHRASE, COINS,
+  HEX64, ENTROPY, BIP39_PASSPHRASE, COINS, WORDLISTS,
   mnemonicOf, hdWalletAddress, simpleWalletAddress, simpleWalletPrivateKeyHex,
 };

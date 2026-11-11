@@ -6,12 +6,18 @@
  * click on a menu item. No direct call to the application code.
  * ============================================================================
  */
+const fs   = require('fs');
+const path = require('path');
 const { expect } = require('@playwright/test');
+
+// Localized GUI messages of the application (one file per language: gui-msg-en.json, gui-msg-fr.json...)
+const L10N_DIR = path.join(__dirname, '../../../../www/js/L10n');
 
 const IDS = {
   SEED_TAB:        '#seed_tab_link_id',
   WALLET_TAB:      '#wallet_tab_link_id',
   WORD_COUNT:      '#word_count_select_id',
+  PHRASE_LANG:     '#lang_select_id',
   ENTROPY:         'entropy_id',
   MNEMONICS:       '#mnemonics_id',
   WALLET_MODE:     '#wallet_mode_select_id',
@@ -54,6 +60,14 @@ const selectWordCount = async (page, words) => {
   await page.waitForTimeout(UI_DELAY);
 };
 
+// Language of the secret phrase ('Seed Phrase' select): 'EN', 'FR'...
+// NB: by default it follows the GUI language (options.json "Lang"), so the tests set it explicitly
+const selectSecretPhraseLang = async (page, lang) => {
+  await openSeedTab(page);
+  await page.selectOption(IDS.PHRASE_LANG, lang);
+  await page.waitForTimeout(UI_DELAY);
+};
+
 const pasteEntropy = async (page, entropy_hex) => {
   await openSeedTab(page);
   await pasteInField(page, IDS.ENTROPY, entropy_hex);
@@ -86,6 +100,18 @@ const expectAddress = async (page, expected) => {
   await expect.poll(() => readValue(page, IDS.ADDRESS), { timeout: POLL_TIMEOUT }).toBe(expected);
 };
 
+// Regex source matching the label of the GUI message 'msg_key' in ANY language of the application
+// (e.g. "EntropyConverterTool": "Entropy Converter" | "Convertisseur d'Entropie")
+const localizedLabelRegex = (msg_key) => {
+  const escape = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const labels = fs.readdirSync(L10N_DIR)
+    .filter((file) => /^gui-msg-[a-z]+\.json$/.test(file))
+    .map((file) => JSON.parse(fs.readFileSync(path.join(L10N_DIR, file), 'utf8'))[msg_key])
+    .filter((label) => typeof label === 'string' && label.trim() !== '');
+  if (labels.length === 0) throw new Error(`No localized label for '${msg_key}' in ${L10N_DIR}`);
+  return '^(' + labels.map((label) => escape(label.trim())).join('|') + ')$';
+};
+
 // Clicks the menu item whose label matches 'label_regex' (Main process menu)
 const clickMenuItem = (electronApp, label_regex) => electronApp.evaluate(({ Menu }, source) => {
   const regex = new RegExp(source, 'i');
@@ -102,6 +128,6 @@ const clickMenuItem = (electronApp, label_regex) => electronApp.evaluate(({ Menu
 module.exports = {
   IDS, WALLET_MODES, POLL_TIMEOUT, UI_DELAY,
   pasteInField, readValue, openSeedTab, openWalletTab,
-  selectWordCount, pasteEntropy, selectWalletMode, selectBlockchain,
-  applyBip39Passphrase, expectAddress, clickMenuItem,
+  selectWordCount, selectSecretPhraseLang, pasteEntropy, selectWalletMode, selectBlockchain,
+  applyBip39Passphrase, expectAddress, clickMenuItem, localizedLabelRegex,
 };

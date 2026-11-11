@@ -15,7 +15,11 @@ const fs = require('fs');
 // ==========================================================================
 
 const ELECTRON_PATH = require('electron');
-const MAIN_PATH = path.join(__dirname, '../../www/js/_main/electron_main.js');
+// The application is launched like 'npm start' ('electron .'): from the project root, so that
+// app.getAppPath() is the project root and 'www/config/options.json' is read (real user configuration).
+// NB: launching 'www/js/_main/electron_main.js' directly made app.getAppPath() = 'www/js/_main': 'options.json' was not found
+//     and the tests ran with the built-in DEFAULT_OPTIONS (128-bit entropy instead of 256).
+const PROJECT_ROOT = path.join(__dirname, '../..');
 const COVERAGE_DIR = path.join(__dirname, '../coverage/playwright');
 
 // Créer le dossier coverage s'il n'existe pas
@@ -41,7 +45,8 @@ const test = base.extend({
     console.log('🚀 Lancement de l\'application Electron...');
     
     const app = await electron.launch({
-      args: [MAIN_PATH],
+      args: [PROJECT_ROOT],
+      cwd: PROJECT_ROOT,
       executablePath: ELECTRON_PATH,
       env: {
         ...process.env,

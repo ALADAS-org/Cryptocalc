@@ -15,8 +15,8 @@
 const { test, expect, waitForAppReady } = require('../setup.js');
 const bip39 = require('bip39');
 const { HEX64 } = require('./helpers/bip39_references.js');
-const { readValue, pasteInField, selectWordCount, openSeedTab, clickMenuItem, POLL_TIMEOUT, UI_DELAY } =
-  require('./helpers/gui_actions.js');
+const { readValue, pasteInField, selectWordCount, openSeedTab, clickMenuItem, localizedLabelRegex,
+        POLL_TIMEOUT, UI_DELAY } = require('./helpers/gui_actions.js');
 
 const BIP39_SIZES = [
   { words: 12, bits: 128 }, { words: 15, bits: 160 }, { words: 18, bits: 192 },
@@ -24,7 +24,11 @@ const BIP39_SIZES = [
 ];
 const INVALID_HEX_DIGITS   = 30;            // 120 bits: not a BIP39 entropy size
 const INVALID_WORD_COUNTS  = [11, 13, 23];
-const MENU = { ENTROPY_CONVERTER: 'Entropy Converter', TRANSLATOR: 'Translator' };
+// Menu items, found by their label in any language of the application (keys of gui-msg-xx.json)
+const MENU = {
+  ENTROPY_CONVERTER: localizedLabelRegex('EntropyConverterTool'),
+  TRANSLATOR:        localizedLabelRegex('SecretPhraseTranslatorTool'),
+};
 
 const CONVERTER = {
   HEX:          '#econverter_hexadecimal_input_id',
