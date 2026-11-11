@@ -14,7 +14,7 @@ class WalletInfo {
 							[COIN]: 					"wallet_coin_id", 
 							[COIN_TYPE]: 				"coin_type_id",					
 							[ENTROPY]: 					"entropy_id",							
-							[ENTROPY_SIZE]: 			"entropy_bits_select_id", 
+							[ENTROPY_SIZE]: 			"entropy_size_select_id", 
 							[EXPECTED_ENTROPY_DIGITS]: 	"",							
 							[WORD_COUNT]: 				"word_count_select_id",			
 							[MNEMONICS]: 				"mnemonics_id",
