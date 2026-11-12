@@ -81,7 +81,7 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_,
 		_END_ }              = require('../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log,
-        pretty_log }         = require('../util/log/log_utils.js');
+        pretty_log, redactSecret }         = require('../util/log/log_utils.js');
 		
 const { NULL_COIN, 
 	    BITCOIN, DOGECOIN, LITECOIN, BINANCE_BSC,
@@ -157,7 +157,7 @@ class Bip39Utils {
 		
 		// pretty_log( "b39.E2Mnk> entropy_hex", entropy_hex );
         entropy_hex = EntropySize.GetSHA256Substring( entropy_hex, word_count );
-        pretty_log( "b39.E2Mnk> entropy_hex.substr(" + word_count + ")", entropy_hex );		
+        pretty_log( "b39.E2Mnk> entropy_hex.substr(" + word_count + ")", redactSecret( entropy_hex ) );		
 		
 		let entropy_bits = hexToBinary( entropy_hex );
 		//pretty_log( "b39.E2Mnk> entropy_bits: '" + entropy_bits + "'" );	
@@ -218,7 +218,7 @@ class Bip39Utils {
 		//                                                ****** KO
 		private_key = hexWithoutPrefix( private_key );
 		let private_key_byte_count = private_key.length / 2;
-        pretty_log( Bip39Utils.LabelWithSize( "private_key", private_key_byte_count ), private_key );					
+        pretty_log( Bip39Utils.LabelWithSize( "private_key", private_key_byte_count ), redactSecret( private_key ) );					
 		
 		if ( ! isHexString( private_key ) ) {
 			let error_msg = "**ERROR** Input for 'Private Key' is Not a in Hexadecimal";
@@ -322,7 +322,7 @@ class Bip39Utils {
 		pretty_func_header_log( "Bip39Utils.EntropySourceToMnemonics" );
 		
 		let entropy_hex = Bip39Utils.EntropySourceToEntropy( salted_entropy_src_str, options );
-	    pretty_log( "b39.Esrc2Mnk> entropy_hex", entropy_hex );
+	    pretty_log( "b39.Esrc2Mnk> entropy_hex", redactSecret( entropy_hex ) );
 		
 		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex, options );
 		return mnemonics;
@@ -423,7 +423,7 @@ class Bip39Utils {
 		let entropy_bits = entropy_binary.substring( 0, entropy_binary.length - checksum_bit_count );
 		
 		let entropy_hex = binaryToHex( entropy_bits );
-		pretty_log("Mnk2Einf> entropy_hex: '" + entropy_hex + "'");
+		pretty_log("Mnk2Einf> entropy_hex", redactSecret( entropy_hex ));
         entropy_info[ENTROPY_HEX] = entropy_hex;
 		
 		return entropy_info;
@@ -478,7 +478,7 @@ class Bip39Utils {
 			lang = Bip39Utils.GuessMnemonicsLang( mnemonics );
 		}
 		
-		pretty_log("Mnk2EinfC> mnemonics(" + lang + "): " + mnemonics);
+		pretty_log("Mnk2EinfC> mnemonics(" + lang + ")", redactSecret( mnemonics ));
 		
 		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
 		// Normaliser la liste une fois au chargement (à faire au début)
@@ -559,11 +559,11 @@ class Bip39Utils {
 			if ( entropy_hex === "" ) entropy_hex = "0";
 		}
 		
-		pretty_log("Mnk2EinfC> entropy_hex", entropy_hex);
+		pretty_log("Mnk2EinfC> entropy_hex", redactSecret( entropy_hex ));
 		
 		// Recalculer le checksum attendu
 		let expected_checksum = Bip39Utils.EntropyToChecksumCustom(entropy_hex, word_count);		
-		pretty_log("Mnk2EinfC> expected_checksum", expected_checksum);
+		pretty_log("Mnk2EinfC> expected_checksum", redactSecret( expected_checksum ));
 		
 		let is_valid = (received_checksum === expected_checksum);
 		

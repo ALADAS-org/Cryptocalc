@@ -19,7 +19,7 @@ const solanaWeb3 = require('@solana/web3.js');
 const { _CYAN_, _END_ 
 	  } = require('../../util/color/color_console_codes.js');
 	  
-const { pretty_log }         = require('../../util/log/log_utils.js');
+const { pretty_log, redactSecret }         = require('../../util/log/log_utils.js');
 	  
 const { BLOCKCHAIN,
         MAINNET,
@@ -62,15 +62,15 @@ const { computeWIF }         = require('../crypto_utils.js');
 
 class SolanaSW_API { 
 	static GetWallet( entropy_hex, salt_uuid ) {
-		pretty_log( ">> [SolanaHD_API.GetWallet]", entropy_hex );
+		pretty_log( ">> [SolanaHD_API.GetWallet]", redactSecret( entropy_hex ) );
 		
 		let mnemonics = Bip39Utils.EntropyToMnemonics( entropy_hex ); // (mnemonic, password)
-		pretty_log("entropy_hex", entropy_hex);
+		pretty_log("entropy_hex", redactSecret( entropy_hex ));
 		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "mnemonics(24)" , mnemonics_items[0] );
+		pretty_log( "mnemonics(24)" , redactSecret( mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "", mnemonics_items[1] );		
+			pretty_log( "", redactSecret( mnemonics_items[1] ) );		
 		}	
 		
 		let seed_64_bytes     = bip39.mnemonicToSeedSync( mnemonics );
@@ -79,7 +79,7 @@ class SolanaSW_API {
 		let seed_32_bytes     = seed_64_bytes.slice(0, 32);
 		
 		let seed_32_bytes_hex = uint8ArrayToHex( seed_32_bytes );
-		pretty_log("seed_32_bytes_hex", seed_32_bytes_hex);
+		pretty_log("seed_32_bytes_hex", redactSecret( seed_32_bytes_hex ));
 		//console.log("   >>> bytes length:             " + seed_32_bytes.length);
 
 		//console.log(">> SolanaHD_API: solana_seed_32_hex\n" + solana_seed_32_hex);
@@ -110,14 +110,14 @@ class SolanaSW_API {
 		let secret_key_b58          = bs58.encode( keypair.secretKey );
 		let secret_key_b58_to_hex   = b58ToHex( secret_key_b58 );
 
-		pretty_log("secret_key_b58_to_hex", secret_key_b58_to_hex);
-		pretty_log("secret_key_b58", secret_key_b58);
+		pretty_log("secret_key_b58_to_hex", redactSecret( secret_key_b58_to_hex ));
+		pretty_log("secret_key_b58", redactSecret( secret_key_b58 ));
 		
 		wallet[PRIVATE_KEY]     = secret_key_b58_to_hex;
 		
 		let wif = computeWIF( entropy_hex );	
 		wallet[WIF] = wif;
-        pretty_log("WIF", wallet[WIF]);		
+        pretty_log("WIF", redactSecret( wallet[WIF] ));		
 			
 		wallet[MNEMONICS]         = mnemonics;
 		

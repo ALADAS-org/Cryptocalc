@@ -32,7 +32,7 @@ const { _RED_, _CYAN_, _PURPLE_,
         _YELLOW_, _END_ }     = require('../../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log,
-        pretty_log }       = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }       = require('../../util/log/log_utils.js');
 
 const { NULL_HEX, NULL_BECH32, 
         NULL_NET, NULL_UUID, NULL_ADDRESS, NULL_SEEDPHRASE,		
@@ -80,7 +80,7 @@ class CardanoHD_API {
 		let coin   = COIN_ABBREVIATIONS[blockchain];
 		
 		pretty_func_header_log( "CardanoHD_API.GetWallet", blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "HDCard.getW> entropy_hex", entropy_hex );
+		pretty_log( "HDCard.getW> entropy_hex", redactSecret( entropy_hex ) );
 		
 		if ( account == undefined ) 		account       = 0;	
 		if ( address_index == undefined ) 	address_index = 0;
@@ -105,9 +105,9 @@ class CardanoHD_API {
 		let word_count = EntropySize.GetWordCount( entropy_hex );
 		let mnemonics  = Bip39Utils.EntropyToMnemonics( entropy_hex );	
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "HDCard.getW>  mnemonics(" + word_count + ")" , mnemonics_items[0] );
+		pretty_log( "HDCard.getW>  mnemonics(" + word_count + ")" , redactSecret( mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "HDCard.getW> ", mnemonics_items[1] );		
+			pretty_log( "HDCard.getW> ", redactSecret( mnemonics_items[1] ) );		
 		}
 		new_wallet[MNEMONICS]       = mnemonics;
 		// ---------- Mnemonics
@@ -131,10 +131,10 @@ class CardanoHD_API {
 		const xpriv_key_bytes   = root_key.to_raw_key().as_bytes();
 		
 		let xpriv_key_hex       = Buffer.from( xpriv_key_bytes ).toString('hex');
-		pretty_log( "HDCard.getW> xpriv_key_hex", xpriv_key_hex );
+		pretty_log( "HDCard.getW> xpriv_key_hex", redactSecret( xpriv_key_hex ) );
 		
 		new_wallet[PRIVATE_KEY] = xpriv_key;
-		pretty_log( "HDCard.getW> xpriv_key", xpriv_key );
+		pretty_log( "HDCard.getW> xpriv_key", redactSecret( xpriv_key ) );
 		//---------- Extended Private key (xpriv)		
 		
 		return new_wallet;
@@ -157,7 +157,7 @@ class CardanoHD_API {
 		if ( entropy == undefined )  {
 			entropy = "a3fce93b23edb41a877d021e51b951bacb50805d7f9100aeeef421e5a7269b38";
 		}
-		pretty_log( "HDCard.createWinf> entropy", entropy );
+		pretty_log( "HDCard.createWinf> entropy", redactSecret( entropy ) );
 		
 		let wallet_info = {};
 

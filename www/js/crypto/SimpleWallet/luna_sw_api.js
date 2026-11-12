@@ -8,7 +8,7 @@ const { MnemonicKey  } = require('@terra-money/feather.js');
 const { _CYAN_, _END_ }      = require('../../util/color/color_console_codes.js');
 
 const { pretty_func_header_log,
-        pretty_log }                  = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }                  = require('../../util/log/log_utils.js');
 
 const { TERRA_LUNA,  
 		COIN_ABBREVIATIONS } = require('../const_blockchains.js');
@@ -47,7 +47,7 @@ class LUNA_API {
 			
 			//---------- private key ----------
 			new_wallet_infos[PRIVATE_KEY] = private_key;
-            pretty_log(">> LUNA Private Key:", new_wallet_infos[PRIVATE_KEY]);			
+            pretty_log(">> LUNA Private Key:", redactSecret( new_wallet_infos[PRIVATE_KEY] ));			
 			//---------- private key
 			
 			//---------- mnemonics ----------

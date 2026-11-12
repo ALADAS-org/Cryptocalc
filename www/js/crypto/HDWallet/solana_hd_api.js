@@ -33,7 +33,7 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_
 	  }                             = require('../../util/color/color_console_codes.js');
 	  
 const { pretty_func_header_log,
-        pretty_log }                = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }                = require('../../util/log/log_utils.js');
 	  
 const { COIN, COIN_TYPE, NULL_COIN,        
         MAINNET, TESTNET,
@@ -81,7 +81,7 @@ class SolanaHD_API {
 		let coin   = COIN_ABBREVIATIONS[blockchain];
 		
 		pretty_func_header_log( "SolanaHD_API.GetWallet", blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "SolHD.gW>> entropy_hex", entropy_hex );
+		pretty_log( "SolHD.gW>> entropy_hex", redactSecret( entropy_hex ) );
 		
 		if ( account == undefined ) 		account       = 0;	
 		if ( address_index == undefined ) 	address_index = 0;
@@ -90,9 +90,9 @@ class SolanaHD_API {
 		let mnemonics  = Bip39Utils.EntropyToMnemonics( entropy_hex );
 		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "SolHD.gW> mnemonics(" + word_count + ")" , mnemonics_items[0] );
+		pretty_log( "SolHD.gW> mnemonics(" + word_count + ")" , redactSecret( mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "SolHD.gW>" + mnemonics_items[1] );			
+			pretty_log( "SolHD.gW>", redactSecret( mnemonics_items[1] ) );			
 		}
 		
 		let new_wallet = SolanaHD_API.InitializeWallet();
@@ -123,7 +123,7 @@ class SolanaHD_API {
 		
 		let pk_b58 = bs58.encode( keypair.secretKey );
 		new_wallet[PRIVATE_KEY] = pk_b58;
-		pretty_log( "SolHD.gW>> private_key", new_wallet[PRIVATE_KEY] );
+		pretty_log( "SolHD.gW>> private_key", redactSecret( new_wallet[PRIVATE_KEY] ) );
 
 		return new_wallet;
 	} // SolanaHD_API.GetWallet()
@@ -172,7 +172,7 @@ class SolanaHD_API {
 		
 		let master_seed_hex   = uint8ArrayToHex( master_seed );
 	    let master_seed_bytes = master_seed_hex.length / 2;
-		pretty_log( "master seed", master_seed_hex );
+		pretty_log( "master seed", redactSecret( master_seed_hex ) );
 		new_wallet[MASTER_SEED] = master_seed_hex;
         //-------------------- Master Seed	
 
@@ -200,7 +200,7 @@ class SolanaHD_API {
 	    let chaincode_bytes = chaincode.length / 2;
 	    console.log(    "   " + _YELLOW_
 		              + Bip39Utils.LabelWithSize("chaincode", chaincode_bytes) 
-	                  + "          " + _END_ + chaincode);
+	                  + "          " + _END_ + redactSecret( chaincode ));
 		new_wallet[CHAINCODE] = chaincode;
         //------------------------ Chaincode
 		
@@ -217,7 +217,7 @@ class SolanaHD_API {
 		
 		//let private_key_hex = uint8ArrayToHex( key["__D"] );
 		let private_key_hex = uint8ArrayToHex( hdkey2["privateKey"] );
-        pretty_log( "private_key_hex", private_key_hex );		
+        pretty_log( "private_key_hex", redactSecret( private_key_hex ) );		
 		
 		new_wallet[PRIVATE_KEY] = private_key_hex;					  
 		//-------------------- First Private Key

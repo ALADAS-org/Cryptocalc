@@ -45,7 +45,7 @@ const { _RED_, _CYAN_, _PURPLE_,
         _YELLOW_, _END_ }  = require('../../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log,
-        pretty_log }       = require('../../util/log/log_utils.js');	 
+        pretty_log, redactSecret }       = require('../../util/log/log_utils.js');	 
 		
 const { COIN,	    
 		BITCOIN, ETHEREUM, DOGECOIN, LITECOIN, 
@@ -90,7 +90,7 @@ class SimpleWallet {
 		if ( crypto_net == undefined )  crypto_net = "mainnet";
 
 		pretty_func_header_log( "SimpleWallet.GetWallet", blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "sw.gw> entropy_hex", entropy_hex );
+		pretty_log( "sw.gw> entropy_hex", redactSecret( entropy_hex ) );
 		
 		if ( entropy_hex == undefined || entropy_hex == "" ) {
 			throw new Error("SimpleWallet.GetWallet 'entropy_hex' NOT DEFINED");
@@ -99,9 +99,9 @@ class SimpleWallet {
 	    let mnemonics       = Bip39Utils.EntropyToMnemonics( entropy_hex );		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
 		let mnemonics_count = mnemonics.split(' ').length;
-		pretty_log( "sw.gw> mnemonics(" + mnemonics_count + ")", mnemonics_items[0] );
+		pretty_log( "sw.gw> mnemonics(" + mnemonics_count + ")", redactSecret( mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "", mnemonics_items[1] );		
+			pretty_log( "", redactSecret( mnemonics_items[1] ) );		
 		}
 		
 		let new_wallet = SimpleWallet.InitializeWallet();
@@ -180,7 +180,7 @@ class SimpleWallet {
 	
 	// https://stackoverflow.com/questions/77158846/how-can-i-derive-a-key-pair-from-mnemonic-phrase-successfully-in-nodejs
 	static GenerateKeyPairFromMnemonic( mnemonics ) {
-	  pretty_log(  ">> SimpleWallet.GenerateKeyPairFromMnemonic ", mnemonics );
+	  pretty_log(  ">> SimpleWallet.GenerateKeyPairFromMnemonic ", redactSecret( mnemonics ) );
 					
 	  // Derive a seed from the mnemonic phrase
 	  const seed = bip39.mnemonicToSeedSync( mnemonics );

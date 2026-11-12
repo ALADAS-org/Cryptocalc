@@ -44,7 +44,7 @@ const { _RED_, _CYAN_, _PURPLE_,
         _YELLOW_, _END_ }             = require('../../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log,
-        pretty_log }                  = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }                  = require('../../util/log/log_utils.js');
 
 const { NULL_COIN, 
         ETHEREUM, 
@@ -73,12 +73,12 @@ class Ethereum_API {
 			crypto_net = MAINNET;
 		}
 
-		pretty_log( ">> Ethereum_API.GetWallet  private_key", private_key );
+		pretty_log( ">> Ethereum_API.GetWallet  private_key", redactSecret( private_key ) );
 			
 		let new_wallet = Ethereum_API.InitializeWallet();
 			
 		if ( private_key == undefined ) {
-            pretty_log( ">> BlockchainWallet.GetWallet  **ERROR** private_key", seed_SHA256_hex );			
+            pretty_log( ">> BlockchainWallet.GetWallet  **ERROR** private_key", redactSecret( seed_SHA256_hex ) );			
 			return new_wallet;
 		}
 
@@ -118,7 +118,7 @@ class Ethereum_API {
 			pretty_log( ">> ETH_address:", ETH_address );
 			
 			ETH_private_key = wallet[0].privateKey;
-			pretty_log( ">> ETH_private_key:", ETH_private_key );
+			pretty_log( ">> ETH_private_key:", redactSecret( ETH_private_key ) );
 			
 			//---------- get ETH wallet public key ----------
 			// https://ethereum.stackexchange.com/questions/12571/getting-an-address-from-ethereumjs-utils-ecrecover
@@ -146,7 +146,7 @@ class Ethereum_API {
 			ETH_public_key   = eth_wallet.getPublicKeyString();			
         }
 
-		pretty_log( ">> Private Key:", ETH_private_key );
+		pretty_log( ">> Private Key:", redactSecret( ETH_private_key ) );
 		
 		//console.log(">> Ethereum Address: " + stringify(eth_wallet.getAddressString()));
 		
@@ -203,7 +203,7 @@ class Ethereum_API {
 		// this is how we can access to the first account of the wallet
 		pretty_log( "Sepolia (Eth testnet):", "" );
 		pretty_log( "wallet[0].address:", wallet[0].address );
-		pretty_log( "wallet[0].privateKey:", wallet[0].privateKey );
+		pretty_log( "wallet[0].privateKey:", redactSecret( wallet[0].privateKey ) );
 	} // Ethereum_API.GetSepoliaWallet()	
 	
 	static async GetWalletWithKeyStore(seed_SHA256_hex) {
@@ -223,7 +223,7 @@ class Ethereum_API {
 		pretty_log( "", keystoreFilename );
 		
 		const keystore = await wallet.toV3("");
-		pretty_log( "", keystore );
+		pretty_log( "", redactSecret( keystore ) );
 		
 		let	filename = "keystore.json";
 		//console.log("> frieze_text: \n" + frieze_text);

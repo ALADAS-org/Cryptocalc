@@ -41,7 +41,7 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_,
 		_END_ }            = require('../../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log, 
-        pretty_log,  }     = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }     = require('../../util/log/log_utils.js');
 		
 const { MAINNET, TESTNET,
 		
@@ -133,7 +133,7 @@ class Bip32Utils {
 		if ( args[BIP39_PASSPHRASE] != undefined && args[BIP39_PASSPHRASE] != null && args[BIP39_PASSPHRASE] != "" ) { 
 			bip32_passphrase = args[BIP39_PASSPHRASE];
 		}
-		pretty_log( "b32.mnk2wi> Bi32 Passphrase", bip32_passphrase );
+		pretty_log( "b32.mnk2wi> Bi32 Passphrase", redactSecret( bip32_passphrase ) );
 		
 		let account = 0;
 		if ( args[ACCOUNT] != undefined ) { 
@@ -251,7 +251,7 @@ class Bip32Utils {
 		//-------------------- First Private Key --------------------
 		let child_key   = master_node.derivePath( master_derivation_path );
 		let private_key = uint8ArrayToHex( child_key["__D"] );
-		pretty_log( "b32.mnk2wi> private key", private_key );
+		pretty_log( "b32.mnk2wi> private key", redactSecret( private_key ) );
 		hdwallet_info[PRIVATE_KEY] = private_key;
 		hdwallet_info[PRIV_KEY]    = private_key;
 		//-------------------- First Private Key
@@ -310,7 +310,7 @@ class Bip32Utils {
 			}				
 		}
 		
-        pretty_log( "b32.mnk2wi> child_private_key", child_private_key );		
+        pretty_log( "b32.mnk2wi> child_private_key", redactSecret( child_private_key ) );		
 		
 		let child_pk_to_mnemonics = Bip39Utils.EntropyToMnemonics( child_private_key );
 		
@@ -360,7 +360,7 @@ class Bip32Utils {
 		}
 		else {
 			let wif = bs58.encode( Buffer.from( child_private_key, 'hex' ) );
-			pretty_log( "b32.mnk2wi>> WIF", wif );
+			pretty_log( "b32.mnk2wi>> WIF", redactSecret( wif ) );
 			hdwallet_info[WIF] = wif;		
 		}
 		//--------------------------- WIF	

@@ -23,7 +23,7 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_
 	  }                    = require('../../util/color/color_console_codes.js');
 	  
 const { pretty_func_header_log,
-        pretty_log }   = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }   = require('../../util/log/log_utils.js');
 	  
 const { NULL_COIN, 
         MAINNET, TESTNET,
@@ -95,14 +95,14 @@ class CoinKey_API {
 			null_wallet[MNEMONICS]       = "Null-MNEMONICS";
 	
 		if ( private_key == undefined ) {
-			pretty_log(">> CoinKey_API.GetWallet  **ERROR: UNDEFINED PK**: ", private_key);
+			pretty_log(">> CoinKey_API.GetWallet  **ERROR: UNDEFINED PK**: ", redactSecret( private_key ));
 			return null_wallet;
 		}
 		
 		// Note: 'Simple Walllet' mode => 'private_key' must be 32 bytes / 64 hex digits
 		if ( private_key.length != 64 ) {
 			pretty_log( ">> CoinKey_API.GetWallet  **ERROR: INVALID PK SIZE**: ", 
-			            private_key + "(" + private_key.length + ")" );
+			            redactSecret( private_key ) + "(" + private_key.length + ")" );
 			return null_wallet;
 		}
 		
@@ -166,7 +166,7 @@ class CoinKey_API {
 		new_wallet[UUID]       = salt_uuid;
 		
 		new_wallet[PRIVATE_KEY] = private_key;
-		pretty_log( "coinK.getW> private_key(" + private_key.length + ")", private_key );
+		pretty_log( "coinK.getW> private_key(" + private_key.length + ")", redactSecret( private_key ) );
 		
 		var public_key = "";
 

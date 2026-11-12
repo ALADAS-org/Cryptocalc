@@ -7,6 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 const wif            = require('wif');
 
 const { hexWithoutPrefix } = require('./hex_utils.js');
+const { redactSecret }     = require('../util/log/log_utils.js');
 
 class CryptoServices {	
 	static #Key = Symbol();
@@ -37,7 +38,7 @@ class CryptoServices {
 	} // getUUID()
 	
 	pk2WIF( private_key_arg ) {
-		console.log("> CryptoServices.pk2WIF  private_key_arg: " + private_key_arg);
+		console.log("> CryptoServices.pk2WIF  private_key_arg: " + redactSecret( private_key_arg ));
 		private_key_arg = hexWithoutPrefix( private_key_arg );
 		let private_key_buf = Buffer.from( private_key_arg, 'hex' );			
 		let wif_value = wif.encode( { version: 0x80, privateKey: private_key_buf, compressed: false } ); // for the testnet use: wif.encode(239, ...

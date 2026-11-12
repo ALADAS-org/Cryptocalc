@@ -10,7 +10,7 @@ const { beginCell }                             = require('@ton/core');
 const { _CYAN_, _END_ }        = require('../../util/color/color_console_codes.js');
 
 const { pretty_func_header_log,
-        pretty_log }           = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }           = require('../../util/log/log_utils.js');
 		
 const { ETHEREUM, TON,  
 		COIN_ABBREVIATIONS }   = require('../const_blockchains.js');
@@ -66,7 +66,7 @@ class TON_API {
 			
 			//---------- private key ----------
 			new_wallet_infos[PRIVATE_KEY] = TON_wallet_data.privateKey;
-            pretty_log(">> TON Private Key:", new_wallet_infos[PRIVATE_KEY]);			
+            pretty_log(">> TON Private Key:", redactSecret( new_wallet_infos[PRIVATE_KEY] ));			
 			//---------- private key
 			
 			//---------- mnemonics ----------

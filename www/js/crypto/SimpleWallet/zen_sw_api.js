@@ -9,7 +9,7 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_
 	  }                             = require('../../util/color/color_console_codes.js');
 	  
 const { pretty_func_header_log,
-        pretty_log }                = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }                = require('../../util/log/log_utils.js');
 	  
 const { COIN, COIN_TYPE, NULL_COIN,        
         MAINNET, TESTNET, HORIZEN, COIN_ABBREVIATIONS		
@@ -43,15 +43,15 @@ class Zen_SW_API {
 		let coin = COIN_ABBREVIATIONS[blockchain];
 		
 		pretty_func_header_log( "Zen_SW_API.GetWallet", blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "Zen_SW_API.gW>> entropy_hex", entropy_hex );
+		pretty_log( "Zen_SW_API.gW>> entropy_hex", redactSecret( entropy_hex ) );
 		
 		let word_count = EntropySize.GetWordCount( entropy_hex );
 		let mnemonics  = Bip39Utils.EntropyToMnemonics( entropy_hex );
 		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "Zen_SW_API.gW> mnemonics(" + word_count + ")" , mnemonics_items[0] );
+		pretty_log( "Zen_SW_API.gW> mnemonics(" + word_count + ")" , redactSecret( mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "Zen_SW_API.gW>",  mnemonics_items[1] );			
+			pretty_log( "Zen_SW_API.gW>",  redactSecret( mnemonics_items[1] ) );			
 		}
 				
 		new_zen_wallet[BLOCKCHAIN] = HORIZEN;
@@ -60,11 +60,11 @@ class Zen_SW_API {
         new_zen_wallet[MNEMONICS]  = mnemonics;
 
 		new_zen_wallet[PRIVATE_KEY] = entropy_hex;
-		pretty_log( 'Zen_SW.gW>> private_key ', new_zen_wallet[PRIVATE_KEY] );
+		pretty_log( 'Zen_SW.gW>> private_key ', redactSecret( new_zen_wallet[PRIVATE_KEY] ) );
 
 		let zen_wif = zencashjs.address.privKeyToWIF(entropy_hex);
 		new_zen_wallet[WIF] = zen_wif;
-		pretty_log('Zen_SW.gW>> WIF ', new_zen_wallet[WIF]);
+		pretty_log('Zen_SW.gW>> WIF ', redactSecret( new_zen_wallet[WIF] ));
 
 		let pub_key = zencashjs.address.privKeyToPubKey(entropy_hex, true); // generate compressed pubKey
 		pretty_log('Zen_SW.gW>> pub_key ', pub_key);

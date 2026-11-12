@@ -18,7 +18,7 @@ const { _RED_, _CYAN_, _PURPLE_, _YELLOW_, _END_
 	  }                             = require('../../util/color/color_console_codes.js');
 	  
 const { pretty_func_header_log,
-        pretty_log }                = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }                = require('../../util/log/log_utils.js');
 	  
 const { COIN, COIN_TYPE, NULL_COIN,        
         MAINNET, TESTNET,
@@ -55,7 +55,7 @@ class Sui_HD_API {
 		let coin = COIN_ABBREVIATIONS[blockchain];
 		
 		pretty_func_header_log( "Sui_HD_API.GetWallet", blockchain + " " + coin + " " + crypto_net );
-		pretty_log( "SuiHD.gW>> entropy_hex", entropy_hex );
+		pretty_log( "SuiHD.gW>> entropy_hex", redactSecret( entropy_hex ) );
 		
 		let new_sui_wallet = Sui_HD_API.InitializeWallet();
 		
@@ -72,9 +72,9 @@ class Sui_HD_API {
 		new_sui_wallet[MNEMONICS]  = mnemonics;
 		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "SuiHD.gW> mnemonics(" + word_count + ")" , mnemonics_items[0] );
+		pretty_log( "SuiHD.gW> mnemonics(" + word_count + ")" , redactSecret( mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "SuiHD.gW>" + mnemonics_items[1] );			
+			pretty_log( "SuiHD.gW>", redactSecret( mnemonics_items[1] ) );			
 		}		
 		
 		// Sui derivation path (BIP-44): m/44'/784'/0'/0'/0'
@@ -110,7 +110,7 @@ class Sui_HD_API {
 		
 		//const SUI_private_key = keypair.export().privateKey;
 		// console.log('Private Key (Base64):', keypair.export().privateKey);
-		console.log('Private Key (Base64):', SUI_private_key);
+		console.log('Private Key (Base64):', redactSecret( SUI_private_key ));
 		
 		new_sui_wallet[PRIVATE_KEY] = SUI_private_key;		
 		// new_sui_wallet[ADDRESS]     = SUI_address;

@@ -11,7 +11,7 @@ const { _RED_, _CYAN_, _PURPLE_,
         _YELLOW_, _END_ } = require('../../util/color/color_console_codes.js');
 		
 const { pretty_func_header_log,
-        pretty_log }      = require('../../util/log/log_utils.js');
+        pretty_log, redactSecret }      = require('../../util/log/log_utils.js');
 		
 const { COIN, COIN_TYPE,
 	    ETHEREUM,  BINANCE_BSC, ETHEREUM_CLASSIC, 
@@ -154,9 +154,9 @@ class HDWallet {
 		
 	    let mnemonics       = Bip39Utils.EntropyToMnemonics( entropy_hex );		
 		let mnemonics_items = Bip39Utils.MnemonicsAsTwoParts( mnemonics );
-		pretty_log( "hdw.gw> mnemonics", mnemonics_items[0] );
+		pretty_log( "hdw.gw> mnemonics", redactSecret( mnemonics_items[0] ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-			pretty_log( "", mnemonics_items[1] );		
+			pretty_log( "", redactSecret( mnemonics_items[1] ) );		
 		}
 		
 		pretty_log( "hdw.gw> blockchain",    blockchain );
@@ -227,7 +227,7 @@ class HDWallet {
 			// pretty_log("hdw.gw> derivation_path", new_wallet[DERIVATION_PATH]);
 			
 			new_wallet[WIF]             = hdwallet_info[WIF];
-			pretty_log("hdw.gw> WIF", new_wallet[WIF]);
+			pretty_log("hdw.gw> WIF", redactSecret( new_wallet[WIF] ));
 			
             new_wallet[PRIV_KEY]        = hdwallet_info[PRIV_KEY]; 			
 		}

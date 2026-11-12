@@ -67,6 +67,7 @@ const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_
 	  
 const { pretty_func_header_log,
         pretty_log, 
+		redactSecret,
 		resolveSecretMarkers,
 		setHashedSecretsInConsoleLog
       }                = require('../util/log/log_utils.js');
@@ -815,7 +816,7 @@ class ElectronMain {
 	getNewFortuneCookie() {
 		pretty_func_header_log( "ElectronMain.getNewFortuneCookie" );
 		let fortune_cookie = getFortuneCookie();
-		Skribi.log("   fortune_cookie: " + getShortenedString( fortune_cookie) );
+		Skribi.log("   fortune_cookie: " + redactSecret( fortune_cookie ) ); // entropy source
 		this.MainWindow.webContents
 			.send( "fromMain", [ FromMain_SET_FORTUNE_COOKIE, fortune_cookie ] );
 	} // getNewFortuneCookie()
@@ -1193,7 +1194,7 @@ class ElectronMain {
 			
 			const hex_to_ascii = ( hex_value ) => {
 				let hex_str = hex_value.toString(); // force conversion
-				console.log("   hex_str: " + hex_str);	
+				console.log("   hex_str: " + redactSecret( hex_str ));	
 				let ascii_str = '';
 				for (let i = 0; i < hex_str.length; i += 2) {
 					let hex_byte = hex_str.substr(i, 2);
@@ -1486,12 +1487,12 @@ class ElectronMain {
             Skribi.log(">> " + _CYAN_ + "[Electron] " + _YELLOW_ + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + _END_);
 			let { mnemonics, options } = data;
 			mnemonics = mnemonics.normalize('NFC');
-			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  mnemonics: " + JSON.stringify(mnemonics));
+			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  mnemonics: " + redactSecret( mnemonics ));
 			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  options: " + JSON.stringify(options));
 			
 			let word_indexes = Bip39Utils.GetWordIndexes( mnemonics, options );
 			
-			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  word_indexes: " + JSON.stringify(word_indexes));
+			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  word_indexes: " + redactSecret( word_indexes ));
 			console.log(">> " + ToMain_RQ_MNEMONIC_TO_WORD_INDEX + "  word_indexes.length: " + word_indexes.length);
 			
 			let word_index = -1;	
