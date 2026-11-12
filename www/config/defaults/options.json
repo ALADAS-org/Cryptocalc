@@ -16,5 +16,6 @@
 					   "Horizen", "Terra" ] 
   },
   "Lang": "EN",
-  "Wallet Save Path": "$CRYPTOCALC/_output"
+  "Wallet Save Path": "$CRYPTOCALC/_output",
+  "HashedSecretsInConsoleLog": true
 }

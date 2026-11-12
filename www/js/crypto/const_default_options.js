@@ -7,7 +7,7 @@ const {  LANG, DEFAULT_BLOCKCHAIN,
 	     WALLET_MODE, 
 		 HD_WALLET_TYPE, SWORD_WALLET_TYPE, SIMPLE_WALLET_TYPE,
 	     WALLET_SAVE_PATH, ENTROPY_SIZE, 
-	     GUI_THEME  
+	     GUI_THEME, HASHED_SECRETS_IN_CONSOLE_LOG
 	  }                    = require('../const_keywords.js');
 
 const DEFAULT_OPTIONS = {
@@ -32,7 +32,9 @@ const DEFAULT_OPTIONS = {
 	},
 	[LANG]: "EN",
 	[WALLET_SAVE_PATH]:"$CRYPTOWALLET/_output",
-	[GUI_THEME]: "Default"
+	[GUI_THEME]: "Default",
+	// NB: 'true' => secrets appear as fingerprints in the console log (see redactSecret() in log_utils.js)
+	[HASHED_SECRETS_IN_CONSOLE_LOG]: true
 }; // DEFAULT_OPTIONS
 
 if ( typeof exports === 'object' ) {

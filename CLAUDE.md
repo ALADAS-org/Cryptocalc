@@ -134,3 +134,4 @@ All four metrics (branches, functions, lines, statements) must be ≥ 70%.
 - **bs58 pinned to 5.0.0** — Newer versions use ESM `import` syntax which is incompatible with Electron's CommonJS `require`.
 - The app is designed to be used **offline** (cold wallet). Internet connectivity is deliberately detected and displayed as a warning.
 - Wallet save output goes to `_output/` (timestamped subfolders). This folder is git-ignored.
+- **No secret in clear text in the console log.** Every trace of a secret (Entropy, Secret phrase, Private Key, WIF, passphrases, salt...) goes through `redactSecret()` (or `hideSecret()` for single keystrokes) from `www/js/util/log/log_utils.js`. The `HashedSecretsInConsoleLog` option (`true` by default) shows them as per-session HMAC fingerprints; set it to `false` in `www/config/options.json` only to debug, and **never commit** `www/config/options.json` with `"HashedSecretsInConsoleLog": false`.

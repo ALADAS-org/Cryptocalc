@@ -133,6 +133,10 @@ const DEFAULT_BLOCKCHAIN          = 'Default Blockchain';
 
 const PREMIUM_ALLOWED             = 'PremiumAllowed';
 
+// Option: secrets (Entropy, Secret phrase, Private Key, WIF, passphrases...) appear in the
+// console log as HMAC fingerprints when 'true' (default), in clear text when 'false' (debug only)
+const HASHED_SECRETS_IN_CONSOLE_LOG = 'HashedSecretsInConsoleLog';
+
 const WALLET_SAVE_PATH            = 'Wallet Save Path';
 
 const IMAGE_ENTROPY_SRC_TYPE      = 'Image';
@@ -247,4 +251,5 @@ if ( typeof exports === 'object' ) {
 	exports.WALLET_MODE           = WALLET_MODE
 	
 	exports.WALLET_SAVE_PATH      = WALLET_SAVE_PATH
+	exports.HASHED_SECRETS_IN_CONSOLE_LOG = HASHED_SECRETS_IN_CONSOLE_LOG
 } // 'const_keywords.js' exports
