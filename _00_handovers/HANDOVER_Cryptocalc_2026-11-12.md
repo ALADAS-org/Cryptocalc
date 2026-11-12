@@ -40,7 +40,13 @@ Plan (doc) : https://claude.ai/artifact/RS2nwDHnmP72Uxyufv99En
 
 ### Reste à faire, dans l'ordre du plan
 
-- **1.2** Aucun secret dans les traces (`redactSecret`).
+- **1.2** Aucun secret dans les traces (`redactSecret`). **Prochaine étape.** Exigences de Michel (12/11/2026) :
+  - un flag **`ShowSecrets`** dans les options affiche quand même les secrets, pour le débogage ;
+  - il vaut **false** par défaut (et aussi tant que les options ne sont pas encore chargées) ;
+  - le flag doit être ajouté à trois endroits : `www/config/options.json`, `www/config/defaults/options.json` et les options par défaut codées en dur. Ces dernières sont **`DEFAULT_OPTIONS` dans `www/js/crypto/const_default_options.js`**, que `electron_main.js` importe à la ligne 170 et utilise dans `readOptionsFile()` et `setDefaultOptions()` ;
+  - le flag doit agir dans le processus principal comme dans le Renderer (les options arrivent au Renderer par `FromMain_UPDATE_OPTIONS`) ;
+  - attention : `saveOptions()` et `updateOptions()` journalisent tout l'objet options ;
+  - à noter : `readOptionsFile()` n'écrit pas de `options.json` quand le fichier est absent, il utilise seulement `DEFAULT_OPTIONS` en mémoire. Il faut demander à Michel s'il veut que le fichier soit régénéré.
 - **Lot 2**, à commencer par la **2.1 « filet des adresses dorées »**, prérequis des lots 5 à 7 : 2.2 valider dictionnaire et checksum, 2.3 refuser un collage invalide, 2.4 BIP38 compressé, 2.5 espaces et messages d'erreur.
 - **Lot 3** : passphrases non enregistrées (décision D2), `LoadImageFromFile`, sel.
 - **Lot 4** : durcissement Electron.
