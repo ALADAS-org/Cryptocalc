@@ -10,6 +10,7 @@
 //  OK : avec Seedphrase
 const { _CYAN_, 
         _END_ }            = require('../util/color/color_console_codes.js');
+const { redactSecret }   = require('../../util/log/log_utils.js');
 		
 const { ETHEREUM, AVALANCHE,  
 		COIN_ABBREVIATIONS
@@ -28,7 +29,7 @@ class Avalanche_API {
     static async GetWallet( entropy_hex, salt_uuid, crypto_net ) {
 		let coin = COIN_ABBREVIATIONS[AVALANCHE];
 		console.log(  ">> " + _CYAN_ + "Avalanche_API.GetWallet " + _END_ + AVALANCHE + " " + coin + " " + crypto_net);
-		console.log("   entropy_hex: " + entropy_hex);
+		console.log("   entropy_hex: " + redactSecret( entropy_hex ));
 		
 		let new_wallet = await HD_Wallet_API.GetWallet( entropy_hex, salt_uuid, ETHEREUM, crypto_net);			
 	    new_wallet[BLOCKCHAIN]  = AVALANCHE;

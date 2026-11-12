@@ -359,7 +359,7 @@ class DrawEntropyMouseMove {
 					
 					this.entropy = mixed_entropy;
 					
-					console.log(">> DrawE_Mouse.onMouseMoved Entropy\n: " + this.entropy);
+					trace2Main(">> DrawE_Mouse.onMouseMoved Entropy: " + redactSecret( this.entropy ));
 					
 					for (let i=0; i < this.points.length; i++) {
 						let current_point = this.points[i];					

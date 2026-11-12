@@ -422,7 +422,7 @@ class Bip85Dialog {
 		
 		const data = { entropy, bip85_index, bip85_entropy_size };
 		
-		log_msg = ">> " + _CYAN_ + "Bip85Dialog.onApply  data: " + JSON.stringify(data) + _END_;
+		log_msg = ">> " + _CYAN_ + "Bip85Dialog.onApply  data: " + redactSecret( data ) + _END_;
 		window.ipcMain.logToMain(log_msg); 
 			
 		// let bip85_result = await window.ipcMain.Bip85DeriveBip39( data );

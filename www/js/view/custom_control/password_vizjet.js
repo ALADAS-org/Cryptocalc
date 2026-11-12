@@ -28,7 +28,7 @@ class PasswordVizjet {
 	
 	async applyPassword( evt ) {
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
-		trace2Main( pretty_func_header_format( "PasswordVizjet.GuiApplyPassword", bip32_passphrase ) );
+		trace2Main( pretty_func_header_format( "PasswordVizjet.GuiApplyPassword", redactSecret( bip32_passphrase ) ) );
 		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
 		await this.updatePassword( bip32_passphrase );
 

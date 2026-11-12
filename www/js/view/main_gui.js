@@ -280,7 +280,7 @@ class MainGUI {
 		
 		this.Entropy = entropy;
        	
-        trace2Main( pretty_format( "rGUI.newW> entropy", entropy ) );	
+        trace2Main( pretty_format( "rGUI.newW> entropy", redactSecret( entropy ) ) );	
 
 		await this.updateChecksum( entropy );		
 		// ---------- Entropy 
@@ -349,7 +349,7 @@ class MainGUI {
 	async openWallet( json_data ) {
 		trace2Main( "===== rGUI.openW> ===============================================================" );
 		trace2Main( pretty_func_header_format( "MainGUI.openWallet" ) );
-		trace2Main( JSON.stringify(json_data) );
+		trace2Main( pretty_format( "rGUI.openW> json_data", redactSecret( json_data ) ) );
 
         this.cb_enabled = false;
 		
@@ -364,7 +364,7 @@ class MainGUI {
 		let entropy = json_data[ENTROPY];
 		this.Entropy = entropy;
 		// this.wallet_info.setAttribute( ENTROPY, entropy );
-		trace2Main( pretty_format( "rGUI.openW> entropy", entropy ) );
+		trace2Main( pretty_format( "rGUI.openW> entropy", redactSecret( entropy ) ) );
 		// ---------- Entropy		
 		
 		// ---------- Entropy Size ----------
@@ -439,7 +439,7 @@ class MainGUI {
 			if ( json_data[BIP39_PASSPHRASE] != undefined ) {
 				let bip32_passphrase = json_data[BIP39_PASSPHRASE];
 				this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
-				trace2Main( pretty_format( "rGUI.openW> Bip39 Passphrase", bip32_passphrase ) );	
+				trace2Main( pretty_format( "rGUI.openW> Bip39 Passphrase", redactSecret( bip32_passphrase ) ) );	
 			}	
 			// ---------- Bip39 Passphrase
 
@@ -456,14 +456,14 @@ class MainGUI {
 		if ( json_data[BIP38_PASSPHRASE] != undefined ) {
 			let bip38_passphrase = json_data[BIP38_PASSPHRASE];
 			this.wallet_info.setAttribute( BIP38_PASSPHRASE, bip38_passphrase );
-			trace2Main( pretty_format( "rGUI.openW> Bip38 Passphrase", bip38_passphrase ) );	
+			trace2Main( pretty_format( "rGUI.openW> Bip38 Passphrase", redactSecret( bip38_passphrase ) ) );	
 		}	
 		// ---------- Bip38 Passphrase
 		
 		// ---------- Mnemonics ----------
 		let mnemonics = json_data[MNEMONICS];
 		this.wallet_info.setAttribute( MNEMONICS, mnemonics );
-		trace2Main( pretty_format( "rGUI.openW> mnemonics", mnemonics ) );		
+		trace2Main( pretty_format( "rGUI.openW> mnemonics", redactSecret( mnemonics ) ) );		
 		// ---------- Mnemonics
 		
 		// ---------- Address ----------
@@ -480,19 +480,19 @@ class MainGUI {
 		// ---------- Word_Indexes ----------
 		let word_indexes = json_data[WORD_INDEXES];
 		this.wallet_info.setAttribute( WORD_INDEXES, word_indexes );
-		trace2Main( pretty_format( "rGUI.openW> word_indexes", word_indexes ) );
+		trace2Main( pretty_format( "rGUI.openW> word_indexes", redactSecret( word_indexes ) ) );
         // ---------- Word_Indexes		
 		
 		// ---------- WIF ----------
 		let wif = json_data[WIF];
 		this.wallet_info.setAttribute( WIF, wif );
-		trace2Main( pretty_format( "rGUI.openW> wif", wif ) );
+		trace2Main( pretty_format( "rGUI.openW> wif", redactSecret( wif ) ) );
         // ---------- WIF	
 		
 		// ---------- Private Key ----------
 		let private_key = json_data[PRIVATE_KEY];
 		this.wallet_info.setAttribute( PRIVATE_KEY, private_key );
-		trace2Main( pretty_format( "rGUI.openW> private key", private_key ) );
+		trace2Main( pretty_format( "rGUI.openW> private key", redactSecret( private_key ) ) );
         // ---------- Private Key	
 
 		// ---------- Update Window Title ----------
@@ -538,7 +538,7 @@ class MainGUI {
 		
 		let private_key = entropy_hex;
 		// trace2Main( pretty_format("rGUI.genSW> MAINNET", MAINNET) );
-        trace2Main( pretty_format("rGUI.genSW> private_key", private_key) );		
+        trace2Main( pretty_format("rGUI.genSW> private_key", redactSecret( private_key )) );		
 
 		if ( private_key == undefined || private_key == "" ) {
 			 throw new Error("MainGUI.generateSimpleWalletAddress 'private_key' NOT DEFINED");
@@ -555,7 +555,7 @@ class MainGUI {
 			
 			private_key = new_wallet[PRIVATE_KEY];
 			wif         = new_wallet[WIF];
-			trace2Main( pretty_format("rGUI.genSW> new_wallet[WIF]", new_wallet[WIF]) );
+			trace2Main( pretty_format("rGUI.genSW> new_wallet[WIF]", redactSecret( new_wallet[WIF] )) );
 			
 			//---------- Update 'Private Key' in 'Wallet' Tab ----------
 			await this.updatePrivateKey( blockchain, private_key );
@@ -571,7 +571,7 @@ class MainGUI {
 			//---------- Update 'Address' in 'Wallet' Tab
 
 			//---------- Update 'WIF' in 'Wallet' Tab ----------
-            trace2Main( pretty_format( "rGUI.genSW> WIF", wif ) );				
+            trace2Main( pretty_format( "rGUI.genSW> WIF", redactSecret( wif ) ) );				
 			this.wallet_info.setAttribute( WIF, wif );
 			//---------- Update 'WIF' in 'Wallet' Tab			
 	
@@ -603,7 +603,7 @@ class MainGUI {
 	
 	async generateHDWalletAddress( blockchain, entropy_hex ) {
         trace2Main( pretty_func_header_format( "MainGUI.generateHDWalletAddress", blockchain + " " + this.entropy_source_type ) );				 
-		trace2Main( pretty_format("rGUI.genHDW> entropy_hex", entropy_hex ) );
+		trace2Main( pretty_format("rGUI.genHDW> entropy_hex", redactSecret( entropy_hex ) ) );
 		
 		this.cb_enabled = false;
 		
@@ -619,7 +619,7 @@ class MainGUI {
 			entropy_src = this.img_data_asURL;
 		}
 		
-		trace2Main( pretty_format( "rGUI.genHDW> entropy_src", getShortenedString( entropy_src ) ) );
+		trace2Main( pretty_format( "rGUI.genHDW> entropy_src", redactSecret( getShortenedString( entropy_src ) ) ) );
 		
 		let new_wallet     = {};
 		let options        = {};
@@ -632,9 +632,9 @@ class MainGUI {
 		let separator      = '\n';		
 
         let mnemonics_as_2parts = asTwoParts( mnemonics, 15 );
-        trace2Main( pretty_format( "rGUI.genHDW> mnemonics(" + word_count + ")", mnemonics_as_2parts[0] ) );		
+        trace2Main( pretty_format( "rGUI.genHDW> mnemonics(" + word_count + ")", redactSecret( mnemonics_as_2parts[0] ) ) );		
         if ( mnemonics_as_2parts.length > 1 ) { 
-			trace2Main( pretty_format("", mnemonics_as_2parts[1] ) );				
+			trace2Main( pretty_format("", redactSecret( mnemonics_as_2parts[1] ) ) );				
 		}
 		
 		let wif              = "";
@@ -665,7 +665,7 @@ class MainGUI {
 			
 			// ---------- get 'Passphrase' ----------
 			bip32_passphrase = this.wallet_info.getAttribute( BIP39_PASSPHRASE );
-			trace2Main( pretty_format( "rGUI.genHDW> Bip32 Passphrase", "'" + bip32_passphrase + "'") );
+			trace2Main( pretty_format( "rGUI.genHDW> Bip32 Passphrase", redactSecret( bip32_passphrase )) );
 			// ---------- get 'Passphrase'
 			
 			// ---------- get 'Account' ----------
@@ -725,7 +725,7 @@ class MainGUI {
 			     || blockchain == BITCOIN_CASH || blockchain == BITCOIN_SV || blockchain == TERRA_LUNA
                  || blockchain == DASH || blockchain == FIRO ) {
                 wif = ( new_wallet[WIF] != undefined ) ? new_wallet[WIF] : "";
-                trace2Main( pretty_format( "rGUI.genHDW> WIF", wif ) );				
+                trace2Main( pretty_format( "rGUI.genHDW> WIF", redactSecret( wif ) ) );				
 			}
 			else if ( blockchain == TRON ) {				
 				PRIV_KEY = new_wallet[PRIVATE_KEY];
@@ -797,7 +797,7 @@ class MainGUI {
 		
 		//---------- Update 'Private Key' in "Wallet" Tab ----------
 		hd_private_key = new_wallet[PRIVATE_KEY];
-		trace2Main( pretty_format( "rGUI.genHDW> hd_private_key", hd_private_key ) );
+		trace2Main( pretty_format( "rGUI.genHDW> hd_private_key", redactSecret( hd_private_key ) ) );
 		this.wallet_info.setAttribute(PRIVATE_KEY, hd_private_key);
 		
 		if (blockchain == STELLAR) {
@@ -1056,7 +1056,7 @@ class MainGUI {
 	} // addCustomAttributes()
 	
 	async propagateFields( entropy ) {
-		trace2Main( pretty_func_header_format( "MainGUI.propagateFields", entropy ) );
+		trace2Main( pretty_func_header_format( "MainGUI.propagateFields", redactSecret( entropy ) ) );
 
         this.cb_enabled	= false; 	
 		
@@ -1300,14 +1300,14 @@ class MainGUI {
 	} // async updateFieldsVisibility()
 	
 	async updateFields( entropy ) {
-		trace2Main( pretty_func_header_format( "MainGUI.updateFields", entropy ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateFields", redactSecret( entropy ) ) );
 		
 		this.cb_enabled	= false; 
 		
 		//trace2Main("   this.entropy_source_type: " + this.entropy_source_type);
 		//trace2Main( pretty_format( "rGUI.updFields> entropy", entropy ) );
 		
-		trace2Main( pretty_format( "rGUI.upFields> wallet[ENTROPY]", this.wallet_info.getAttribute(ENTROPY) ) );
+		trace2Main( pretty_format( "rGUI.upFields> wallet[ENTROPY]", redactSecret( this.wallet_info.getAttribute(ENTROPY) ) ) );
 		if ( entropy == undefined ) { 
 			// entropy = this.wallet_info.getAttribute(ENTROPY);
 			entropy = this.Entropy;
@@ -1339,7 +1339,7 @@ class MainGUI {
 				
 				entropy = await window.ipcMain.EntropySourceToEntropy( data );
 				
-				trace2Main( pretty_format( "rGUI.upFields> entropy", entropy ) );
+				trace2Main( pretty_format( "rGUI.upFields> entropy", redactSecret( entropy ) ) );
                 this.Entropy = entropy;
                 // this.wallet_info.setAttribute( ENTROPY, entropy );
 				await this.propagateFields( entropy );
@@ -1449,7 +1449,7 @@ class MainGUI {
 		this.wallet_info.setAttribute( ADDRESS_INDEX, 0 );
 		
 		this.wallet_info.setAttribute( WIF, wallet[WIF] );
-		trace2Main( pretty_format( "rGUI.upBlkCHN> WIF", wallet[WIF] ) );
+		trace2Main( pretty_format( "rGUI.upBlkCHN> WIF", redactSecret( wallet[WIF] ) ) );
 		
 		// ---------- Update Window Title ----------
 		let coin = COIN_ABBREVIATIONS[blockchain];
@@ -1505,7 +1505,7 @@ class MainGUI {
 							
 		// let entropy = HtmlUtils.GetElementValue( ENTROPY_ID );
 		let entropy = this.Entropy;
-		trace2Main( pretty_format( "rGUI.upWadr> entropy", entropy ) );	
+		trace2Main( pretty_format( "rGUI.upWadr> entropy", redactSecret( entropy ) ) );	
 		
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID ); 
 		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
@@ -1549,14 +1549,14 @@ class MainGUI {
 	
 	async Bip39UpdatePassphrase( bip39_passphrase ) {
 		trace2Main( "===== rGUI.upPW ===============================================================" );
-		trace2Main( pretty_func_header_format( "MainGUI.Bip39UpdatePassphrase", bip39_passphrase ) );
+		trace2Main( pretty_func_header_format( "MainGUI.Bip39UpdatePassphrase", redactSecret( bip39_passphrase ) ) );
 		let entropy = this.Entropy;
 		// await this.updateEntropy( this.wallet_info.getAttribute( ENTROPY ) ); 
 		await this.updateEntropy( entropy );
 	}  // async Bip39UpdatePassphrase()
 	
 	async updateEntropy( entropy_hex ) {
-		trace2Main( pretty_func_header_format( "MainGUI.updateEntropy", entropy_hex ) );		
+		trace2Main( pretty_func_header_format( "MainGUI.updateEntropy", redactSecret( entropy_hex ) ) );		
 		
 		// this.cb_enabled = false;
 		
@@ -1596,7 +1596,7 @@ class MainGUI {
 		let wallet_mode = this.wallet_info.getAttribute( WALLET_MODE );
 
 		let wallet = {};
-		trace2Main( pretty_format( "rGUI.upE> entropy_hex", entropy_hex ) );
+		trace2Main( pretty_format( "rGUI.upE> entropy_hex", redactSecret( entropy_hex ) ) );
 		trace2Main( pretty_format( "rGUI.upE> wallet_mode", wallet_mode ) );
 		trace2Main( pretty_format( "rGUI.upE> wallet_info[CMD]", this.wallet_info.getAttribute(CMD) ) );
 		
@@ -1706,7 +1706,7 @@ class MainGUI {
 	} // updateCryptoshapeURL()
 	
 	async updateWIF( blockchain, wif ) {
-		trace2Main( pretty_func_header_format( "MainGUI.updateWIF", "WIF:" + wif ) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateWIF", "WIF:" + redactSecret( wif ) ) );
 		
 		if (wif != "") this.wallet_info.setAttribute(WIF, wif);   
 		await this.updateFieldsVisibility();
@@ -1799,9 +1799,9 @@ class MainGUI {
 		
 		let mnemonics = this.wallet_info.getAttribute( MNEMONICS );
         let mnemonics_items = await window.ipcMain.MnemonicsAsTwoParts( mnemonics );		
-		trace2Main( pretty_format( "rGUI.upWidx> mnemonics", mnemonics_items[0] ) );
+		trace2Main( pretty_format( "rGUI.upWidx> mnemonics", redactSecret( mnemonics_items[0] ) ) );
 		if ( mnemonics_items[1].length > 0 ) {	
-            trace2Main( pretty_format( "", mnemonics_items[1] ) );			
+            trace2Main( pretty_format( "", redactSecret( mnemonics_items[1] ) ) );			
 		}
 		
 		let lang = this.wallet_info.getAttribute(LANG);
@@ -1844,7 +1844,7 @@ class MainGUI {
 			let drawE_mouse_entropy = DrawE_Mouse_obj.getEntropy();
 			
 			if ( drawE_mouse_entropy != '' ) {
-				console.log("rGUI.saltE> drawE_mouse_entropy:\n   " + drawE_mouse_entropy);
+				trace2Main( pretty_format( "rGUI.saltE> drawE_mouse_entropy", redactSecret( drawE_mouse_entropy ) ) );
 			}
 			// console.log("rGUI.saltE> entropy_required_digits: " + entropy_required_digits);
 			
@@ -1854,13 +1854,13 @@ class MainGUI {
 			}
 			else {				
 				entropy_src_value = DrawE_Mouse_obj.generateEntropy( entropy_bytes_count );
-				console.log("rGUI.saltE> [Generate] entropy_src_value: " + entropy_src_value);
+				trace2Main( pretty_format( "rGUI.saltE> [Generate] entropy_src_value", redactSecret( getShortenedString( entropy_src_value ) ) ) );
 			}
 		}				
 		
 		let salted_entropy_src = '';
 		if ( entropy_src_value != '' ) {
-			trace2Main( pretty_format( "rGUI.saltE> entropy_src_value", getShortenedString( entropy_src_value ) ) );
+			trace2Main( pretty_format( "rGUI.saltE> entropy_src_value", redactSecret( getShortenedString( entropy_src_value ) ) ) );
 			let salt           = salt_elt.textContent;				
 			salted_entropy_src = salt + entropy_src_value;
         }                                                
@@ -1897,7 +1897,7 @@ class MainGUI {
 		if ( entropy_source_type == FORTUNES_ENTROPY_SRC_TYPE ) {
 			let fortune_cookie = await window.ipcMain.GetFortuneCookie();
 			HtmlUtils.SetElementValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );
-			trace2Main(">> drawEntropySource fortune_cookie: " + fortune_cookie);
+			trace2Main(">> drawEntropySource fortune_cookie: " + redactSecret( fortune_cookie ));
 		}
 		else if ( entropy_source_type == IMAGE_ENTROPY_SRC_TYPE ) {
 			// Draw image in "www/img/CryptoCurrency" folder
@@ -1994,7 +1994,7 @@ class MainGUI {
 				if ( data.length > 0 )  cmd_name       = data[1];
 				if ( data.length > 1 )  wits_json_data = data[2];
 				trace2Main( "   >> cmd: " +  cmd_name );
-				trace2Main( "   >> wits_json_data: " +  JSON.stringify(wits_json_data) );
+				trace2Main( "   >> wits_json_data: " +  redactSecret( wits_json_data ) );
 				if ( cmd_name == CMD_OPEN_WALLET ) {
 					await this.openWallet( wits_json_data );		
 				}				 
@@ -2046,7 +2046,7 @@ class MainGUI {
 				}); // hashValue()                
 
                 let salt = await this.generateSalt( true );	
-                trace2Main( pretty_format( "salt", salt ) ); 				
+                trace2Main( pretty_format( "salt", redactSecret( salt ) ) ); 				
 				
 				// https://www.30secondsofcode.org/js/s/hash-sha-256/
 				let entropy_data = await hashValue( img_data_URL + salt );
@@ -2057,7 +2057,7 @@ class MainGUI {
 				if ( this.wallet_info.getAttribute( EXPECTED_ENTROPY_DIGITS ) < 64 ) {
 					entropy_data = entropy_data.substring( 0, this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS) );
 				}	
-				trace2Main( pretty_format( "rGUI.onGUI(" + FromMain_SEND_IMG_URL + ")> entropy_data", entropy_data ) );
+				trace2Main( pretty_format( "rGUI.onGUI(" + FromMain_SEND_IMG_URL + ")> entropy_data", redactSecret( entropy_data ) ) );
 				//trace2Main("   2 entropy_data length: " + entropy_data.length);
 				this.entropy_source_is_user_input = false; // forces Salt/uuid update
 				this.updateEntropy( entropy_data );	
@@ -2067,7 +2067,7 @@ class MainGUI {
             case FromMain_SET_FORTUNE_COOKIE:
 			    trace2Main( ON_GUI_EVENT_LOG_PREFIX + _YELLOW_ + FromMain_SET_FORTUNE_COOKIE + _END_ );
 				let fortune_cookie = data[1];
-				trace2Main( pretty_format( "fortune_cookie", getShortenedString( fortune_cookie ) ) );
+				trace2Main( pretty_format( "fortune_cookie", redactSecret( fortune_cookie ) ) );
 				// HtmlUtils.SetElementValue( ENTROPY_ID, fortune_cookie );	
 				HtmlUtils.SetElementValue( ENTROPY_SRC_FORTUNES_ID, fortune_cookie );				
 				await this.updateFields();
@@ -2339,7 +2339,7 @@ class MainGUI {
 	
 	async Bip39ApplyPassword( evt ) {
 		let bip32_passphrase = HtmlUtils.GetElementValue( BIP32_PASSPHRASE_ID );
-		trace2Main( pretty_func_header_format( "MainGUI.Bip39ApplyPassword", bip32_passphrase ) );
+		trace2Main( pretty_func_header_format( "MainGUI.Bip39ApplyPassword", redactSecret( bip32_passphrase ) ) );
 		this.wallet_info.setAttribute( BIP39_PASSPHRASE, bip32_passphrase );
 		await this.Bip39UpdatePassphrase( bip32_passphrase );
 
@@ -2641,7 +2641,7 @@ class MainGUI {
 		this.wallet_info.setAttribute( BIP85_ENTROPY_SIZE, bip85_entropy_size );
 		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters bip85_index: " + bip85_index ) );
 		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters bip85_entropy_size: " + bip85_entropy_size + " typeof:" + typeof bip85_entropy_size) );
-		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters init_entropy : " + initial_entropy) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters init_entropy : " + redactSecret( initial_entropy )) );
 		
 		let entropy = initial_entropy;
 		const data = { entropy, bip85_index, bip85_entropy_size };
@@ -2654,7 +2654,7 @@ class MainGUI {
 			trace2Main( "   " + _RED_ + "**ERROR** MainGUI.updateBip85Parameters: " + error + _END_ );
 			return undefined;
 		}
-		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters " + JSON.stringify(bip85_infos)) );
+		trace2Main( pretty_func_header_format( "MainGUI.updateBip85Parameters " + redactSecret( bip85_infos )) );
 		
 		if ( bip85_infos == undefined ) {
 			return undefined;
@@ -2904,7 +2904,7 @@ class MainGUI {
 	// 'Initial Entropy' is NOT changed, only 'Bip85 Entropy' is recomputed (see 5.1.6 in README.md)
 	async onApplyBip85Params( data ) {
 		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params" ) );
-		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params  data: " + JSON.stringify(data) ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onApplyBip85Params  data: " + redactSecret( data ) ) );
 			
 		const { bip85_index, bip85_entropy_size } = data;
 		
@@ -2932,12 +2932,12 @@ class MainGUI {
 	} // onApplyBip85Params()
 	
 	async onKeyDown( evt ) {
-		trace2Main( pretty_func_header_format( "MainGUI.onKeyDown", "'" + evt.key + "' keycode: " + evt.keyCode ) );
+		trace2Main( pretty_func_header_format( "MainGUI.onKeyDown", hideSecret( evt.key ) + " keycode: " + hideSecret( evt.keyCode ) ) );
 		
 		let elt = evt.target || evt.srcElement;		
 		if ( elt.id == ENTROPY_ID ) {
 			let clipboard_text = await navigator.clipboard.readText();
-			trace2Main( pretty_format( "clipboard_text", clipboard_text ) );
+			trace2Main( pretty_format( "clipboard_text", redactSecret( clipboard_text ) ) );
 
 			if ( evt.key == 'Delete' ) return true;
 			
@@ -2948,7 +2948,7 @@ class MainGUI {
 			let entropy_value = this.Entropy;
 			let expected_digit_count = this.expected_entropy_bytes * 2;
 			
-			trace2Main( pretty_format( "entropy_value",        entropy_value ) );
+			trace2Main( pretty_format( "entropy_value",        redactSecret( entropy_value ) ) );
 			trace2Main( pretty_format( "expected_digit_count", expected_digit_count ) );
 			
 			//trace2Main("   evt.key: '" + evt.key + "'");
@@ -2956,7 +2956,7 @@ class MainGUI {
 				 || allowed_alphabet.indexOf(evt.key) == -1 
 				 || entropy_value.length > expected_digit_count ) {
 					 
-				trace2Main( pretty_format( "INVALID ", evt.key ) );				
+				trace2Main( pretty_format( "INVALID ", hideSecret( evt.key ) ) );				
 				return false;
 			}
 		}
@@ -2998,12 +2998,12 @@ class MainGUI {
 		let text_cursor_pos = HtmlUtils.GetElement( ENTROPY_ID ).selectionStart;
 		
 		let new_char = String.fromCharCode(evt.charCode);
-		trace2Main( pretty_format( "new_char", new_char ) );
+		trace2Main( pretty_format( "new_char", hideSecret( new_char ) ) );
 		
 		let new_entropy = insertCharAtIndex( entropy, new_char, text_cursor_pos );		
 		
-		trace2Main( pretty_format( "entropy(" + entropy.length + ")",         entropy ) );
-		trace2Main( pretty_format( "new_entropy(" + new_entropy.length + ")", new_entropy ) );
+		trace2Main( pretty_format( "entropy(" + entropy.length + ")",         redactSecret( entropy ) ) );
+		trace2Main( pretty_format( "new_entropy(" + new_entropy.length + ")", redactSecret( new_entropy ) ) );
 		trace2Main( pretty_format( "expected_digits" + this.wllet.getAttribute(EXPECTED_ENTROPY_DIGITS) ) );
         trace2Main( pretty_format( "text_cursor_pos", text_cursor_pos ) );	
 		
@@ -3019,7 +3019,7 @@ class MainGUI {
 		//this.updateStatusbarInfo( true );		
 
 		if ( new_entropy.length == this.wallet_info.getATtribute(EXPECTED_ENTROPY_DIGITS) ) {
-			trace2Main( "   new_entropy(" + new_entropy.length + "):  " + new_entropy); 
+			trace2Main( "   new_entropy(" + new_entropy.length + "):  " + redactSecret( new_entropy )); 
 
             // HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );	
             this.Entropy = new_entropy;			
@@ -3052,11 +3052,11 @@ class MainGUI {
         let paste_data = (evt.clipboardData || evt.clipboardData).getData("text");
 		let paste_length = paste_data.length;
 		
-		trace2Main("   paste_data(" + paste_length + "): " + paste_data);		
+		trace2Main("   paste_data(" + paste_length + "): " + redactSecret( paste_data ));		
 		
 		// let current_entropy = HtmlUtils.GetElementValue(ENTROPY_ID);
 		let current_entropy = this.Entropy;
-		trace2Main("   current_entropy(" + current_entropy.length + "): " + current_entropy);	
+		trace2Main("   current_entropy(" + current_entropy.length + "): " + redactSecret( current_entropy ));	
 		
 		let new_entropy     = "";		
         let expected_digits = this.wallet_info.getAttribute(EXPECTED_ENTROPY_DIGITS);
@@ -3088,7 +3088,7 @@ class MainGUI {
 				
 				new_entropy = insertSubstringAtIndex
 				              ( current_entropy, paste_data, text_cursor_pos );
-				trace2Main("   new_entropy (pasted): " + new_entropy);
+				trace2Main("   new_entropy (pasted): " + redactSecret( new_entropy ));
 				// HtmlUtils.SetElementValue( ENTROPY_ID, new_entropy );
 				this.Entropy = new_entropy;
 			}	
@@ -3106,7 +3106,7 @@ class MainGUI {
 	
 	async onCustomEntropyUpdate( evt ) {
 		let entropy = evt.detail["entropy"];
-		console.log( "MainGUI.onCustomEntropyUpdate  entropy:\n   " + entropy);	
+		trace2Main( pretty_format( "MainGUI.onCustomEntropyUpdate  entropy", redactSecret( entropy ) ) );	
 
 		// HtmlUtils.SetElementValue( ENTROPY_ID, entropy );	
 		this.Entropy = entropy;
@@ -3121,11 +3121,11 @@ class MainGUI {
         let paste_data = (evt.clipboardData || evt.clipboardData).getData("text");
 		let paste_words = paste_data.split(' ');
 		
-		trace2Main("  paste_data(w: " + paste_words.length + "): " + paste_data);
+		trace2Main("  paste_data(w: " + paste_words.length + "): " + redactSecret( paste_data ));
 		
 		let current_mnemonics = HtmlUtils.GetElementValue( MNEMONICS_ID );
 		let current_words = current_mnemonics.split(' ');
-		trace2Main("   current_mnemonics(w: " + current_words.length + "): " + current_mnemonics);
+		trace2Main("   current_mnemonics(w: " + current_words.length + "): " + redactSecret( current_mnemonics ));
 
         let paste_lang ="";
 		
@@ -3167,7 +3167,7 @@ class MainGUI {
             data = { mnemonics, lang };			
 			let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
 			let new_entropy = entropy_info[ENTROPY_HEX];
-			trace2Main("  new_entropy: " + new_entropy);
+			trace2Main("  new_entropy: " + redactSecret( new_entropy ));
 			
 			// 3. Update 'Mnemonics' from 'Entropy'
 			this.setEntropySourceIsUserInput( true );
@@ -3743,7 +3743,7 @@ class MainGUI {
 					  || blockchain == AVALANCHE || blockchain == POLYGON			          
 					  || blockchain == SOLANA ) {
 				crypto_info[PRIVATE_KEY] = HtmlUtils.GetElementValue( PRIVATE_KEY_ID ); 
-				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", crypto_info[PRIVATE_KEY] ) );
+				trace2Main( pretty_format( "rGUI.getWinf> crypto_info[PRIVATE_KEY]", redactSecret( crypto_info[PRIVATE_KEY] ) ) );
 			}	
             else if ( blockchain == RIPPLE || blockchain == TON || blockchain == TERRA_LUNA ) {
 				let PRIV_KEY_value = crypto_info[PRIV_KEY];
@@ -3889,7 +3889,7 @@ class MainGUI {
 		const options = { [LANG]: lang, [WORD_COUNT]: this.wallet_info.getAttribute(WORD_COUNT) };
 		let data = { salted_entropy_src_str, options };				
 		let	entropy = await window.ipcMain.EntropySourceToEntropy( data );	
-        trace2Main( pretty_format( "rGUI.genEsrc2E> entropy", entropy ) );
+        trace2Main( pretty_format( "rGUI.genEsrc2E> entropy", redactSecret( entropy ) ) );
 		
         return entropy;		
 	} // generateEntropyFromEntropySource()

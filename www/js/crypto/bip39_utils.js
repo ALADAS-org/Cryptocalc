@@ -977,19 +977,19 @@ const translate_ConvertLessThan12Mnemonics = async () => {
 		mnemonics = current_mnemonic;
 		options = { [LANG]: 'EN' };
 		let word_indexes = Bip39Utils.GetWordIndexes( mnemonics, options );
-		console.log("word_indexes: " + JSON.stringify(word_indexes));
+		console.log("word_indexes: " + redactSecret( word_indexes ));
 		
 		// console.log("word_indexes): " + JSON.stringify(word_indexes) );
         word_index = word_indexes[0];		
 		
 		new_mnemonic = Bip39Utils.GetMnemonicFromWordIndex( word_index, 'FR' ).normalize('NFC');
-		console.log(" *** word{ 'No':" + i + ", 'word_idx':" + word_index + "} in '" + current_lang + "': '" +  current_mnemonic + "'  translated to '" + new_lang + "': " + new_mnemonic);	
+		console.log(" *** word{ 'No':" + i + ", 'word_idx':" + redactSecret( word_index ) + "} in '" + current_lang + "': " +  redactSecret( current_mnemonic ) + "  translated to '" + new_lang + "': " + redactSecret( new_mnemonic ));	
 
 		translated_secret_phrase_value += new_mnemonic + ' ';				
 	}
 
 	translated_secret_phrase_value = translated_secret_phrase_value.trim(' ');
-    console.log( "\ntranslated_mnemonics: " + translated_secret_phrase_value);
+    console.log( "\ntranslated_mnemonics: " + redactSecret( translated_secret_phrase_value ));
 }; // translate_ConvertLessThan12Mnemonics()
 
 // test_GuessMnemonicsLang();

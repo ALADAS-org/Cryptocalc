@@ -536,22 +536,22 @@ class EntropyConverterDialog {
 			if ( hex_value != '' ) {
 				if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {
 					let current_base64_value = HtmlUtils.GetElementValue( ECONVERTER_BASE64_INPUT_ID );
-					console.log("current_base64_value(" + current_base64_value.length + "): " + current_base64_value);
+					trace2Main("current_base64_value(" + current_base64_value.length + "): " + redactSecret( current_base64_value ));
 					
 					let bip39_base64_value = hexToB64( hex_value );					
-					console.log("bip39_base64_value(" + bip39_base64_value.length + "): " + bip39_base64_value);	
+					trace2Main("bip39_base64_value(" + bip39_base64_value.length + "): " + redactSecret( bip39_base64_value ));	
 
 					let base64_value_without_padding = base64_value.replaceAll('=','');
-					console.log("base64_value_without_padding(" + base64_value_without_padding.length + "): " + base64_value_without_padding);	
+					trace2Main("base64_value_without_padding(" + base64_value_without_padding.length + "): " + redactSecret( base64_value_without_padding ));	
 				}		
 				
 				if ( BIP39_ENTROPY_BIT_SIZES.includes( hex_value.length*4 )  ) {
 					if ( current_field_id == ECONVERTER_BASE64_INPUT_ID ) {
 						let current_base64_value = HtmlUtils.GetElementValue( ECONVERTER_BASE64_INPUT_ID );
-						console.log("current_base64_value(" + current_base64_value.length + "): " + current_base64_value);						
+						trace2Main("current_base64_value(" + current_base64_value.length + "): " + redactSecret( current_base64_value ));						
 
 						let bip39_base64_value = hexToB64( hex_value );
-						console.log("bip39_base64_value(" + bip39_base64_value.length + "): " + bip39_base64_value);
+						trace2Main("bip39_base64_value(" + bip39_base64_value.length + "): " + redactSecret( bip39_base64_value ));
 						
 						if ( current_base64_value.length > bip39_base64_value.length ) {
 							base64_value = current_base64_value;
@@ -733,7 +733,7 @@ class EntropyConverterDialog {
 				
 				// console.log("new_mnemonic: " + new_mnemonic);
 				new_mnemonic = new_mnemonic.normalize('NFC');
-				console.log("[" + i + "," + current_lang + "] idx:" + word_index + ": <" +  current_mnemonic + "> to " + new_lang + ": <" + new_mnemonic + ">");	
+				trace2Main("[" + i + "," + current_lang + "] idx:" + redactSecret( word_index ) + ": <" +  redactSecret( current_mnemonic ) + "> to " + new_lang + ": <" + redactSecret( new_mnemonic ) + ">");	
 
 				translated_secret_phrase_value += new_mnemonic + ' ';				
 			}
@@ -762,7 +762,7 @@ class EntropyConverterDialog {
 				// console.log("   word indexes to mnemonics: '" + mnemonics + "'" );
 			}		
 			
-			console.log("   current mnemonics: " + secret_phrase_value);
+			trace2Main("   current mnemonics: " + redactSecret( secret_phrase_value ));
 			
 			mnemonics = secret_phrase_value;
 			lang      = current_lang;
@@ -786,7 +786,7 @@ class EntropyConverterDialog {
 				lang    = new_lang;
 				data = { entropy, lang };
 				new_mnemonics = await window.ipcMain.EntropyToMnemonics( data );
-				console.log("   new_mnemonics(" + lang + "): " + new_mnemonics);
+				trace2Main("   new_mnemonics(" + lang + "): " + redactSecret( new_mnemonics ));
 			}
 			
 			HtmlUtils.SetElementValue( ECONVERTER_SECRET_PHRASE_INPUT_ID, new_mnemonics );
@@ -984,7 +984,7 @@ class EntropyConverterDialog {
 		
 		let tmp_word_index = OUT_OF_RANGE_WORD_INDEX;
 		
-		console.log(" 1 selected_text: '" + selected_text + "'  word_index:" + word_index + "'  mnemonic: '" + mnemonic + "'");
+		trace2Main(" 1 selected_text: " + redactSecret( selected_text ) + "  word_index:" + redactSecret( word_index ) + "  mnemonic: " + redactSecret( mnemonic ));
 		
         if ( selected_text != '' ) {		
 			selected_text_pos = tmp_secret_phrase.indexOf(selected_text);
@@ -1008,7 +1008,7 @@ class EntropyConverterDialog {
 		 	}		
 		}
 		
-		console.log(" 2 selected_text: '" + selected_text + "'  word_index:" + word_index + "'  mnemonic: '" + mnemonic + "'");
+		trace2Main(" 2 selected_text: " + redactSecret( selected_text ) + "  word_index:" + redactSecret( word_index ) + "  mnemonic: " + redactSecret( mnemonic ));
 		
 		this.word_has_been_replaced = false;
 		
@@ -1229,7 +1229,7 @@ class EntropyConverterDialog {
 		let secret_phrase = this.getSecretPhrase();
 		if ( secret_phrase == "" ) return;
 		
-		console.log( "onSecretPhraseWheel  secret_phrase: '" + secret_phrase + "'");
+		trace2Main( "onSecretPhraseWheel  secret_phrase: " + redactSecret( secret_phrase ));
 		
 		let memonics = secret_phrase.split(' ');
 		console.log( "onSecretPhraseWheel  memonics.length: " + memonics.length);
@@ -1244,7 +1244,7 @@ class EntropyConverterDialog {
 		
 		if ( (memonics.length - 1) >= index_in_secret_phrase ) {
 			let current_mnemonic = memonics[index_in_secret_phrase];
-			console.log( "current_mnemonic: '" + current_mnemonic + "'");
+			trace2Main( "current_mnemonic: " + redactSecret( current_mnemonic ));
 			
 			// Direction du défilement
 			let delta = 0;
@@ -1273,13 +1273,13 @@ class EntropyConverterDialog {
 				mnemonic_index = parseInt(mnemonic_index);
 			}
 			
-			console.log( "current mnemonic_index: '" + mnemonic_index );
+			trace2Main( "current mnemonic_index: " + redactSecret( mnemonic_index ) );
 			
 			let new_mnemonic_index = mnemonic_index;
 			if      ( delta == 1  && mnemonic_index < 2047 )  new_mnemonic_index = mnemonic_index + 1;
 			else if ( delta == -1 && mnemonic_index > 0 )     new_mnemonic_index = mnemonic_index - 1;
 			
-			console.log( "new_mnemonic_index: '" + new_mnemonic_index + "'");
+			trace2Main( "new_mnemonic_index: " + redactSecret( new_mnemonic_index ));
 			
 			if ( new_mnemonic_index != mnemonic_index ) {
 				let new_mnemonic = "";
@@ -1293,11 +1293,11 @@ class EntropyConverterDialog {
 					new_mnemonic = await window.ipcMain.WordIndexToMnemonic( data );
 				}
 				
-				console.log( "new_mnemonic: '" + new_mnemonic + "'");
+				trace2Main( "new_mnemonic: " + redactSecret( new_mnemonic ));
 				memonics[index_in_secret_phrase] = new_mnemonic;
 				
 				let new_secret_phrase = memonics.join(' ');
-				console.log( "new_secret_phrase: '" + new_secret_phrase + "'");
+				trace2Main( "new_secret_phrase: " + redactSecret( new_secret_phrase ));
 				
 				if (! this.isThereDuplicatesInSecrePhrase( new_secret_phrase ) ) {				
 					HtmlUtils.SetElementValue(ECONVERTER_SECRET_PHRASE_INPUT_ID, new_secret_phrase);
@@ -1362,7 +1362,7 @@ class EntropyConverterDialog {
 		
 		// console.log( "evt.charCode: " + evt.charCode );
 		let new_char = String.fromCharCode(evt.charCode);
-		trace2Main( pretty_format( "new_char: '" +  new_char + "'" ) );
+		trace2Main( pretty_format( "new_char", hideSecret( new_char ) ) );
 		
 		// Default desired behavior: no character input		
 		evt.preventDefault();
