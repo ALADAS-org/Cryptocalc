@@ -46,7 +46,11 @@ Plan (doc) : https://claude.ai/artifact/RS2nwDHnmP72Uxyufv99En
   - le flag doit être ajouté à trois endroits : `www/config/options.json`, `www/config/defaults/options.json` et les options par défaut codées en dur. Ces dernières sont **`DEFAULT_OPTIONS` dans `www/js/crypto/const_default_options.js`**, que `electron_main.js` importe à la ligne 170 et utilise dans `readOptionsFile()` et `setDefaultOptions()` ;
   - le flag doit agir dans le processus principal comme dans le Renderer (les options arrivent au Renderer par `FromMain_UPDATE_OPTIONS`) ;
   - attention : `saveOptions()` et `updateOptions()` journalisent tout l'objet options ;
-  - à noter : `readOptionsFile()` n'écrit pas de `options.json` quand le fichier est absent, il utilise seulement `DEFAULT_OPTIONS` en mémoire. Il faut demander à Michel s'il veut que le fichier soit régénéré.
+  - **décision de Michel : régénérer `options.json` s'il est absent.** Aujourd'hui, `readOptionsFile()` se contente d'utiliser `DEFAULT_OPTIONS` en mémoire. La nouvelle règle est :
+    1. `www/config/options.json` absent : le recréer en copiant `www/config/defaults/options.json` ;
+    2. si `defaults/options.json` est absent aussi : écrire `options.json` à partir de la copie codée en dur (`DEFAULT_OPTIONS` de `const_default_options.js`, importé par `electron_main.js`).
+
+    Le dry-run devra prévoir un test pour chacun de ces cas.
 - **Lot 2**, à commencer par la **2.1 « filet des adresses dorées »**, prérequis des lots 5 à 7 : 2.2 valider dictionnaire et checksum, 2.3 refuser un collage invalide, 2.4 BIP38 compressé, 2.5 espaces et messages d'erreur.
 - **Lot 3** : passphrases non enregistrées (décision D2), `LoadImageFromFile`, sel.
 - **Lot 4** : durcissement Electron.
