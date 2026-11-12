@@ -169,6 +169,8 @@ const { ENTROPY_SOURCE_IMG_ID,
 
 const { DEFAULT_OPTIONS
       }                                 = require('../crypto/const_default_options.js');
+const { readOrRegenerateOptions, cloneOptions
+      }                                 = require('./options_file.js');
 	  
 const { getShortenedString }            = require('../util/values/string_utils.js');	  
 const { FileUtils }                     = require('../util/system/file_utils.js');
@@ -826,21 +828,19 @@ class ElectronMain {
 	readOptionsFile() {
 		pretty_func_header_log( "ElectronMain.readOptionsFile" );
 		
-		let current_options = DEFAULT_OPTIONS;
-		
 		let config_path = app.getAppPath() + '/www/config';
-		//Skribi.log("config_path: " + config_path);
 		
-		let options_path = config_path + '/options.json';
-		if ( fs.existsSync( options_path ) ) {
-			const options_str = fs.readFileSync( options_path );
-			//Skribi.log("   options_str: " + options_str);
-			if ( options_str != "" &&  options_str != "[]" && options_str != "{}" ) { 
-				current_options = JSON.parse( options_str );		
-			}
+		// 'options.json' missing => regenerated from 'defaults/options.json',
+		// or from the built-in copy (DEFAULT_OPTIONS) if 'defaults/options.json' is missing too
+		const result = readOrRegenerateOptions( config_path, DEFAULT_OPTIONS );
+		if ( result.written ) {
+			Skribi.log( "   options.json regenerated (source: " + result.source + ")" );
+		}
+		if ( result.error != undefined ) {
+			Skribi.log( "   " + _RED_ + "**ERROR** " + result.error + _END_ );
 		}
 		
-		return current_options;		
+		return result.options;		
 	} // readOptionsFile()
 
 	async loadOptions() {
@@ -857,7 +857,8 @@ class ElectronMain {
 	async setDefaultOptions() {
 		pretty_func_header_log( "ElectronMain.setDefaultOptions" );
 		
-		this.Options = DEFAULT_OPTIONS;
+		// NB: a copy, DEFAULT_OPTIONS must never be modified
+		this.Options = cloneOptions( DEFAULT_OPTIONS );
 		await this.saveOptions( this.Options );
 	} // async setDefaultOptions()
 	
