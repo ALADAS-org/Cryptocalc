@@ -26,6 +26,7 @@
 // *        getUserSelectedFile()
 //
 //          readOptionsFile()
+//          setOptions( options )
 // * async  loadOptions()
 // * async  setDefaultOptions()
 // * async  updateOptions( options_data )
@@ -65,7 +66,10 @@ const { _CYAN_, _RED_, _PURPLE_, _YELLOW_, _END_
 	  }                = require('../util/color/color_console_codes.js');
 	  
 const { pretty_func_header_log,
-        pretty_log }   = require('../util/log/log_utils.js');
+        pretty_log, 
+		resolveSecretMarkers,
+		setHashedSecretsInConsoleLog
+      }                = require('../util/log/log_utils.js');
 		
 const { Skribi }       = require('../util/log/skribi.js');		
 	  
@@ -77,7 +81,8 @@ const { APP_VERSION,
 		BLOCKCHAIN, BIP39_PASSPHRASE, BIP32_PROTOCOL, ACCOUNT, ADDRESS_INDEX,
 
 		TO_RAW_TEXT, TO_BASE64, TO_BASE58, TO_MNEMONICS, TO_BINARY,
-		FROM_RAW_TEXT, FROM_BASE64, FROM_BASE58, FROM_MNEMONICS, FROM_BINARY  		
+		FROM_RAW_TEXT, FROM_BASE64, FROM_BASE58, FROM_MNEMONICS, FROM_BINARY,
+		HASHED_SECRETS_IN_CONSOLE_LOG
       }                = require('../const_keywords.js');
 	  
 const { CRYPTO_NET        
@@ -492,7 +497,7 @@ class ElectronMain {
 				
 				
 				this.setCallbacks();
-				this.Options = await this.loadOptions();					
+				await this.loadOptions();					
 				
 				// =================== Open file by association ===================
 				let wits_path = this.cmd_line[PATH];
@@ -533,7 +538,7 @@ class ElectronMain {
 			const json_data_str = fs.readFileSync( wits_path, { encoding: 'utf8', flag: 'r' });
 			let wits_json_data = JSON.parse( json_data_str );
 			
-			this.Options = await this.loadOptions();
+			await this.loadOptions();
 			
 			await this.MainWindow.webContents.send
 				  ( "fromMain", [ FromMain_EXEC_CMD, CMD_OPEN_WALLET, wits_json_data ] );	
@@ -552,7 +557,7 @@ class ElectronMain {
 	async doFileNew() {
 		Skribi.log( ">> " + _CYAN_ + "ElectronMain.doFileNew" + _END_ );	
         //this.Options = this.readOptionsFile();
-        this.Options = await this.loadOptions();
+        await this.loadOptions();
         await this.MainWindow.webContents
 		          .send( "fromMain", [ FromMain_FILE_NEW, this.Options ] );		
 	} // doFileNew()
@@ -843,10 +848,24 @@ class ElectronMain {
 		return result.options;		
 	} // readOptionsFile()
 
+	// Every change of 'this.Options' goes through 'setOptions()': it applies the
+	// 'HashedSecretsInConsoleLog' option to the console log of the Main process
+	// (and of the Renderer, whose traces are written by the Main process)
+	setOptions( options ) {
+		this.Options = options;
+		
+		let hashed_secrets = ( this.Options != undefined ) ? this.Options[ HASHED_SECRETS_IN_CONSOLE_LOG ] : true;
+		setHashedSecretsInConsoleLog( hashed_secrets );
+		if ( hashed_secrets === false ) {
+			Skribi.log(   "   " + _RED_ + "**WARNING** '" + HASHED_SECRETS_IN_CONSOLE_LOG 
+			            + "' is false: secrets appear in CLEAR TEXT in the console log (debug only)" + _END_ );
+		}
+	} // setOptions()
+	
 	async loadOptions() {
 		pretty_func_header_log( "ElectronMain.loadOptions" );
 		
-		this.Options = this.readOptionsFile();
+		this.setOptions( this.readOptionsFile() );
 		
 		//Skribi.log(" A this.Options: " + JSON.stringify( this.Options ));
 		await this.MainWindow.webContents
@@ -858,20 +877,19 @@ class ElectronMain {
 		pretty_func_header_log( "ElectronMain.setDefaultOptions" );
 		
 		// NB: a copy, DEFAULT_OPTIONS must never be modified
-		this.Options = cloneOptions( DEFAULT_OPTIONS );
-		await this.saveOptions( this.Options );
+		await this.saveOptions( cloneOptions( DEFAULT_OPTIONS ) );
 	} // async setDefaultOptions()
 	
 	async updateOptions( options_data ) {
 		pretty_func_header_log( "ElectronMain.updateOptions" );
-		this.Options = options_data;
+		this.setOptions( options_data );
 		Skribi.log("   this.Options: " + JSON.stringify( this.Options ));
 	} // async updateOptions()
 	
 	async saveOptions( options_data ) {
 		pretty_func_header_log( "ElectronMain.saveOptions" );
 		
-		this.Options = options_data;
+		this.setOptions( options_data );
 		let config_path  = app.getAppPath() + '/www/config';		
 		let options_path = config_path + '/options.json';
 		fs.writeFileSync( options_path, JSON.stringify( this.Options ) );
@@ -888,8 +906,7 @@ class ElectronMain {
 		let default_options_path = config_path + '/defaults/options.json';
 		let default_options_str  = fs.readFileSync( default_options_path ).toString();
 		Skribi.log("   default_options_str: " + default_options_str);
-		this.Options = JSON.parse( default_options_str );
-		await this.saveOptions( this.Options );
+		await this.saveOptions( JSON.parse( default_options_str ) );
 	} // async resetOptions()
 	
 	setCallbacks() {
@@ -919,13 +936,14 @@ class ElectronMain {
 		// ====================== ToMain_RQ_LOG_2_MAIN_SYNC ======================
 		// called like this by Renderer: window.ipcMain.logToMain(data)
 		ipcMain.on( ToMain_RQ_LOG_2_MAIN, (event, data) => {
-			Skribi.log( data );
+			// NB: secrets traced by the Renderer arrive as markers (see 'redactSecret()' in log_utils.js)
+			Skribi.log( resolveSecretMarkers( data ) );
 		}); // "ToMain:Request/log2main" event handler
 		
 		// ====================== ToMain_RQ_LOG_2_MAIN_SYNC ======================
 		// called like this by Renderer: await window.ipcMain.logToMainSync(data)
 		ipcMain.handle( ToMain_RQ_LOG_2_MAIN_SYNC, async (event, data) => {
-			Skribi.log( data );
+			Skribi.log( resolveSecretMarkers( data ) );
 		}); // "ToMain:Request/log2main_sync" event handler
 		
 		// ====================== ToMain_RQ_GET_APP_PATH ======================
@@ -1031,7 +1049,7 @@ class ElectronMain {
 			}
 			
 			// Skribi.log( "eMain.evtH('UpOpt')> options_data: " + JSON.stringify(options_data));
-			this.Options = options_data;
+			ElectronMain.GetInstance().setOptions( options_data );
 			Skribi.log( "eMain.evtH('UpOpt')> this.Options: " + JSON.stringify( this.Options ));
 			await this.MainWindow.webContents
 			          .send('fromMain', [ FromMain_UPDATE_OPTIONS, this.Options ]);
