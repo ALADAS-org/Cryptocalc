@@ -30,11 +30,12 @@ const EXCLUDED_FILE_REGEX = /^(test_|proto_)/;
 const TRACE_CALL_REGEX = /\b(trace2Main|trace2MainSync|console\.(log|info|warn|error|debug)|pretty_log|Skribi\.log|pretty_format|pretty_func_header_log|pretty_func_header_format)\s*\(/;
 const CONSOLE_CALL_REGEX = /\bconsole\.(log|info|warn|error|debug)\s*\(/;
 const REDACTION_REGEX  = /\b(redactSecret|hideSecret)\s*\(/;
+const MAX_STATEMENT_LINES = 10;
 
 // Identifiers holding a secret
 const SENSITIVE_REGEX = /(entrop|mnemonic|secret|priv|wif|passphrase|password|pwd|seed|salt|chaincode|fortune|paste|word_index|keystore|evt\.key|new_char|selected_text|_hex\b|hex_str|base64|base58|clipboard|bip85_infos|json_data|wits_json)/i;
 // Identifiers which are NOT secrets (sizes, counts, types, element ids, flags...)
-const NOT_SECRET_REGEX = /(_size|_count|_length|\.length|_type|_id\b|_ID\b|_src_type|_lang|_label|_visibility|_digits|_pbar|_strength|_enabled|_allowed|_dialog|_elt|_mode|filename|index_in_|resolveSecretMarkers)/i;
+const NOT_SECRET_REGEX = /(_size|_count|_length|_bytes\b|\.length|_type|_id\b|_ID\b|_src_type|_lang|_label|_visibility|_digits|_pbar|_strength|_enabled|_allowed|_dialog|_elt|_mode|filename|index_in_|resolveSecretMarkers)/i;
 // Constants (IPC event names, keywords...): 'ToMain_RQ_...', 'FromMain_...', 'TOOLS_SECRET_...'
 const CONSTANT_REGEX   = /^(ToMain_|FromMain_)|^[A-Z][A-Z0-9_]*$/;
 // Access to a secret attribute through a keyword: getAttribute(ENTROPY), wallet[MNEMONICS]...
@@ -101,6 +102,28 @@ const isUnsafeTrace = (line) => {
   return identifiers.some((id) => SENSITIVE_REGEX.test(id) && ! NOT_SECRET_REGEX.test(id) && ! CONSTANT_REGEX.test(id));
 };
 
+const parenBalance = (line) => {
+  const code = line.replace(/"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, '""');
+  return (code.match(/\(/g) || []).length - (code.match(/\)/g) || []).length;
+};
+
+// Trace calls of a file, a call written on several lines being joined into one statement
+const traceStatements = (file_path) => {
+  const lines = activeLines(file_path);
+  const statements = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (! TRACE_CALL_REGEX.test(lines[i].text)) continue;
+    let text = lines[i].text;
+    let balance = parenBalance(text);
+    for (let j = i + 1; balance > 0 && j < lines.length && j <= i + MAX_STATEMENT_LINES; j++) {
+      text += ' ' + lines[j].text.trim();
+      balance += parenBalance(lines[j].text);
+    }
+    statements.push({ number: lines[i].number, text });
+  }
+  return statements;
+};
+
 const RENDERER_SCRIPTS = (fs.readFileSync(INDEX_HTML, 'utf8').match(/src="\.\/([^"]+\.js)"/g) || [])
   .map((src) => path.join(WWW_DIR, src.slice('src="./'.length, -1)))
   .filter((file_path) => ! file_path.includes(`${path.sep}lib${path.sep}`));
@@ -119,14 +142,14 @@ describe('No secret in clear text in the traces (static guard)', () => {
   });
 
   test('every trace using a secret goes through redactSecret() / hideSecret()', () => {
-    const violations = ALL_FILES.flatMap((file_path) => activeLines(file_path)
+    const violations = ALL_FILES.flatMap((file_path) => traceStatements(file_path)
       .filter(({ text }) => isUnsafeTrace(text))
       .map(({ number, text }) => `${relative(file_path)}:${number}: ${text.trim()}`));
     expect(violations).toEqual([]);
   });
 
   test('Renderer: no console.*() call with a redacted value (use trace2Main())', () => {
-    const violations = RENDERER_SCRIPTS.flatMap((file_path) => activeLines(file_path)
+    const violations = RENDERER_SCRIPTS.flatMap((file_path) => traceStatements(file_path)
       .filter(({ text }) => CONSOLE_CALL_REGEX.test(text) && REDACTION_REGEX.test(text))
       .map(({ number, text }) => `${relative(file_path)}:${number}: ${text.trim()}`));
     expect(violations).toEqual([]);
@@ -142,5 +165,14 @@ describe('No secret in clear text in the traces (static guard)', () => {
     expect(isUnsafeTrace('trace2Main( pretty_format( "x", this.wallet_info.getAttribute(ENTROPY) ) );')).toBe(true);
     expect(isUnsafeTrace('trace2Main( pretty_format( "x", redactSecret( this.wallet_info.getAttribute(ENTROPY) ) ) );')).toBe(false);
     expect(isUnsafeTrace('pretty_func_header_log( "[Electron]", ToMain_RQ_MNEMONICS_TO_ENTROPY_INFO );')).toBe(false);
+  });
+
+  test('a trace written on several lines is checked as a whole', () => {
+    const tmp_file = path.join(require('os').tmpdir(), 'cryptocalc_multiline_trace.js');
+    fs.writeFileSync(tmp_file, 'trace2Main(  "   *OK 1* to paste_data (full "\n         + expected_digits + " digits): " + paste_data);\n');
+    const statements = traceStatements(tmp_file);
+    fs.rmSync(tmp_file);
+    expect(statements).toHaveLength(1);
+    expect(isUnsafeTrace(statements[0].text)).toBe(true);
   });
 });

@@ -3064,7 +3064,7 @@ class MainGUI {
 		if ( isHexString( paste_data ) ) {
 			if ( paste_length == expected_digits ) {
 				trace2Main(  "   *OK 1* to paste_data (full " 
-				         + expected_digits + " digits): " + paste_data);
+				         + expected_digits + " digits): " + redactSecret( paste_data ));
                 new_entropy	= paste_data;				
 			}
 			else 
@@ -3072,7 +3072,7 @@ class MainGUI {
 			        && (current_entropy.length + paste_length) <= expected_digits ) {				
 				
 				trace2Main(  "   *OK 2* to paste_data (" 
-				         + paste_length + " digits): " + paste_data);
+				         + paste_length + " digits): " + redactSecret( paste_data ));
 						 
 				let text_cursor_pos = entropy_elt.selectionStart;
 				
