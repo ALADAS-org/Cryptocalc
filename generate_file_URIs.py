@@ -137,8 +137,17 @@ def generate_github_urls(output_path=None, start_dir=None):
     return urls
 
 
+def use_utf8_output():
+    """Sortie redirigée sous Windows (cp1252) : UTF-8, sinon les emojis font planter le script"""
+    for stream in (sys.stdout, sys.stderr):
+        encoding = (getattr(stream, "encoding", "") or "").lower().replace("-", "")
+        if encoding != "utf8" and hasattr(stream, "reconfigure"):
+            stream.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main(argv=None):
     """Fonction principale"""
+    use_utf8_output()
     parser = argparse.ArgumentParser(description="Génère files.txt (URLs GitHub raw des fichiers du dépôt)")
     parser.add_argument("--yes", action="store_true", help="ne pas demander de confirmation")
     parser.add_argument("--output", help=f"fichier de sortie (défaut : {OUTPUT_FILE} à la racine du dépôt)")

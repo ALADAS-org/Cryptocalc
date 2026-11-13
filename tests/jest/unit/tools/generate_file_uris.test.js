@@ -12,6 +12,8 @@
  *   - a tracked file deleted from the disk (deletion not committed yet)
  * Names with a space or an accent are URL-encoded.
  * Outside a git repository the script stops with exit code 1.
+ * Output redirected with a non UTF-8 encoding (Windows: cp1252) must not
+ * make the script crash on its emojis.
  * The tests are skipped when Python 3 is not installed.
  * ============================================================================
  */
@@ -44,9 +46,25 @@ const writeFile = (root, relative_path, content = 'x') => {
   fs.writeFileSync(full_path, content);
 };
 
+// NB: '-I' ignores every PYTHON* environment variable (PYTHONIOENCODING included):
+// the script itself must cope with a non UTF-8 output
 const runScript = (cwd, output_path) => spawnSync(
-  PYTHON, ['-I', SCRIPT_PATH, '--yes', '--output', output_path],
-  { cwd, encoding: 'utf8', env: { ...process.env, PYTHONIOENCODING: 'utf-8' } });
+  PYTHON, ['-I', SCRIPT_PATH, '--yes', '--output', output_path], { cwd, encoding: 'utf8' });
+
+// Runs the script with stdout/stderr forced to 'cp1252' (redirected output on Windows)
+const runScriptCp1252 = (cwd, output_path) => spawnSync(PYTHON, ['-I', '-c', [
+  'import io, sys, runpy',
+  "sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='cp1252')",
+  "sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='cp1252')",
+  'sys.argv = [sys.argv[1], "--yes", "--output", sys.argv[2]]',
+  "runpy.run_path(sys.argv[0], run_name='__main__')",
+].join('\n'), SCRIPT_PATH, output_path], { cwd });
+
+// Exit code with the script output, so that a failure shows the Python error
+const statusOf = (result) => ({
+  status: result.status,
+  stderr: String(result.stderr || '').slice(-2000),
+});
 
 const TRACKED_FILES = [
   'www/js/app.js',
@@ -97,7 +115,7 @@ describeIfPython('generate_file_URIs.py', () => {
   test('lists exactly the files known to git, from a sub-folder', () => {
     const result = runScript(path.join(repo_root, 'www/js'), output_path);
 
-    expect(result.status).toBe(0);
+    expect(statusOf(result)).toEqual({ status: 0, stderr: '' });
     const urls = fs.readFileSync(output_path, 'utf8').split('\n').filter((line) => line !== '');
     expect(urls).toEqual(EXPECTED_URLS);
   });
@@ -120,12 +138,20 @@ describeIfPython('generate_file_URIs.py', () => {
     expect(urls).toEqual([...urls].sort());
   });
 
+  test('output redirected with a non UTF-8 encoding (Windows cp1252): no crash', () => {
+    const result = runScriptCp1252(repo_root, output_path);
+
+    expect(statusOf(result)).toEqual({ status: 0, stderr: '' });
+    const urls = fs.readFileSync(output_path, 'utf8').split('\n').filter((line) => line !== '');
+    expect(urls).toEqual(EXPECTED_URLS);
+  });
+
   test('outside a git repository: error message and exit code 1', () => {
     const outside_dir = fs.mkdtempSync(path.join(os.tmpdir(), 'cryptocalc-nogit-'));
     try {
       const result = spawnSync(PYTHON, ['-I', SCRIPT_PATH, '--yes', '--output', path.join(outside_dir, OUTPUT_NAME)],
-        { cwd: outside_dir, encoding: 'utf8', env: { ...process.env, PYTHONIOENCODING: 'utf-8', GIT_CEILING_DIRECTORIES: path.dirname(outside_dir) } });
-      expect(result.status).toBe(1);
+        { cwd: outside_dir, encoding: 'utf8', env: { ...process.env, GIT_CEILING_DIRECTORIES: path.dirname(outside_dir) } });
+      expect(statusOf(result).status).toBe(1);
       expect(result.stdout).toMatch(/ERREUR/);
       expect(fs.existsSync(path.join(outside_dir, OUTPUT_NAME))).toBe(false);
     }
