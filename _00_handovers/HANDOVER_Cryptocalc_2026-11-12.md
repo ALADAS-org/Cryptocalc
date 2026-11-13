@@ -8,6 +8,7 @@ Passation pour reprendre le travail sur Cryptocalc (https://github.com/ALADAS-or
 - **Livraison en patches git** (`git format-patch`, applicables avec `git am`), un commit par patch. Pas de zip et pas de diff brut, que `git am` refuse.
 - **Auteur des commits : `Michel Kern <aladas.cryptowallet@gmail.com>`.** Aucune autre adresse ne doit apparaître dans les patches.
 - Messages de commit **en anglais**, terminés par les lignes d'attribution Claude (Co-Authored-By et Claude-Session).
+  > **Remplacé le 13/11/2026 :** aucune ligne d'attribution, Claude ne s'ajoute jamais comme co-auteur (voir `CLAUDE.md`, « Commit conventions »).
 - **Tests unitaires (Jest) pour chaque modification**, et tests E2E (Playwright) quand l'interface est concernée.
 - **Valider dans une branche de prototype** (`proto/...`) avant la fusion dans master (`git merge --ff-only`).
 - Les espaces en fin de ligne déjà présents dans le code d'origine sont conservés (`git am` affiche un avertissement sans conséquence).

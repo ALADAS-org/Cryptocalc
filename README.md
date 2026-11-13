@@ -13,6 +13,9 @@
    
    Cryptocalc is developed by [Aladas](https://aladas.org/?page_id=61), a non profit organization whose primary goal is to protect Wild bees](https://sites.google.com/view/aladas/accueil).
    
+   **Development tools:** parts of this code were prepared with the assistance of Claude (Anthropic),
+   used as a tool under the direction of the author, who reviews, validates and owns all commits.
+   
 2. Features    
     2.0. Recently added features
 	- Added `Entropy Converter Tool`: `Entropy Converter` is in the `Tool menu` and provides multiple conversions (among `Raw text`, `Hexadecimal`, `Base64`, `Base58`, `Bip39 mnemonics` and `Binary`)  

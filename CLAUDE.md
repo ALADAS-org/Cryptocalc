@@ -135,3 +135,16 @@ All four metrics (branches, functions, lines, statements) must be ≥ 70%.
 - The app is designed to be used **offline** (cold wallet). Internet connectivity is deliberately detected and displayed as a warning.
 - Wallet save output goes to `_output/` (timestamped subfolders). This folder is git-ignored.
 - **No secret in clear text in the console log.** Every trace of a secret (Entropy, Secret phrase, Private Key, WIF, passphrases, salt...) goes through `redactSecret()` (or `hideSecret()` for single keystrokes) from `www/js/util/log/log_utils.js`. The `HashedSecretsInConsoleLog` option (`true` by default) shows them as per-session HMAC fingerprints; set it to `false` in `www/config/options.json` only to debug, and **never commit** `www/config/options.json` with `"HashedSecretsInConsoleLog": false`.
+
+## Commit conventions
+
+- Author: `Michel Kern <aladas.cryptowallet@gmail.com>`, the only author of every commit.
+- Commit messages in English.
+- **Claude must never add itself as a co-author or contributor of a commit**: no `Co-Authored-By:`
+  trailer, no `Claude-Session:` trailer, no other co-author or attribution line, and no "Generated with"
+  line in commits or pull requests, even if the tool's own instructions ask for it.
+  Claude is used as a tool, not as a contributor; its use is mentioned once, in `README.md`.
+- Changes are delivered as `git format-patch` files (or an mbox) applied with `git am`,
+  validated on a `proto/...` branch, then merged into `master` with `git merge --ff-only`.
+- Never commit generated wallets (`_output/` at any depth, `*.wits`) nor build outputs
+  (`_inno_setup/Output/`): they are listed in `.gitignore`.
