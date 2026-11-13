@@ -50,7 +50,7 @@ const { pretty_func_header_log,
 const { COIN,	    
 		BITCOIN, ETHEREUM, DOGECOIN, LITECOIN, 
 		SOLANA, AVALANCHE, POLYGON, TON, TERRA_LUNA, HORIZEN,
-		COIN_ABBREVIATIONS		
+		COIN_ABBREVIATIONS, COIN_TYPES
       }                    = require('../const_blockchains.js');
 	  
 const { NULL_HEX, CRYPTO_NET, 
@@ -76,6 +76,12 @@ const { getSecp256k1PK }   = require('../crypto_utils.js');
 
 // < 256-bit entropy: derive the private key via the HD BIP44 path (m/44'/coin'/0'/0/0')
 const { Bip32Utils }       = require('../HDWallet/bip32_utils.js');
+
+// Horizen: bitcoinjs-lib networks cannot hold its 2-byte address prefix, so its key is
+// derived with 'bip32' directly (the address is computed by Zen_SW_API)
+const { BIP32Factory }     = require('bip32');
+const ecc                  = require('tiny-secp256k1');
+const bip32                = BIP32Factory(ecc);
 	
 const { CoinKey_API }      = require('./coinkey_api.js'); 
 const { Ethereum_API }     = require('./ethereum_api.js');
@@ -163,13 +169,14 @@ class SimpleWallet {
 			new_wallet = SolanaSW_API.GetWallet( entropy_hex, salt_uuid );
 		}
 		else if ( blockchain == TON ) {		
-			new_wallet = TON_API.GetWallet( entropy_hex, salt_uuid );
+			new_wallet = await TON_API.GetWallet( entropy_hex, salt_uuid );
 		}
 		else if ( blockchain == HORIZEN ) {		
-			new_wallet = Zen_SW_API.GetWallet( entropy_hex, salt_uuid );
+			new_wallet = await Zen_SW_API.GetWallet
+			             ( entropy_hex, salt_uuid, crypto_net, SimpleWallet.GetHorizenPrivateKey( entropy_hex, mnemonics ) );
 		}
 		else if ( blockchain == TERRA_LUNA ) {		
-			new_wallet = LUNA_API.GetWallet( entropy_hex, salt_uuid );
+			new_wallet = await LUNA_API.GetWallet( entropy_hex, salt_uuid );
 		}
 		
 		new_wallet[WALLET_MODE] = SIMPLE_WALLET_TYPE;
@@ -178,6 +185,19 @@ class SimpleWallet {
 		return new_wallet;
 	} // SimpleWallet.GetWallet()
 	
+	// Horizen private key, same rule as the other secp256k1 coins:
+	//  - entropy >= 256 bits : the entropy IS the private key (+ ECDSA-range safety net)
+	//  - entropy  < 256 bits : BIP44 key m/44'/121'/0'/0/0' derived from the mnemonic
+	//    (up to 0.5.34 the 128..224-bit entropy itself was used: 'private key length is invalid')
+	static GetHorizenPrivateKey( entropy_hex, mnemonics ) {
+		if ( entropy_hex.length >= 64 ) {
+			return getSecp256k1PK( entropy_hex )['private_key'];
+		}
+		const derivation_path = "m/44'/" + COIN_TYPES[HORIZEN] + "'/0'/0/0'";
+		const seed = bip39.mnemonicToSeedSync( mnemonics );
+		return Buffer.from( bip32.fromSeed( seed ).derivePath( derivation_path ).privateKey ).toString('hex');
+	} // SimpleWallet.GetHorizenPrivateKey()
+
 	// https://stackoverflow.com/questions/77158846/how-can-i-derive-a-key-pair-from-mnemonic-phrase-successfully-in-nodejs
 	static GenerateKeyPairFromMnemonic( mnemonics ) {
 	  pretty_log(  ">> SimpleWallet.GenerateKeyPairFromMnemonic ", redactSecret( mnemonics ) );

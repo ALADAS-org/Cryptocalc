@@ -34,7 +34,9 @@ class LUNA_API {
 			// let mnemonics_txt = "earn potato insane harsh misery effort thumb often pumpkin notice spawn click arch cargo middle know catalog display together choose share camera arrive person";
 			let mnemonics_txt = Bip39Utils.EntropyToMnemonics( entropy_hex );
 			
-			const mk = new MnemonicKey({ mnemonics_txt });
+			// NB: up to 0.5.34 '{ mnemonics_txt }' was passed: unknown option, so MnemonicKey
+			//     generated its own RANDOM phrase, unrelated to the displayed secret phrase
+			const mk = new MnemonicKey({ mnemonic: mnemonics_txt });
 			
 			const wallet_address = mk.accAddress('terra');
 			const private_key    = mk.privateKey.toString('hex'); 

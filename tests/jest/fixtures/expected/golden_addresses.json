@@ -135,33 +135,27 @@
     },
     "HD Wallet | Sui | 12 words | no passphrase": {
       "expected": {
+        "Wallet Address": "0x5e93a736d04fbb25737aa40bee40171ef79f65fae833749e3c089fe7cc2161f1",
+        "Private Key": "suiprivkey1qzyxnjc8z79lvlsg6lz2hh69fp7m7duunfzjlnkzsd59f062855mqacydfr",
         "Derivation Path": "m/44'/784'/0'/0'/0'",
         "Secret phrase": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
-      },
-      "unstable": [
-        "Wallet Address",
-        "Private Key"
-      ]
+      }
     },
     "HD Wallet | Sui | 24 words | no passphrase": {
       "expected": {
+        "Wallet Address": "0xf44087a2a3990c157c683821ec56ff12b050836adead1a1e784e07eff215acaf",
+        "Private Key": "suiprivkey1qqt35clu7ree6sh2uws5x7lx2s6llr84v0mgvshtkkzln9aq9eav6pkhypd",
         "Derivation Path": "m/44'/784'/0'/0'/0'",
         "Secret phrase": "damp envelope simple produce rival cinnamon response easily super album minor final match elegant adjust bulb identify concert slush hurt clog chaos fat hand"
-      },
-      "unstable": [
-        "Wallet Address",
-        "Private Key"
-      ]
+      }
     },
     "HD Wallet | Sui | 24 words | BIP39 passphrase": {
       "expected": {
+        "Wallet Address": "0x010574b4b4d358e272b8239679ee6d40e01ec2ed9b10d0978e54f3c58e3d5b49",
+        "Private Key": "suiprivkey1qqwstnuhqn8nqaw49jeekhpvs9k59tqus3aqg4uelxfeqpklaqd8qg0zxax",
         "Derivation Path": "m/44'/784'/0'/0'/0'",
         "Secret phrase": "damp envelope simple produce rival cinnamon response easily super album minor final match elegant adjust bulb identify concert slush hurt clog chaos fat hand"
-      },
-      "unstable": [
-        "Wallet Address",
-        "Private Key"
-      ]
+      }
     },
     "HD Wallet | Ripple | 12 words | no passphrase": {
       "expected": {
@@ -645,13 +639,18 @@
       }
     },
     "Simple Wallet | Horizen | 12 words | no passphrase": {
-      "error": "private key length is invalid"
+      "expected": {
+        "Wallet Address": "znbcHtoqZDZ2jGcPa1CprLqis8KSM7HtsvQ",
+        "Private Key": "9b14b0aaea0f3a04d1d449174a9be0c0808a8ee73e590af87a7c5d90df119dfb",
+        "WIF": "L2RAgW8CxnWVibcdJ4xpq51NxccqT1U6FGmdj2YMVRgT2sgUCiz6",
+        "Secret phrase": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+      }
     },
     "Simple Wallet | Horizen | 24 words | no passphrase": {
       "expected": {
         "Wallet Address": "znXi2r8JfhLSqqnfk9iSTzZr9kWmywabjqJ",
         "Private Key": "37297b2455dbaa522dea2cd9a0be34ab488c8f00e0ef7085d73137e2b84c94db",
-        "WIF": "5JEad1Xq5xR5N6JKw7B6jQZiSw4msxgmCmgphFn4eVmgxsnCm3N",
+        "WIF": "Ky4wPwM5EsbGG6PUZpFaJB1PwTdf5vnW6xEmWgDu6VzFPEq9e8oP",
         "Secret phrase": "damp envelope simple produce rival cinnamon response easily super album minor final match elegant adjust bulb identify concert slush hurt clog chaos fat hand"
       }
     },
@@ -671,21 +670,17 @@
     },
     "Simple Wallet | Terra | 12 words | no passphrase": {
       "expected": {
+        "Wallet Address": "terra1amdttz2937a3dytmxmkany53pp6ma6dy4vsllv",
+        "Private Key": "05be413bb5bd1fb67757251976dd43adf0d4db27d1a5444b4f6ef754ef939b10",
         "Secret phrase": "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
-      },
-      "unstable": [
-        "Wallet Address",
-        "Private Key"
-      ]
+      }
     },
     "Simple Wallet | Terra | 24 words | no passphrase": {
       "expected": {
+        "Wallet Address": "terra1pk982ydpyge5d7a7cgvma582pz94yn7lu4alg7",
+        "Private Key": "d4e7fd81db9d3145a52c52e21129cc6a7d0fef5399ac2d1af777953c5f07496b",
         "Secret phrase": "damp envelope simple produce rival cinnamon response easily super album minor final match elegant adjust bulb identify concert slush hurt clog chaos fat hand"
-      },
-      "unstable": [
-        "Wallet Address",
-        "Private Key"
-      ]
+      }
     }
   }
 }

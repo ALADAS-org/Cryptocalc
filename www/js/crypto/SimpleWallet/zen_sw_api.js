@@ -32,7 +32,11 @@ const { EntropySize } = require('../entropy_size.js');
 // -----------------------------------------   Zen_SW_API   -----------------------------------------
 // --------------------------------------------------------------------------------------------------
 class Zen_SW_API { 
-	static async GetWallet( entropy_hex, salt_uuid, crypto_net ) {
+	// 'private_key_hex': key computed by SimpleWallet.GetWallet (default: the entropy itself, 256 bits)
+	static async GetWallet( entropy_hex, salt_uuid, crypto_net, private_key_hex ) {
+		if ( private_key_hex == undefined ) {
+			private_key_hex = entropy_hex;
+		}
 		if ( crypto_net == undefined ) {
 			crypto_net = MAINNET;
 		}
@@ -59,14 +63,16 @@ class Zen_SW_API {
 		new_zen_wallet[UUID]       = salt_uuid;
         new_zen_wallet[MNEMONICS]  = mnemonics;
 
-		new_zen_wallet[PRIVATE_KEY] = entropy_hex;
+		new_zen_wallet[PRIVATE_KEY] = private_key_hex;
 		pretty_log( 'Zen_SW.gW>> private_key ', redactSecret( new_zen_wallet[PRIVATE_KEY] ) );
 
-		let zen_wif = zencashjs.address.privKeyToWIF(entropy_hex);
+		// NB: compressed WIF, consistent with the address (compressed public key);
+		//     up to 0.5.34 the WIF was uncompressed and restored another address
+		let zen_wif = zencashjs.address.privKeyToWIF(private_key_hex, true);
 		new_zen_wallet[WIF] = zen_wif;
 		pretty_log('Zen_SW.gW>> WIF ', redactSecret( new_zen_wallet[WIF] ));
 
-		let pub_key = zencashjs.address.privKeyToPubKey(entropy_hex, true); // generate compressed pubKey
+		let pub_key = zencashjs.address.privKeyToPubKey(private_key_hex, true); // generate compressed pubKey
 		pretty_log('Zen_SW.gW>> pub_key ', pub_key);
                                                                         
 		new_zen_wallet[ADDRESS] = zencashjs.address.pubKeyToAddr(pub_key);	

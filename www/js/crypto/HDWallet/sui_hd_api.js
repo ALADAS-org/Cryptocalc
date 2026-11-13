@@ -85,19 +85,14 @@ class Sui_HD_API {
 		
 		pretty_log( "SuiHD.gW> derivation_path", new_sui_wallet[DERIVATION_PATH] );
 
-		// Step 2: Derive seed and private key
-		const SUI_seed = mnemonicToSeedSync(mnemonics); // returns Buffer
+		// Step 2: Derive seed (with the BIP39 passphrase) and private key (SLIP-0010, ed25519)
+		const SUI_seed = mnemonicToSeedSync( mnemonics, ( password != undefined ) ? password : "" ); // returns Buffer
 		const { key } = derivePath( derivation_path, SUI_seed.toString('hex') ); // key = private key
 
-		// Step 3: Create the Sui Ed25519 keypair from private key
-		// const keypair     = Ed25519Keypair.fromSecretKey(Uint8Array.from(key));
-		// const SUI_address = keypair.getPublicKey().toSuiAddress();
-
-		// Output results
-		// console.log('Public Key (Base64):', keypair.getPublicKey().toBase64());
-		
-		// Generate a keypair
-		const keypair = Ed25519Keypair.generate( key );
+		// Step 3: Create the Sui Ed25519 keypair from the derived private key
+		// NB: up to 0.5.34 'Ed25519Keypair.generate( key )' was used: 'generate()' ignores its
+		//     argument and returns a RANDOM keypair, unrelated to the displayed secret phrase
+		const keypair = Ed25519Keypair.fromSecretKey( Uint8Array.from( key ) );
 
 		// Get the secret key (private key)
 		const SUI_private_key = keypair.getSecretKey(); // Returns Uint8Array
