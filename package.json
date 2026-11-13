@@ -16,6 +16,8 @@
     "test:jest": "jest --config=jest.config.js",
     "test:jest:watch": "jest --watch",
     "test:jest:coverage": "jest --coverage",
+    "test:golden:check": "node tests/jest/tools/generate_golden_addresses.js",
+    "test:golden:write": "node tests/jest/tools/generate_golden_addresses.js --write",
     "test:playwright": "playwright test --config=tests/playwright/playwright.config.js",
     "test:playwright:ui": "playwright test --ui --config=tests/playwright/playwright.config.js",
     "test:playwright:debug": "PWDEBUG=1 playwright test --config=tests/playwright/playwright.config.js",

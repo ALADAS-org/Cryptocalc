@@ -132,6 +132,7 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/howto.txt
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/note%20on%201%20Failed.txt
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/setup.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/smoke.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/tools/generate_golden_addresses.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/gitignore_secrets.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/hashed_secrets_option.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/base58_utils.test.js
@@ -165,7 +166,9 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/v
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/README_HDWALLET_CORRECTIONS.md
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/README_HDWALLET_TESTS.md
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/address_validation.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/golden_addresses.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/hd_wallet.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/helpers/golden_wallets.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/no_secrets_in_logs.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/wallet/simple_wallet.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/playwright/e2e/bip39_sizes_dialogs.test.js
