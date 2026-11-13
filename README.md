@@ -1,4 +1,4 @@
-## CryptoCalc 0.5.34
+## CryptoCalc 0.5.35
 ![](https://github.com/ALADAS-org/cryptocalc/blob/master/_doc/Screenshots/Entropy_Wallet_0_4_5_EN.gif)
 1. Purpose  
    _CryptoCalc_ is a _Cryptocurrency wallet generator_ provided as a standalone non custodial desktop application.    
@@ -187,7 +187,39 @@
 				       - `X` is a reference to _LinuX_ (and the family of `uniX` like _Operating Systems_) 
 			  
 4. Release notes
-    - `0.5.34`: This version
+    - `0.5.35`: This version
+		- Bug Fix: `Sui` (HD Wallet) and `Terra` (Simple Wallet) generated a random key unrelated to
+		  the displayed secret phrase: the phrase could not restore the wallet.
+		  For wallets generated with a previous version, the saved Private Key (`.wits`) still matches
+		  the address: import this Private Key in a `Sui` / `Terra` wallet and move the funds.
+		- Bug Fix: `Sui` (HD Wallet) ignored the `Bip39 passphrase`
+		- Bug Fix: `Horizen` (Simple Wallet) failed with an entropy of 128 to 224 bits (12 to 21 words);
+		  its `WIF` is now compressed, consistent with the displayed address
+		  (the former uncompressed `WIF` restored another address)
+		- Security: secrets are no longer written to disk by the logs
+		  Logs go to the console only, `log.txt` is no longer created.
+		  NB: `log.txt` files created by previous versions (in the application folder)
+		  may contain secrets of the wallets generated with them: delete these files.
+		- Security: no secret in clear text in the traces (Main and Renderer processes)
+		  A secret is shown as a session fingerprint (HMAC-SHA256), e.g. `<secret #3f9a1c07 (64)>`:
+		  the same value keeps the same fingerprint during a session, but cannot be recovered from it.
+		  New option `HashedSecretsInConsoleLog` (default `true`); `false` shows secrets in clear text
+		  for debugging only, with a red warning at startup.
+		- Bug Fix: a missing or empty `options.json` is regenerated from the defaults;
+		  an invalid `options.json` no longer crashes the application (default options are used).
+		- Bug Fix: `Entropy` combo box not updated; default entropy size is 256 bits
+		- Bug Fix: random index out of range (fortune cookie, random logo)
+		- Repository: Git history rewritten on 2026-11-13 (old logs, installer and test wallets removed).
+		  Clones made before this date are obsolete: clone the repository again.
+		- Tests: 1554 unit tests (Jest), including "golden addresses" which freeze the address,
+		  private key, WIF, derivation path and phrase of every blockchain; End-to-end tests (Playwright)
+		- Known issues (fixes planned):
+		  - In `HD Wallet` mode, the address index is hardened (`m/44'/coin'/0'/0/0'`):
+		    a phrase imported in another wallet (Ledger, Trezor, Electrum, MetaMask...) shows other addresses
+		  - Keys are computed from the English phrase, even when a phrase in another language is
+		    displayed: restored in another wallet, a non-English phrase gives other addresses
+		  - `Cardano` (HD Wallet) ignores the `Bip39 passphrase` and the `account`
+    - `0.5.34`
 		- Bug Fix: 
 		  Regression in `HD Wallet` mode, it was not possibles to change `account` or `address_index` fields in the GUI
     - `0.5.33`
