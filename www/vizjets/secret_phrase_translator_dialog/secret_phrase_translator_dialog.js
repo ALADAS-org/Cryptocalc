@@ -193,15 +193,20 @@ class SecretPhraseTranslatorDialog {
 			lang      = input_lang;
   	        mnemonics = input_mnemonics;			
 	  		data = { mnemonics, lang };
-			let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
-			
-			let entropy = entropy_info[ENTROPY_HEX];
-			if ( entropy.indexOf('00undefined') != -1 ) {
-				let error_msg = "*Error*: Unknown Wordlist";
-				HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID, error_msg );
-				HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_INPUT_LANG_SELECT_ID,  'UNKNOWN' );			
+			let entropy_info = undefined;
+			try {
+				entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			}
+			catch ( error ) {
+				// Invalid phrase (unknown word, checksum...): Bip39Utils.ValidateMnemonics (plan 2.2)
+				// NB: up to 0.5.34 an unknown word gave an entropy containing '00undefined'
+				let error_msg = "*Error*: Invalid secret phrase";
+				HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_ERROR_MSG_ID,  error_msg );
+				HtmlUtils.SetElementValue( TRANSLATOR_DIALOG_TRANSLATED_ID, '' );
 				return;
 			}
+
+			let entropy = entropy_info[ENTROPY_HEX];
 			// console.log("   entropy: " + JSON.stringify(entropy));
 			
 			await this.updateTranslatedMnemonics( entropy, output_lang ); 

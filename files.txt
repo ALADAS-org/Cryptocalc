@@ -142,6 +142,7 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/c
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip39_sizes.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip39_sizes_characterization.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip39_utils.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip39_validation.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip85_utils.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/crypto_services.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/entropy_size.test.js

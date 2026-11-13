@@ -3165,7 +3165,16 @@ class MainGUI {
 			let lang = current_lang;
 			mnemonics = paste_data;
             data = { mnemonics, lang };			
-			let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			let entropy_info = undefined;
+			try {
+				entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			}
+			catch ( error ) {
+				// Invalid phrase (unknown word, checksum...): ignored instead of giving a wrong
+				// entropy (plan 2.2); one message per reason in plan 2.3
+				trace2Main("   *KO*: invalid secret phrase");
+				return;
+			}
 			let new_entropy = entropy_info[ENTROPY_HEX];
 			trace2Main("  new_entropy: " + redactSecret( new_entropy ));
 			

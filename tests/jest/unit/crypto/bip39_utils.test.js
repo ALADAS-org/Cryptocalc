@@ -287,11 +287,9 @@ describe('BIP39 Utilities', () => {
       expect(info1[ENTROPY_HEX]).not.toBe(info2[ENTROPY_HEX]);
     });
 
-    test('uses default mnemonics when none provided', () => {
-      const info = Bip39Utils.MnemonicsToEntropyInfo(undefined);
-
-      expect(info).toBeDefined();
-      expect(info[ENTROPY_HEX]).toBeDefined();
+    // Plan 2.2: up to 0.5.34 a hard-coded phrase was used instead (entropy of a known wallet)
+    test('throws when no mnemonics are provided', () => {
+      expect(() => Bip39Utils.MnemonicsToEntropyInfo(undefined)).toThrow('Invalid secret phrase');
     });
   });
 

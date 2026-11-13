@@ -17,11 +17,13 @@
 // * static EntropyToChecksum( entropy_hex, options )
 // * static EntropySourceToEntropy( salted_entropy_src_str, options )
 // * static EntropySourceToMnemonics( salted_entropy_src_str, options )
-// * static MnemonicsToEntropyInfo( mnemonics )
+// * static MnemonicsToEntropyInfo( mnemonics, lang )  -> throws if the phrase is invalid
+// * static ValidateMnemonics( mnemonics, lang )       -> { valid, reason, word, position }
+// * static LookupWordIndex( word, lang )              -> { index } or { reason }
 // * static GetWordIndexes( mnemonics, options )
 // * static WordIndexesToSeedPhrase( word_indexes, lang )
 // * static GuessMnemonicsLang( mnemonics )
-// * static CheckMnemonics( mnemonics, private_key, options ) 
+// * static CheckMnemonics( mnemonics, options )      -> true if the phrase is valid
 // * static MnemonicsAs4letter( mnemonics )
 // * static MnemonicsAsTwoParts( mnemonics )
 // * static GetBIP39Dictionary( lang )
@@ -133,6 +135,66 @@ const normalizeBip39 = (str) =>{
 	// Convertir TOUT en forme décomposée, puis supprimer les accents combinants
 	return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }; // normalizeBip39()
+
+// ---------------------------------------------------------------------------------------------
+// Secret phrase validation (plan 2.2)
+// ---------------------------------------------------------------------------------------------
+// Reasons of an invalid secret phrase (ValidateMnemonics 'reason', error 'reason')
+const MNEMONICS_ERROR = Object.freeze({
+	WORD_COUNT:         'WORD_COUNT',         // not a BIP39 word count (12, 15, 18, 21, 24)
+	UNKNOWN_WORD:       'UNKNOWN_WORD',       // word not in the wordlist of the language
+	AMBIGUOUS_WORD:     'AMBIGUOUS_WORD',     // without its accents, the word matches several words
+	INDEX_OUT_OF_RANGE: 'INDEX_OUT_OF_RANGE', // word index (decimal) not in 0..2047
+	CHECKSUM:           'CHECKSUM',           // the last bits do not match SHA256(entropy)
+});
+
+const BIP39_WORDLIST_SIZE = 2048;
+const BITS_PER_WORD       = 11;
+const WORD_INDEX_REGEX    = /^\d+$/; // a word given as its decimal index
+
+// For each language: normalized word (accents removed) -> indexes of the words
+// NB: several indexes when words only differ by their accents (e.g. Greek 'ποτέ' / 'πότε')
+const NORMALIZED_WORD_INDEXES = new Map();
+const getNormalizedWordIndexes = ( lang, wordlist ) => {
+	if ( ! NORMALIZED_WORD_INDEXES.has( lang ) ) {
+		let word_indexes = new Map();
+		wordlist.forEach( (word, index) => {
+			let normalized_word = normalizeBip39( word );
+			if ( word_indexes.has( normalized_word ) ) word_indexes.get( normalized_word ).push( index );
+			else                                       word_indexes.set( normalized_word, [ index ] );
+		});
+		NORMALIZED_WORD_INDEXES.set( lang, word_indexes );
+	}
+	return NORMALIZED_WORD_INDEXES.get( lang );
+}; // getNormalizedWordIndexes()
+
+// { entropy_hex, checksum } or { error: { reason, word, position } } (position: 1 for the first word)
+const decodeMnemonics = ( mnemonics, lang ) => {
+	if ( typeof mnemonics !== 'string' || mnemonics === '' ) {
+		return { error: { reason: MNEMONICS_ERROR.WORD_COUNT } };
+	}
+	let words      = mnemonics.split(' ');
+	let bip39_size = getBip39Size( words.length );
+	if ( bip39_size == undefined ) {
+		return { error: { reason: MNEMONICS_ERROR.WORD_COUNT } };
+	}
+	let all_bits = '';
+	for ( let i=0; i < words.length; i++ ) {
+		let lookup = Bip39Utils.LookupWordIndex( words[i], lang );
+		if ( lookup.reason != undefined ) {
+			return { error: { reason: lookup.reason, word: words[i], position: i + 1 } };
+		}
+		all_bits += lookup.index.toString(2).padStart( BITS_PER_WORD, '0' );
+	}
+	let checksum_bit_count = bip39_size.checksum_bits;
+	let entropy_bits = all_bits.substring( 0, all_bits.length - checksum_bit_count );
+	let checksum     = all_bits.substring( all_bits.length - checksum_bit_count );
+	let entropy_hex  = binaryToHex( entropy_bits );
+	if ( Bip39Utils.EntropyToChecksum( entropy_hex ) !== checksum ) {
+		return { error: { reason: MNEMONICS_ERROR.CHECKSUM } };
+	}
+	return { entropy_hex, checksum };
+}; // decodeMnemonics()
 
 class Bip39Utils {
     // NB: Validation test:
@@ -358,76 +420,59 @@ class Bip39Utils {
 		return checksum_bits;
 	} // Bip39Utils.EntropyToChecksum()
 	
-	// https://github.com/bitcoinjs/bip38/issues/63
+	// Throws an Error if the phrase is invalid: 'error.reason' (MNEMONICS_ERROR), 'error.position'
+	// NB: the message never contains the word itself (a part of a secret): Electron logs the errors
+	//     of the IPC handlers in the console
+	// NB: up to 0.5.34 the checksum was not checked, an unknown word gave the index -1 (wrong
+	//     entropy) and an undefined phrase was replaced by a hard-coded phrase
 	static MnemonicsToEntropyInfo( mnemonics, lang ) {
 		pretty_func_header_log( "Bip39Utils.MnemonicsToEntropyInfo" );
+		if ( lang == undefined )  lang = "EN";
+		
+		let decoded = decodeMnemonics( mnemonics, lang );
+		if ( decoded.error != undefined ) {
+			let error = new Error(  "Invalid secret phrase (" + lang + "): " + decoded.error.reason
+			                      + ( ( decoded.error.position != undefined ) ? " at word " + decoded.error.position : "" ) );
+			error.reason   = decoded.error.reason;
+			error.position = decoded.error.position;
+			throw error;
+		}
 		
 		let entropy_info = {};
-		
-		if ( mnemonics == undefined ) {
-			mnemonics = "rich hard unveil charge stadium affair net ski style stadium helmet void";
-		} 
-		
-		if ( lang == undefined )  lang = "EN";
-		// pretty_log("Mnk2Einf> mnemonics(" + lang + "): '" + mnemonics + "'");
-		
-		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
-		// console.log("   LANG_WORDLIST: " + LANG_WORDLIST.length);
-		
-		let NORMALIZED_WORDLIST = LANG_WORDLIST.map(normalizeBip39);
-		
-		let words = mnemonics.split(' ');
-		// console.log("   words: " +JSON.stringify(words));
-		
-		let entropy_binary     = '';
-		let word_index         = -1;
-		let current_word       = '';
-		let word_index_binary  = ''; 
-		// * Case 1: 24 words (24*11 = 264) => 256 bits (SHA256) + last 11 bits = "checksum word index"
-		// * Case 2: 12 words (12*11 = 132) => 128 bits (SHA-1)  + last 11 bits = "checksum word index"
-		try {
-			for ( let i=0; i < words.length; i++ ) {
-				current_word = words[i];
-				// console.log("   current_word(" + i + "):        '" + current_word + "'");
-				// current_word = current_word.normalize('NFC');
-				current_word = normalizeBip39( current_word );
-				// console.log("   AFTER current_word(" + i + "):  '" + current_word);
-				
-				if ( stringIsNumber( current_word ) ) {
-					word_index = parseInt( current_word );
-				}
-				else {
-					// console.log("   words[" + i + "]: '" + current_word + "'");
-					// word_index = LANG_WORDLIST.indexOf( current_word );
-					word_index = NORMALIZED_WORDLIST.indexOf( current_word );
-					// console.log("   word_index: " + word_index);
-				}	
-				word_index_binary = parseInt(word_index, 10).toString(2).padStart(11, "0");
-				//console.log(">> " + "ToPrivateKey index_binary(" + i + "): " + index_binary);
-				entropy_binary += word_index_binary;
-			} // for each word in 'mnemonics'
-		}
-		catch (err) {
-			throw new Error("***ERROR*** in  Bip39Utils.MnemonicsToEntropyInfo lines: 358..412"); 
-		}
-		let word_count = words.length;
-		// pretty_log("Mnk2Einf> word_count", word_count);
-		
-		let checksum_bit_count = Bip39Utils.GetChecksumBitCount( word_count );
-		// pretty_log("Mnk2Einf> checksum_bit_count", checksum_bit_count);
-	    
-		let checksum_bits = entropy_binary.substring( entropy_binary.length - checksum_bit_count );
-		//console.log("   checksum_bits:              " + checksum_bits);
-		entropy_info[CHECKSUM] = checksum_bits;
-		
-		let entropy_bits = entropy_binary.substring( 0, entropy_binary.length - checksum_bit_count );
-		
-		let entropy_hex = binaryToHex( entropy_bits );
-		pretty_log("Mnk2Einf> entropy_hex", redactSecret( entropy_hex ));
-        entropy_info[ENTROPY_HEX] = entropy_hex;
-		
+		entropy_info[CHECKSUM]    = decoded.checksum;
+		entropy_info[ENTROPY_HEX] = decoded.entropy_hex;
+		pretty_log("Mnk2Einf> entropy_hex", redactSecret( decoded.entropy_hex ));
 		return entropy_info;
 	} // Bip39Utils.MnemonicsToEntropyInfo()
+
+	// { valid: true } or { valid: false, reason, word, position }
+	// NB: 'word' is a part of a secret: display it to the user, never log it
+	static ValidateMnemonics( mnemonics, lang ) {
+		if ( lang == undefined )  lang = "EN";
+		let decoded = decodeMnemonics( mnemonics, lang );
+		if ( decoded.error != undefined ) {
+			return { valid: false, reason: decoded.error.reason, word: decoded.error.word, position: decoded.error.position };
+		}
+		return { valid: true };
+	} // Bip39Utils.ValidateMnemonics()
+
+	// Index of a word in the wordlist of 'lang': { index } or { reason } (MNEMONICS_ERROR)
+	//  - a decimal number is the index itself (0..2047)
+	//  - else the exact word, else the word without its accents if it matches only one word
+	static LookupWordIndex( word, lang ) {
+		if ( WORD_INDEX_REGEX.test( word ) ) {
+			let index = parseInt( word, 10 );
+			return ( index < BIP39_WORDLIST_SIZE ) ? { index } : { reason: MNEMONICS_ERROR.INDEX_OUT_OF_RANGE };
+		}
+		let wordlist = Bip39Utils.GetBIP39Dictionary( lang );
+		let index    = wordlist.indexOf( word );
+		if ( index != -1 )  return { index };
+
+		let candidates = getNormalizedWordIndexes( lang, wordlist ).get( normalizeBip39( word ) );
+		if ( candidates == undefined )  return { reason: MNEMONICS_ERROR.UNKNOWN_WORD };
+		if ( candidates.length > 1 )    return { reason: MNEMONICS_ERROR.AMBIGUOUS_WORD };
+		return { index: candidates[0] };
+	} // Bip39Utils.LookupWordIndex()
 
 
 	// ++++++++++++++++++++++++++++++ Custom handling of mnemonics cuount 1..24 ++++++++++++++++++++++++++++++
@@ -800,30 +845,16 @@ class Bip39Utils {
 		return current_lang;
 	} // Bip39Utils.GuessMnemonicsLang()
 	
+	// true if the phrase is valid (words, word count, checksum) and has 'word_count' words (if given)
+	// NB: up to 0.5.34 only the words were checked, not the checksum
 	static CheckMnemonics( mnemonics, args ) {
 		pretty_log(">> Bip39Utils.CheckMnemonics", "");		
-		
 		args = Bip39Utils.GetArgs( args );
 		let lang       = args[LANG];
 		let word_count = args["word_count"];
-
-		let words = mnemonics.split(' ');
-		//console.log("   words.length: " + words.length);
-		if ( words.length != word_count ) { 
-			return false;
-		}
-		
-		let LANG_WORDLIST = Bip39Utils.GetBIP39Dictionary( lang );
-		
-		for ( let i=0; i < words.length; i++ ) {
-			let current_word = words[i];
-			//console.log("   word[" + i + "] : " + current_word);
-			let word_index = LANG_WORDLIST.indexOf( current_word );
-			if ( word_index == -1 ) {
-				return false;
-			}
-		}
-		return true;
+		if ( typeof mnemonics !== 'string' )  return false;
+		if ( word_count != undefined && mnemonics.split(' ').length != word_count )  return false;
+		return Bip39Utils.ValidateMnemonics( mnemonics, lang ).valid;
 	} // Bip39Utils.CheckMnemonics()
 	
 	static MnemonicsAs4letter( mnemonics ) {
@@ -998,5 +1029,6 @@ const translate_ConvertLessThan12Mnemonics = async () => {
 // translate_ConvertLessThan12Mnemonics();
 
 if (typeof exports === 'object') {
-	exports.Bip39Utils = Bip39Utils	
+	exports.Bip39Utils      = Bip39Utils
+	exports.MNEMONICS_ERROR = MNEMONICS_ERROR
 } // exports of 'bip39_utils.js'

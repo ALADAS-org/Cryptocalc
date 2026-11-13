@@ -668,7 +668,8 @@ class EntropyConverterDialog {
 		let new_lang = HtmlUtils.GetElementValue( ECONVERTER_LANG_SELECT_ID );
 		// console.log("> new_lang: " + new_lang );
 		
-		if ( current_mnemonics.length < 12 || [12,15,18,22,24].indexOf(current_mnemonics.length) == -1 ) { 
+		// NB: up to 0.5.34 the list was [12,15,18,22,24] (22 instead of 21)
+		if ( ! BIP39_WORD_COUNTS.includes( current_mnemonics.length ) ) { // BIP39_WORD_COUNTS: const_wallet.js
 			// console.log("> Non Standard Word Count: " + current_mnemonics.length );	
 			
 			let translated_mnemonics = '';
@@ -767,7 +768,18 @@ class EntropyConverterDialog {
 			mnemonics = secret_phrase_value;
 			lang      = current_lang;
 			data = { mnemonics, lang };
-			let entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			let entropy_info = undefined;
+			try {
+				entropy_info = await window.ipcMain.MnemonicsToEntropyInfo( data );
+			}
+			catch ( error ) {
+				// Invalid phrase (unknown word, checksum...): phrase and language unchanged (plan 2.2)
+				// NB: this dialog has no error message field
+				trace2Main("   *KO*: invalid secret phrase");
+				HtmlUtils.SetElementValue( ECONVERTER_LANG_SELECT_ID, this.previous_lang );
+				this.allow_cb = true;
+				return;
+			}
 			
 			let entropy_value = entropy_info[ENTROPY_HEX];
 			// console.log("   entropy_value: " + entropy_value);

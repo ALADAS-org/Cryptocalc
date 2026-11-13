@@ -10,6 +10,8 @@
  *     a word count which is not a BIP39 word count
  *   - Entropy tab (D6 dices source): the generated entropy has the size of
  *     the selected word count
+ *   - Invalid secret phrase (unknown word, wrong checksum, plan 2.2): rejected
+ *     by the Translator; the Entropy Converter stays usable
  * ============================================================================
  */
 const { test, expect, waitForAppReady } = require('../setup.js');
@@ -35,6 +37,7 @@ const CONVERTER = {
   SECRET_PHRASE:'#econverter_secret_phrase_input_id',
   SIZE:         '#econverter_entropy_size_select_id',
   BASE64:       '#econverter_base64_input_id',
+  LANG:         '#econverter_lang_select_id',
 };
 const TRANSLATOR = {
   INPUT:      'translator_input_id',
@@ -45,6 +48,13 @@ const TRANSLATOR = {
   ERROR:      '#translator_error_msg_id',
 };
 const INVALID_COUNT_MSG = (count) => `Invalid mnemonics count: ${count}`;
+const INVALID_PHRASE_MSG = 'Invalid secret phrase';
+const ABANDON_ABOUT      = 'abandon '.repeat(11) + 'about';
+const ABANDON_ABOUT_ENTROPY = '0'.repeat(32);
+const INVALID_PHRASES    = {
+  'unknown word':   'abandon '.repeat(11) + 'abuot',
+  'wrong checksum': 'abandon '.repeat(11) + 'zoo',
+};
 
 const hexOfBits   = (bits) => HEX64.slice(0, bits / 4);
 const phraseOf    = (words, wordlist = bip39.wordlists.english) =>
@@ -98,6 +108,45 @@ test.describe('BIP39 sizes - Tools dialogs and Entropy source', () => {
       await page.click(TRANSLATOR.TRANSLATE);
       await expect.poll(() => readValue(page, TRANSLATOR.ERROR), { timeout: POLL_TIMEOUT }).toContain(INVALID_COUNT_MSG(count));
     }
+  });
+
+  test('Secret phrase Translator: an invalid phrase (unknown word, wrong checksum) is rejected', async ({ page, electronApp }) => {
+    expect(await clickMenuItem(electronApp, MENU.TRANSLATOR)).toBeTruthy();
+    await page.waitForTimeout(UI_DELAY);
+
+    for (const [label, phrase] of Object.entries(INVALID_PHRASES)) {
+      await page.click(TRANSLATOR.CLEAR);
+      await page.fill('#' + TRANSLATOR.INPUT, phrase);
+      await page.selectOption(TRANSLATOR.OUTPUT_LANG, 'FR');
+      await page.click(TRANSLATOR.TRANSLATE);
+      await expect.poll(() => readValue(page, TRANSLATOR.ERROR), { timeout: POLL_TIMEOUT, message: label })
+        .toContain(INVALID_PHRASE_MSG);
+      expect(await readValue(page, TRANSLATOR.TRANSLATED)).toBe('');
+      await page.selectOption(TRANSLATOR.OUTPUT_LANG, 'EN');
+    }
+
+    // A valid phrase is still translated
+    await page.click(TRANSLATOR.CLEAR);
+    await pasteInField(page, TRANSLATOR.INPUT, ABANDON_ABOUT);
+    await page.selectOption(TRANSLATOR.OUTPUT_LANG, 'FR');
+    await expect.poll(() => readValue(page, TRANSLATOR.TRANSLATED), { timeout: POLL_TIMEOUT })
+      .toBe(bip39.entropyToMnemonic(ABANDON_ABOUT_ENTROPY, bip39.wordlists.french));
+  });
+
+  test('Entropy Converter: changing the language of an invalid phrase leaves the dialog usable', async ({ page, electronApp }) => {
+    expect(await clickMenuItem(electronApp, MENU.ENTROPY_CONVERTER)).toBeTruthy();
+    await page.waitForTimeout(UI_DELAY);
+    const initial_lang = await readValue(page, CONVERTER.LANG);
+
+    await page.fill(CONVERTER.SECRET_PHRASE, INVALID_PHRASES['wrong checksum']);
+    await page.selectOption(CONVERTER.LANG, 'FR');
+    // Phrase and language unchanged
+    await expect.poll(() => readValue(page, CONVERTER.LANG), { timeout: POLL_TIMEOUT }).toBe(initial_lang);
+    expect(await readValue(page, CONVERTER.SECRET_PHRASE)).toBe(INVALID_PHRASES['wrong checksum']);
+
+    // Still usable: hexadecimal -> secret phrase
+    await page.fill(CONVERTER.HEX, hexOfBits(128));
+    await expect.poll(() => readValue(page, CONVERTER.SECRET_PHRASE), { timeout: POLL_TIMEOUT }).toBe(phraseOf(12));
   });
 
   test('Entropy source (D6 dices): the entropy size follows the selected word count', async ({ page }) => {
