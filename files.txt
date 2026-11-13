@@ -5,6 +5,7 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/.github/PULL_REQU
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/CLAUDE.md
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/README.md
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/_00_handovers/HANDOVER_Cryptocalc_2026-11-12.md
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/_00_handovers/HANDOVER_Cryptocalc_2026-11-13.md
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/_archives/tests-prev/README.txt
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/_archives/tests-prev/api/runners/00_UnitTests_README.txt
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/_archives/tests-prev/api/runners/_archives/diagnostic.js
