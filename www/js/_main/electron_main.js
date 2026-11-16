@@ -42,8 +42,6 @@ const { app, Menu, BrowserWindow, ipcMain,
         shell, remote, dialog } = require('electron');	
 		// https://stackoverflow.com/questions/35916158/how-to-prevent-multiple-instances-in-electron
 
-require('v8-compile-cache');
-
 const os       = require('os');
 const { exec } = require('child_process');
 
