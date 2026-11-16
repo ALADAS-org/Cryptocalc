@@ -150,6 +150,7 @@
 	               - e.g. `git clone https://github.com/ALADAS-org/cryptocalc.git`
                - Type `cd cryptocalc`	
                - Type `npm install` 
+                   - No compiler (e.g. _Visual Studio_) is needed: `npm install` also downloads the native modules built for _Electron_
 			   - You can launch _CryptoCalc_ with a double clik on `_run_Cryptocalc_W.bat` (`W` means _Windows_)    
        - 3.2.b. On `Linux` Operating system	
            - Linux distribution	  
@@ -180,6 +181,7 @@
 	           - `git clone https://github.com/ALADAS-org/Cryptocalc.git`
                - `cd Cryptocalc`	
                - `npm install`
+                   - No compiler is needed: `npm install` also downloads the native modules built for _Electron_
 			   - `chmod 777 ./_run_Cryptocalc_X.sh`			   
 			   - You can launch _CryptoCalc_ with either:
 			       - `npm start` 

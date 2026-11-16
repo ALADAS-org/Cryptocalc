@@ -48,7 +48,11 @@ npm run test:playwright:debug
 npm run build
 ```
 
-### Rebuild native modules (after Electron version change)
+### Native modules for Electron (no compiler needed)
+`npm install` runs `tools/install_electron_native.js` ("postinstall"), which downloads the
+prebuilt `better-sqlite3` binary for the installed Electron version (the other native modules
+work as they are). No Visual Studio / node-gyp. After an Electron version change, or if the
+download failed:
 ```
 npm run rebuild
 ```

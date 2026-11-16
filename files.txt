@@ -138,6 +138,7 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/tools/
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/tools/run_mutation.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/gitignore_secrets.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/hashed_secrets_option.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/install_electron_native.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/no_v8_compile_cache.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/base58_utils.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip32_utils.test.js
@@ -186,6 +187,7 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/playwright/
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/playwright/e2e/no_secrets_in_traces.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/playwright/playwright.config.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/playwright/setup.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tools/install_electron_native.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/www/css/iziToast.css
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/www/css/jquery-ui.structure.min.css
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/www/css/jquery-ui.theme.min.css

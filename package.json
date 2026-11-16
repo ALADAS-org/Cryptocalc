@@ -11,7 +11,8 @@
   "scripts": {
     "start": "electron . --enable-logging",
     "build": "electron-packager . app --platform win32 --arch x64 --out dist/",
-    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "rebuild": "node tools/install_electron_native.js",
+    "postinstall": "node tools/install_electron_native.js",
     "test": "jest",
     "test:jest": "jest --config=jest.config.js",
     "test:jest:watch": "jest --watch",
@@ -57,7 +58,6 @@
     "@stryker-mutator/jest-runner": "^10.1.1",
     "@types/node": "^25.2.2",
     "cross-env": "^10.1.0",
-    "electron-rebuild": "^3.2.9",
     "jest": "^30.2.0",
     "jest-html-reporter": "^4.3.0",
     "jest-watch-typeahead": "^3.0.1",
