@@ -134,6 +134,8 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/note%2
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/setup.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/smoke.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/tools/generate_golden_addresses.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/tools/mutation_targets.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/tools/run_mutation.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/gitignore_secrets.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/hashed_secrets_option.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/base58_utils.test.js

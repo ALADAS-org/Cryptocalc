@@ -36,3 +36,6 @@ CLAUDE.local.md
 *.log
 npm-debug.log*
 */log.txt
+
+# Mutation testing (StrykerJS) sandbox
+/.stryker-tmp/
