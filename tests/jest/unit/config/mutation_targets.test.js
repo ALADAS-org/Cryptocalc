@@ -5,11 +5,13 @@
  * Each target names its source file(s) and its own unit tests. A test pattern
  * starting with '<rootDir>' matches no file on Windows (drive letter and
  * backslashes): Stryker then stops with "No tests were found".
+ *
+ * NB: no glob library ('micromatch' is not a direct dependency: a fresh
+ *     install does not put it at the root of node_modules).
  * ============================================================================
  */
 const fs         = require('fs');
 const path       = require('path');
-const micromatch = require('micromatch');
 
 const { MUTATION_TARGETS } = require('../../../../tests/jest/tools/mutation_targets.js');
 
@@ -24,6 +26,13 @@ const listTestFiles = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flat
   .map((file) => path.relative(PROJECT_ROOT, file).split(path.sep).join('/'));
 
 const TEST_FILES = listTestFiles(TESTS_DIR);
+
+// The simple globs of the targets ('**/' = any folders, '*' = any characters but '/')
+const escapeRegExp = (text) => text.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+const globToRegExp = (glob) => new RegExp('^' + glob.split('**/')
+  .map((part) => part.split('*').map(escapeRegExp).join('[^/]*'))
+  .join('(?:.*/)?') + '$');
+const matchingFiles = (globs) => TEST_FILES.filter((file) => globs.some((glob) => globToRegExp(glob).test(file)));
 const TARGETS    = Object.entries(MUTATION_TARGETS);
 
 describe('Mutation testing targets', () => {
@@ -36,7 +45,17 @@ describe('Mutation testing targets', () => {
   });
 
   test.each(TARGETS)('%s: the test patterns match at least one test file', (name, target) => {
-    expect(micromatch(TEST_FILES, target.tests).length).toBeGreaterThan(0);
+    expect(matchingFiles(target.tests).length).toBeGreaterThan(0);
+  });
+
+  test('glob translation: same files as Jest for the bip39_utils target', () => {
+    expect(matchingFiles(MUTATION_TARGETS.bip39_utils.tests).sort()).toEqual([
+      'tests/jest/unit/crypto/bip39_extras.test.js',
+      'tests/jest/unit/crypto/bip39_sizes.test.js',
+      'tests/jest/unit/crypto/bip39_sizes_characterization.test.js',
+      'tests/jest/unit/crypto/bip39_utils.test.js',
+      'tests/jest/unit/crypto/bip39_validation.test.js',
+    ]);
   });
 
   test.each(TARGETS)('%s: the source files to mutate exist', (name, target) => {
