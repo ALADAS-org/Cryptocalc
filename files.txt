@@ -139,6 +139,7 @@ https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/tools/
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/gitignore_secrets.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/hashed_secrets_option.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/install_electron_native.test.js
+https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/mutation_targets.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/config/no_v8_compile_cache.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/base58_utils.test.js
 https://raw.githubusercontent.com/aladas-org/cryptocalc/master/tests/jest/unit/crypto/bip32_utils.test.js
